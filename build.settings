@@ -53,10 +53,16 @@ settings =
                 "Icon-Small@3x.png"
 			},
             UIAppFonts = {
-                "Lato-Light.ttf",
-                "Lato-Regular.ttf",
-                "Lato-Bold.ttf",
-                "Lato-Italic.ttf"
+                "OpenSans-Bold.ttf",
+                "OpenSans-BoldItalic.ttf",
+                "OpenSans-ExtraBold.ttf",
+                "OpenSans-ExtraBoldItalic.ttf",
+                "OpenSans-Italic.ttf",
+                "OpenSans-Light.ttf",
+                "OpenSans-LightItalic.ttf",
+                "OpenSans-Regular.ttf",
+                "OpenSans-Semibold.ttf",
+                "OpenSans-SemiboldItalic.ttf"
             },
 		}
 	},

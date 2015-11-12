@@ -4,11 +4,12 @@
 -- Parodiux Inc.
 ---------------------------------------------------------------------------------
 
-display.setStatusBar( display.DarkStatusBar )
+display.setStatusBar( display.TranslucentStatusBar )
 local composer = require( "composer" )
 local DBManager = require('src.DBManager')
-display.setDefault( "background", .91 )
-
+display.setDefault( "background", 0 )
+display.setDefault( "textureWrapX", "repeat" )
+display.setDefault( "textureWrapY", "repeat" )
 
 local isUser = DBManager.setupSquema()
-composer.gotoScene("src.Home")
+composer.gotoScene("src.Login")

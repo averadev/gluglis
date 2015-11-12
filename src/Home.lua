@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Trippy Rex
+-- Gluglis
 -- Alberto Vera Espitia
--- Parodiux Inc.
+-- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -37,48 +37,15 @@ function buildCard()
     grpCards[idx] = display.newGroup()
     screen:insert(grpCards[idx])
     
-    elemCards[idx].bgL = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
-    elemCards[idx].bgL.anchorY = 0
-    elemCards[idx].bgL:setFillColor( 11/225, 163/225, 212/225 )
-    grpCards[idx]:insert(elemCards[idx].bgL)
-    local maskbgl = graphics.newMask( "img/maskbgl.jpg" )
-    elemCards[idx].bgL:setMask( maskbgl )
+    elemCards[idx].f = display.newRect( midW, 172, 558, 558 )
+    elemCards[idx].f.anchorY = 0
+    elemCards[idx].f:setFillColor( 0, 193/225, 1 )
+    grpCards[idx]:insert(elemCards[idx].f)
     
-    elemCards[idx].bgR = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
-    elemCards[idx].bgR.anchorY = 0
-    elemCards[idx].bgR:setFillColor( 11/225, 163/225, 212/225 )
-    grpCards[idx]:insert(elemCards[idx].bgR)
-    local maskbgr = graphics.newMask( "img/maskbgr.jpg" )
-    elemCards[idx].bgR:setMask( maskbgr )
-    
-    elemCards[idx].fL = display.newRect( midW, 172, 558, 558 )
-    elemCards[idx].fL.anchorY = 0
-    elemCards[idx].fL:setFillColor( 0, 193/225, 1 )
-    grpCards[idx]:insert(elemCards[idx].fL)
-    local maskfl = graphics.newMask( "img/maskfl.jpg" )
-    elemCards[idx].fL:setMask( maskfl )
-    
-    elemCards[idx].fR = display.newRect( midW, 172, 558, 558 )
-    elemCards[idx].fR.anchorY = 0
-    elemCards[idx].fR:setFillColor( 0, 193/225, 1 )
-    grpCards[idx]:insert(elemCards[idx].fR)
-    local maskfr = graphics.newMask( "img/maskfr.jpg" )
-    elemCards[idx].fR:setMask( maskfr )
-    
-    elemCards[idx].aL = display.newImage("img/tmp/face01.png")
-    elemCards[idx].aL.anchorY = 0
-    elemCards[idx].aL:translate(midW, 176)
-    grpCards[idx]:insert( elemCards[idx].aL )
-    local maskal = graphics.newMask( "img/maskal.jpg" )
-    elemCards[idx].aL:setMask( maskal )
-    
-    elemCards[idx].aR = display.newImage("img/tmp/face01.png")
-    elemCards[idx].aR.anchorY = 0
-    elemCards[idx].aR:translate(midW, 176)
-    grpCards[idx]:insert( elemCards[idx].aR )
-    local maskar = graphics.newMask( "img/maskar.jpg" )
-    elemCards[idx].aR:setMask( maskar )
-    
+    elemCards[idx].a = display.newImage("img/tmp/hugo.jpg")
+    elemCards[idx].a.anchorY = 0
+    elemCards[idx].a:translate(midW, 176)
+    grpCards[idx]:insert( elemCards[idx].a )
     
 end
 
@@ -131,20 +98,61 @@ end
 
 function scene:create( event )
 	screen = self.view
+    screen.y = h
     
-    local bg = display.newRect( 0, 0, intW, intH )
-    bg.anchorX = 0
-    bg.anchorY = 0
-    bg:setFillColor( 1 )
-    screen:insert(bg)
-	
+    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
+    o.fill = { type="image", filename="img/fillPattern.png" }
+    o.fill.scaleX = .2
+    o.fill.scaleY = .2
+    screen:insert(o)
+    
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)
     
+    -- Content profile
+    local bgCard = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
+    bgCard.anchorY = 0
+    bgCard:setFillColor( 11/225, 163/225, 212/225 )
+    screen:insert(bgCard)
+    -- Personal data
+    local lblName = display.newText({
+        text = "Ricardo Rodriguez", 
+        x = 420, y = 760,
+        width = 600,
+        font = native.systemFontBold,   
+        fontSize = 30, align = "left"
+    })
+    lblName:setFillColor( 1 )
+    screen:insert(lblName)
+    local lblAge= display.newText({
+        text = "24 Años", 
+        x = 420, y = 795,
+        width = 600,
+        font = native.systemFont, 
+        fontSize = 28, align = "left"
+    })
+    lblAge:setFillColor( 1 )
+    screen:insert(lblAge)
+    local lblInts = display.newText({
+        text = "Amante de la Musica", 
+        x = 420, y = 820,
+        width = 600,
+        font = native.systemFont, 
+        fontSize = 22, align = "left"
+    })
+    lblInts:setFillColor( 1 )
+    screen:insert(lblInts)
+    
+    -- Buton
     local bgBtn = display.newRoundedRect( midW, 870, intW - 160, 70, 10 )
     bgBtn.anchorY = 0
-    bgBtn:setFillColor( 129/225, 61/225, 153/225 )
+    bgBtn:setFillColor({
+        type = 'gradient',
+        color1 = { 129/255, 61/255, 153/255 }, 
+        color2 = { 89/255, 31/255, 103/255 },
+        direction = "bottom"
+    })
     screen:insert(bgBtn)
     
     -- Circles
@@ -159,8 +167,7 @@ function scene:create( event )
     screen:insert(circle3)
     
     firstCards()
-    bg:addEventListener( "touch", touchScreen )
-    
+    --o:addEventListener( "touch", touchScreen )
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )

@@ -1,3 +1,9 @@
+---------------------------------------------------------------------------------
+-- Gluglis
+-- Alberto Vera Espitia
+-- GeekBucket 2015
+---------------------------------------------------------------------------------
+
 --Include sqlite
 local dbManager = {}
 
@@ -7,7 +13,6 @@ local dbManager = {}
 	--Open rackem.db.  If the file doesn't exist it will be created
 	local function openConnection( )
 	    path = system.pathForFile("care.db", system.DocumentsDirectory)
-        
 	    db = sqlite3.open( path )     
 	end
 

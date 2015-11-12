@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Trippy Rex
+-- Gluglis
 -- Alberto Vera Espitia
--- Parodiux Inc.
+-- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -38,18 +38,29 @@ end
 function moveNew(event)
     local t = event.target
     t.alpha = .5
+    grpNew.alpha = 1
+    grpLogIn.alpha = 0
     transition.to( grpMain, { x = -768, time = 400 } )
     transition.to( grpNew, { x = 0, time = 400, onComplete = function() t.alpha = .01 end })
+    
 end
 
 function moveLogIn(event)
     local t = event.target
     t.alpha = .5
+    grpNew.alpha = 0
+    grpLogIn.alpha = 1
     transition.to( grpMain, { x = -768, time = 400 } )
     transition.to( grpLogIn, { x = 0, time = 400, onComplete = function() t.alpha = .01 end })
 end
 
 function logInFB(event)
+    txtEmail:removeSelf()
+    txtPass:removeSelf()
+    txtRePass:removeSelf()
+    txtEmailS:removeSelf()
+    txtPassS:removeSelf()
+    composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
 end
 
 function onTxtFocus(event)
@@ -72,6 +83,11 @@ end
 
 function scene:create( event )
 	screen = self.view
+    screen.y = h
+    
+    local o = display.newRect( midW, midH + 30, intW, intH )
+    o:setFillColor( 232/255 )   
+    screen:insert(o)
     
     -- Logo on circle
     local circle1 = display.newCircle( screen, midW, (midH*.45), 160 )
@@ -123,7 +139,7 @@ function scene:create( event )
     })
     lblFB:setFillColor( 0/255, 56/255, 114/255 )
     grpMain:insert(lblFB)
-    local logoFB = display.newImage(grpMain, "img/logoFB.png" )
+    local logoFB = display.newImage(grpMain, "img/logoFaceBook.png" )
     logoFB:translate( midW - 160, midH + 50 )
     -- Set link New
     local btnNewW = display.newRect( midW, midH + 260, intW, 100 )
@@ -222,6 +238,7 @@ function scene:create( event )
     -- Button
     local btnNew = display.newRect( midR, midH + 450, intW, 100 )
     btnNew:setFillColor( 128/255, 72/255, 149/255 )
+    btnNew:addEventListener( 'tap', logInFB)
     grpNew:insert(btnNew)
     local lblRegistrar = display.newText({
         text = "Registrarme",     
@@ -236,7 +253,7 @@ function scene:create( event )
     icoRegistrar:translate( midR - 80, midH + 450 )
     
     
-    -- Create New
+    -- LogIn
     grpLogIn = display.newGroup()
     grpMain:insert(grpLogIn)
     local btnBack2 = display.newImage( grpLogIn, "img/btnBack.png" )
@@ -280,6 +297,7 @@ function scene:create( event )
     -- Button
     local btnSignIn = display.newRect( midR, midH + 350, intW, 100 )
     btnSignIn:setFillColor( 128/255, 72/255, 149/255 )
+    btnSignIn:addEventListener( 'tap', logInFB)
     grpLogIn:insert(btnSignIn)
     local lblSignIn = display.newText({
         text = "Acceder",     

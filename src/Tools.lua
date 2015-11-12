@@ -1,8 +1,13 @@
+---------------------------------------------------------------------------------
+-- Gluglis
+-- Alberto Vera Espitia
+-- GeekBucket 2015
+---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
 -- Encabezao general
 ---------------------------------------------------------------------------------
-local storyboard = require( "storyboard" )
+local composer = require( "composer" )
 local Sprites = require('src.Sprites')
 require('src.Menu')
 
@@ -19,37 +24,39 @@ function Tools:new()
     -- Creamos la el toolbar
     function self:buildHeader()
         
-        bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight - h )
+        bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight )
         bgShadow.alpha = 0
         bgShadow.anchorX = 0
         bgShadow.anchorY = 0
         bgShadow:setFillColor( 0 )
         self:insert(bgShadow)
         
-        --[[
-        local toolbar = display.newRect( 0, 0, display.contentWidth, 90 )
-        toolbar.anchorX = 0
-        toolbar.anchorY = 0
-        toolbar:setFillColor( 1 )
-        self:insert(toolbar)
-        ]]--
-        
         -- Icons
-        local iconMenu = display.newImage("img/iconMenu.png")
-        iconMenu:translate(45, 45)
-        self:insert( iconMenu )
         local iconLogo = display.newImage("img/iconLogo.png")
         iconLogo:translate(display.contentWidth/2, 45)
         self:insert( iconLogo )
-        local iconChat = display.newImage("img/iconChat.png")
-        iconChat:translate(display.contentWidth-45, 45)
-        self:insert( iconChat )
         
-        
-        
-        -- Get Menu
-        scrMenu = Menu:new()
-        scrMenu:builScreen()
+        if composer.getSceneName( "current" ) == "src.Home" then
+            -- Iconos Home
+            local iconMenu = display.newImage("img/iconMenu.png")
+            iconMenu:translate(45, 45)
+            iconMenu:addEventListener( 'tap', showMenu)
+            self:insert( iconMenu )
+            local iconChat = display.newImage("img/iconChat.png")
+            iconChat:translate(display.contentWidth-45, 45)
+            iconChat.screen = 'Messages'
+            iconChat:addEventListener( 'tap', toScreen)
+            self:insert( iconChat )
+            -- Get Menu
+            scrMenu = Menu:new()
+            scrMenu:builScreen()
+        else
+            local icoBack = display.newImage("img/icoBack.png")
+            icoBack:translate(45, 45)
+            icoBack.screen = 'Home'
+            icoBack:addEventListener( 'tap', toScreen)
+            self:insert( icoBack )
+        end
     end
     
     -- Creamos loading
@@ -92,15 +99,21 @@ function Tools:new()
     
     -- Cambia pantalla
     function toScreen(event)
+        -- Hide Menu
+        if bgShadow.alpha > 0 then
+            showMenu()
+        end
+        -- Animate    
         local t = event.target
         audio.play(fxTap)
         t.alpha = 0
         timer.performWithDelay(200, function() t.alpha = 1 end, 1)
+        -- Change Screen
         if t.isReturn then
-            storyboard.gotoScene("src."..t.screen, { time = 400, effect = "slideRight" } )
+            composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
         else
-            storyboard.removeScene( "src."..t.screen )
-            storyboard.gotoScene("src."..t.screen, { time = 400, effect = "slideLeft" } )
+            composer.removeScene( "src."..t.screen )
+            composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
         end
         return true
     end
@@ -108,15 +121,14 @@ function Tools:new()
     -- Cerramos o mostramos shadow
     function showMenu(event)
         if bgShadow.alpha == 0 then
-            scrMenu:toFront()
-            bgShadow:toFront()
+            self:toFront()
             bgShadow:addEventListener( 'tap', showMenu)
-            transition.to( bgShadow, { alpha = .5, time = 400, transition = easing.outExpo })
+            transition.to( bgShadow, { alpha = .3, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = 0, time = 400, transition = easing.outExpo } )
         else
             bgShadow:removeEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = 0, time = 400, transition = easing.outExpo })
-            transition.to( scrMenu, { x = -400, time = 400, transition = easing.outExpo })
+            transition.to( scrMenu, { x = -500, time = 400, transition = easing.outExpo })
         end
         return true;
     end

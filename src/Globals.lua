@@ -1,10 +1,14 @@
-
+---------------------------------------------------------------------------------
+-- Gluglis
+-- Alberto Vera Espitia
+-- GeekBucket 2015
+---------------------------------------------------------------------------------
 
 -- Mediciones de pantalla
 intW = display.contentWidth
 intH = display.contentHeight
-midW = display.contentWidth / 2
-midH = display.contentHeight / 2
+midW = display.contentCenterX
+midH = display.contentCenterY
 hm3 = intH / 3
 h = display.topStatusBarContentHeight
 
