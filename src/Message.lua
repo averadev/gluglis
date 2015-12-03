@@ -9,17 +9,22 @@
 ---------------------------------------------------------------------------------
 -- Includes
 require('src.Tools')
-require('src.Globals')
+require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
 local fxTap = audio.loadSound( "fx/click.wav")
+local RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
 local screen, scrChat
 local scene = composer.newScene()
+local noMessage, noConectionMSG
 
 -- Variables
-local tmpList = {
+local h = display.topStatusBarContentHeight
+
+
+--[[local tmpList = {
     {date = "10 de Noviembre del 2015"},
     {isMe = false, message = "Hola soy de Bogota, pronte ire de vacaciones y me gustaria conocer gente del lugar para salir y conocer el sitio.", time = "4:32 PM"},
     {isMe = true, message = "Hola claro que si, cuando tienes pensado venir a Cancun?", time = "4:36 PM"},
@@ -35,11 +40,93 @@ local tmpList = {
     {isMe = false, message = "Perfecto hablare para solicitar información", time = "2:15 PM"},
     {isMe = true, message = "Claro, si tienes alguna duda, o necesitas algo no dudes en contactarme", time = "2:16 PM"},
     {isMe = false, message = "Ok!, muchas gracias :)", time = "2:16 PM"},
-}
+}]]
+
+local tmpList = {}
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
+
+function setItemsMessages( items )
+
+	--print(tmpList[10].message)
+	
+	for i = 1, #items, 1 do
+		local item = items[i]
+		local poscI = #tmpList + 1
+		if item.changeDate == 1 then
+			tmpList[poscI] = {date = item.fechaFormat}
+			poscI = poscI + 1
+		end
+		tmpList[poscI] = {isMe = item.isMe, message = item.message, time = item.hora} 
+	end
+	buildChat()
+	
+end
+
+function notChatsMessages()
+	tools:setLoading( false,screen )
+	noMessage = display.newGroup()
+	scrChat:insert(noMessage)
+	
+	local titleNoMessages = display.newText({
+		text = "No cuenta con mensajes en este momento",     
+		x = midW, y = midH - 250,
+		font = native.systemFont, width = intW - 50, 
+		fontSize = 34, align = "center"
+	})
+	titleNoMessages:setFillColor( 0 )
+	noMessage:insert( titleNoMessages )
+	
+    local btnNewMessage = display.newRoundedRect( midW, 100, 650, 100, 10 )
+    btnNewMessage:setFillColor( {
+        type = 'gradient',
+        color1 = { 129/255, 61/255, 153/255 }, 
+        color2 = { 89/255, 31/255, 103/255 },
+        direction = "bottom"
+    } )
+    noMessage:insert(btnNewMessage)
+	btnNewMessage.alpha = .5
+	
+	local lblNewMessage = display.newText({
+        text = "Bloquear", 
+        x = midW, y = 100,
+        font = native.systemFontBold,   
+        fontSize = 34, align = "center"
+    })
+    lblNewMessage:setFillColor( 1 )
+    noMessage:insert(lblNewMessage)
+	
+end
+
+function noConnectionMessage(message)
+	
+	if noConectionMSG then
+		noConectionMSG:removeSelf()
+		noConectionMSG = nil
+	end
+
+	tools:setLoading( false,screen )
+	noConectionMSG = display.newGroup()
+	screen:insert(noConectionMSG)
+	
+	local bgNoConection = display.newRect( midW, 45 + h, display.contentWidth, 80 )
+    bgNoConection:setFillColor( 236/255, 151/255, 31/255, .7 )
+    noConectionMSG:insert(bgNoConection)
+	
+	local lblNoConection = display.newText({
+        text = message, 
+        x = midW, y = 45 + h,
+        font = native.systemFont,   
+        fontSize = 34, align = "center"
+    })
+    lblNoConection:setFillColor( 1 )
+    noConectionMSG:insert(lblNoConection)
+	
+	
+end
+
 function toBack()
     audio.play(fxTap)
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
@@ -78,6 +165,7 @@ function buildChat()
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 1 )
+			--bgM:setFillColor( .5 )
             scrChat:insert(bgM)
             
             local lblM = display.newText({
@@ -155,7 +243,10 @@ function buildChat()
     end
     local point = display.newRect( 1, posY + 30, 1, 1 )
     scrChat:insert(point)
-    scrChat:scrollTo( "bottom", { time=0 } )
+	print(scrChat.height)
+	if scrChat.height <= posY + 30 then
+		scrChat:scrollTo( "bottom", { time=0 } )
+	end
 end
 
 ---------------------------------------------------------------------------------
@@ -215,8 +306,10 @@ function scene:create( event )
         height = intH - 210,
         scrollWidth = 600,
         scrollHeight = 800,
-        --hideBackground = true
+        --hideBackground = true	
+		backgroundColor = { 0.8, 0.8, 0.8 }
     }
+	
     screen:insert(scrChat)   
     
     local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
@@ -230,8 +323,17 @@ function scene:create( event )
     local icoSend = display.newImage("img/icoSend.png")
     icoSend:translate(intW - 60, intH - 45)
     screen:insert(icoSend)
+	
+	txtMessage = native.newTextField( midW - 35, intH - 45, intW - 140, 70 )
+    --txtMessage.method = "signin"
+    txtMessage.inputType = "default"
+    txtMessage.hasBackground = false
+    --txtMessage:addEventListener( "userInput", onTxtFocus )
+	screen:insert( txtMessage )
+	
+	RestManager.getChatMessages(item.channelId);
     
-    buildChat()
+    --buildChat()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )

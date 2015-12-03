@@ -6,7 +6,7 @@
 
 display.setStatusBar( display.TranslucentStatusBar )
 local composer = require( "composer" )
-local DBManager = require('src.DBManager')
+local DBManager = require('src.resources.DBManager')
 display.setDefault( "background", 0 )
 display.setDefault( "textureWrapX", "repeat" )
 display.setDefault( "textureWrapY", "repeat" )

@@ -8,7 +8,7 @@
 -- Encabezao general
 ---------------------------------------------------------------------------------
 local composer = require( "composer" )
-local Sprites = require('src.Sprites')
+local Sprites = require('src.resources.Sprites')
 require('src.Menu')
 
 

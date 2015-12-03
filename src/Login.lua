@@ -8,9 +8,9 @@
 -- OBJETOS Y VARIABLES
 ---------------------------------------------------------------------------------
 -- Includes
-require('src.Globals')
+require('src.resources.Globals')
 local composer = require( "composer" )
-local DBManager = require('src.DBManager')
+local DBManager = require('src.resources.DBManager')
 local fxTap = audio.loadSound( "fx/click.wav")
 
 -- Grupos y Contenedores

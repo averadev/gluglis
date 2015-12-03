@@ -9,7 +9,7 @@
 ---------------------------------------------------------------------------------
 -- Includes
 require('src.Tools')
-require('src.Globals')
+require('src.resources.Globals')
 local composer = require( "composer" )
 
 -- Grupos y Contenedores

@@ -7,7 +7,7 @@
 Menu = {}
 function Menu:new()
     -- Variables
-    require('src.Globals')
+    require('src.resources.Globals')
     local selfMenu = display.newGroup()
     local fxTap = audio.loadSound( "fx/click.wav")
     local Menu
