@@ -19,7 +19,7 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen, scrChat
 local scene = composer.newScene()
-local noMessage, noConectionMSG
+local grpChat
 
 -- Variables
 local h = display.topStatusBarContentHeight
@@ -28,6 +28,9 @@ local posY
 local lblDateTemp = {}
 local lastDate = ""
 local tmpList = {}
+local scrChatY
+local scrChatH
+local btn1 = 1
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -61,13 +64,33 @@ end
 
 --envia el mensaje
 function sentMessage()
+	
+	local fieldOffset, fieldTrans
+	fieldOffset = intH/3
+	if string.sub(system.getInfo("model"),1,4) == "iPad" then
+		--fieldOffset = intH/4
+	end
+	fieldTrans = 200
+	
+	--[[if btn1 == 1 then
+		scrChat.height = scrChatH - fieldOffset
+		transition.to( scrChat, { time=fieldTrans, y=(scrChat.height - 215)} )
+		btn1 = 0
+	else
+		scrChat.height = scrChatH - fieldOffset
+		transition.to( scrChat, { time=fieldTrans, y=(scrChat.height - 215)} )
+	end]]
+	
 	if txtMessage.text ~= "" then
 		local dateM = RestManager.getDate()
 		local poscD = #lblDateTemp + 1
 		--displaysInList("quivole carnal", poscD, dateM[2])
 		displaysInList(txtMessage.text, poscD, dateM[2])
-		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscC, dateM[1] )
+		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
 		--RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscC, dateM[1])
+		
+		--scrChat:setScrollHeight( posY + fieldOffset )
+		--grpChat.y = 225
 	end
 	return true
 end
@@ -112,6 +135,28 @@ function toBack()
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
 end
 
+function onTxtFocus( event )
+
+	local fieldOffset, fieldTrans
+	fieldOffset = intH/3
+	if string.sub(system.getInfo("model"),1,4) == "iPad" then
+		--fieldOffset = intH/4
+	end
+	fieldTrans = 200
+	
+	local navGroupY = scrChat.y
+	
+	transition.to( scrChat, { time=fieldTrans, y=(navGroupY - fieldOffset)} )
+
+	if ( event.phase == "began" ) then
+
+    elseif ( event.phase == "ended" or event.phase == "submitted" ) then
+
+    elseif ( event.phase == "editing" ) then
+		
+    end
+end
+
 function buildChat(poscD)
     for z = 1, #tmpList do
         local i = tmpList[z]
@@ -120,7 +165,7 @@ function buildChat(poscD)
             local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
             bgDate.anchorY = 0
             bgDate:setFillColor( 220/255, 186/255, 218/255 )
-            scrChat:insert(bgDate)
+            grpChat:insert(bgDate)
             
             local lblDate = display.newText({
                 text = i.date,     
@@ -129,7 +174,7 @@ function buildChat(poscD)
                 fontSize = 20, align = "center"
             })
             lblDate:setFillColor( .1 )
-            scrChat:insert(lblDate)
+            grpChat:insert(lblDate)
             
             posY = posY + 70
         else
@@ -139,13 +184,13 @@ function buildChat(poscD)
             bgM0.anchorY = 0
             bgM0.alpha = .2
             bgM0:setFillColor( .3 )
-            scrChat:insert(bgM0)
+            grpChat:insert(bgM0)
             
             local bgM = display.newRoundedRect( 20, posY, 500, 50, 10 )
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 1 )
-            scrChat:insert(bgM)
+            grpChat:insert(bgM)
             
             local lblM = display.newText({
                 text = i.message,     
@@ -156,7 +201,7 @@ function buildChat(poscD)
             lblM.anchorX = 0
             lblM.anchorY = 0
             lblM:setFillColor( .1 )
-            scrChat:insert(lblM)
+            grpChat:insert(lblM)
             
             if lblM.contentWidth > 450 then
                 lblM:removeSelf()
@@ -171,7 +216,7 @@ function buildChat(poscD)
                 lblM.anchorX = 0
                 lblM.anchorY = 0
                 lblM:setFillColor( .1 )
-                scrChat:insert(lblM)
+                grpChat:insert(lblM)
                 
                 if i.isMe then
                     lblM.x = 270
@@ -201,7 +246,7 @@ function buildChat(poscD)
 				})
 				lblDateTemp[poscD].anchorX = lblM.anchorX
 				lblDateTemp[poscD]:setFillColor( .5 )
-				scrChat:insert(lblDateTemp[poscD])
+				grpChat:insert(lblDateTemp[poscD])
 				if lblM.anchorX == 1 then
 					lblDateTemp[poscD].anchorX = 0
 					lblDateTemp[poscD].x = intW - bgM.width
@@ -215,7 +260,7 @@ function buildChat(poscD)
 				})
 				lblTime.anchorX = lblM.anchorX
 				lblTime:setFillColor( .5 )
-				scrChat:insert(lblTime)
+				grpChat:insert(lblTime)
 				if lblM.anchorX == 1 then
 					lblTime.anchorX = 0
 					lblTime.x = intW - bgM.width
@@ -240,8 +285,7 @@ function buildChat(poscD)
         end
     end
     local point = display.newRect( 1, posY + 30, 1, 1 )
-    scrChat:insert(point)
-	print(scrChat.height)
+    grpChat:insert(point)
 	if scrChat.height <= posY + 30 then
 		scrChat:scrollTo( "bottom", { time=0 } )
 	end
@@ -255,15 +299,14 @@ function scene:create( event )
     local item = event.params.item
 	screen = self.view
     screen.y = h
-    print("h:"..h)
     
-    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
+    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
 	    
-    local bgH = display.newRoundedRect( midW, 40 + 30, display.contentWidth, 80, 20 )
+    local bgH = display.newRoundedRect( midW, 40 + h, display.contentWidth, 80, 20 )
     bgH:setFillColor( .95 )
     screen:insert(bgH)
     local bgH2 = display.newRect( midW, 100, display.contentWidth, 60 )
@@ -271,7 +314,7 @@ function scene:create( event )
     screen:insert(bgH2)
     
     -- Back button
-    local btnBack = display.newImage("img/icoBack.png")
+  local btnBack = display.newImage("img/icoBack.png")
     btnBack:translate(50, 75)
     btnBack:addEventListener( 'tap', toBack)
     screen:insert( btnBack )
@@ -286,7 +329,7 @@ function scene:create( event )
     avatar:setMask( maskCircle80 )
     
     -- Name
-    local lblName = display.newText({
+     local lblName = display.newText({
         text = item.name,     
         x = midW + 130, y = 75,
         width = 600,
@@ -298,27 +341,28 @@ function scene:create( event )
     
     scrChat = widget.newScrollView
     {
-        top = 120,
+        top = 130,
         left = 0,
         width = intW,
-        height = intH - 210,
+        height = intH - 220,
         scrollWidth = 600,
         scrollHeight = 800,
         --hideBackground = true	
 		backgroundColor = { 0.8, 0.8, 0.8 }
     }
-	
-    screen:insert(scrChat)   
+    screen:insert(scrChat)  
+	grpChat = display.newGroup()
+	scrChat:insert( grpChat )
     
     local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
     bgM0:setFillColor( .8 )
     screen:insert(bgM0)
 
-    local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
+   local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
     bgM:setFillColor( 1 )
     screen:insert(bgM)
     
-    local icoSend = display.newImage("img/icoSend.png")
+     local icoSend = display.newImage("img/icoSend.png")
     icoSend:translate(intW - 60, intH - 45)
     screen:insert(icoSend)
 	icoSend:addEventListener( 'tap', sentMessage )
@@ -328,14 +372,15 @@ function scene:create( event )
     txtMessage.inputType = "default"
     txtMessage.hasBackground = false
 	txtMessage.channelId = item.channelId
-    --txtMessage:addEventListener( "userInput", onTxtFocus )
+    txtMessage:addEventListener( "userInput", onTxtFocus )
 	screen:insert( txtMessage )
 	
 	posY = 30
+	scrChatY = scrChat.y
+	scrChatH = scrChat.height
 	
 	RestManager.getChatMessages(item.channelId);
     
-    --buildChat()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
