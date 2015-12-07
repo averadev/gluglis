@@ -40,12 +40,32 @@ local dbManager = {}
 		closeConnection( )
 		return 1
 	end
+	
+	dbManager.saveMessageChat = function(idApp, channel, message, dateM)
+		openConnection( )
+		local result = {}
+		for row in db:nrows("SELECT * FROM chats;") do
+			result[#result + 1] = row
+		end
+		local idChat = 0
+		if #result == 0 then
+			idChat = 1
+		else
+			idChat = result[#result].id + 1
+		end
+		local query = "INSERT INTO chats VALUES ('" .. idChat .."', '" .. idApp .."', '" .. channel .."', '" .. message .."', '" .. dateM .."', '0');"
+		db:exec( query )
+		closeConnection( )
+	end
 
 	--Setup squema if it doesn't exist
 	dbManager.setupSquema = function()
 		openConnection( )
 		
 		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_login TEXT, user_email TEXT, display_name TEXT, url TEXT);"
+		db:exec( query )
+		
+		local query = "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, idUser INTEGER, channel INTEGER, message TEXT, date TEXT, sent INTEGER );"
 		db:exec( query )
 
 		for row in db:nrows("SELECT * FROM config;") do

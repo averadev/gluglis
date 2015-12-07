@@ -16,14 +16,13 @@ Tools = {}
 function Tools:new()
     -- Variables
     local self = display.newGroup()
-    local scrMenu, filtroGdacs, bgShadow, headLogo, bottomCheck, grpLoading
+    local scrMenu, filtroGdacs, bgShadow, headLogo, bottomCheck, grpLoading, grpConnection, grpNoMessages
     local h = display.topStatusBarContentHeight
     local fxTap = audio.loadSound( "fx/click.wav")
     self.y = h
     
     -- Creamos la el toolbar
     function self:buildHeader()
-        
         bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight )
         bgShadow.alpha = 0
         bgShadow.anchorX = 0
@@ -96,7 +95,66 @@ function Tools:new()
             end
         end
     end
-    
+	
+	--creamos mensaje de problema con la conexion
+	function self:noConnection(isConnection, parent, message)
+		if isConnection then
+            if grpConnection then
+                grpConnection:removeSelf()
+                grpConnection = nil
+            end
+            grpConnection = display.newGroup()
+            parent:insert(grpConnection)
+			
+			local bgNoConection = display.newRect( midW, 150 + h, display.contentWidth, 80 )
+			bgNoConection:setFillColor( 236/255, 151/255, 31/255, .7 )
+			grpConnection:insert(bgNoConection)
+			
+			local lblNoConection = display.newText({
+				text = message, 
+				x = midW, y = 150 + h,
+				font = native.systemFont,   
+				fontSize = 34, align = "center"
+			})
+			lblNoConection:setFillColor( 1 )
+			grpConnection:insert(lblNoConection)
+            
+        else
+            if grpConnection then
+                grpConnection:removeSelf()
+                grpConnection = nil
+            end
+        end
+	end
+	
+	--creamos mensaje cuando no se encuentren mensajes o canales
+	function self:NoMessages(isMesage, parent, message)
+	
+		if isMesage then
+            if grpNoMessages then
+                grpNoMessages:removeSelf()
+                grpNoMessages = nil
+            end
+            grpNoMessages = display.newGroup()
+            parent:insert(grpNoMessages)
+			
+			local titleNoMessages = display.newText({
+				text = message,     
+				x = midW, y = midH - 200,
+				font = native.systemFontBold, width = intW - 50, 
+				fontSize = 34, align = "center"
+			})
+			titleNoMessages:setFillColor( 0 )
+			grpNoMessages:insert( titleNoMessages )
+            
+        else
+            if grpNoMessages then
+                grpNoMessages:removeSelf()
+                grpNoMessages = nil
+            end
+        end
+	end
+	
     -- Cambia pantalla
     function toScreen(event)
         -- Hide Menu

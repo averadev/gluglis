@@ -13,6 +13,7 @@ require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
 local fxTap = audio.loadSound( "fx/click.wav")
+local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
@@ -22,26 +23,10 @@ local noMessage, noConectionMSG
 
 -- Variables
 local h = display.topStatusBarContentHeight
-
-
---[[local tmpList = {
-    {date = "10 de Noviembre del 2015"},
-    {isMe = false, message = "Hola soy de Bogota, pronte ire de vacaciones y me gustaria conocer gente del lugar para salir y conocer el sitio.", time = "4:32 PM"},
-    {isMe = true, message = "Hola claro que si, cuando tienes pensado venir a Cancun?", time = "4:36 PM"},
-    {isMe = false, message = "El 15 de diciembre estare llegando, estare 4 dias en tu ciudad y despues ira a Chiapas.", time = "4:37 PM"}, 
-    {isMe = true, message = "Perfecto!, podemos organizar algo, algunos amigos en esas fechas organizan posadas, talvez podamos ir a alguna", time = "4:37 PM"},
-    {isMe = false, message = "Me encantaria, nos ponemos deacuerdo ok?", time = "4:38 PM"},
-    {isMe = true, message = "Claro que si, estamos al pendiente ;)", time = "4:40 PM"},
-    
-    {date = "11 de Noviembre del 2015"},
-    {isMe = false, message = "Hola Richi, aun no resuelvo el hospedaje, conoceras algun hotel economico?", time = "2:11 PM"},
-    {isMe = true, message = "Hola, si hay varias opciones economicas e interesantes", time = "2:12 PM"},
-    {isMe = true, message = "En otras ocaciones cuando vienen amigos suelen hospedarse en el EcoBoutique Uay Balam, maneja cosotos razonables y la atención es muy buena", time = "2:15 PM"},
-    {isMe = false, message = "Perfecto hablare para solicitar información", time = "2:15 PM"},
-    {isMe = true, message = "Claro, si tienes alguna duda, o necesitas algo no dudes en contactarme", time = "2:16 PM"},
-    {isMe = false, message = "Ok!, muchas gracias :)", time = "2:16 PM"},
-}]]
-
+local txtMessage
+local posY 
+local lblDateTemp = {}
+local lastDate = ""
 local tmpList = {}
 
 ---------------------------------------------------------------------------------
@@ -49,82 +34,77 @@ local tmpList = {}
 ---------------------------------------------------------------------------------
 
 function setItemsMessages( items )
-
-	--print(tmpList[10].message)
 	
 	for i = 1, #items, 1 do
 		local item = items[i]
 		local poscI = #tmpList + 1
 		if item.changeDate == 1 then
-			tmpList[poscI] = {date = item.fechaFormat}
+			tmpList[poscI] = {date = item.fechaFormat, dateOnly = item.dateOnly}
 			poscI = poscI + 1
 		end
 		tmpList[poscI] = {isMe = item.isMe, message = item.message, time = item.hora} 
 	end
-	buildChat()
-	
+	buildChat(0)
 end
 
+--mensaje no hay mensaje
 function notChatsMessages()
 	tools:setLoading( false,screen )
-	noMessage = display.newGroup()
-	scrChat:insert(noMessage)
+	tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
+end
+
+--mensaje de no hay conexion
+function noConnectionMessage(message)
+	tools:noConnection( true, screen, message )
+	tools:setLoading( false,screen )	
+end
+
+--envia el mensaje
+function sentMessage()
+	if txtMessage.text ~= "" then
+		local dateM = RestManager.getDate()
+		local poscD = #lblDateTemp + 1
+		--displaysInList("quivole carnal", poscD, dateM[2])
+		displaysInList(txtMessage.text, poscD, dateM[2])
+		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscC, dateM[1] )
+		--RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscC, dateM[1])
+	end
+	return true
+end
+
+function displaysInList(message, poscD, dateM2)
+
+	tmpList = nil
+	tmpList = {}
+	tmpList[1] = {isMe = true, message = message , time = "cargando"}
+
+	if lastDate ~= dateM2 then
+		
+		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
+		bgDate.anchorY = 0
+		bgDate:setFillColor( 220/255, 186/255, 218/255 )
+		scrChat:insert(bgDate)
+            
+		local lblDate = display.newText({
+			text = dateM2,     
+			x = midW, y = posY + 20,
+			font = native.systemFont,   
+			fontSize = 20, align = "center"
+		})
+		lblDate:setFillColor( .1 )
+		scrChat:insert(lblDate)
+            
+		posY = posY + 70
+		
+		lastDate = dateM2
+	end
 	
-	local titleNoMessages = display.newText({
-		text = "No cuenta con mensajes en este momento",     
-		x = midW, y = midH - 250,
-		font = native.systemFont, width = intW - 50, 
-		fontSize = 34, align = "center"
-	})
-	titleNoMessages:setFillColor( 0 )
-	noMessage:insert( titleNoMessages )
-	
-    local btnNewMessage = display.newRoundedRect( midW, 100, 650, 100, 10 )
-    btnNewMessage:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )
-    noMessage:insert(btnNewMessage)
-	btnNewMessage.alpha = .5
-	
-	local lblNewMessage = display.newText({
-        text = "Bloquear", 
-        x = midW, y = 100,
-        font = native.systemFontBold,   
-        fontSize = 34, align = "center"
-    })
-    lblNewMessage:setFillColor( 1 )
-    noMessage:insert(lblNewMessage)
+	buildChat(poscD)
 	
 end
 
-function noConnectionMessage(message)
-	
-	if noConectionMSG then
-		noConectionMSG:removeSelf()
-		noConectionMSG = nil
-	end
-
-	tools:setLoading( false,screen )
-	noConectionMSG = display.newGroup()
-	screen:insert(noConectionMSG)
-	
-	local bgNoConection = display.newRect( midW, 45 + h, display.contentWidth, 80 )
-    bgNoConection:setFillColor( 236/255, 151/255, 31/255, .7 )
-    noConectionMSG:insert(bgNoConection)
-	
-	local lblNoConection = display.newText({
-        text = message, 
-        x = midW, y = 45 + h,
-        font = native.systemFont,   
-        fontSize = 34, align = "center"
-    })
-    lblNoConection:setFillColor( 1 )
-    noConectionMSG:insert(lblNoConection)
-	
-	
+function changeDateOfMSG(item, poscD)
+	lblDateTemp[poscD].text = item.hora
 end
 
 function toBack()
@@ -132,11 +112,11 @@ function toBack()
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
 end
 
-function buildChat()
-    local posY = 30
+function buildChat(poscD)
     for z = 1, #tmpList do
         local i = tmpList[z]
         if i.date then
+			lastDate = i.date
             local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
             bgDate.anchorY = 0
             bgDate:setFillColor( 220/255, 186/255, 218/255 )
@@ -165,7 +145,6 @@ function buildChat()
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 1 )
-			--bgM:setFillColor( .5 )
             scrChat:insert(bgM)
             
             local lblM = display.newText({
@@ -203,6 +182,9 @@ function buildChat()
             else
                 bgM.width = lblM.contentWidth + 40
                 bgM0.width = lblM.contentWidth + 42
+				if lblM.contentWidth < 80 then
+					 bgM.width = 80
+				end
                 lblM.anchorX = 0
                 if i.isMe then
                     lblM.anchorX = 1
@@ -210,19 +192,35 @@ function buildChat()
                 end
             end
             
-            local lblTime = display.newText({
-                text = i.time,
-                x = lblM.x, y = posY + lblM.contentHeight + 15,
-                font = native.systemFont,   
-                fontSize = 12, align = "left"
-            })
-            lblTime.anchorX = lblM.anchorX
-            lblTime:setFillColor( .5 )
-            scrChat:insert(lblTime)
-            if lblM.anchorX == 1 then
-                lblTime.anchorX = 0
-                lblTime.x = intW - bgM.width
-            end
+			if poscD ~= 0 then
+				lblDateTemp[poscD] = display.newText({
+					text = "Cargando",
+					x = lblM.x, y = posY + lblM.contentHeight + 15,
+					font = native.systemFont,   
+					fontSize = 12, align = "left"
+				})
+				lblDateTemp[poscD].anchorX = lblM.anchorX
+				lblDateTemp[poscD]:setFillColor( .5 )
+				scrChat:insert(lblDateTemp[poscD])
+				if lblM.anchorX == 1 then
+					lblDateTemp[poscD].anchorX = 0
+					lblDateTemp[poscD].x = intW - bgM.width
+				end
+			else
+				local lblTime = display.newText({
+					text = i.time,
+					x = lblM.x, y = posY + lblM.contentHeight + 15,
+					font = native.systemFont,   
+					fontSize = 12, align = "left"
+				})
+				lblTime.anchorX = lblM.anchorX
+				lblTime:setFillColor( .5 )
+				scrChat:insert(lblTime)
+				if lblM.anchorX == 1 then
+					lblTime.anchorX = 0
+					lblTime.x = intW - bgM.width
+				end
+			end
             
             if i.isMe then
                 bgM0.x = intW - 20
@@ -323,13 +321,17 @@ function scene:create( event )
     local icoSend = display.newImage("img/icoSend.png")
     icoSend:translate(intW - 60, intH - 45)
     screen:insert(icoSend)
+	icoSend:addEventListener( 'tap', sentMessage )
 	
 	txtMessage = native.newTextField( midW - 35, intH - 45, intW - 140, 70 )
     --txtMessage.method = "signin"
     txtMessage.inputType = "default"
     txtMessage.hasBackground = false
+	txtMessage.channelId = item.channelId
     --txtMessage:addEventListener( "userInput", onTxtFocus )
 	screen:insert( txtMessage )
+	
+	posY = 30
 	
 	RestManager.getChatMessages(item.channelId);
     
