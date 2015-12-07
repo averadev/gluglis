@@ -108,7 +108,7 @@ local RestManager = {}
 		
         -- Set url
         local url = settings.url
-        url = url.."api/sendChat1/format/json"
+        url = url.."api/sendChat/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
@@ -117,7 +117,6 @@ local RestManager = {}
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
-				--DBManager.saveMessageChat( settings.idApp, channelId, message, dateM )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -126,15 +125,12 @@ local RestManager = {}
 							changeDateOfMSG(data.items[1],poscM)
 						else
 							noConnectionMessage('Error con el servidor')
-							--DBManager.saveMessageChat( settings.idApp, channelId, message, dateM )
 						end
 					else
 						noConnectionMessage('Error con el servidor')
-						--DBManager.saveMessageChat( settings.idApp, channelId, message, dateM )
 					end
 				else
 					noConnectionMessage('Error con el servidor')
-					--DBManager.saveMessageChat( settings.idApp, channelId, message, dateM )
 				end
             end
             return true
@@ -144,7 +140,6 @@ local RestManager = {}
 			network.request( url, "GET", callback )
 		else
 			noConnectionMessage('No se detecto conexion a internet')
-			--DBManager.saveMessageChat( settings.idApp, channelId, message, dateM )
 		end
     end
 	
@@ -168,7 +163,6 @@ local RestManager = {}
 		end
 		
 		local date1 = year .. "-" .. month .. "-" .. day .. " " .. hour .. ":" .. minute .. ":" .. segunds
-		--local date2 = year .. "-" .. month .. "-" .. day
 		
 		local months = {'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'}
 		date2 = day .. " de " .. months[month2] .. " del " .. year
