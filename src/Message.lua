@@ -19,7 +19,7 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen, scrChat
 local scene = composer.newScene()
-local grpChat
+local grpChat, grpTextField
 
 -- Variables
 local h = display.topStatusBarContentHeight
@@ -65,33 +65,17 @@ end
 --envia el mensaje
 function sentMessage()
 	
-	local fieldOffset, fieldTrans
-	fieldOffset = intH/3
-	if string.sub(system.getInfo("model"),1,4) == "iPad" then
-		--fieldOffset = intH/4
-	end
-	fieldTrans = 200
-	
-	--[[if btn1 == 1 then
-		scrChat.height = scrChatH - fieldOffset
-		transition.to( scrChat, { time=fieldTrans, y=(scrChat.height - 215)} )
-		btn1 = 0
-	else
-		scrChat.height = scrChatH - fieldOffset
-		transition.to( scrChat, { time=fieldTrans, y=(scrChat.height - 215)} )
-	end]]
-	
 	if txtMessage.text ~= "" then
 		local dateM = RestManager.getDate()
 		local poscD = #lblDateTemp + 1
 		--displaysInList("quivole carnal", poscD, dateM[2])
 		displaysInList(txtMessage.text, poscD, dateM[2])
-		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
-		--RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscC, dateM[1])
-		
-		--scrChat:setScrollHeight( posY + fieldOffset )
-		--grpChat.y = 225
+		--RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
+		RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscD, dateM[1])	
+		txtMessage.text = ""
+		native.setKeyboardFocus( nil )
 	end
+	
 	return true
 end
 
@@ -138,20 +122,27 @@ end
 function onTxtFocus( event )
 
 	local fieldOffset, fieldTrans
-	fieldOffset = intH/3
+	fieldOffset = intH/3 + 100
 	if string.sub(system.getInfo("model"),1,4) == "iPad" then
 		--fieldOffset = intH/4
 	end
 	fieldTrans = 200
 	
-	local navGroupY = scrChat.y
-	
-	transition.to( scrChat, { time=fieldTrans, y=(navGroupY - fieldOffset)} )
-
 	if ( event.phase == "began" ) then
-
+		scrChat.height = scrChatH - fieldOffset
+		scrChat.anchorY = 0
+		transition.to( scrChat, { time=fieldTrans, y=(130 + h)} )
+		transition.to( grpTextField, { time=fieldTrans, y=(-fieldOffset)} )
+		grpChat.y = (scrChatH - scrChat.height) / 2
+		scrChat:setScrollHeight( posY + fieldOffset )
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
-
+		scrChat.anchorY = .5
+		scrChat.height = scrChatH
+		transition.to( scrChat, { time=fieldTrans, y=(scrChatY)} )
+		transition.to( grpTextField, { time=fieldTrans, y=(0)} )
+		grpChat.y = 0
+		scrChat:setScrollHeight( posY )
+		native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
 		
     end
@@ -285,7 +276,7 @@ function buildChat(poscD)
         end
     end
     local point = display.newRect( 1, posY + 30, 1, 1 )
-    grpChat:insert(point)
+    scrChat:insert(point)
 	if scrChat.height <= posY + 30 then
 		scrChat:scrollTo( "bottom", { time=0 } )
 	end
@@ -299,7 +290,9 @@ function scene:create( event )
     local item = event.params.item
 	screen = self.view
     screen.y = h
-    
+    grpTextField = display.newGroup()
+	screen:insert( grpTextField )
+	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
@@ -309,19 +302,19 @@ function scene:create( event )
     local bgH = display.newRoundedRect( midW, 40 + h, display.contentWidth, 80, 20 )
     bgH:setFillColor( .95 )
     screen:insert(bgH)
-    local bgH2 = display.newRect( midW, 100, display.contentWidth, 60 )
+    local bgH2 = display.newRect( midW, 100 + h, display.contentWidth, 60 )
     bgH2:setFillColor( .95 )
     screen:insert(bgH2)
     
     -- Back button
-  local btnBack = display.newImage("img/icoBack.png")
-    btnBack:translate(50, 75)
+	local btnBack = display.newImage("img/icoBack.png")
+	btnBack:translate(50, 65 + h)
     btnBack:addEventListener( 'tap', toBack)
     screen:insert( btnBack )
 
     -- Image
-    local avatar = display.newImage("img/tmp/"..item.photo)
-    avatar:translate(150, 75)
+	local avatar = display.newImage("img/tmp/"..item.photo)
+    avatar:translate(150, 65 + h)
     avatar.width = 80
     avatar.height = 80
     screen:insert( avatar )
@@ -329,9 +322,9 @@ function scene:create( event )
     avatar:setMask( maskCircle80 )
     
     -- Name
-     local lblName = display.newText({
+    local lblName = display.newText({
         text = item.name,     
-        x = midW + 130, y = 75,
+        x = midW + 130, y = 65 + h,
         width = 600,
         font = native.systemFontBold,   
         fontSize = 30, align = "left"
@@ -339,12 +332,12 @@ function scene:create( event )
     lblName:setFillColor( .3 )
     screen:insert(lblName)
     
-    scrChat = widget.newScrollView
+   scrChat = widget.newScrollView
     {
-        top = 130,
+        top = 130 + h,
         left = 0,
         width = intW,
-        height = intH - 220,
+        height = intH - 220 - h,
         scrollWidth = 600,
         scrollHeight = 800,
         --hideBackground = true	
@@ -354,9 +347,9 @@ function scene:create( event )
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
     
-    local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
+     local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
     bgM0:setFillColor( .8 )
-    screen:insert(bgM0)
+    grpTextField:insert(bgM0)
 
    local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
     bgM:setFillColor( 1 )
@@ -364,22 +357,24 @@ function scene:create( event )
     
      local icoSend = display.newImage("img/icoSend.png")
     icoSend:translate(intW - 60, intH - 45)
-    screen:insert(icoSend)
+    grpTextField:insert(icoSend)
 	icoSend:addEventListener( 'tap', sentMessage )
 	
 	txtMessage = native.newTextField( midW - 35, intH - 45, intW - 140, 70 )
-    --txtMessage.method = "signin"
     txtMessage.inputType = "default"
     txtMessage.hasBackground = false
 	txtMessage.channelId = item.channelId
     txtMessage:addEventListener( "userInput", onTxtFocus )
-	screen:insert( txtMessage )
+	txtMessage:setReturnKey( "send" )
+	grpTextField:insert( txtMessage )
 	
 	posY = 30
 	scrChatY = scrChat.y
 	scrChatH = scrChat.height
 	
-	RestManager.getChatMessages(item.channelId);
+	RestManager.getChatMessages(item.channelId)
+	
+	grpTextField:toFront()
     
 end	
 -- Called immediately after scene has moved onscreen:
@@ -388,6 +383,7 @@ end
 
 -- Hide scene
 function scene:hide( event )
+	native.setKeyboardFocus( nil )
 end
 
 -- Destroy scene
