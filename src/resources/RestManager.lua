@@ -108,7 +108,7 @@ local RestManager = {}
 		
         -- Set url
         local url = settings.url
-        url = url.."api/sendChat/format/json"
+        url = url.."api/saveChat/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)

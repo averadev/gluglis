@@ -69,9 +69,10 @@ function sentMessage()
 		local dateM = RestManager.getDate()
 		local poscD = #lblDateTemp + 1
 		--displaysInList("quivole carnal", poscD, dateM[2])
-		displaysInList(txtMessage.text, poscD, dateM[2])
-		--RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
-		RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscD, dateM[1])	
+		local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
+		displaysInList(itemTemp, true)
+		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
+		--RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscD, dateM[1])	
 		txtMessage.text = ""
 		native.setKeyboardFocus( nil )
 	end
@@ -79,13 +80,12 @@ function sentMessage()
 	return true
 end
 
-function displaysInList(message, poscD, dateM2)
-
+function displaysInList(itemTemp, isMe)
 	tmpList = nil
 	tmpList = {}
-	tmpList[1] = {isMe = true, message = message , time = "cargando"}
-
-	if lastDate ~= dateM2 then
+	tmpList[1] = {isMe = isMe, message = itemTemp.message , time = itemTemp.hora}
+	
+	if lastDate ~= itemTemp.fechaFormat then
 		
 		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
 		bgDate.anchorY = 0
@@ -93,7 +93,7 @@ function displaysInList(message, poscD, dateM2)
 		scrChat:insert(bgDate)
             
 		local lblDate = display.newText({
-			text = dateM2,     
+			text = itemTemp.fechaFormat,     
 			x = midW, y = posY + 20,
 			font = native.systemFont,   
 			fontSize = 20, align = "center"
@@ -103,11 +103,16 @@ function displaysInList(message, poscD, dateM2)
             
 		posY = posY + 70
 		
-		lastDate = dateM2
+		lastDate = itemTemp.fechaFormat
 	end
 	
-	buildChat(poscD)
-	
+	if isMe == true then
+		buildChat(itemTemp.posc)
+	else
+		if txtMessage.channelId == itemTemp.channel_id then
+			buildChat(0)
+		end
+	end
 end
 
 function changeDateOfMSG(item, poscD)
@@ -218,8 +223,9 @@ function buildChat(poscD)
             else
                 bgM.width = lblM.contentWidth + 40
                 bgM0.width = lblM.contentWidth + 42
-				if lblM.contentWidth < 80 then
+				if lblM.contentWidth < 60 then
 					 bgM.width = 80
+					 bgM0.width = 82
 				end
                 lblM.anchorX = 0
                 if i.isMe then
@@ -288,6 +294,7 @@ end
 
 function scene:create( event )
     local item = event.params.item
+	print(item)
 	screen = self.view
     screen.y = h
     grpTextField = display.newGroup()

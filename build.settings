@@ -6,6 +6,19 @@
 settings =
 {
 	
+	plugins =
+	{
+		["plugin.OneSignal"] =
+		{
+			publisherId = "com.onesignal",
+		},
+		["plugin.google.play.services"] =
+		{
+			publisherId = "com.coronalabs",
+			supportedPlatforms = { android=true, ["android-kindle"]=true },
+		},
+	},
+	
 	orientation =
 	{
 		-- Supported values for orientation:
@@ -64,6 +77,7 @@ settings =
                 "OpenSans-Semibold.ttf",
                 "OpenSans-SemiboldItalic.ttf"
             },
+			UIBackgroundModes = {"remote-notification"},
 		}
 	},
 	
