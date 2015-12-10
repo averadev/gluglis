@@ -19,7 +19,7 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen, scrChat
 local scene = composer.newScene()
-local grpChat, grpTextField
+local grpChat, grpTextField, grpBlocked
 
 -- Variables
 local h = display.topStatusBarContentHeight
@@ -31,6 +31,7 @@ local tmpList = {}
 local scrChatY
 local scrChatH
 local btn1 = 1
+local btnBlock
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -64,17 +65,22 @@ end
 
 --envia el mensaje
 function sentMessage()
-	
-	if txtMessage.text ~= "" then
-		local dateM = RestManager.getDate()
-		local poscD = #lblDateTemp + 1
-		--displaysInList("quivole carnal", poscD, dateM[2])
-		local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
-		displaysInList(itemTemp, true)
-		RestManager.sendChat( txtMessage.channelId, txtMessage.text, poscD, dateM[1] )
-		--RestManager.sendChat(txtMessage.channelId, "quivole carnal", poscD, dateM[1])	
-		txtMessage.text = ""
-		native.setKeyboardFocus( nil )
+	if btnBlock.blockMe == "open" and btnBlock.blockYour == "open" then
+		if txtMessage.text ~= "" then
+			local dateM = RestManager.getDate()
+			local poscD = #lblDateTemp + 1
+			--displaysInList("quivole carnal", poscD, dateM[2])
+			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
+			displaysInList(itemTemp, true)
+			RestManager.sendChat( btnBlock.channelId, txtMessage.text, poscD, dateM[1] )
+			--RestManager.sendChat(btnBlock.channelId, "quivole carnal", poscD, dateM[1])	
+			txtMessage.text = ""
+			native.setKeyboardFocus( nil )
+		end
+	elseif btnBlock.blockMe == "closed" then
+		blockedChatMsg('desbloquea a ' .. btnBlock.display_name .. ' par enviarle un mensaje', true, false)
+	elseif btnBlock.blockYour == "closed" then
+		blockedChatMsg('No se puede mandar mensaje, ' .. btnBlock.display_name .. ' lo ha bloqueado', true, false)
 	end
 	
 	return true
@@ -109,7 +115,7 @@ function displaysInList(itemTemp, isMe)
 	if isMe == true then
 		buildChat(itemTemp.posc)
 	else
-		if txtMessage.channelId == itemTemp.channel_id then
+		if btnBlock.channelId == itemTemp.channel_id then
 			buildChat(0)
 		end
 	end
@@ -124,6 +130,84 @@ function toBack()
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
 end
 
+function blockedChat( event )
+	if btnBlock.blockMe == "closed" then
+		blockedChatMsg('¿desea desbloquear a ' .. btnBlock.display_name .. '? para enviarle mensajes', true, true)
+	else
+		blockedChatMsg('¿desea bloquear a ' .. btnBlock.display_name .. '? ya no podras enviarle mensajes', true, true)
+	end
+end
+
+function blockedChatMsg(message, isShow, isBlock)
+	if isShow then
+		grpBlocked = display.newGroup()
+		
+		local bgBlocked0 = display.newRect( midW, midH + h, intW, intH )
+		bgBlocked0:setFillColor( 0, 0, 0, .5)
+		grpBlocked:insert(bgBlocked0)
+		bgBlocked0:addEventListener( 'tap', noAction )
+		
+		local bgBlocked1 = display.newRoundedRect( midW, midH + h, intW - 100, 300, 15 )
+		bgBlocked1:setFillColor( 1 )
+		grpBlocked:insert(bgBlocked1)
+		
+		local lblBlocked = display.newText({
+			text = message,     
+			x = midW, y = midH + h ,
+			width = intW - 200, height = 200,
+			font = native.systemFont,   
+			fontSize = 30, align = "center"
+		})
+		lblBlocked:setFillColor( 0 )
+		grpBlocked:insert(lblBlocked)
+		
+		local lblAccept = display.newText({
+			text = "Aceptar",     
+			x = midW, y = midH + h + 80 ,
+			font = native.systemFontBold,   
+			fontSize = 42, align = "center"
+		})
+		lblAccept:setFillColor( 129/255, 61/255, 153/255 )
+		grpBlocked:insert(lblAccept)
+		
+		if isBlock then
+			lblAccept.x = midW + 125
+			lblAccept:addEventListener( 'tap', blocked )
+			local lblCancel = display.newText({
+				text = "Cancelar",     
+				x = midW - 125, y = midH + h + 80 ,
+				font = native.systemFontBold,   
+				fontSize = 42, align = "center"
+			})
+			lblCancel:setFillColor( 129/255, 61/255, 153/255 )
+			grpBlocked:insert(lblCancel)
+			lblCancel:addEventListener( 'tap', blockedChatMsg )
+		else
+			lblAccept:addEventListener( 'tap', blockedChatMsg )
+		end
+		
+	else
+		grpBlocked:removeSelf()
+		grpBlocked = nil
+	end
+end
+
+--bloquea o desbloquea el chats
+function blocked( event )
+	event.target:removeEventListener( "tap", blocked )
+	RestManager.blokedChat(btnBlock.channelId, btnBlock.blockMe)
+end
+
+function noAction( event )
+	return true
+end
+
+--cambia el estatus del bloqueo personal
+function changeStatusBlock(status)
+	btnBlock.blockMe = status
+	blockedChatMsg("", false, false)
+end
+	
 function onTxtFocus( event )
 
 	local fieldOffset, fieldTrans
@@ -282,8 +366,10 @@ function buildChat(poscD)
         end
     end
     local point = display.newRect( 1, posY + 30, 1, 1 )
-    scrChat:insert(point)
+    --scrChat:insert(point)
+	grpChat:insert(point)
 	if scrChat.height <= posY + 30 then
+		scrChat:setScrollHeight( posY )
 		scrChat:scrollTo( "bottom", { time=0 } )
 	end
 end
@@ -294,7 +380,6 @@ end
 
 function scene:create( event )
     local item = event.params.item
-	print(item)
 	screen = self.view
     screen.y = h
     grpTextField = display.newGroup()
@@ -327,7 +412,19 @@ function scene:create( event )
     screen:insert( avatar )
     local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
     avatar:setMask( maskCircle80 )
-    
+	
+	--btn bloquear
+	btnBlock = display.newImage("img/cancel-icon-2.png")
+    btnBlock:translate(intW - 100, 65 + h)
+    btnBlock.width = 70
+    btnBlock.height = 70
+	btnBlock.blockYour = item.blockYour
+	btnBlock.blockMe = item.blockMe
+	btnBlock.channelId = item.channelId
+	btnBlock.display_name = item.name
+    screen:insert( btnBlock )
+    btnBlock:addEventListener( 'tap', blockedChat )
+	
     -- Name
     local lblName = display.newText({
         text = item.name,     
@@ -370,7 +467,7 @@ function scene:create( event )
 	txtMessage = native.newTextField( midW - 35, intH - 45, intW - 140, 70 )
     txtMessage.inputType = "default"
     txtMessage.hasBackground = false
-	txtMessage.channelId = item.channelId
+	--txtMessage.channelId = item.channelId
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
 	grpTextField:insert( txtMessage )

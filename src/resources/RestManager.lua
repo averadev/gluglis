@@ -143,6 +143,42 @@ local RestManager = {}
 		end
     end
 	
+	RestManager.blokedChat = function(channelId,status)
+	
+        local settings = DBManager.getSettings()
+		
+        -- Set url
+        local url = settings.url
+        url = url.."api/blokedChat/format/json"
+        url = url.."/idApp/" .. settings.idApp
+		url = url.."/channelId/" .. channelId
+		url = url.."/status/" .. status
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						changeStatusBlock(data.status)
+					else
+						noConnectionMessage('Error con el servidor')
+					end
+				else
+					noConnectionMessage('Error con el servidor')
+				end
+            end
+            return true
+        end
+        -- Do request
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			noConnectionMessage('No se detecto conexion a internet')
+		end
+    end
+	
 	--obtiene la fecha actual
 	RestManager.getDate = function()
 		local date = os.date( "*t" )    -- Returns table of date & time values

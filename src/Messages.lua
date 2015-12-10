@@ -30,7 +30,8 @@ local tmpList = {}
 
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
-		tmpList[i] = {id = items[i].id, photo = "mariana.jpeg", name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id}
+		tmpList[i] = {id = items[i].id, photo = "mariana.jpeg", name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
+			blockMe = items[i].blockMe, blockYour = items[i].blockYour}
 	end
 	buildListMsg()
 	tools:setLoading( false,screen )
