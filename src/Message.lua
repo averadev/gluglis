@@ -384,10 +384,14 @@ function scene:create( event )
     screen.y = h
     grpTextField = display.newGroup()
 	screen:insert( grpTextField )
+    
+    local bg = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    bg:setFillColor( 1 )
+    screen:insert(bg)
 	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
+    o.fill = { type="image", filename="img/bgChat.png" }
+    o.fill.scaleX = .3
     o.fill.scaleY = .2
     screen:insert(o)
 	    
@@ -444,18 +448,18 @@ function scene:create( event )
         height = intH - 220 - h,
         scrollWidth = 600,
         scrollHeight = 800,
-        --hideBackground = true	
-		backgroundColor = { 0.8, 0.8, 0.8 }
+        hideBackground = true
     }
     screen:insert(scrChat)  
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
     
-     local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
+    
+    local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
     bgM0:setFillColor( .8 )
     grpTextField:insert(bgM0)
 
-   local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
+    local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
     bgM:setFillColor( 1 )
     screen:insert(bgM)
     
