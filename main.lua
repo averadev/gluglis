@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Trippy Rex
+-- Gluglis
 -- Alberto Vera Espitia
--- Parodiux Inc.
+-- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
 display.setStatusBar( display.TranslucentStatusBar )
@@ -13,7 +13,7 @@ display.setDefault( "textureWrapX", "repeat" )
 display.setDefault( "textureWrapY", "repeat" )
 
 local isUser = DBManager.setupSquema()
-composer.gotoScene("src.Messages")
+composer.gotoScene("src.Login")
 
 function DidReceiveRemoteNotification(message, additionalData, isActive)
 	
