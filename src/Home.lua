@@ -65,22 +65,22 @@ end
 -- Muestra imagenes y mascaras
 function buildCard(item)
     local idx = #avaL + 1
-    -- Left
-    avaL[idx] = display.newImage("img/tmp/"..item.photo)
-    local mask = graphics.newMask( "img/maskal.jpg" )
+    local imgS = graphics.newImageSheet( "img/tmp/"..item.photo, { width = 275, height = 550, numFrames = 2 })
+    
+    avaL[idx] = display.newRect( midW, 176, 275, 550 )
     avaL[idx].alpha = 0
     avaL[idx].anchorY = 0
-    avaL[idx]:setMask( mask )
-    avaL[idx]:translate(midW, 176)
+    avaL[idx].anchorX = 1
+    avaL[idx].fill = { type = "image", sheet = imgS, frame = 1 }
     profiles:insert(avaL[idx])
-    -- Right
-    avaR[idx] = display.newImage("img/tmp/"..item.photo)
-    local mask = graphics.newMask( "img/maskar.jpg" )
+    
+    avaR[idx] = display.newRect( midW, 176, 275, 550 )
     avaR[idx].alpha = 0
     avaR[idx].anchorY = 0
-    avaR[idx]:setMask( mask )
-    avaR[idx]:translate(midW, 176)
+    avaR[idx].anchorX = 0
+    avaR[idx].fill = { type = "image", sheet = imgS, frame = 2 }
     profiles:insert(avaR[idx])
+    
 end
 
 -- Asigna informacion del usuario actual
@@ -126,28 +126,29 @@ function touchScreen(event)
         end
     elseif event.phase == "moved" and (isCard) then
         local x = (event.x - event.xStart)
-        local xM = (x * 3)
+        local xM = (x * 1.5)
+        
         if direction == 0 then
             if x < -10 and idxA < #loadUsers then
                 direction = 1
                 avaR[idxA+1]:toBack()
                 avaR[idxA+1].alpha = 1
-                avaR[idxA+1].width = 550
+                avaR[idxA+1].width = 275
             elseif x > 10 and idxA > 1 then
                 direction = -1
                 avaL[idxA-1]:toBack()
                 avaL[idxA-1].alpha = 1
-                avaL[idxA-1].width = 550
+                avaL[idxA-1].width = 275
             end
-        elseif direction == 1 and x <= 0 and xM >= -1100 then
-            if xM > -550 then
+        elseif direction == 1 and x <= 0 and xM >= -550 then
+            if xM > -275 then
                 if avaR[idxA].alpha == 0 then
                     avaL[idxA+1].alpha = 0
                     avaR[idxA].alpha = 1
                     avaR[idxA].width = 0
                 end
                 -- Move current to left
-                avaR[idxA].width = 550 + xM
+                avaR[idxA].width = 275 + xM
             else
                 if avaL[idxA+1].alpha == 0 then
                     avaR[idxA].alpha = 0
@@ -156,18 +157,18 @@ function touchScreen(event)
                     avaL[idxA+1].width = 0
                 end
                 -- Move new to left
-                avaL[idxA+1].width = (xM*-1)-550
+                avaL[idxA+1].width = (xM*-1)-275
             end
         elseif direction == -1 and x >= 0 then
-            if xM < 550 then
+            if xM < 275 then
                 if avaL[idxA].alpha == 0 then
                     avaR[idxA-1].alpha = 0
                     avaL[idxA].alpha = 1
                     avaL[idxA].width = 0
                 end
                 -- Move current to left
-                avaL[idxA].width = 550 - xM
-            elseif xM < 1100 then
+                avaL[idxA].width = 275 - xM
+            elseif xM < 550 then
                 if avaR[idxA-1].alpha == 0 then
                     avaL[idxA].alpha = 0
                     avaR[idxA-1]:toFront()
@@ -175,7 +176,7 @@ function touchScreen(event)
                     avaR[idxA-1].width = 0
                 end
                 -- Move new to left
-                avaR[idxA-1].width = xM - 550
+                avaR[idxA-1].width = xM - 275
             end
             
         end
@@ -185,14 +186,14 @@ function touchScreen(event)
         if direction == 1 and xM >= -550 then
             avaR[idxA].alpha = 1
             avaL[idxA+1].alpha = 0
-            transition.to( avaR[idxA], { width = 550, time = 200, onComplete=function()
+            transition.to( avaR[idxA], { width = 275, time = 200, onComplete=function()
                 avaR[idxA+1].alpha = 0
             end})
         elseif direction == 1 and xM < -550 then
             avaR[idxA].alpha = 0
             avaL[idxA+1].alpha = 1
             setInfo(idxA+1)
-            transition.to( avaL[idxA+1], { width = 550, time = 200, onComplete=function()
+            transition.to( avaL[idxA+1], { width = 275, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA + 1
@@ -203,14 +204,14 @@ function touchScreen(event)
         if direction == -1 and xM <= 550 then
             avaL[idxA].alpha = 1
             avaR[idxA-1].alpha = 0
-            transition.to( avaL[idxA], { width = 550, time = 200, onComplete=function()
+            transition.to( avaL[idxA], { width = 275, time = 200, onComplete=function()
                 avaR[idxA-1].alpha = 0
             end})
         elseif direction == -1 and xM > 550 then
             avaL[idxA].alpha = 0
             avaR[idxA-1].alpha = 1
             setInfo(idxA-1)
-            transition.to( avaR[idxA-1], { width = 550, time = 200, onComplete=function()
+            transition.to( avaR[idxA-1], { width = 275, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA - 1
@@ -384,6 +385,7 @@ function scene:create( event )
     
     firstCards()
     o:addEventListener( "touch", touchScreen )
+    
 end	
 
 -- Called immediately after scene has moved onscreen:
