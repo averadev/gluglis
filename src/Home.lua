@@ -4,12 +4,12 @@
 -- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------
--- OBJETOS Y VARIABLES
----------------------------------------------------------------------------------
+
+---------------------------------- OBJETOS Y VARIABLES ----------------------------------
 -- Includes
 require('src.Tools')
 require('src.resources.Globals')
+RestManager = require('src.resources.RestManager')
 local composer = require( "composer" )
 
 -- Grupos y Contenedores
@@ -25,25 +25,15 @@ local detail = {}
 local borders = {}
 local idxA, countA
 local lblName, lblAge, lblInts
+local loadUsers
 
-local loadUsers = {
-    {id = 1, photo = "mariana.jpeg", name = 'Mariana Gomez',  edad = 24, desc = 'Amante de la musica',
-        city='Cancun, Quitana Roo MX', lang='Español, Ingles', couch=1, car=0, available==1},
-    {id = 2, photo = "marcos.jpg", name = 'Marcos Jimenez',   edad = 26, desc = 'Adoro los gatos y el café',
-        city='Cancun, Quitana Roo MX', lang='Español, Ingles', couch=0, car=1, available==1},
-    {id = 3, photo = "andrew.jpg", name = 'Andrew Patterson', edad = 24, desc = 'Aventurero y deportista extremo',
-        city='Cancun, Quitana Roo MX', lang='Español, Frances', couch=1, car=1, available==0},
-    {id = 4, photo = "janine.jpg", name = 'Janine Smith',     edad = 24, desc = 'Me encanta el olor a pasto mojado',
-        city='Cancun, Quitana Roo MX', lang='Ingles, Aleman', couch=0, car=0, available==0},
-    {id = 5, photo = "victoria.jpg", name = 'Victoria Beckham', edad = 24, desc = 'Hermosa y PetFriendly',
-        city='Cancun, Quitana Roo MX', lang='Español, Frances', couch=1, car=1, available==1}
-}
+---------------------------------- FUNCIONES ----------------------------------
 
----------------------------------------------------------------------------------
--- FUNCIONES
----------------------------------------------------------------------------------
+-------------------------------------
 -- Creamos primera tanda de tarjetas
-function firstCards()
+------------------------------------
+function getFirstCards(items)
+    loadUsers = items
     idxA = 1
     countA = #loadUsers
     
@@ -51,21 +41,22 @@ function firstCards()
         buildCard(loadUsers[i])
     end
     
-    lblName.text = loadUsers[1].name
-    lblAge.text = loadUsers[1].edad .. " años"
-    lblInts.text = loadUsers[1].desc
-    
+    setInfo(1)
     avaL[1].alpha = 1
     avaR[1].alpha = 1
     borders[4].alpha = 1
     borders[5].alpha = 1
     borders[6].alpha = 1
+    screen:addEventListener( "touch", touchScreen )
 end
 
+-------------------------------------
 -- Muestra imagenes y mascaras
+-- @param item registro que incluye el nombre de la imagen
+------------------------------------
 function buildCard(item)
     local idx = #avaL + 1
-    local imgS = graphics.newImageSheet( "img/tmp/"..item.photo, { width = 275, height = 550, numFrames = 2 })
+    local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
     
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
     avaL[idx].alpha = 0
@@ -83,17 +74,84 @@ function buildCard(item)
     
 end
 
+-------------------------------------
 -- Asigna informacion del usuario actual
+-- @param idx posicion del registro
+------------------------------------
 function setInfo(idx)
-    lblName.text = loadUsers[idx].name
+    -- Hide Icons
+    for i=3, 5 do
+        detail[i].icon.alpha = 0
+        detail[i].icon2.alpha = 0
+    end
+    -- Set info
+    lblName.text = loadUsers[idx].userName
     lblAge.text = loadUsers[idx].edad
-    lblInts.text = loadUsers[idx].desc
-    detail[1].text = loadUsers[idx].city
-    detail[2].text = loadUsers[idx].lang
+    detail[1].lbl.text = loadUsers[idx].residencia
+    if loadUsers[idx].edad then lblAge.text=lblAge.text.." años" end
+    -- Hobbies
+    if loadUsers[idx].hobbies then
+        local max = 4
+        if #loadUsers[idx].hobbies < max then 
+            max = #loadUsers[idx].hobbies 
+        end
+        for i=1, max do
+            if i == 1 then
+                lblInts.text = loadUsers[idx].hobbies[i]
+            else
+                lblInts.text = lblInts.text..', '..loadUsers[idx].hobbies[i]
+            end
+        end
+        if #loadUsers[idx].hobbies > max then 
+            lblInts.text = lblInts.text..'...'
+        end
+    else
+        lblInts.text = ''
+    end
+    -- Idiomas
+    if loadUsers[idx].idiomas then
+        for i=1, #loadUsers[idx].idiomas do
+            if i == 1 then
+                detail[2].lbl.text = loadUsers[idx].idiomas[i]
+            else
+                detail[2].lbl.text = detail[2].lbl.text..', '..loadUsers[idx].idiomas[i]
+            end
+        end
+    else
+        detail[2].lbl.text = ''
+    end
+    -- Alojamiento
+    if loadUsers[idx].alojamiento and loadUsers[idx].alojamiento == 'Sí' then
+        detail[3].icon.alpha = 1
+        detail[3].lbl.text = 'Ofrece alojamiento'
+    else 
+        detail[3].icon2.alpha = 1
+        detail[3].lbl.text = 'No ofrece alojamiento'
+    end 
+    -- Alojamiento
+    if loadUsers[idx].vehiculo and loadUsers[idx].vehiculo == 'Sí' then
+        detail[4].icon.alpha = 1
+        detail[4].lbl.text = 'Cuenta con vehiculo propio'
+    else 
+        detail[4].icon2.alpha = 1
+        detail[4].lbl.text = 'No cuenta con vehiculo propio'
+    end 
+    -- Disponibilidad
+    if loadUsers[idx].diponibilidad and loadUsers[idx].diponibilidad == 'Siempre' then
+        detail[5].icon.alpha = 1
+        detail[5].lbl.text = 'Disponible'
+    else 
+        detail[5].icon2.alpha = 1
+        detail[5].lbl.text = 'No disponible'
+    end 
+    --
+    --Cuenta con vehiculo propio
     
 end
 
+-------------------------------------
 -- Muestra borders de revista
+------------------------------------
 function setBorder()
     -- Left
     if idxA == 1 then
@@ -117,7 +175,10 @@ function setBorder()
     end
 end
 
--- Listener Touch Screen
+-------------------------------------
+-- Listener para el flip del avatar
+-- @param event objeto evento
+------------------------------------
 function touchScreen(event)
     if event.phase == "began" then
         if event.yStart > 140 and event.yStart < 820 then
@@ -225,10 +286,12 @@ function touchScreen(event)
 end
     
 
----------------------------------------------------------------------------------
--- DEFAULT METHODS
----------------------------------------------------------------------------------
--- Called immediately on create scene
+---------------------------------- DEFAULT SCENE METHODS ----------------------------------
+
+-------------------------------------
+-- Se llama antes de mostrarse la escena
+-- @param event objeto evento
+------------------------------------
 function scene:create( event )
 	screen = self.view
     screen.y = h
@@ -254,6 +317,12 @@ function scene:create( event )
     bgAvatar.anchorY = 0
     bgAvatar:setFillColor( 0, 193/225, 1 )
     screen:insert(bgAvatar)
+    
+    local tmpAvatar = display.newImage("img/avatar.png")
+    tmpAvatar.anchorY = 0
+    tmpAvatar.alpha = .5
+    tmpAvatar:translate(midW, 197)
+    screen:insert( tmpAvatar )
     
     optB = {
         {x = midW-284, y = 178, c = .6}, {x = midW-280, y = 177, c = .75}, {x = midW-276, y = 176, c = .9}, 
@@ -334,30 +403,36 @@ function scene:create( event )
     -- Options
     posY = posY + 55
     local opt = {
-        {icon = 'icoFilterCity', label= 'Cancun, Quintana Roo Mexico'}, 
-        {icon = 'icoFilterLanguage', label= 'Ingles, Español e Italiano'}, 
-        {icon = 'icoFilterCheck', label= 'Ofrece Alojamiento'}, 
-        {icon = 'icoFilterUnCheck', label= 'Cuenta con Vehiculo Propio'}, 
-        {icon = 'icoFilterCheckAvailble', label= 'Disponible'}} 
-    for i=1, #opt do
+        {icon = 'icoFilterCity'}, 
+        {icon = 'icoFilterLanguage'}, 
+        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+        {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
+    
+    for i=1, 5 do
+        detail[i] = {}
         posY = posY + 60
         
-        local ico
-        if opt[i].icon ~= '' then
-            print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( screen, "img/"..opt[i].icon..".png" )
-            ico:translate( 115, posY - 3 )
+        detail[i].icon = display.newImage( screen, "img/"..opt[i].icon..".png" )
+        detail[i].icon:translate( 115, posY )
+        screen:insert(detail[i].icon)
+        if opt[i].icon2 then
+            detail[i].icon2 = display.newImage( screen, "img/"..opt[i].icon2..".png" )
+            detail[i].icon2:translate( 115, posY )
+            screen:insert(detail[i].icon2)
         end
-        detail[i] = display.newText({
-            text = opt[i].label, 
+        
+        detail[i].lbl = display.newText({
+            text = "", 
             x = 350, y = posY,
             width = 400,
             font = native.systemFont,   
             fontSize = 25, align = "left"
         })
-        detail[i]:setFillColor( 0 )
-        screen:insert(detail[i])
+        detail[i].lbl:setFillColor( 0 )
+        screen:insert(detail[i].lbl)
     end
+    
     
     --[[
     -- Buton
@@ -383,23 +458,31 @@ function scene:create( event )
     screen:insert(circle3)
     ]]--
     
-    firstCards()
-    o:addEventListener( "touch", touchScreen )
-    
+    RestManager.getUsersByCity()
 end	
 
--- Called immediately after scene has moved onscreen:
+-------------------------------------
+-- Se llama al mostrarse la escena
+-- @param event objeto evento
+------------------------------------
 function scene:show( event )
 end
 
--- Hide scene
+-------------------------------------
+-- Se llama al cambiar la escena
+-- @param event objeto evento
+------------------------------------
 function scene:hide( event )
 end
 
--- Destroy scene
+-------------------------------------
+-- Se llama al destruirse la escena
+-- @param event objeto evento
+------------------------------------
 function scene:destroy( event )
 end
 
+-- Listeners de la Escena
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
