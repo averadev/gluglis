@@ -242,7 +242,7 @@ function buildChat(poscD)
         local i = tmpList[z]
         if i.date then
 			lastDate = i.date
-            local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
+            local bgDate = display.newRoundedRect( midW, posY, 350, 40, 20 )
             bgDate.anchorY = 0
             bgDate:setFillColor( 220/255, 186/255, 218/255 )
             grpChat:insert(bgDate)
@@ -250,8 +250,8 @@ function buildChat(poscD)
             local lblDate = display.newText({
                 text = i.date,     
                 x = midW, y = posY + 20,
-                font = native.systemFont,   
-                fontSize = 20, align = "center"
+                font = "Lato-Regular",   
+                fontSize = 25, align = "center"
             })
             lblDate:setFillColor( .1 )
             grpChat:insert(lblDate)
@@ -259,14 +259,14 @@ function buildChat(poscD)
             posY = posY + 70
         else
             
-            local bgM0 = display.newRoundedRect( 20, posY, 502, 51, 10 )
+            local bgM0 = display.newRoundedRect( 20, posY, 502, 85, 10 )
             bgM0.anchorX = 0
             bgM0.anchorY = 0
             bgM0.alpha = .2
             bgM0:setFillColor( .3 )
             grpChat:insert(bgM0)
             
-            local bgM = display.newRoundedRect( 20, posY, 500, 50, 10 )
+            local bgM = display.newRoundedRect( 20, posY, 500, 82, 10 )
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 1 )
@@ -275,8 +275,8 @@ function buildChat(poscD)
             local lblM = display.newText({
                 text = i.message,     
                 x = 40, y = posY + 10,
-                font = native.systemFont,   
-                fontSize = 20, align = "left"
+                font = "Lato-Regular",   
+                fontSize = 35, align = "left"
             })
             lblM.anchorX = 0
             lblM.anchorY = 0
@@ -290,8 +290,8 @@ function buildChat(poscD)
                     text = i.message, 
                     width = 450,
                     x = 40, y = posY + 10,
-                    font = native.systemFont,   
-                    fontSize = 20, align = "left"
+                    font = "Lato-Regular",   
+                    fontSize = 35, align = "left"
                 })
                 lblM.anchorX = 0
                 lblM.anchorY = 0
@@ -322,8 +322,8 @@ function buildChat(poscD)
 				lblDateTemp[poscD] = display.newText({
 					text = "Cargando",
 					x = lblM.x, y = posY + lblM.contentHeight + 15,
-					font = native.systemFont,   
-					fontSize = 12, align = "left"
+					font = "Lato-Regular",   
+					fontSize = 16, align = "left"
 				})
 				lblDateTemp[poscD].anchorX = lblM.anchorX
 				lblDateTemp[poscD]:setFillColor( .5 )
@@ -336,8 +336,8 @@ function buildChat(poscD)
 				local lblTime = display.newText({
 					text = i.time,
 					x = lblM.x, y = posY + lblM.contentHeight + 15,
-					font = native.systemFont,   
-					fontSize = 12, align = "left"
+					font = "Lato-Regular",   
+					fontSize = 16, align = "left"
 				})
 				lblTime.anchorX = lblM.anchorX
 				lblTime:setFillColor( .5 )
@@ -390,8 +390,8 @@ function scene:create( event )
     screen:insert(bg)
 	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
-    o.fill = { type="image", filename="img/bgChat.png" }
-    o.fill.scaleX = .3
+    o.fill = { type="image", filename="img/fillPattern.png" }
+    o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
 	    

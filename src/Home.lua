@@ -15,6 +15,9 @@ local composer = require( "composer" )
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
+local topCmp, bottomCmp, profiles
+
+
 
 -- Variables
 local isCard = false
@@ -284,90 +287,12 @@ function touchScreen(event)
         direction = 0
     end
 end
-    
 
----------------------------------- DEFAULT SCENE METHODS ----------------------------------
 
 -------------------------------------
--- Se llama antes de mostrarse la escena
--- @param event objeto evento
+-- Mostramos el detalle en recuadro fijo
 ------------------------------------
-function scene:create( event )
-	screen = self.view
-    screen.y = h
-    
-    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
-    screen:insert(o)
-    
-    tools = Tools:new()
-    tools:buildHeader()
-    screen:insert(tools)
-    screen:insert(tools)
-    
-    -- Content profile
-    local bgCard = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
-    bgCard.anchorY = 0
-    bgCard:setFillColor( 11/225, 163/225, 212/225 )
-    screen:insert(bgCard)
-    
-    bgAvatar = display.newRect( midW, 172, 580, 558 )
-    bgAvatar.anchorY = 0
-    bgAvatar:setFillColor( 0, 193/225, 1 )
-    screen:insert(bgAvatar)
-    
-    local tmpAvatar = display.newImage("img/avatar.png")
-    tmpAvatar.anchorY = 0
-    tmpAvatar.alpha = .5
-    tmpAvatar:translate(midW, 197)
-    screen:insert( tmpAvatar )
-    
-    optB = {
-        {x = midW-284, y = 178, c = .6}, {x = midW-280, y = 177, c = .75}, {x = midW-276, y = 176, c = .9}, 
-        {x = midW+284, y = 178, c = .6}, {x = midW+280, y = 177, c = .75}, {x = midW+276, y = 176, c = .9}
-    }
-    for i = 1, #optB, 1 do
-        borders[i] = display.newRect( optB[i].x, optB[i].y, 6, 550 )
-        borders[i].anchorY = 0
-        borders[i].alpha = 0
-        borders[i]:setFillColor( optB[i].c )
-        screen:insert(borders[i])
-    end
-    
-    profiles = display.newGroup()
-    screen:insert(profiles)
-    
-    -- Personal data
-    lblName = display.newText({
-        text = "", 
-        x = 420, y = 760,
-        width = 600,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "left"
-    })
-    lblName:setFillColor( 1 )
-    screen:insert(lblName)
-    lblAge= display.newText({
-        text = "", 
-        x = 420, y = 795,
-        width = 600,
-        font = native.systemFont, 
-        fontSize = 28, align = "left"
-    })
-    lblAge:setFillColor( 1 )
-    screen:insert(lblAge)
-    lblInts = display.newText({
-        text = "", 
-        x = 420, y = 820,
-        width = 600,
-        font = native.systemFont, 
-        fontSize = 22, align = "left"
-    })
-    lblInts:setFillColor( 1 )
-    screen:insert(lblInts)
-    
+function showInfoDisplay()
     -- Position
     local posY = 870
     
@@ -413,11 +338,11 @@ function scene:create( event )
         detail[i] = {}
         posY = posY + 60
         
-        detail[i].icon = display.newImage( screen, "img/"..opt[i].icon..".png" )
+        detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
         detail[i].icon:translate( 115, posY )
         screen:insert(detail[i].icon)
         if opt[i].icon2 then
-            detail[i].icon2 = display.newImage( screen, "img/"..opt[i].icon2..".png" )
+            detail[i].icon2 = display.newImage( "img/"..opt[i].icon2..".png" )
             detail[i].icon2:translate( 115, posY )
             screen:insert(detail[i].icon2)
         end
@@ -432,6 +357,47 @@ function scene:create( event )
         detail[i].lbl:setFillColor( 0 )
         screen:insert(detail[i].lbl)
     end
+end
+
+-------------------------------------
+-- Mostramos el detalle en recuadro dinamico
+------------------------------------
+function showInfoButton()
+    local posY = 570
+    
+    -- Options
+    posY = posY + 55
+    local opt = {
+        {icon = 'icoFilterCity'}, 
+        {icon = 'icoFilterLanguage'}, 
+        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+        {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
+    
+    for i=1, 5 do
+        detail[i] = {}
+        posY = posY + 60
+        
+        detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
+        detail[i].icon:translate( 115, posY )
+        bottomCmp:insert(detail[i].icon)
+        if opt[i].icon2 then
+            detail[i].icon2 = display.newImage( "img/"..opt[i].icon2..".png" )
+            detail[i].icon2:translate( 115, posY )
+            bottomCmp:insert(detail[i].icon2)
+        end
+        
+        detail[i].lbl = display.newText({
+            text = "", 
+            x = 350, y = posY,
+            width = 400,
+            font = native.systemFont,   
+            fontSize = 25, align = "left"
+        })
+        detail[i].lbl:setFillColor( 0 )
+        bottomCmp:insert(detail[i].lbl)
+    end
+    bottomCmp.alpha = 0
     
     
     --[[
@@ -457,6 +423,101 @@ function scene:create( event )
     circle3:setFillColor( 1 )
     screen:insert(circle3)
     ]]--
+end
+
+---------------------------------- DEFAULT SCENE METHODS ----------------------------------
+
+-------------------------------------
+-- Se llama antes de mostrarse la escena
+-- @param event objeto evento
+------------------------------------
+function scene:create( event )
+	screen = self.view
+    screen.y = h
+    local isH = (intH - h) >  1240
+    
+    topCmp = display.newGroup()
+    screen:insert(topCmp)
+    
+    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
+    o.fill = { type="image", filename="img/fillPattern.png" }
+    o.fill.scaleX = .2
+    o.fill.scaleY = .2
+    topCmp:insert(o)
+    
+    tools = Tools:new()
+    tools:buildHeader()
+    topCmp:insert(tools)
+    
+    -- Content profile
+    local bgCard = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
+    bgCard.anchorY = 0
+    bgCard:setFillColor( 11/225, 163/225, 212/225 )
+    topCmp:insert(bgCard)
+    
+    bgAvatar = display.newRect( midW, 172, 580, 558 )
+    bgAvatar.anchorY = 0
+    bgAvatar:setFillColor( 0, 193/225, 1 )
+    topCmp:insert(bgAvatar)
+    
+    local tmpAvatar = display.newImage("img/avatar.png")
+    tmpAvatar.anchorY = 0
+    tmpAvatar.alpha = .5
+    tmpAvatar:translate(midW, 197)
+    topCmp:insert( tmpAvatar )
+    
+    optB = {
+        {x = midW-284, y = 178, c = .6}, {x = midW-280, y = 177, c = .75}, {x = midW-276, y = 176, c = .9}, 
+        {x = midW+284, y = 178, c = .6}, {x = midW+280, y = 177, c = .75}, {x = midW+276, y = 176, c = .9}
+    }
+    for i = 1, #optB, 1 do
+        borders[i] = display.newRect( optB[i].x, optB[i].y, 6, 550 )
+        borders[i].anchorY = 0
+        borders[i].alpha = 0
+        borders[i]:setFillColor( optB[i].c )
+        topCmp:insert(borders[i])
+    end
+    
+    profiles = display.newGroup()
+    topCmp:insert(profiles)
+    
+    -- Personal data
+    lblName = display.newText({
+        text = "", 
+        x = 420, y = 760,
+        width = 600,
+        font = native.systemFontBold,   
+        fontSize = 30, align = "left"
+    })
+    lblName:setFillColor( 1 )
+    topCmp:insert(lblName)
+    lblAge= display.newText({
+        text = "", 
+        x = 420, y = 795,
+        width = 600,
+        font = native.systemFont, 
+        fontSize = 28, align = "left"
+    })
+    lblAge:setFillColor( 1 )
+    topCmp:insert(lblAge)
+    lblInts = display.newText({
+        text = "", 
+        x = 420, y = 820,
+        width = 600,
+        font = native.systemFont, 
+        fontSize = 22, align = "left"
+    })
+    lblInts:setFillColor( 1 )
+    topCmp:insert(lblInts)
+    
+    -- Mediante alto de la pantalla determinamos recuadro del detalle
+    if isH then
+        showInfoDisplay()
+    else
+        bottomCmp = display.newGroup()
+        screen:insert(topCmp)
+        showInfoButton()
+    end
     
     RestManager.getUsersByCity()
 end	
