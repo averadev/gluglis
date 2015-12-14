@@ -13,7 +13,7 @@ display.setDefault( "textureWrapX", "repeat" )
 display.setDefault( "textureWrapY", "repeat" )
 
 local isUser = DBManager.setupSquema()
-composer.gotoScene("src.Messages")
+composer.gotoScene("src.Login")
 
 function DidReceiveRemoteNotification(message, additionalData, isActive)
 	

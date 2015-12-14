@@ -309,11 +309,11 @@ function showInfoDisplay()
     -- Title
     local bgTitle = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
     bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
+    bgTitle:setFillColor( 68/255, 14/255, 98/255 )
     screen:insert(bgTitle)
     local bgTitleX = display.newRect( midW, posY+60, intW - 160, 10 )
     bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
+    bgTitleX:setFillColor( 68/255, 14/255, 98/255 )
     screen:insert(bgTitleX)
     local lblTitle = display.newText({
         text = "DETALLE:", 
@@ -322,7 +322,7 @@ function showInfoDisplay()
         font = native.systemFontBold,   
         fontSize = 25, align = "left"
     })
-    lblTitle:setFillColor( 0 )
+    lblTitle:setFillColor( 1 )
     screen:insert(lblTitle)
     
     -- Options

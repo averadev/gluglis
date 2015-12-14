@@ -259,14 +259,14 @@ function buildChat(poscD)
             posY = posY + 70
         else
             
-            local bgM0 = display.newRoundedRect( 20, posY, 502, 85, 10 )
+            local bgM0 = display.newRoundedRect( 20, posY, 502, 80, 20 )
             bgM0.anchorX = 0
             bgM0.anchorY = 0
             bgM0.alpha = .2
             bgM0:setFillColor( .3 )
             grpChat:insert(bgM0)
             
-            local bgM = display.newRoundedRect( 20, posY, 500, 82, 10 )
+            local bgM = display.newRoundedRect( 20, posY, 500, 77, 20 )
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 1 )
@@ -276,7 +276,7 @@ function buildChat(poscD)
                 text = i.message,     
                 x = 40, y = posY + 10,
                 font = "Lato-Regular",   
-                fontSize = 35, align = "left"
+                fontSize = 30, align = "left"
             })
             lblM.anchorX = 0
             lblM.anchorY = 0
@@ -291,7 +291,7 @@ function buildChat(poscD)
                     width = 450,
                     x = 40, y = posY + 10,
                     font = "Lato-Regular",   
-                    fontSize = 35, align = "left"
+                    fontSize = 30, align = "left"
                 })
                 lblM.anchorX = 0
                 lblM.anchorY = 0
@@ -321,9 +321,9 @@ function buildChat(poscD)
 			if poscD ~= 0 then
 				lblDateTemp[poscD] = display.newText({
 					text = "Cargando",
-					x = lblM.x, y = posY + lblM.contentHeight + 15,
+					x = lblM.x, y = posY + lblM.contentHeight + 20,
 					font = "Lato-Regular",   
-					fontSize = 16, align = "left"
+					fontSize = 18, align = "left"
 				})
 				lblDateTemp[poscD].anchorX = lblM.anchorX
 				lblDateTemp[poscD]:setFillColor( .5 )
@@ -335,9 +335,9 @@ function buildChat(poscD)
 			else
 				local lblTime = display.newText({
 					text = i.time,
-					x = lblM.x, y = posY + lblM.contentHeight + 15,
+					x = lblM.x, y = posY + lblM.contentHeight + 20,
 					font = "Lato-Regular",   
-					fontSize = 16, align = "left"
+					fontSize = 18, align = "left"
 				})
 				lblTime.anchorX = lblM.anchorX
 				lblTime:setFillColor( .5 )
@@ -385,32 +385,33 @@ function scene:create( event )
     grpTextField = display.newGroup()
 	screen:insert( grpTextField )
     
-    local bg = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    local bg = display.newRect( midW, midH + h, intW, intH, 20 )
     bg:setFillColor( 1 )
     screen:insert(bg)
 	
-    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    local o = display.newRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
 	    
-    local bgH = display.newRoundedRect( midW, 40 + h, display.contentWidth, 80, 20 )
-    bgH:setFillColor( .95 )
+    local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
+    bgH:setFillColor( 1 )
     screen:insert(bgH)
-    local bgH2 = display.newRect( midW, 100 + h, display.contentWidth, 60 )
-    bgH2:setFillColor( .95 )
-    screen:insert(bgH2)
+    
+    local bgHBtn = display.newRect( intW - 55, 50 + h, 130, 100 )
+    bgHBtn:setFillColor( .95 )
+    screen:insert(bgHBtn)
     
     -- Back button
 	local btnBack = display.newImage("img/icoBack.png")
-	btnBack:translate(50, 65 + h)
+	btnBack:translate(50, 50 + h)
     btnBack:addEventListener( 'tap', toBack)
     screen:insert( btnBack )
 
     -- Image
 	local avatar = display.newImage("img/tmp/"..item.photo)
-    avatar:translate(150, 65 + h)
+    avatar:translate(150, 50 + h)
     avatar.width = 80
     avatar.height = 80
     screen:insert( avatar )
@@ -419,7 +420,7 @@ function scene:create( event )
 	
 	--btn bloquear
 	btnBlock = display.newImage("img/cancel-icon-2.png")
-    btnBlock:translate(intW - 100, 65 + h)
+    btnBlock:translate(intW - 55, 50 + h)
     btnBlock.width = 70
     btnBlock.height = 70
 	btnBlock.blockYour = item.blockYour
@@ -432,7 +433,7 @@ function scene:create( event )
     -- Name
     local lblName = display.newText({
         text = item.name,     
-        x = midW + 130, y = 65 + h,
+        x = midW + 130, y = 55 + h,
         width = 600,
         font = native.systemFontBold,   
         fontSize = 30, align = "left"
@@ -454,23 +455,31 @@ function scene:create( event )
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
     
+    local bgSendField = display.newRect( midW, intH - 45, intW, 90 )
+    bgSendField:setFillColor( .84 )
+    grpTextField:insert(bgSendField)
     
-    local bgM0 = display.newRoundedRect( midW, intH - 45, intW - 35, 75, 10 )
-    bgM0:setFillColor( .8 )
-    grpTextField:insert(bgM0)
-
-    local bgM = display.newRoundedRect( midW, intH - 45, intW - 40, 70, 10 )
-    bgM:setFillColor( 1 )
-    screen:insert(bgM)
+    local bgSend = display.newRect( intW - 75, intH - 45, 150, 90 )
+    bgSend:setFillColor( 68/255, 14/255, 98/255 )
+	bgSend:addEventListener( 'tap', sentMessage )
+    grpTextField:insert(bgSend)
     
-     local icoSend = display.newImage("img/icoSend.png")
-    icoSend:translate(intW - 60, intH - 45)
-    grpTextField:insert(icoSend)
-	icoSend:addEventListener( 'tap', sentMessage )
+    local lblSend = display.newText({
+        text = "ENVIAR",     
+        x = intW - 75, y = intH - 45, width = 150,
+        font = "Lato-Regular",   
+        fontSize = 30, align = "center"
+    })
+    lblSend:setFillColor( 1 )
+    grpTextField:insert(lblSend)
+    
+    local bgField = display.newRoundedRect(  midW - 75, intH - 45, intW - 190, 60, 20 )
+    bgField:setFillColor( 1 )
+    grpTextField:insert(bgField)
 	
-	txtMessage = native.newTextField( midW - 35, intH - 45, intW - 140, 70 )
+	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 50 )
     txtMessage.inputType = "default"
-    txtMessage.hasBackground = false
+    txtMessage.hasBackground = true
 	--txtMessage.channelId = item.channelId
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
