@@ -18,11 +18,11 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen, scrMs
 local scene = composer.newScene()
-local noMessages
 --local itemsMessage
 
 -- Variables
 local tmpList = {}
+local ListChats = {}
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -31,7 +31,7 @@ local tmpList = {}
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
 		tmpList[i] = {id = items[i].id, photo = "mariana.jpeg", name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
-			blockMe = items[i].blockMe, blockYour = items[i].blockYour}
+			blockMe = items[i].blockMe, blockYour = items[i].blockYour, NoRead = items[i].NoRead}
 	end
 	buildListMsg()
 	tools:setLoading( false,screen )
@@ -59,50 +59,123 @@ function tapMessage(event)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = t.item } } )
 end
 
+--cambia la posicion del chat
+function movedChat( channel, message, numChat )
+	local posc = 100
+	for i = 1, #ListChats do
+		if ListChats[i].channelId == channel then
+			ListChats[i].y = 100
+			local child = ListChats[i]
+			child = child[6]
+			child.text = message
+			createNotBubble( ListChats[i].posc, numChat )
+		else
+			posc = posc + 160
+			ListChats[i].y = posc
+		end
+	end
+	return true
+end 
+
+--crea o destruye las borbujas de numeros de mensajes sin leer
+function createNotBubble(poscC, numChat)
+	local child = ListChats[poscC]
+	if numChat == 0 then
+		if child[7] then
+			child[8]:removeSelf()
+			child[8] = nil
+			child[7]:removeSelf()
+			child[7] = nil
+		end
+	else
+		if child[8] then
+			child[8].text = numChat
+		else
+			local notBubble = display.newCircle( midW - 60, 0, 25 )
+			notBubble:setFillColor(129/255, 61/255, 153/255)
+			notBubble.strokeWidth = 2
+			notBubble:setStrokeColor(.8)
+			ListChats[poscC]:insert(notBubble)
+			
+			local txtNoBubble = display.newText( {
+				x = midW - 60, y = 0,
+				text = numChat, font = native.systemFont, fontSize = 26,
+			})
+			txtNoBubble:setFillColor( 0 )
+			ListChats[poscC]:insert(txtNoBubble)
+		end
+	end
+end
+
+--crea la lista de mensajes
 function buildListMsg()
-    local posY = -50
+    local posY = 100
     for i = 1, #tmpList do
+		local poscC = #ListChats + 1
+		tmpList[i].posc = poscC
+		ListChats[poscC] = display.newContainer( intW, 148 )
+        ListChats[poscC].x = midW
+        ListChats[poscC].y = posY
+		ListChats[poscC].posc = poscC
+		ListChats[poscC].channelId = tmpList[i].channelId
+        scrMs:insert( ListChats[poscC] )
         -- Bg
         posY = posY + 150
-        local bg0 = display.newRect( midW, posY, intW, 148 )
+        local bg0 = display.newRect( 0, 0, intW, 148 )
         bg0:setFillColor( .5 )
         bg0.alpha = .05
-        scrMs:insert(bg0)
-        local bg = display.newRect( midW, posY, intW, 140 )
+        ListChats[poscC]:insert(bg0)
+        local bg = display.newRect( 0, 0, intW, 140 )
         bg:setFillColor( 1 )
         bg.item = tmpList[i]
         bg:addEventListener( 'tap', tapMessage)
-        scrMs:insert(bg)
+        ListChats[poscC]:insert(bg)
         -- Image
         local avatar = display.newImage("img/tmp/"..tmpList[i].photo)
-        avatar:translate(90, posY)
+        avatar:translate(-294, 0)
         avatar.width = 130
         avatar.height = 130
-        scrMs:insert( avatar )
+        ListChats[poscC]:insert( avatar )
         
         local maskMA = display.newImage("img/maskCircle130.png")
-        maskMA:translate(90, posY)
-        scrMs:insert( maskMA )
+        maskMA:translate(-294, 0)
+        ListChats[poscC]:insert( maskMA )
         -- Name
         local lblName = display.newText({
             text = tmpList[i].name,     
-            x = midW + 90, y = posY - 20,
+            x = 100, y = - 20,
             width = 600,
             font = native.systemFontBold,   
             fontSize = 35, align = "left"
         })
         lblName:setFillColor( 0 )
-        scrMs:insert(lblName)
+        ListChats[poscC]:insert(lblName)
         -- Subject
         local lblSubject = display.newText({
             text = tmpList[i].subject,     
-            x = midW + 90, y = posY + 20,
+            x = 100, y = 20,
             width = 600,
             font = native.systemFont,   
             fontSize = 25, align = "left"
         })
         lblSubject:setFillColor( .3 )
-        scrMs:insert(lblSubject)
+        ListChats[poscC]:insert(lblSubject)
+		
+		if  tmpList[i].NoRead ~= '0' then
+			local notBubble = display.newCircle( midW - 60, 0, 25 )
+			notBubble:setFillColor(129/255, 61/255, 153/255)
+			notBubble.strokeWidth = 2
+			notBubble:setStrokeColor(.8)
+			ListChats[poscC]:insert(notBubble)
+			
+			local txtNoBubble = display.newText( {
+				x = midW - 60, y = 0,
+				text = tmpList[i].NoRead, font = native.systemFont, fontSize = 26,
+			})
+			txtNoBubble:setFillColor( 0 )
+			--txtNoBubble:toFront()
+			ListChats[poscC]:insert(txtNoBubble)
+		end
     end
 end
 

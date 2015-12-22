@@ -11,7 +11,6 @@ local composer = require( "composer" )
 local Sprites = require('src.resources.Sprites')
 require('src.Menu')
 
-
 Tools = {}
 function Tools:new()
     -- Variables

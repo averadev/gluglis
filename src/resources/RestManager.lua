@@ -10,6 +10,10 @@ local RestManager = {}
 	local settings = DBManager.getSettings()
 	local site = settings.url
 
+	------------------------------------------------
+    -- codifica los mensajes para mandarlo por url
+	-- @param str mensaje a codificar
+    ------------------------------------------------
 	function urlencode(str)
           if (str) then
               str = string.gsub (str, "\n", "\r\n")
@@ -20,7 +24,11 @@ local RestManager = {}
           return str    
     end
 	
-	--obtiene la lista de los mensajes
+	---------------------------------- Pantalla Messages ----------------------------------
+	
+    -------------------------------------
+    -- Obtiene la lista de los mensajes
+    -------------------------------------
 	RestManager.getListMessageChat = function()
         -- Set url
         local url = site
@@ -28,7 +36,6 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 	
         local function callback(event)
-			
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
             else
@@ -36,8 +43,10 @@ local RestManager = {}
 				if data then
 					if data.success then
 						if #data.items > 0 then
+							--cargamos los elementos del mensaje
 							setItemsListMessages(data.items)
 						else
+							--notificamos que no existen chats
 							notListMessages()
 						end
 					else
@@ -53,18 +62,23 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
+			--notifica si no existe conexion a internet
 			noConnectionMessages('No se detecto conexion a internet')
 		end
     end
 	
-	--obtiene los mensajes del chat seleccionado
+	---------------------------------- Pantalla Message ----------------------------------
+	
+    -------------------------------------
+    -- Obtiene los mensajes del chat seleccionado
+    -- @param channelId identificador del canal de los mensajes
+    -------------------------------------
 	RestManager.getChatMessages = function(channelId)
         -- Set url
         local url = site
         url = url.."api/getChatMessages/format/json"
         url = url.."/idApp/"..settings.idApp
 		url = url.."/channelId/".. channelId
-		
 	
         local function callback(event)
             if ( event.isError ) then
@@ -74,9 +88,10 @@ local RestManager = {}
 				if data then
 					if data.success then
 						if #data.items > 0 then
+							--cargamos los elementos del mensaje
 							setItemsMessages(data.items)
-							--notChatsMessages()
 						else
+							--notificamos que no existen mensajes nuevos
 							notChatsMessages()
 						end
 					else
@@ -92,19 +107,24 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
+			--notifica si no existe conexion a internet
 			noConnectionMessage('No se detecto conexion a internet')
 		end
     end
 	
-	--envia el chat
-	RestManager.sendChat = function(channelId, message, poscM, dateM)
+	------------------------------------------------------------
+    -- Envia los mensajes del chat
+    -- @param channelId identificador del canal de los mensajes
+	-- @param message mensaje a enviar
+	-- @param poscM posicion en la que esta colocado el chat
+    ------------------------------------------------------------
+	RestManager.sendChat = function(channelId, message, poscM)
         -- Set url
         local url = site
         url = url.."api/saveChat/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
-		url = url.."/dateM/" .. urlencode(dateM)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -114,6 +134,7 @@ local RestManager = {}
 				if data then
 					if data.success then
 						if #data.items > 0 then
+							--cambia la fecha en la que se envio el mensaje
 							changeDateOfMSG(data.items[1],poscM)
 						else
 							noConnectionMessage('Error con el servidor')
@@ -135,6 +156,11 @@ local RestManager = {}
 		end
     end
 	
+	--------------------------------------------------------------------
+    -- Bloquea o desbloquea el chat selecionado
+    -- @param channelId identificador del canal de los mensajes
+	-- @param status define si el canal estara bloqueado o desbloqueado
+    --------------------------------------------------------------------
 	RestManager.blokedChat = function(channelId,status)
         -- Set url
         local url = site
@@ -150,6 +176,7 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
+						--bloquea o desbloquea el chats
 						changeStatusBlock(data.status)
 					else
 						noConnectionMessage('Error con el servidor')
@@ -167,46 +194,46 @@ local RestManager = {}
 			noConnectionMessage('No se detecto conexion a internet')
 		end
     end
-
-	--obtiene la fecha actual
-	RestManager.getDate = function()
-		local date = os.date( "*t" )    -- Returns table of date & time values
-		local year = date.year
-		local month = date.month
-		local month2 = date.month
-		local day = date.day
-		local hour = date.hour
-		local minute = date.min
-		local segunds = date.sec 
-		
-		if month < 10 then
-			month = "0" .. month
-		end
-		
-		if day < 10 then
-			day = "0" .. day
-		end
-		
-		local date1 = year .. "-" .. month .. "-" .. day .. " " .. hour .. ":" .. minute .. ":" .. segunds
-		
-		local months = {'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'}
-		date2 = day .. " de " .. months[month2] .. " del " .. year
-		
-		return {date1,date2}
-	end
 	
-	--comprueba si existe conexion a internet
-	function networkConnection()
-		local netConn = require('socket').connect('www.google.com', 80)
-		if netConn == nil then
-			return false
+	---------------------------------------------------------------
+    -- marca los mensajes como leidos
+    -- @param channelId identificador del canal de los mensajes
+	-- @param idMessage identificador del mensaje
+    ---------------------------------------------------------------
+	RestManager.changeStatusMessages = function(channelId,idMessage)
+        local settings = DBManager.getSettings()
+        -- Set url
+        local url = settings.url
+        url = url.."api/changeStatusMessages/format/json"
+        url = url.."/idApp/" .. settings.idApp
+		url = url.."/channelId/" .. channelId
+		url = url.."/idMessage/" .. idMessage
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						--elimina las burbujas de mensajes no leidos
+						deleteNotBubble()
+					else
+						noConnectionMessage('Error con el servidor')
+					end
+				else
+					noConnectionMessage('Error con el servidor')
+				end
+            end
+            return true
+        end
+        -- Do request
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			noConnectionMessage('No se detecto conexion a internet')
 		end
-		netConn:close()
-		return true
-	end
-
-
-
+    end
 
     ---------------------------------- Pantalla HOME ----------------------------------
     -------------------------------------
@@ -274,7 +301,46 @@ local RestManager = {}
             goToMethod(obj)
         end
     end
-
-
+	
+	-------------------------------------
+    -- obiene la fecha y hora actual
+    -------------------------------------
+	RestManager.getDate = function()
+		local date = os.date( "*t" )    -- Returns table of date & time values
+		local year = date.year
+		local month = date.month
+		local month2 = date.month
+		local day = date.day
+		local hour = date.hour
+		local minute = date.min
+		local segunds = date.sec 
+		
+		if month < 10 then
+			month = "0" .. month
+		end
+		
+		if day < 10 then
+			day = "0" .. day
+		end
+		
+		local date1 = year .. "-" .. month .. "-" .. day .. " " .. hour .. ":" .. minute .. ":" .. segunds
+		
+		local months = {'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'}
+		date2 = day .. " de " .. months[month2] .. " del " .. year
+		
+		return {date1,date2}
+	end
+	
+	--------------------------------------------
+    -- comprueba si existe conexion a internet
+    --------------------------------------------
+	function networkConnection()
+		local netConn = require('socket').connect('www.google.com', 80)
+		if netConn == nil then
+			return false
+		end
+		netConn:close()
+		return true
+	end
 	
 return RestManager
