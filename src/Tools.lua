@@ -162,6 +162,7 @@ function Tools:new()
         end
         -- Animate    
         local t = event.target
+		print(t.screen)
         audio.play(fxTap)
         t.alpha = 0
         timer.performWithDelay(200, function() t.alpha = 1 end, 1)
@@ -170,7 +171,13 @@ function Tools:new()
             composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
         else
             composer.removeScene( "src."..t.screen )
-            composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
+			if t.screen == "Profile" then
+				local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico"}
+				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
+			else
+				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
+			end
+            
         end
         return true
     end

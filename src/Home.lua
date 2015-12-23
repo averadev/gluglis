@@ -29,6 +29,7 @@ local borders = {}
 local idxA, countA
 local lblName, lblAge, lblInts
 local loadUsers
+local btnViewProfile
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -60,11 +61,11 @@ end
 function buildCard(item)
     local idx = #avaL + 1
     local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
-    
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
     avaL[idx].alpha = 0
     avaL[idx].anchorY = 0
     avaL[idx].anchorX = 1
+	avaL[idx].id = item.id
     avaL[idx].fill = { type = "image", sheet = imgS, frame = 1 }
     profiles:insert(avaL[idx])
     
@@ -72,9 +73,15 @@ function buildCard(item)
     avaR[idx].alpha = 0
     avaR[idx].anchorY = 0
     avaR[idx].anchorX = 0
+	avaR[idx].id = item.id
     avaR[idx].fill = { type = "image", sheet = imgS, frame = 2 }
     profiles:insert(avaR[idx])
     
+end
+
+function showProfiles( event )
+	composer.removeScene( "src.Profile" )
+	composer.gotoScene( "src.Profile", { time = 400, effect = "fade", params = { item = event.target.item }})
 end
 
 -------------------------------------
@@ -147,6 +154,8 @@ function setInfo(idx)
         detail[5].icon2.alpha = 1
         detail[5].lbl.text = 'No disponible'
     end 
+	
+	btnViewProfile.item = loadUsers[idx]
     --
     --Cuenta con vehiculo propio
     
@@ -324,11 +333,28 @@ function showInfoDisplay()
     })
     lblTitle:setFillColor( 1 )
     screen:insert(lblTitle)
+	
+	--boton perfil
+	btnViewProfile = display.newRoundedRect( 570, posY + 8, 200, 54, 10 )
+    btnViewProfile.anchorY = 0
+	btnViewProfile.id = 0
+    btnViewProfile:setFillColor( 11/225, 163/225, 212/225 )
+    screen:insert(btnViewProfile)
+	btnViewProfile:addEventListener( 'tap', showProfiles )
+	
+	local lblViewProfile = display.newText({
+        text = "ver perfil:", 
+        x = 570, y = posY+35,
+        font = native.systemFontBold,   
+        fontSize = 25, align = "left"
+    })
+    lblViewProfile:setFillColor( 1 )
+    screen:insert(lblViewProfile)
     
     -- Options
     posY = posY + 55
     local opt = {
-        {icon = 'icoFilterCity'}, 
+        {icon = 'icoFilterCity'},
         {icon = 'icoFilterLanguage'}, 
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 

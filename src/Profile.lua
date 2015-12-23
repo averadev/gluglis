@@ -30,6 +30,7 @@ end
 ---------------------------------------------------------------------------------
 
 function scene:create( event )
+	local item = event.params.item
 	screen = self.view
     screen.y = h
     
@@ -52,7 +53,8 @@ function scene:create( event )
     bgA2:setFillColor( 0, 193/225, 1 )
     screen:insert(bgA2)
     
-    local avatar = display.newImage("img/tmp/face01.png")
+   -- local avatar = display.newImage("img/tmp/face01.png") item
+   local avatar = display.newImage(item.image, system.TemporaryDirectory)
     avatar:translate(midW - 190, 290)
     avatar.height = 230
     avatar.width = 230
@@ -60,7 +62,7 @@ function scene:create( event )
     
     -- Personal data
     local lblName = display.newText({
-        text = "Ricardo Rodriguez", 
+        text = item.userName, 
         x = 550, y = 300,
         width = 400,
         font = native.systemFontBold,   
@@ -68,8 +70,9 @@ function scene:create( event )
     })
     lblName:setFillColor( 0 )
     screen:insert(lblName)
+	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
     local lblAge= display.newText({
-        text = "24 Años", 
+        text = item.edad, 
         x = 550, y = 350,
         width = 400,
         font = native.systemFont, 
@@ -78,7 +81,7 @@ function scene:create( event )
     lblAge:setFillColor( 0 )
     screen:insert(lblAge)
     local lblInts = display.newText({
-        text = "Amante de la Musica", 
+        text = "", 
         x = 550, y = 400,
         width = 400,
         font = native.systemFont, 
@@ -86,6 +89,25 @@ function scene:create( event )
     })
     lblInts:setFillColor( 0 )
     screen:insert(lblInts)
+	
+	if item.hobbies then
+        local max = 4
+        if #item.hobbies < max then 
+            max = #item.hobbies 
+        end
+        for i=1, max do
+            if i == 1 then
+                lblInts.text = item.hobbies[i]
+            else
+                lblInts.text = lblInts.text..', '..item.hobbies[i]
+            end
+        end
+        if #item.hobbies > max then 
+            lblInts.text = lblInts.text..'...'
+        end
+    else
+        lblInts.text = ''
+    end
     
     
     -- Position
@@ -119,15 +141,63 @@ function scene:create( event )
     })
     lblTitle:setFillColor( 0 )
     screen:insert(lblTitle)
+	--disponibilidad
+	local availability, iconAvailability, leng
+	local iconOpcion = {}
+	local infoOpcion = {}
+	--residencia
+	if not item.residencia then 
+		infoOpcion[1] = ""
+	else
+		infoOpcion[1] = item.residencia
+	end
+	iconOpcion[1] = 'icoFilterCity'
+	--idioma
+	if item.idiomas then
+        for i=1, #item.idiomas do
+            if i == 1 then
+                infoOpcion[2] = item.idiomas[i]
+            else
+                infoOpcion[2] = infoOpcion[2] ..', '.. item.idiomas[i]
+            end
+        end
+    else
+        infoOpcion[2] = ''
+    end
+	iconOpcion[2] = 'icoFilterLanguage'
+	--alojamiento
+	if item.alojamiento and item.alojamiento == 'Sí' then
+		infoOpcion[3] = 'Disponible'
+		iconOpcion[3] = "icoFilterCheck"
+    else 
+		infoOpcion[3] = 'No disponible'
+		iconOpcion[3] = "icoFilterUnCheck"
+    end
+	 -- transporte
+    if item.vehiculo and item.vehiculo == 'Sí' then
+        infoOpcion[4] = 'Cuenta con vehiculo propio'
+		iconOpcion[4] = "icoFilterCheck"
+    else 
+        infoOpcion[4] = 'No cuenta con vehiculo propio'
+		iconOpcion[4] = "icoFilterUnCheck"
+    end 
+	--disponibilidad
+    if item.diponibilidad and item.diponibilidad == 'Siempre' then
+        infoOpcion[5] = 'Disponible'
+		iconOpcion[5] = "icoFilterCheckAvailble"
+    else 
+         infoOpcion[5] = 'No disponible'
+		 iconOpcion[5] = "icoFilterUnCheck"
+    end
     
     -- Options
     posY = posY + 45
     local opt = {
-        {icon = 'icoFilterCity', label= 'Cancun, Quintana Roo Mexico'}, 
-        {icon = 'icoFilterLanguage', label= 'Ingles, Español e Italiano'}, 
-        {icon = 'icoFilterCheck', label= 'Ofrece Alojamiento'}, 
-        {icon = 'icoFilterUnCheck', label= 'Cuenta con Vehiculo Propio'}, 
-        {icon = 'icoFilterCheckAvailble', label= 'Disponible'}} 
+        {icon = iconOpcion[1], label= infoOpcion[1]}, 
+        {icon = iconOpcion[2], label= infoOpcion[2]}, 
+        {icon = iconOpcion[3], label= infoOpcion[3]}, 
+        {icon = iconOpcion[4], label= infoOpcion[4]}, 
+        {icon = iconOpcion[5], label= infoOpcion[5]}} 
     for i=1, #opt do
         posY = posY + 75
         
