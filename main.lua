@@ -40,7 +40,7 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				--si la scena messages existe acomoda los chats
 				local titleScene = composer.getScene( "src.Messages" )
 				if titleScene then
-					movedChat(item[1].channel_id, item[1].message, item[1].NoRead)
+					movedChat(item[1], item[1].message, item[1].NoRead)
 				end
 			end
 		end

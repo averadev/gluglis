@@ -32,6 +32,7 @@ local lastStatus = 0
 local tmpList = {}
 local lblDateTemp = {}
 local itemsConfig = {}
+local NoMessage
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -54,7 +55,7 @@ end
 --muestra un mensaje cuando no se encuentren chats
 function notChatsMessages()
 	tools:setLoading( false,screen )
-	tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
+	NoMessage = tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
 end
 
 --muestra un mensaje cuando no exista conexion a internet
@@ -71,6 +72,11 @@ function sentMessage()
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
 			--displaysInList("quivole carnal", poscD, dateM[2])
+			if NoMessage then
+				tools:NoMessages( false, scrChat, "" )
+				NoMessage:removeSelf()
+				NoMessage = nil
+			end
 			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
 			displaysInList(itemTemp, true)
 			RestManager.sendChat( itemsConfig.channelId, txtMessage.text, poscD )
@@ -124,7 +130,7 @@ function changeDateOfMSG(item, poscD)
 	lblDateTemp[poscD].text = item.hora
 	local titleScene = composer.getScene( "src.Messages" )
 	if titleScene then
-		movedChat(item.channel_id, item.message)
+		movedChat(item, item.message, 0)
 	end
 end
 
@@ -321,8 +327,8 @@ function buildChat(poscD)
                 bgM.width = lblM.contentWidth + 40
                 bgM0.width = lblM.contentWidth + 42
 				if lblM.contentWidth < 60 then
-					 bgM.width = 80
-					 bgM0.width = 82
+					 bgM.width = 120
+					 bgM0.width = 122
 				end
                 lblM.anchorX = 0
                 if i.isMe then

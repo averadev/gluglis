@@ -52,6 +52,7 @@ function Tools:new()
             local icoBack = display.newImage("img/icoBack.png")
             icoBack:translate(45, 45)
             icoBack.screen = 'Home'
+			icoBack.isReturn = 1
             icoBack:addEventListener( 'tap', toScreen)
             self:insert( icoBack )
         end
@@ -152,6 +153,8 @@ function Tools:new()
                 grpNoMessages = nil
             end
         end
+		
+		return grpNoMessages
 	end
 	
     -- Cambia pantalla
@@ -172,7 +175,7 @@ function Tools:new()
         else
             composer.removeScene( "src."..t.screen )
 			if t.screen == "Profile" then
-				local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico"}
+				local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico", isMe = true}
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
 			else
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
@@ -184,6 +187,7 @@ function Tools:new()
     
     -- Cerramos o mostramos shadow
     function showMenu(event)
+		
         if bgShadow.alpha == 0 then
             self:toFront()
             bgShadow:addEventListener( 'tap', showMenu)

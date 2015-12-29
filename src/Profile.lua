@@ -11,6 +11,7 @@
 require('src.Tools')
 require('src.resources.Globals')
 local composer = require( "composer" )
+RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
 local screen
@@ -23,6 +24,20 @@ local scene = composer.newScene()
 ---------------------------------------------------------------------------------
 function method()
     
+end
+
+--inicia un nuevo chats
+function startConversation( event )
+	RestManager.startConversation(event.target.id)
+	return true
+end
+
+--crea la informacion e inicia la conversacion(chats)
+function showNewConversation(item)
+	local tmpList = {id = 0, photo = "mariana.jpeg", name = item.display_name, subject = "", channelId = item.channel_id,
+			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0}
+	composer.removeScene( "src.Message" )
+    composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
 
 ---------------------------------------------------------------------------------
@@ -108,7 +123,6 @@ function scene:create( event )
     else
         lblInts.text = ''
     end
-    
     
     -- Position
     local posY = 460
@@ -255,6 +269,29 @@ function scene:create( event )
     })
     lblResenias:setFillColor( 1 )
     screen:insert(lblResenias)
+	
+	if item.isMe == false then
+		-- Btn Iniciar conversación
+		posY = posY + 100
+		local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
+		btnStartChat.id = item.id
+		btnStartChat:setFillColor( {
+			type = 'gradient',
+			color1 = { 129/255, 61/255, 153/255 }, 
+			color2 = { 89/255, 31/255, 103/255 },
+			direction = "bottom"
+		} )
+		screen:insert(btnStartChat)
+		btnStartChat:addEventListener( 'tap', startConversation)
+		local lblStartChat = display.newText({
+			text = "INICIAR CONVERSACIÓN", 
+			x = midW, y = posY,
+			font = native.systemFontBold,   
+			fontSize = 25, align = "center"
+		})
+		lblStartChat:setFillColor( 1 )
+		screen:insert(lblStartChat)
+	end
     
 end	
 -- Called immediately after scene has moved onscreen:

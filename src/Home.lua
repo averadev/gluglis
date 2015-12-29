@@ -80,6 +80,7 @@ function buildCard(item)
 end
 
 function showProfiles( event )
+	event.target.item.isMe = false
 	composer.removeScene( "src.Profile" )
 	composer.gotoScene( "src.Profile", { time = 400, effect = "fade", params = { item = event.target.item }})
 end
@@ -333,23 +334,6 @@ function showInfoDisplay()
     })
     lblTitle:setFillColor( 1 )
     screen:insert(lblTitle)
-	
-	--boton perfil
-	btnViewProfile = display.newRoundedRect( 570, posY + 8, 200, 54, 10 )
-    btnViewProfile.anchorY = 0
-	btnViewProfile.id = 0
-    btnViewProfile:setFillColor( 11/225, 163/225, 212/225 )
-    screen:insert(btnViewProfile)
-	btnViewProfile:addEventListener( 'tap', showProfiles )
-	
-	local lblViewProfile = display.newText({
-        text = "ver perfil:", 
-        x = 570, y = posY+35,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblViewProfile:setFillColor( 1 )
-    screen:insert(lblViewProfile)
     
     -- Options
     posY = posY + 55
@@ -383,6 +367,25 @@ function showInfoDisplay()
         detail[i].lbl:setFillColor( 0 )
         screen:insert(detail[i].lbl)
     end
+	
+	posY = posY + 50
+	
+	--btn perfil
+	btnViewProfile = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
+    btnViewProfile.anchorY = 0
+	btnViewProfile.id = 0
+    btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
+    screen:insert(btnViewProfile)
+	btnViewProfile:addEventListener( 'tap', showProfiles )
+	local lblViewProfile = display.newText({
+        text = "Ver perfil",
+        x = midW, y = posY + 32,
+        font = native.systemFontBold,
+        fontSize = 32, align = "left"
+    })
+    lblViewProfile:setFillColor( 1 )
+    screen:insert(lblViewProfile)
+	
 end
 
 -------------------------------------

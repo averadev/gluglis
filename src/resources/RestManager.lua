@@ -253,8 +253,29 @@ local RestManager = {}
         -- Do request
 		network.request( url, "GET", callback )
     end
-
-
+	
+	---------------------------------- Pantalla PROFILE ----------------------------------
+    -------------------------------------
+    -- Obtiene los usuarios por ubicacion
+    -------------------------------------
+    RestManager.startConversation = function(idUser)
+        local url = site.."api/startConversation/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		url = url.."/idUser/" .. idUser
+	
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				showNewConversation(data.item)
+				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
     ---------------------------------- Metodos Comunes ----------------------------------
     -------------------------------------
     -- Redirije al metodo de la escena
