@@ -11,24 +11,27 @@ local composer = require( "composer" )
 local Sprites = require('src.resources.Sprites')
 require('src.Menu')
 
+local scrMenu, bgShadow
+
 Tools = {}
 function Tools:new()
     -- Variables
     local self = display.newGroup()
-    local scrMenu, filtroGdacs, bgShadow, headLogo, bottomCheck, grpLoading, grpConnection, grpNoMessages
+    local filtroGdacs, headLogo, bottomCheck, grpLoading, grpConnection, grpNoMessages
     local h = display.topStatusBarContentHeight
     local fxTap = audio.loadSound( "fx/click.wav")
     self.y = h
     
     -- Creamos la el toolbar
     function self:buildHeader()
-        bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight )
-        bgShadow.alpha = 0
-        bgShadow.anchorX = 0
-        bgShadow.anchorY = 0
-        bgShadow:setFillColor( 0 )
-        self:insert(bgShadow)
-        
+		if not bgShadow then 
+			bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight )
+			bgShadow.alpha = 0
+			bgShadow.anchorX = 0
+			bgShadow.anchorY = 0
+			bgShadow:setFillColor( 0 )
+			self:insert(bgShadow)
+        end
         -- Icons
         local iconLogo = display.newImage("img/iconLogo.png")
         iconLogo:translate(display.contentWidth/2, 45)
@@ -46,8 +49,10 @@ function Tools:new()
             iconChat:addEventListener( 'tap', toScreen)
             self:insert( iconChat )
             -- Get Menu
-            scrMenu = Menu:new()
-            scrMenu:builScreen()
+			if not scrMenu then
+				scrMenu = Menu:new()
+				scrMenu:builScreen()
+			end
         else
             local icoBack = display.newImage("img/icoBack.png")
             icoBack:translate(45, 45)
@@ -165,7 +170,6 @@ function Tools:new()
         end
         -- Animate    
         local t = event.target
-		print(t.screen)
         audio.play(fxTap)
         t.alpha = 0
         timer.performWithDelay(200, function() t.alpha = 1 end, 1)
@@ -187,7 +191,6 @@ function Tools:new()
     
     -- Cerramos o mostramos shadow
     function showMenu(event)
-		
         if bgShadow.alpha == 0 then
             self:toFront()
             bgShadow:addEventListener( 'tap', showMenu)

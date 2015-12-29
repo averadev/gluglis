@@ -241,6 +241,7 @@ local RestManager = {}
     -------------------------------------
     RestManager.getUsersByCity = function()
         local url = site.."api/getUsersByCity/format/json"
+		url = url.."/idApp/" .. settings.idApp
 	
         local function callback(event)
             if ( event.isError ) then
@@ -256,7 +257,8 @@ local RestManager = {}
 	
 	---------------------------------- Pantalla PROFILE ----------------------------------
     -------------------------------------
-    -- Obtiene los usuarios por ubicacion
+    -- Inicia una nueva conversacion con los usuarios
+	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     RestManager.startConversation = function(idUser)
         local url = site.."api/startConversation/format/json"
@@ -265,9 +267,13 @@ local RestManager = {}
 	
         local function callback(event)
             if ( event.isError ) then
+				
             else
                 local data = json.decode(event.response)
-				showNewConversation(data.item)
+				if data then
+					
+					showNewConversation(data.item)
+				end
 				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
             end
             return true
