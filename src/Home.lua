@@ -392,6 +392,27 @@ end
 -- Mostramos el detalle en recuadro dinamico
 ------------------------------------
 function showInfoButton()
+
+	local posY = 870
+    
+    -- BG Component
+    
+    -- Title
+    local bgTitle = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
+    bgTitle.anchorY = 0
+    bgTitle:setFillColor( 68/255, 14/255, 98/255 )
+    screen:insert(bgTitle)
+    local lblTitle = display.newText({
+        text = "DETALLE:", 
+        x = midW, y = posY+35,
+        font = native.systemFontBold,   
+        fontSize = 25, align = "left"
+    })
+    lblTitle:setFillColor( 1 )
+    screen:insert(lblTitle)
+
+	-------
+
     local posY = 570
     
     -- Options
@@ -427,6 +448,24 @@ function showInfoButton()
         bottomCmp:insert(detail[i].lbl)
     end
     bottomCmp.alpha = 0
+	
+	posY = posY + 50
+	
+	--btn perfil
+	btnViewProfile = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
+    btnViewProfile.anchorY = 0
+	btnViewProfile.id = 0
+    btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
+    screen:insert(btnViewProfile)
+	btnViewProfile:addEventListener( 'tap', showProfiles )
+	local lblViewProfile = display.newText({
+        text = "Ver perfil",
+        x = midW, y = posY + 32,
+        font = native.systemFontBold,
+        fontSize = 32, align = "left"
+    })
+    lblViewProfile:setFillColor( 1 )
+    screen:insert(lblViewProfile)
     
     
     --[[
@@ -541,13 +580,16 @@ function scene:create( event )
     
     -- Mediante alto de la pantalla determinamos recuadro del detalle
     if isH then
-        showInfoDisplay()
+        --showInfoDisplay()
+		bottomCmp = display.newGroup()
+        screen:insert(topCmp)
+        showInfoButton()
     else
         bottomCmp = display.newGroup()
         screen:insert(topCmp)
         showInfoButton()
     end
-    
+	
     RestManager.getUsersByCity()
 end	
 
