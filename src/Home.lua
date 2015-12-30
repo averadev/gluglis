@@ -580,10 +580,7 @@ function scene:create( event )
     
     -- Mediante alto de la pantalla determinamos recuadro del detalle
     if isH then
-        --showInfoDisplay()
-		bottomCmp = display.newGroup()
-        screen:insert(topCmp)
-        showInfoButton()
+        showInfoDisplay()
     else
         bottomCmp = display.newGroup()
         screen:insert(topCmp)
