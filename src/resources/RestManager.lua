@@ -325,9 +325,15 @@ local RestManager = {}
                     if ( event.isError ) then
                     else
                         -- Eliminamos la imagen creada
-                        event.target:removeSelf()
-                        event.target = nil
-                        loadImage(obj)
+						if event.target then
+							event.target:removeSelf()
+							event.target = nil
+							loadImage(obj)
+						else
+							obj.items[obj.idx].image = "avatar.png"
+							obj.idx = obj.idx - 1
+							loadImage(obj)
+						end
                     end
                 end
                 -- Descargamos de la nube
