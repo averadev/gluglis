@@ -34,8 +34,8 @@ end
 
 --crea la informacion e inicia la conversacion(chats)
 function showNewConversation(item)
-	local tmpList = {id = 0, photo = "mariana.jpeg", name = item.display_name, subject = "", channelId = item.channel_id,
-			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0}
+	local tmpList = {id = 0, photo = item.image, name = item.display_name, subject = "", channelId = item.channel_id,
+			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier}
 	composer.removeScene( "src.Message" )
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end

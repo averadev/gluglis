@@ -44,7 +44,7 @@ local RestManager = {}
 					if data.success then
 						if #data.items > 0 then
 							--cargamos los elementos del mensaje
-							setItemsListMessages(data.items)
+							loadImage({idx = 0, name = "MessagesAvatars", path = "assets/img/avatar/", items = data.items})
 						else
 							--notificamos que no existen chats
 							notListMessages()
@@ -234,6 +234,12 @@ local RestManager = {}
 			noConnectionMessage('No se detecto conexion a internet')
 		end
     end
+	
+	
+	
+	RestManager.getImagePerfilMessage = function( item )
+        loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
+    end
 
     ---------------------------------- Pantalla HOME ----------------------------------
     -------------------------------------
@@ -271,7 +277,6 @@ local RestManager = {}
             else
                 local data = json.decode(event.response)
 				if data then
-					
 					showNewConversation(data.item)
 				end
 				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
@@ -290,6 +295,10 @@ local RestManager = {}
     function goToMethod(obj)
         if obj.name == "HomeAvatars" then
             getFirstCards(obj.items)
+		elseif  obj.name == "MessagesAvatars" then
+			setItemsListMessages(obj.items)
+		elseif  obj.name == "MessageAvatars" then
+			setImagePerfilMessage(obj.items)
         end
     end 
 
@@ -300,6 +309,7 @@ local RestManager = {}
     function loadImage(obj)
         -- Next Image
         if obj.idx < #obj.items then
+			
             -- actualizamos index
             obj.idx = obj.idx + 1
             -- Determinamos si la imagen existe
@@ -321,7 +331,14 @@ local RestManager = {}
                     end
                 end
                 -- Descargamos de la nube
-                display.loadRemoteImage( site..obj.path..img,"GET", imageListener, img, system.TemporaryDirectory ) 
+				local url
+				if obj.items[obj.idx].identifier then
+					local sizeAvatar = 'width=550&height=550'
+					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?type=large&"..sizeAvatar
+				else
+					url = site..obj.path..img
+				end
+                display.loadRemoteImage( url ,"GET", imageListener, img, system.TemporaryDirectory ) 
             end
         else
             -- Dirigimos al metodo pertinente

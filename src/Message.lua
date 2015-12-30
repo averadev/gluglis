@@ -400,6 +400,17 @@ function buildChat(poscD)
 	end
 end
 
+function setImagePerfilMessage(item)
+	local avatar = display.newImage(item.photo, system.TemporaryDirectory)
+	avatar:translate(150, 50 + h)
+	avatar.width = 80
+	avatar.height = 80
+	screen:insert( avatar )
+	local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
+	avatar:setMask( maskCircle80 )
+	
+end
+
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
@@ -435,15 +446,23 @@ function scene:create( event )
 	btnBack:translate(50, 50 + h)
     btnBack:addEventListener( 'tap', toBack)
     screen:insert( btnBack )
-
     -- Image
-	local avatar = display.newImage("img/tmp/"..item.photo)
-    avatar:translate(150, 50 + h)
-    avatar.width = 80
-    avatar.height = 80
-    screen:insert( avatar )
-    local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
-    avatar:setMask( maskCircle80 )
+	local path = system.pathForFile( item.photo, system.TemporaryDirectory )
+	local fhd = io.open( path )
+	if fhd then
+		local avatar = display.newImage(item.photo, system.TemporaryDirectory)
+		avatar:translate(150, 50 + h)
+		avatar.width = 80
+		avatar.height = 80
+		screen:insert( avatar )
+		local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
+		avatar:setMask( maskCircle80 )
+	else
+		item.image = item.photo
+		local items = {}
+		items[1] = item
+		RestManager.getImagePerfilMessage(items)
+	end
 	
 	--btn bloquear
 	local btnBlock = display.newImage("img/cancel-icon-2.png")
