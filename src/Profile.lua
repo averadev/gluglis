@@ -10,12 +10,14 @@
 -- Includes
 require('src.Tools')
 require('src.resources.Globals')
+local widget = require( "widget" )
 local composer = require( "composer" )
 RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
+local scrPerfile
 
 -- Variables
 
@@ -49,7 +51,7 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
     
-    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
+    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
@@ -57,53 +59,63 @@ function scene:create( event )
 	
     tools = Tools:new()
     tools:buildHeader()
-    screen:insert(tools)   
+    screen:insert(tools)
+
+	scrPerfile = widget.newScrollView({
+        top = 100 + h,
+        left = 0,
+        width = intW,
+        height = intH-(100+h),
+        hideBackground = true,
+		horizontalScrollDisabled = true,
+    })
+	screen:insert(scrPerfile)
     
     -- Avatar
-    local bgA1 = display.newRoundedRect( midW - 190, 290, 270, 270, 10 )
+    local bgA1 = display.newRoundedRect( midW - 190, 170, 270, 270, 10 )
     bgA1:setFillColor( 11/225, 163/225, 212/225 )
-    screen:insert(bgA1)
+    scrPerfile:insert(bgA1)
     
-    local bgA2 = display.newRect( midW - 190, 290, 240, 240 )
+    local bgA2 = display.newRect( midW - 190, 170, 240, 240 )
     bgA2:setFillColor( 0, 193/225, 1 )
-    screen:insert(bgA2)
+    scrPerfile:insert(bgA2)
     
-   -- local avatar = display.newImage("img/tmp/face01.png") item
-   local avatar = display.newImage(item.image, system.TemporaryDirectory)
-    avatar:translate(midW - 190, 290)
+	-- local avatar = display.newImage("img/tmp/face01.png") item
+	local avatar = display.newImage(item.image, system.TemporaryDirectory)
+    avatar:translate(midW - 190, 170)
     avatar.height = 230
     avatar.width = 230
-    screen:insert(avatar)
+    scrPerfile:insert(avatar)
     
     -- Personal data
     local lblName = display.newText({
         text = item.userName, 
-        x = 550, y = 300,
+        x = 550, y = 150,
         width = 400,
         font = native.systemFontBold,   
         fontSize = 35, align = "left"
     })
     lblName:setFillColor( 0 )
-    screen:insert(lblName)
+    scrPerfile:insert(lblName)
 	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
     local lblAge= display.newText({
         text = item.edad, 
-        x = 550, y = 350,
+        x = 550, y = 200,
         width = 400,
         font = native.systemFont, 
         fontSize = 35, align = "left"
     })
     lblAge:setFillColor( 0 )
-    screen:insert(lblAge)
+    scrPerfile:insert(lblAge)
     local lblInts = display.newText({
         text = "", 
-        x = 550, y = 400,
+        x = 550, y = 250,
         width = 400,
         font = native.systemFont, 
         fontSize = 25, align = "left"
     })
     lblInts:setFillColor( 0 )
-    screen:insert(lblInts)
+    scrPerfile:insert(lblInts)
 	
 	if item.hobbies then
         local max = 4
@@ -125,27 +137,27 @@ function scene:create( event )
     end
     
     -- Position
-    local posY = 460
+    local posY = 350
     
     -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
     bgComp1.anchorY = 0
     bgComp1:setFillColor( .88 )
-    screen:insert(bgComp1)
+    scrPerfile:insert(bgComp1)
     local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
-    screen:insert(bgComp2)
+    scrPerfile:insert(bgComp2)
     
     -- Title
     local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
     bgTitle.anchorY = 0
     bgTitle:setFillColor( .93 )
-    screen:insert(bgTitle)
+    scrPerfile:insert(bgTitle)
     local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
     bgTitleX.anchorY = 0
     bgTitleX:setFillColor( .93 )
-    screen:insert(bgTitleX)
+    scrPerfile:insert(bgTitleX)
     local lblTitle = display.newText({
         text = "DETALLE:", 
         x = 310, y = posY+35,
@@ -154,7 +166,7 @@ function scene:create( event )
         fontSize = 25, align = "left"
     })
     lblTitle:setFillColor( 0 )
-    screen:insert(lblTitle)
+    scrPerfile:insert(lblTitle)
 	--disponibilidad
 	local availability, iconAvailability, leng
 	local iconOpcion = {}
@@ -217,9 +229,10 @@ function scene:create( event )
         
         local ico
         if opt[i].icon ~= '' then
-            print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( screen, "img/"..opt[i].icon..".png" )
+           -- print("img/"..opt[i].icon..".png" )
+            ico = display.newImage( "img/"..opt[i].icon..".png" )
             ico:translate( 115, posY - 3 )
+			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
             text = opt[i].label, 
@@ -229,50 +242,12 @@ function scene:create( event )
             fontSize = 22, align = "left"
         })
         lbl:setFillColor( 0 )
-        screen:insert(lbl)
+        scrPerfile:insert(lbl)
     end
-    
-    -- Search Button
-    posY = posY + 110
-    local btnActividad = display.newRoundedRect( midW, posY, 650, 80, 10 )
-    btnActividad:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )
-    screen:insert(btnActividad)
-    local lblActividad = display.newText({
-        text = "VER ACTIVIDAD", 
-        x = midW, y = posY,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "center"
-    })
-    lblActividad:setFillColor( 1 )
-    screen:insert(lblActividad)
-    
-    -- Search Button
-    posY = posY + 100
-    local btnResenias = display.newRoundedRect( midW, posY, 650, 80, 10 )
-    btnResenias:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )
-    screen:insert(btnResenias)
-    local lblResenias = display.newText({
-        text = "VER RESEÑAS", 
-        x = midW, y = posY,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "center"
-    })
-    lblResenias:setFillColor( 1 )
-    screen:insert(lblResenias)
 	
 	if item.isMe == false then
 		-- Btn Iniciar conversación
-		posY = posY + 100
+		posY = posY + 120
 		local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
 		btnStartChat.id = item.id
 		btnStartChat:setFillColor( {
@@ -281,7 +256,7 @@ function scene:create( event )
 			color2 = { 89/255, 31/255, 103/255 },
 			direction = "bottom"
 		} )
-		screen:insert(btnStartChat)
+		scrPerfile:insert(btnStartChat)
 		btnStartChat:addEventListener( 'tap', startConversation)
 		local lblStartChat = display.newText({
 			text = "INICIAR CONVERSACIÓN", 
@@ -290,7 +265,7 @@ function scene:create( event )
 			fontSize = 25, align = "center"
 		})
 		lblStartChat:setFillColor( 1 )
-		screen:insert(lblStartChat)
+		scrPerfile:insert(lblStartChat)
 	end
     
 end	
