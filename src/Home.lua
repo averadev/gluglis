@@ -322,7 +322,7 @@ end
 ------------------------------------
 function showInfoDisplay()
     -- Position
-    local posY = 850
+    local posY = 830 + h
     
     -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, intW - 160, 390, 10 )
@@ -411,7 +411,7 @@ end
 ------------------------------------
 function showInfoButton()
 
-	local posY = 890
+	local posY = 830 + h
 	
 	grpBtnDetail = display.newGroup()
     screen:insert( grpBtnDetail )
@@ -423,13 +423,13 @@ function showInfoButton()
 	bgTitle.flag = 0
     grpBtnDetail:insert(bgTitle)
 	bgTitle:addEventListener( 'tap', showDetail )
-    local Circle1 = display.newCircle( 320, posY + 35, 20 )
+    local Circle1 = display.newCircle( 320, posY + 35, 12 )
 	Circle1:setFillColor( 1 )
 	grpBtnDetail:insert(Circle1)
-	local Circle2 = display.newCircle( 384, posY + 35, 20 )
+	local Circle2 = display.newCircle( 384, posY + 35, 12 )
 	Circle2:setFillColor( 1 )
 	grpBtnDetail:insert(Circle2)
-	local Circle3 = display.newCircle( 448, posY + 35, 20 )
+	local Circle3 = display.newCircle( 448, posY + 35, 12 )
 	Circle3:setFillColor( 1 )
 	grpBtnDetail:insert(Circle3)
 
