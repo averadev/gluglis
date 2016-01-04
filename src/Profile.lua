@@ -42,6 +42,15 @@ function showNewConversation(item)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
 
+--pinta el avatar
+function setImagePerfil( item )
+	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
+	avatar:translate(midW - 190, 170)
+	avatar.height = 230
+	avatar.width = 230
+	scrPerfile:insert(avatar)
+end
+
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
@@ -81,11 +90,22 @@ function scene:create( event )
     scrPerfile:insert(bgA2)
     
 	-- local avatar = display.newImage("img/tmp/face01.png") item
-	local avatar = display.newImage(item.image, system.TemporaryDirectory)
-    avatar:translate(midW - 190, 170)
-    avatar.height = 230
-    avatar.width = 230
-    scrPerfile:insert(avatar)
+	local path = system.pathForFile( item.image, system.TemporaryDirectory )
+	local fhd = io.open( path )
+	if fhd then
+		local avatar = display.newImage(item.image, system.TemporaryDirectory)
+		avatar:translate(midW - 190, 170)
+		avatar.height = 230
+		avatar.width = 230
+		scrPerfile:insert(avatar)
+	else
+		--item.image = item.image
+		local items = {}
+		items[1] = item
+		RestManager.getImagePerfile(items)
+	end
+	
+	
     
     -- Personal data
     local lblName = display.newText({

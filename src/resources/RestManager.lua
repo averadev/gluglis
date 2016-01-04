@@ -235,8 +235,7 @@ local RestManager = {}
 		end
     end
 	
-	
-	
+	--obtiene el avatar de messajes, en caso de no existir en fichero interno
 	RestManager.getImagePerfilMessage = function( item )
         loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
     end
@@ -287,6 +286,11 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	--obtiene el avatar de messajes, en caso de no existir en fichero interno
+	RestManager.getImagePerfile = function( item )
+        loadImage({idx = 0, name = "ProfileAvatars", path = "assets/img/avatar/", items = item})
+    end
+	
     ---------------------------------- Metodos Comunes ----------------------------------
     -------------------------------------
     -- Redirije al metodo de la escena
@@ -299,6 +303,8 @@ local RestManager = {}
 			setItemsListMessages(obj.items)
 		elseif  obj.name == "MessageAvatars" then
 			setImagePerfilMessage(obj.items)
+        elseif  obj.name == "ProfileAvatars" then
+			setImagePerfil(obj.items)
         end
     end 
 

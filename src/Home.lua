@@ -88,19 +88,19 @@ end
 
 --muestra detalles cuando la pantalla es chica
 function showDetail( event )
-	
 	if event.target.flag == 0 then
 		topCmp.y = -850
 		grpBtnDetail.y = grpBtnDetail.y - 350
 		bottomCmp.alpha = 1
 		event.target.flag = 1
+		screen:removeEventListener( "touch", touchScreen )
 	else
 		bottomCmp.alpha = 0
 		topCmp.y =  -500
 		grpBtnDetail.y = 0
 		event.target.flag = 0
+		screen:addEventListener( "touch", touchScreen )
 	end
-	
 end
 
 -------------------------------------
