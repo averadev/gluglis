@@ -73,6 +73,16 @@ local dbManager = {}
 		
 		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER );"
 		db:exec( query )
+		
+		local countFilter = 0
+		for row in db:nrows("SELECT * FROM filter;") do
+			countFilter = countFilter + 1
+		end
+		print(countFilter)
+		if countFilter == 0 then
+			query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
+			db:exec( query )
+		end
 
 		for row in db:nrows("SELECT * FROM config;") do
 			closeConnection( )
@@ -83,8 +93,7 @@ local dbManager = {}
 		--query = "INSERT INTO config VALUES (1, 0, '', '', '', 'http://localhost:8080/gluglis_api/');"
 		db:exec( query )
 		
-		query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
-		db:exec( query )
+		
     
 		closeConnection( )
     
