@@ -30,7 +30,8 @@ function Tools:new()
 			bgShadow.anchorX = 0
 			bgShadow.anchorY = 0
 			bgShadow:setFillColor( 0 )
-			self:insert(bgShadow)
+			--self:insert(bgShadow)
+			bgShadow:addEventListener( 'tap', showMenu)
         end
         -- Icons
         local iconLogo = display.newImage("img/iconLogo.png")
@@ -193,11 +194,11 @@ function Tools:new()
     function showMenu(event)
         if bgShadow.alpha == 0 then
             self:toFront()
-            bgShadow:addEventListener( 'tap', showMenu)
+            --bgShadow:addEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = .3, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = 0, time = 400, transition = easing.outExpo } )
         else
-            bgShadow:removeEventListener( 'tap', showMenu)
+            --bgShadow:removeEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = 0, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = -500, time = 400, transition = easing.outExpo })
         end

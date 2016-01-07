@@ -41,20 +41,23 @@ local dbManager = {}
 		return 1
 	end
 	
-	dbManager.saveMessageChat = function(idApp, channel, message, dateM)
-		openConnection( )
+	--obtiene la configuracion del filtro
+	dbManager.getSettingFilter = function()
 		local result = {}
-		for row in db:nrows("SELECT * FROM chats;") do
-			result[#result + 1] = row
+		openConnection( )
+		for row in db:nrows("SELECT * FROM filter;") do
+			closeConnection( )
+			return  row
 		end
-		local idChat = 0
-		if #result == 0 then
-			idChat = 1
-		else
-			idChat = result[#result].id + 1
-		end
-		local query = "INSERT INTO chats VALUES ('" .. idChat .."', '" .. idApp .."', '" .. channel .."', '" .. message .."', '" .. dateM .."', '0');"
-		db:exec( query )
+		closeConnection( )
+		return 1
+	end
+	
+	--actualiza la configuracion de los filtros
+	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge )
+		openConnection( )
+        local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."';"
+        db:exec( query )
 		closeConnection( )
 	end
 
@@ -65,7 +68,10 @@ local dbManager = {}
 		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_login TEXT, user_email TEXT, display_name TEXT, url TEXT);"
 		db:exec( query )
 		
-		local query = "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, idUser INTEGER, channel INTEGER, message TEXT, date TEXT, sent INTEGER );"
+		--local query = "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, idUser INTEGER, channel INTEGER, message TEXT, date TEXT, sent INTEGER );"
+		--db:exec( query )
+		
+		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER );"
 		db:exec( query )
 
 		for row in db:nrows("SELECT * FROM config;") do
@@ -75,6 +81,9 @@ local dbManager = {}
 
 		query = "INSERT INTO config VALUES (1, 1, '', '', '', 'http://geekbucket.com.mx/gluglis/');"
 		--query = "INSERT INTO config VALUES (1, 0, '', '', '', 'http://localhost:8080/gluglis_api/');"
+		db:exec( query )
+		
+		query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
 		db:exec( query )
     
 		closeConnection( )

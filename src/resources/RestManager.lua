@@ -260,6 +260,44 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	RestManager.getUsersByFilter = function()
+	
+		local settFilter = DBManager.getSettingFilter()
+		
+        local url = site.."api/getUsersByFilter/format/json"
+		url = url.."/idApp/" 	.. settings.idApp
+		url = url.."/city/" 	.. urlencode(settFilter.city)
+		url = url.."/iniDate/" 	.. urlencode(settFilter.iniDate)
+		url = url.."/endDate/" 	.. urlencode(settFilter.endDate)
+		url = url.."/genH/" 	.. settFilter.genH
+		url = url.."/genM/" 	.. settFilter.genM
+		url = url.."/iniAge/" 	.. settFilter.iniAge
+		url = url.."/endAge/" 	.. settFilter.endAge
+	
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						local data = json.decode(event.response)
+						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+					else
+						noConnectionMessage('Error con el servidor')
+					end
+				else
+					noConnectionMessage('Error con el servidor')
+				end
+				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	
+	
 	---------------------------------- Pantalla PROFILE ----------------------------------
     -------------------------------------
     -- Inicia una nueva conversacion con los usuarios
@@ -289,6 +327,34 @@ local RestManager = {}
 	--obtiene el avatar de messajes, en caso de no existir en fichero interno
 	RestManager.getImagePerfile = function( item )
         loadImage({idx = 0, name = "ProfileAvatars", path = "assets/img/avatar/", items = item})
+    end
+	
+	---------------------------------- Pantalla FILTER ----------------------------------
+    -------------------------------------
+    -- Obtiene los usuarios por ubicacion
+    -------------------------------------
+    RestManager.getCity = function(city)
+        local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
+		url = url .. city
+		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.status == "OK" then
+						showCities(data.predictions)
+					elseif data.status == "ZERO_RESULTS" then
+						showCities(0)
+					end
+				else
+				end
+				--print(json.encode(event.response.status))
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
     end
 	
     ---------------------------------- Metodos Comunes ----------------------------------

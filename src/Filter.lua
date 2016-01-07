@@ -12,14 +12,17 @@ require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
+local DBManager = require('src.resources.DBManager')
+local RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local grpTextField, grpDatePicker
+local grpTextField, grpDatePicker, grpScrCity
 
 -- Variables
-local txtLocation, txtIniDate, txtEndDate, txtIniAge, txtEndAge
+local settFilter
+local txtLocation
 local datePicker
 local days = {}
 local months = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"}
@@ -37,15 +40,118 @@ function method()
     
 end
 
+function noAction( event )
+	return true
+end
+
+function closeAll( event )
+	if grpScrCity then
+		grpScrCity:removeSelf()
+		grpScrCity = nil
+	end
+	return true
+end
+
+--filtra los usuarios por las preferencias
+function filterUser( event )
+	closeAll( 0 )
+	local textLocation = txtLocation.text
+	if txtLocation.text == "" or txtLocation.text == " " or txtLocation.text == "  "then
+		textLocation = 0
+	end
+	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, genH.alpha, genM.alpha, lblSlider1.text, lblSlider2.text )
+	composer.removeScene( "src.Home" )
+    composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
+	--RestManager.getUsersByFilter()
+end
+
+--seleciona la ciudades
+function selectCity( event )
+	txtLocation.text = event.target.city
+	event.target.alpha = .5
+
+	timeMarker = timer.performWithDelay( 100, function()
+		event.target.alpha = 1
+		if grpScrCity then
+			grpScrCity:removeSelf()
+			grpScrCity = nil
+		end
+	end, 1 )
+	return true
+end
+
+--muestra las ciudades buscadas
+function showCities(item)
+
+	if grpScrCity then
+		grpScrCity:removeSelf()
+		grpScrCity = nil
+	end
+
+	grpScrCity = display.newGroup()
+	screen:insert( grpScrCity )
+
+	local bgComp1 = display.newRect( 453, 320, 410, 340 )
+    bgComp1.anchorY = 0
+    bgComp1:setFillColor( .88 )
+    grpScrCity:insert(bgComp1)
+	bgComp1:addEventListener( 'tap', noAction )
+	
+	if item ~= 0 then
+		local posY = 321
+		for i = 1, #item do
+			local bg0 = display.newRect( 453, posY, 406, 60 )
+			bg0.anchorY = 0
+			bg0.city = item[i].description
+			bg0:setFillColor( 1 )
+			grpScrCity:insert(bg0)
+			bg0:addEventListener( 'tap', selectCity )
+			
+			local lbl0 = display.newText({
+				text = item[i].description, 
+				x = 453, y = posY + 50,
+				width = 390, height = 60,
+				font = native.systemFont,   
+				fontSize = 20, align = "left"
+			})
+			lbl0:setFillColor( 0 )
+			grpScrCity:insert(lbl0)
+			
+			posY = posY + 63
+		end
+		bgComp1.height = 63 * #item + 2
+		
+	else
+	
+	end
+end
+
+--evento focus del textField
+function onTxtFocusFilter( event )
+	if ( event.phase == "began" ) then
+	
+    elseif ( event.phase == "ended" or event.phase == "submitted" ) then
+		native.setKeyboardFocus(nil)
+    elseif ( event.phase == "editing" ) then
+		RestManager.getCity(txtLocation.text)
+    end
+end
+
 --
 function changeGender( event )
 	
 	if event.target.name == "M" then
-		genH.alpha = 0
-		genM.alpha = 1
+		if genM.alpha == 0 then
+			genM.alpha = 1
+		else
+			genM.alpha = 0
+		end
 	else
-		genM.alpha = 0
-		genH.alpha = 1
+		if genH.alpha == 0 then
+			genH.alpha = 1
+		else
+			genH.alpha = 0
+		end
 	end
 	
 end
@@ -324,8 +430,8 @@ function destroyDatePicker( event )
 		local year = years[poscTabla[3]]
 		if month < 10 then month = "0" .. month end
 		if day < 10 then day = "0" .. day end
-		local dateS = month .. "/" .. day .. "/" .. year
-		local dateS2 = year .. "/" .. day .. "/" .. month
+		local dateS = day .. "/" .. month .. "/" .. year
+		local dateS2 = year .. "-" .. month .. "-" .. day
 		if event.target.type == "iniDate" then
 			lblIniDate.text = dateS
 			lblIniDate.date = dateS2
@@ -344,35 +450,53 @@ end
 
 --creamos los textField y opciones
 function createTextField( name, wField, coordX, coordY  )
+	local s
+	if name == "iniDate" then
+		s = settFilter.iniDate
+	else
+		s = settFilter.endDate
+	end
+
+	local t = {}
+	for Ye, Mi, Da in string.gmatch( s, "(%w+)-(%w+)-(%w+)" ) do
+		t[1] = Ye
+		t[2] = Mi
+		t[3] = Da
+	end
+		
+	local dateC = t[3] .. "-" .. t[2] .. "-" .. t[1]
+
 	if name == "location" then
 		txtLocation = native.newTextField( coordX, coordY, wField, 50 )
 		txtLocation.anchorX = 1
 		txtLocation.inputType = "default"
 		txtLocation.hasBackground = false
-		--txtLocation:addEventListener( "userInput", onTxtFocus )
+		txtLocation:addEventListener( "userInput", onTxtFocusFilter )
 		txtLocation:setReturnKey( "next" )
 		grpTextField:insert( txtLocation )
+		grpTextField.text = settFilter.city
 	elseif name == "iniDate" then
+	
 		lblIniDate = display.newText({
-            text = "00/00/0000", 
+            text = dateC, 
             x = coordX - 60, y = coordY,
             width = 140,
             font = native.systemFont,   
             fontSize = 24, align = "left"
         })
         lblIniDate:setFillColor( 0 )
-		lblIniDate.date = "00/00/0000"
+		lblIniDate.date = settFilter.iniDate
         screen:insert(lblIniDate)
 	elseif name == "endDate" then
 		lblEndDate = display.newText({
-            text = "00/00/0000", 
+            text = dateC, 
             x = coordX - 60, y = coordY,
             width = 140,
             font = native.systemFont,   
             fontSize = 24, align = "left"
         })
         lblEndDate:setFillColor( 0 )
-		lblEndDate.date = "00/00/0000"
+		lblEndDate.date = settFilter.endDate
         screen:insert(lblEndDate)
 	end
 end
@@ -383,6 +507,10 @@ end
 ---------------------------------------------------------------------------------
 
 function scene:create( event )
+
+	--obtiene la configuracion de los filtros
+	settFilter = DBManager.getSettingFilter()
+
 	screen = self.view
     screen.y = h
     
@@ -393,6 +521,7 @@ function scene:create( event )
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
+	o:addEventListener( 'tap', closeAll )
 	
     tools = Tools:new()
     tools:buildHeader()
@@ -521,7 +650,7 @@ function scene:create( event )
 	--slider
 	
 	lblSlider1 = display.newText({
-        text = 18, 
+        text = settFilter.iniAge, 
         x = 340, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
@@ -530,7 +659,7 @@ function scene:create( event )
     screen:insert(lblSlider1)
 	
 	lblSlider2 = display.newText({
-        text = 99, 
+        text = settFilter.endAge, 
         x = 650, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
@@ -542,7 +671,7 @@ function scene:create( event )
         top = posY - 20,
         left = 370,
         width = 250,
-        value = 18,  -- Start slider at 10% (optional)
+        value = settFilter.iniAge,  -- Start slider at 10% (optional)
         listener = sliderListener
     })
 	slider1.name = "slider1"
@@ -553,7 +682,7 @@ function scene:create( event )
         top = posY + 20 ,
         left = 370,
         width = 250,
-        value = 99,  -- Start slider at 10% (optional)
+        value = settFilter.endAge,  -- Start slider at 10% (optional)
         listener = sliderListener
     })
 	slider2.name = "slider2"
@@ -562,9 +691,10 @@ function scene:create( event )
     -- Genero
     genH = display.newImage( screen, "img/icoFilterH.png" )
     genH:translate( 350, posY - 90 )
+	genH.alpha = settFilter.genH
     genM = display.newImage( screen, "img/icoFilterM.png" )
     genM:translate( 548, posY - 90 )
-	genM.alpha = 0
+	genM.alpha = settFilter.genM
     
     -- Search Button
     posY = posY + 150
@@ -576,6 +706,7 @@ function scene:create( event )
         direction = "bottom"
     } )
     screen:insert(btnSearch)
+	btnSearch:addEventListener( 'tap', filterUser )
     local lblSearch = display.newText({
         text = "BUSCAR", 
         x = midW, y = posY,
@@ -586,6 +717,8 @@ function scene:create( event )
     screen:insert(lblSearch)
     
 	setDate()
+-- or
+	--webView:request( "localfile.html", system.ResourceDirectory )
 	
 end	
 -- Called immediately after scene has moved onscreen:
@@ -597,6 +730,7 @@ end
 
 -- Hide scene
 function scene:hide( event )
+	native.setKeyboardFocus(nil)
 	if grpTextField then
 		grpTextField.x = -intW
 	end

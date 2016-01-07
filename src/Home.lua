@@ -604,7 +604,7 @@ function scene:create( event )
         showInfoButton()
     end
 	
-    RestManager.getUsersByCity()
+    RestManager.getUsersByFilter()
 end	
 
 -------------------------------------
