@@ -52,7 +52,10 @@ function facebookListener( event )
         local response = event.response
 		if ( not event.isError ) then
 	        response = json.decode( event.response )
-			print(" --- idFB: "..response.id)
+            composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+            
+            
+			
             if not (response.email == nil) then
                 -- Birthday user
 				--[[local birthday = ""
@@ -62,8 +65,8 @@ function facebookListener( event )
                 end]]
                 
                 --RestManager.createUser(response.email, ' ', response.name, response.id)
-				composer.removeScene( "src.Home" )
-				composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+				--composer.removeScene( "src.Home" )
+				
             end
         else
 			-- printTable( event.response, "Post Failed Response", 3 )
@@ -178,29 +181,6 @@ function newScr(idx)
 		end
 	end
     
-    -- Changes titles
-    --[[if idx == 4 then
-        lblTitle1.alpha = 1
-        lblTitle2.alpha = 1
-        lblTitle3.alpha = 1
-        lblTitle4.alpha = 0
-        lblTitle5.alpha = 0
-        lblTitle6.alpha = 0
-    elseif idx == 5 or idx == 6 then
-        lblTitle1.alpha = 0
-        lblTitle2.alpha = 0
-        lblTitle3.alpha = 0
-        lblTitle4.alpha = 1
-        lblTitle5.alpha = 1
-        lblTitle6.alpha = 1
-        lblTitle4.text = Globals.language.loginTitle4B
-        lblTitle5.text = Globals.language.loginTitle5B 
-        lblTitle6.text = Globals.language.loginTitle6B
-    elseif idx == 7 then
-        lblTitle4.text = Globals.language.loginTitle4C
-        lblTitle5.text = Globals.language.loginTitle5C 
-        lblTitle6.text = Globals.language.loginTitle6c
-    end]]
 end
 
 ---------------------------------------------------------------------------------
