@@ -45,7 +45,7 @@ end
 function facebookListener( event )
 
     if ( "session" == event.type ) then
-		local params = { fields = "email,name,id" }
+		local params = { fields = "name,id,email" }
         facebook.request( "me", "GET", params )
 
     elseif ( "request" == event.type ) then
@@ -72,7 +72,7 @@ function facebookListener( event )
 end
 
 function loginFB(event)
-    facebook.login( facebookListener )
+    facebook.login( facebookListener, {"public_profile","email"} )
 end
 
 -- Listener Touch Screen
