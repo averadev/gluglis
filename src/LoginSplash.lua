@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
 -- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis 2015
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -12,6 +12,8 @@ require('src.resources.Globals')
 local composer = require( "composer" )
 local DBManager = require('src.resources.DBManager')
 local fxTap = audio.loadSound( "fx/click.wav")
+local facebook = require("plugin.facebook.v4")
+local json = require("json")
 
 -- Grupos y Contenedores
 local screen, grpScreens
@@ -34,6 +36,44 @@ local labelTitle, labelSubTitle
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
+
+function toLoginUserName(event)
+    --composer.removeScene( "src.LoginUserName" )
+    --composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
+end
+
+function facebookListener( event )
+
+    if ( "session" == event.type ) then
+		local params = { fields = "email,name,id" }
+        facebook.request( "me", "GET", params )
+
+    elseif ( "request" == event.type ) then
+        local response = event.response
+		if ( not event.isError ) then
+	        response = json.decode( event.response )
+			print(" --- idFB: "..response.id)
+            if not (response.email == nil) then
+                -- Birthday user
+				--[[local birthday = ""
+                if not (response.birthday == nil) then
+                    --birthday = response.birthday
+                    birthday = string.gsub( response.birthday, "/", "-", 2 )
+                end]]
+                
+                --RestManager.createUser(response.email, ' ', response.name, response.id)
+				composer.removeScene( "src.Home" )
+				composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+            end
+        else
+			-- printTable( event.response, "Post Failed Response", 3 )
+		end
+    end
+end
+
+function loginFB(event)
+    facebook.login( facebookListener )
+end
 
 -- Listener Touch Screen
 function touchScreen(event)
@@ -175,7 +215,6 @@ function scene:create( event )
     o:setFillColor( 1 )   
     screen:insert(o)
 	local posYBg = intH - 200
-	print(intH)
     if (intH > 1366) then
         posYBg = 1166
     elseif (intH < 1100) then
@@ -192,12 +231,9 @@ function scene:create( event )
 	
 	grpScreens = display.newGroup()
 	screen:insert(grpScreens)
-	
-	print(subFig)
     
     -- screens
     for i = 1, 4 do
-        --sshots[i] = display.newImage("img/bgk/screen"..i..".png", true) 
 		sshots[i] = display.newImage("img/bgk/screen"..i..subFig..".png", true) 
         sshots[i].x = midW + 402
         sshots[i].anchorY  = 1
@@ -206,8 +242,7 @@ function scene:create( event )
     end
     sshots[1].x = midW
 	
-	bgSplash2 = display.newImage("img/bgk/bgPhone"..subFig..".png", true) 
-	--bgSplash2 = display.newImage("img/bgk/bgPhone.png", true) 
+	bgSplash2 = display.newImage("img/bgk/bgPhone"..subFig..".png", true)
 	bgSplash2.anchorX = 0
     bgSplash2.x = 0
     bgSplash2.anchorY  = 1
@@ -229,8 +264,9 @@ function scene:create( event )
 	
 	local bgTextHeard = display.newRect( midW, 50, intW, 150  )
 	bgTextHeard.anchorY = 0
-	bgTextHeard:setFillColor( 79/255, 168/255, 188/255, .5 )
+	bgTextHeard:setFillColor( .3 )
 	screen:insert(bgTextHeard)
+	bgTextHeard.alpha = .3
 	
 	labelTitle = display.newText( {
 		text = "ESTA POR COMENZAR,\nEL MEJOR VIAJE DE TU VIDA...",
@@ -283,7 +319,7 @@ function scene:create( event )
     
     local btn = display.newRoundedRect( midW, posYBg + 80, 600, 95, 10 )
 	btn:setFillColor( 0, 109/255, 175/255 )
-    --btn:addEventListener( "tap", loginFB )
+    btn:addEventListener( "tap", loginFB )
 	screen:insert(btn)
 	
 	local lblBtn = display.newText( {
@@ -296,10 +332,10 @@ function scene:create( event )
     screen:insert(lblBtn)
 	
 	-- User / Email
-    local bgBtnUserName = display.newRect( 140, posYBg + 164, 160, 50 )
-	bgBtnUserName:setFillColor( 1 )
-    bgBtnUserName.alpha = .01
-    --bgBtnUserName:addEventListener( "tap", toLoginUserName )
+    local bgBtnUserName = display.newRect( 240, posYBg + 198, 200, 100 )
+	bgBtnUserName:setFillColor( 0 )
+    bgBtnUserName.alpha = .02
+    bgBtnUserName:addEventListener( "tap", toLoginUserName )
 	screen:insert(bgBtnUserName)
 	
 	local lblBottom = display.newText( {
