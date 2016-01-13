@@ -13,7 +13,7 @@ local dbManager = {}
 	--Open rackem.db.  If the file doesn't exist it will be created
 	local function openConnection( )
 	    path = system.pathForFile("care.db", system.DocumentsDirectory)
-	    db = sqlite3.open( path )     
+	    db = sqlite3.open( path )
 	end
 
 	local function closeConnection( )
@@ -53,6 +53,14 @@ local dbManager = {}
 		return 1
 	end
 	
+	--actualiza la informacion de los usuarios
+	dbManager.updateUser = function(idApp, user_login, user_email, display_name, facebookId )
+		openConnection( )
+        local query = "UPDATE config SET idApp = '"..idApp.."', user_email = '"..user_email.."', display_name = '"..display_name.."';"
+        db:exec( query )
+		closeConnection( )
+	end
+	
 	--actualiza la configuracion de los filtros
 	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge )
 		openConnection( )
@@ -65,11 +73,8 @@ local dbManager = {}
 	dbManager.setupSquema = function()
 		openConnection( )
 		
-		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_login TEXT, user_email TEXT, display_name TEXT, url TEXT);"
+		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_email TEXT, display_name TEXT, url TEXT);"
 		db:exec( query )
-		
-		--local query = "CREATE TABLE IF NOT EXISTS chats (id INTEGER PRIMARY KEY, idUser INTEGER, channel INTEGER, message TEXT, date TEXT, sent INTEGER );"
-		--db:exec( query )
 		
 		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER );"
 		db:exec( query )
@@ -78,26 +83,40 @@ local dbManager = {}
 		for row in db:nrows("SELECT * FROM filter;") do
 			countFilter = countFilter + 1
 		end
-		print(countFilter)
 		if countFilter == 0 then
 			query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
 			db:exec( query )
 		end
-
-		for row in db:nrows("SELECT * FROM config;") do
-			closeConnection( )
-			do return end
+		
+		--[[local oldVersion = true
+		for row in db:nrows("PRAGMA table_info(config);") do
+			if row.name == 'facebookId' then
+				oldVersion = false
+            end
 		end
+		
+		if oldVersion then
+			local query = "ALTER TABLE config ADD COLUMN facebookId TEXT;"
+            db:exec( query )
+			oldVersion = true
+		end]]
 
-		query = "INSERT INTO config VALUES (1, 1, '', '', '', 'http://geekbucket.com.mx/gluglis/');"
-		--query = "INSERT INTO config VALUES (1, 0, '', '', '', 'http://localhost:8080/gluglis_api/');"
+		for row in db:nrows("SELECT idApp FROM config;") do
+            closeConnection( )
+            if row.idApp == 0 then
+                return false
+            else
+                return true
+            end
+		end
+		
+		query = "INSERT INTO config VALUES (1, 0, '', '', 'http://geekbucket.com.mx/gluglis/');"
+		--query = "INSERT INTO config VALUES (1, 0, '', '', 'http://localhost:8080/gluglis_api/');"
 		db:exec( query )
-		
-		
-    
+		    
 		closeConnection( )
     
-        return 1
+        return false
 	end
 	
 	--setup the system listener to catch applicationExit

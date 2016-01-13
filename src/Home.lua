@@ -34,6 +34,14 @@ local btnViewProfile
 ---------------------------------- FUNCIONES ----------------------------------
 
 -------------------------------------
+-- carga los datos del usuario
+------------------------------------
+function getUserPerfil(item)
+	itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
+	residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}
+end
+
+-------------------------------------
 -- Creamos primera tanda de tarjetas
 ------------------------------------
 function getFirstCards(items)
@@ -603,7 +611,7 @@ function scene:create( event )
         screen:insert(bottomCmp)
         showInfoButton()
     end
-	
+	RestManager.getUsersById()
     RestManager.getUsersByFilter()
 end	
 

@@ -6,6 +6,7 @@
 
 display.setStatusBar( display.TranslucentStatusBar )
 local json = require("json")
+require('src.resources.Globals')
 local composer = require( "composer" )
 local DBManager = require('src.resources.DBManager')
 display.setDefault( "background", 0 )
@@ -16,7 +17,13 @@ display.setDefault( "textureWrapX", "clampToEdge" )
 display.setDefault( "textureWrapY", "clampToEdge" ) 
 
 local isUser = DBManager.setupSquema()
-composer.gotoScene("src.LoginSplash")
+if isUser then
+	composer.gotoScene("src.Home")
+else
+	composer.gotoScene("src.LoginSplash")
+end
+--composer.gotoScene("src.LoginSplash")
+--composer.gotoScene("src.LoginUserName")
 
 ---------------------Notificaciones---------------------------
 
@@ -72,6 +79,7 @@ OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "203224641778", DidReceiv
 -- obtiene el token por telefono
 ------------------------------------------------
 function IdsAvailable(playerID, pushToken)
+	playerId = playerID
   --print("PLAYER_ID:" .. playerID)
 	--Globals.playerIdToken = playerID
 end

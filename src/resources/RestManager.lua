@@ -24,6 +24,59 @@ local RestManager = {}
           return str    
     end
 	
+	---------------------------------- Pantalla Login ----------------------------------
+	-------------------------------------
+    -- da de alta un nuevo usuario
+    -------------------------------------
+	RestManager.createUser = function(email, password, name, gender, facebookId, playerId)
+	
+        -- Set url
+		password = crypto.digest(crypto.md5, password)
+        local url = site
+        url = url.."api/createUser/format/json"
+        url = url.."/idApp/"..settings.idApp
+		url = url.."/email/"..urlencode(email)
+		url = url.."/pass/"..urlencode(password)
+		if name ~= "" then
+			url = url.."/name/"..urlencode(name)
+		end
+		if gender ~= "" then
+			url = url.."/gender/"..urlencode(gender)
+		end
+		if facebookId ~= "" then
+			url = url.."/facebookId/"..urlencode(facebookId)
+		end
+		url = url.."/playerId/"..urlencode(playerId)
+	
+        local function callback(event)
+            if ( event.isError ) then
+				print('error')
+				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						print('hola')
+						DBManager.updateUser(data.idApp, email, name, facebookId)
+						gotoHome()
+					else
+						--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					end
+				else
+					--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				end
+            end
+            return true
+        end
+        -- Do request
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			--notifica si no existe conexion a internet
+			noConnectionMessages('No se detecto conexion a internet')
+		end
+    end
+	
 	---------------------------------- Pantalla Messages ----------------------------------
 	
     -------------------------------------
@@ -241,6 +294,30 @@ local RestManager = {}
     end
 
     ---------------------------------- Pantalla HOME ----------------------------------
+	
+	-------------------------------------
+    -- Obtiene los datos del usuario por id
+    -------------------------------------
+    RestManager.getUsersById = function()
+		local settings = DBManager.getSettings()
+		local site = settings.url
+        local url = site.."api/getUsersById/format/json"
+		url = url.."/idApp/" .. settings.idApp
+	
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if #data.items > 0 then
+					loadImage({idx = 0, name = "UserAvatars", path = "assets/img/avatar/", items = data.items})
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
     -------------------------------------
     -- Obtiene los usuarios por ubicacion
     -------------------------------------
@@ -365,6 +442,8 @@ local RestManager = {}
     function goToMethod(obj)
         if obj.name == "HomeAvatars" then
             getFirstCards(obj.items)
+		elseif  obj.name == "UserAvatars" then
+			getUserPerfil(obj.items[1])
 		elseif  obj.name == "MessagesAvatars" then
 			setItemsListMessages(obj.items)
 		elseif  obj.name == "MessageAvatars" then
@@ -411,8 +490,9 @@ local RestManager = {}
                 -- Descargamos de la nube
 				local url
 				if obj.items[obj.idx].identifier then
+					print('sadas')
 					local sizeAvatar = 'width=550&height=550'
-					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?type=large&"..sizeAvatar
+					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 				else
 					url = site..obj.path..img
 				end

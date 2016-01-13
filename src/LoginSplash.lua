@@ -10,9 +10,11 @@
 -- Includes
 require('src.resources.Globals')
 local composer = require( "composer" )
-local DBManager = require('src.resources.DBManager')
 local fxTap = audio.loadSound( "fx/click.wav")
 local facebook = require("plugin.facebook.v4")
+local DBManager = require('src.resources.DBManager')
+local RestManager = require('src.resources.RestManager')
+
 local json = require("json")
 
 -- Grupos y Contenedores
@@ -42,31 +44,23 @@ function toLoginUserName(event)
     --composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
 end
 
+function gotoHome()
+	composer.removeScene( "src.Home" )
+    composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+end
+
 function facebookListener( event )
 
     if ( "session" == event.type ) then
-		local params = { fields = "name,id,email" }
+		local params = { fields = "id,name,first_name,last_name,gender,locale,email" }
         facebook.request( "me", "GET", params )
 
     elseif ( "request" == event.type ) then
         local response = event.response
 		if ( not event.isError ) then
 	        response = json.decode( event.response )
-            composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
-            
-            
-			
             if not (response.email == nil) then
-                -- Birthday user
-				--[[local birthday = ""
-                if not (response.birthday == nil) then
-                    --birthday = response.birthday
-                    birthday = string.gsub( response.birthday, "/", "-", 2 )
-                end]]
-                
-                --RestManager.createUser(response.email, ' ', response.name, response.id)
-				--composer.removeScene( "src.Home" )
-				
+                RestManager.createUser(response.email, '', response.name, response.gender, response.id, playerId)
             end
         else
 			-- printTable( event.response, "Post Failed Response", 3 )
@@ -75,6 +69,7 @@ function facebookListener( event )
 end
 
 function loginFB(event)
+	--RestManager.createUser("a", '', "a", "male", "111", "000")
     facebook.login( facebookListener, {"public_profile","email"} )
 end
 
@@ -90,15 +85,6 @@ function touchScreen(event)
             elseif x > 10 and idxScr > 1 then
                 direction = -1
             end
-            -- Stop&Hide button show
-            --transition.cancel( "transButton" )
-            --[[for z = 1, #btnLoginS do
-                if btnLoginS[z].alpha > 0 then 
-                    btnLoginS[z].alpha = 0  
-                    btnLoginS[z].width = 2
-                    btnLoginS[z].height = 2
-                end
-            end]]
         elseif direction == 1 then
             -- Mover pantalla
             if x < 0 and x > -320 then
@@ -118,8 +104,6 @@ function touchScreen(event)
         end
     elseif event.phase == "ended" or event.phase == "cancelled" then
         local x = (event.x - event.xStart)
-		-- Inter Screens rigth to left
-		--if direction == 1 and idxScr > 1 then
         if direction == 1 then
             if x > -150 then 
                 -- Cancel

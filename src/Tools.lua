@@ -180,7 +180,8 @@ function Tools:new()
         else
             composer.removeScene( "src."..t.screen )
 			if t.screen == "Profile" then
-				local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico", isMe = true}
+				
+				--local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico", isMe = true}
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
 			else
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
