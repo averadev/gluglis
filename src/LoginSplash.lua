@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
+-- Alfredo Zum
 -- Gluglis 2015
 ---------------------------------------------------------------------------------
 
@@ -8,29 +8,24 @@
 -- OBJETOS Y VARIABLES
 ---------------------------------------------------------------------------------
 -- Includes
+local json = require("json")
 require('src.resources.Globals')
 local composer = require( "composer" )
-local fxTap = audio.loadSound( "fx/click.wav")
 local facebook = require("plugin.facebook.v4")
+local fxTap = audio.loadSound( "fx/click.wav")
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
-
-local json = require("json")
 
 -- Grupos y Contenedores
 local screen, grpScreens
 local scene = composer.newScene()
 
 -- Variables
-local newH = 0
-local h = display.topStatusBarContentHeight
-local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS
 local subFig = ""
-local bgSplash1, bgSplash2
+local bgSplash2
 local idxScr = 1
 local wFixScr = 1.25
 local wScrPhone = 402
-
 local circles = {}
 local sshots = {}
 local labelTitle, labelSubTitle
@@ -39,26 +34,30 @@ local labelTitle, labelSubTitle
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
+--manda a la pantalla de login o registro normal
 function toLoginUserName(event)
-    --composer.removeScene( "src.LoginUserName" )
-    --composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
+    composer.removeScene( "src.LoginUserName" )
+	composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
 end
 
+--manda a la pantalla de home(si el logueo fue exitoso)
 function gotoHome()
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
 end
 
+--evento que se dispara cuando se inicia el loqueo por face
 function facebookListener( event )
-
+	--pide los datos del usuario
     if ( "session" == event.type ) then
 		local params = { fields = "id,name,first_name,last_name,gender,locale,email" }
         facebook.request( "me", "GET", params )
-
+	--resibe los datos pedidos y verifica el loqueo
     elseif ( "request" == event.type ) then
         local response = event.response
 		if ( not event.isError ) then
 	        response = json.decode( event.response )
+			--si devuelve los datos verifica el correo
             if not (response.email == nil) then
                 RestManager.createUser(response.email, '', response.name, response.gender, response.id, playerId)
             end
@@ -68,12 +67,13 @@ function facebookListener( event )
     end
 end
 
+--login por medio de facebook
 function loginFB(event)
-	--RestManager.createUser("a", '', "a", "male", "111", "000")
+	--se inicia el login y pide los perrmisos
     facebook.login( facebookListener, {"public_profile","email"} )
 end
 
--- Listener Touch Screen
+-- Le da movimiento a las pantallas del cel
 function touchScreen(event)
     if event.phase == "began" then
         direction = 0
@@ -118,7 +118,6 @@ function touchScreen(event)
         end
          -- Inter Screens left to rigth
 		if direction == -1 then
-			--print('adios')
             if x < 150 then 
                 -- Cancel
                 transition.to( sshots[idxScr], { x = midW, time = 200 })
@@ -133,6 +132,7 @@ function touchScreen(event)
     end
 end
 
+--mueve el encabezado y los circulos
 function newScr(idx)
     idxScr = idx
     direction = 0
@@ -173,8 +173,7 @@ end
 
 function scene:create( event )
 	screen = self.view
-    --screen.y = h
-    
+    --bg
     local o = display.newRect( midW, midH + h, intW, intH )
     o:setFillColor( 1 )   
     screen:insert(o)
@@ -196,7 +195,7 @@ function scene:create( event )
 	grpScreens = display.newGroup()
 	screen:insert(grpScreens)
     
-    -- screens
+    -- pantallas del celular
     for i = 1, 4 do
 		sshots[i] = display.newImage("img/bgk/screen"..i..subFig..".png", true) 
         sshots[i].x = midW + 402
@@ -206,6 +205,7 @@ function scene:create( event )
     end
     sshots[1].x = midW
 	
+	--screen superior
 	bgSplash2 = display.newImage("img/bgk/bgPhone"..subFig..".png", true)
 	bgSplash2.anchorX = 0
     bgSplash2.x = 0
@@ -213,19 +213,19 @@ function scene:create( event )
     bgSplash2.y = posYBg
     screen:insert(bgSplash2)
 	
+	--bg del segundo splash
 	local bgPink = display.newRect( midW, posYBg - 110, intW, intH - posYBg + 400  )
 	bgPink.anchorY = 0
 	bgPink:setFillColor( 99/255, 53/255, 137/255 )
 	screen:insert(bgPink)
-	
-	bgSplash2 = display.newImage("img/bgk/vectores_ciudad" .. subFig .. ".png", true) 
-    bgSplash2.x = midW
-    bgSplash2.anchorY = 1
-    bgSplash2.y = posYBg - 80
-    screen:insert(bgSplash2)
+	--splash de los edificioa
+	local bgSplash3 = display.newImage("img/bgk/vectores_ciudad" .. subFig .. ".png", true) 
+    bgSplash3.x = midW
+    bgSplash3.anchorY = 1
+    bgSplash3.y = posYBg - 80
+    screen:insert(bgSplash3)
 	
 	--title heard
-	
 	local bgTextHeard = display.newRect( midW, 50, intW, 150  )
 	bgTextHeard.anchorY = 0
 	bgTextHeard:setFillColor( .3 )
@@ -241,7 +241,6 @@ function scene:create( event )
 	})
 	labelTitle:setFillColor( 1 )
 	screen:insert(labelTitle)
-	
 	labelSubTitle = display.newText( {
 		text = "",
 		x = midW, y = 145,
@@ -253,7 +252,7 @@ function scene:create( event )
 	screen:insert(labelSubTitle)
 	labelSubTitle.alpha = 0
 	
-	-- Circles position
+	-- posicion de los circulos
 	for i = 1, 4 do
         circles[i] = display.newRoundedRect( 260 + (i * 50), posYBg - 100, 30, 30, 16 )
         circles[i]:setFillColor( 182/255, 207/255, 229/255 )
@@ -261,7 +260,7 @@ function scene:create( event )
     end
     circles[1]:setFillColor( 75/255, 176/255, 217/255 )
 	
-	-- Recalculate position
+	-- recalcular posicion
      if (intH > 1366) then
         xtra = intH - (posYBg+200)
         if xtra > 0 then
@@ -271,7 +270,7 @@ function scene:create( event )
     
 	posYBg = posYBg - 80
 	
-    -- Btn FB
+    -- boton FB
     local btnShadow = display.newImage("img/bgShadow.png", true) 
     btnShadow.x = midW
     btnShadow.y = posYBg + 115

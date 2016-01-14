@@ -28,13 +28,18 @@ function method()
     
 end
 
---inicia un nuevo chats
+----------------------------------
+-- inicia una nueva conversacion
+----------------------------------
 function startConversation( event )
 	RestManager.startConversation(event.target.id)
 	return true
 end
 
---crea la informacion e inicia la conversacion(chats)
+-------------------------------------------------------
+-- crea la informacion e inicia la conversacion(chats)
+-- @param item informacion del perfil
+-------------------------------------------------------
 function showNewConversation(item)
 	local tmpList = {id = 0, photo = item.image, name = item.display_name, subject = "", channelId = item.channel_id,
 			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier}
@@ -42,7 +47,10 @@ function showNewConversation(item)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
 
---pinta el avatar
+---------------------------------------------------------------------------
+-- Pinta la imagen del usuario en caso de no encontrarse al crear la scena
+-- @param item nombre de la imagen
+---------------------------------------------------------------------------
 function setImagePerfil( item )
 	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
 	avatar:translate(midW - 190, 170)
@@ -55,6 +63,9 @@ end
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
 
+---------------------------------------------
+-- Se crea la scena con los datos del perfil
+---------------------------------------------
 function scene:create( event )
 	local item = event.params.item
 	screen = self.view
@@ -66,10 +77,12 @@ function scene:create( event )
     o.fill.scaleY = .2
     screen:insert(o)
 	
+	--tools
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)
 
+	--scrollview
 	scrPerfile = widget.newScrollView({
         top = 100 + h,
         left = 0,
@@ -89,9 +102,9 @@ function scene:create( event )
     bgA2:setFillColor( 0, 193/225, 1 )
     scrPerfile:insert(bgA2)
     
-	-- local avatar = display.newImage("img/tmp/face01.png") item
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
+	--verifica si existe la imagen
 	if fhd then
 		local avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate(midW - 190, 170)
@@ -99,15 +112,12 @@ function scene:create( event )
 		avatar.width = 230
 		scrPerfile:insert(avatar)
 	else
-		--item.image = item.image
 		local items = {}
 		items[1] = item
 		RestManager.getImagePerfile(items)
 	end
-	
-	
     
-    -- Personal data
+    -- informacion personal
     local lblName = display.newText({
         text = item.userName, 
         x = 550, y = 150,

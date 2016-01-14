@@ -15,8 +15,8 @@ local composer = require( "composer" )
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local topCmp, bottomCmp, profiles, grpBtnDetail, grpDetail
-local container
+local topCmp, bottomCmp, profiles
+
 
 
 -- Variables
@@ -32,14 +32,6 @@ local loadUsers
 local btnViewProfile
 
 ---------------------------------- FUNCIONES ----------------------------------
-
--------------------------------------
--- carga los datos del usuario
-------------------------------------
-function getUserPerfil(item)
-	itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
-	residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}
-end
 
 -------------------------------------
 -- Creamos primera tanda de tarjetas
@@ -60,7 +52,6 @@ function getFirstCards(items)
     borders[5].alpha = 1
     borders[6].alpha = 1
     screen:addEventListener( "touch", touchScreen )
-	btnViewProfile:addEventListener( 'tap', showProfiles )
 end
 
 -------------------------------------
@@ -88,34 +79,10 @@ function buildCard(item)
     
 end
 
--------------------------------------
--- Muestra la informacion del perfil
--- @param event datos del boton
-------------------------------------
 function showProfiles( event )
 	event.target.item.isMe = false
 	composer.removeScene( "src.Profile" )
 	composer.gotoScene( "src.Profile", { time = 400, effect = "fade", params = { item = event.target.item }})
-end
-
-------------------------------------------------
--- Muestra detalles cuando la pantalla es chica
--- @param event datos del boton
-------------------------------------------------
-function showDetail( event )
-	if event.target.flag == 0 then
-		topCmp.y = -850
-		grpBtnDetail.y = grpBtnDetail.y - 350
-		bottomCmp.alpha = 1
-		event.target.flag = 1
-		screen:removeEventListener( "touch", touchScreen )
-	else
-		bottomCmp.alpha = 0
-		topCmp.y =  -500
-		grpBtnDetail.y = 0
-		event.target.flag = 0
-		screen:addEventListener( "touch", touchScreen )
-	end
 end
 
 -------------------------------------
@@ -337,7 +304,7 @@ end
 ------------------------------------
 function showInfoDisplay()
     -- Position
-    local posY = 830 + h
+    local posY = 870
     
     -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, intW - 160, 390, 10 )
@@ -426,41 +393,25 @@ end
 ------------------------------------
 function showInfoButton()
 
-	local posY = 830 + h
-	
-	grpBtnDetail = display.newGroup()
-    screen:insert( grpBtnDetail )
-	
+	local posY = 870
+    
+    -- BG Component
+    
     -- Title
     local bgTitle = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
     bgTitle.anchorY = 0
     bgTitle:setFillColor( 68/255, 14/255, 98/255 )
-	bgTitle.flag = 0
-    grpBtnDetail:insert(bgTitle)
-	bgTitle:addEventListener( 'tap', showDetail )
-    local Circle1 = display.newCircle( 320, posY + 35, 12 )
+    screen:insert(bgTitle)
+    local Circle1 = display.newCircle( 320, posY + 35, 20 )
 	Circle1:setFillColor( 1 )
-	grpBtnDetail:insert(Circle1)
-	local Circle2 = display.newCircle( 384, posY + 35, 12 )
+	local Circle2 = display.newCircle( 384, posY + 35, 20 )
 	Circle2:setFillColor( 1 )
-	grpBtnDetail:insert(Circle2)
-	local Circle3 = display.newCircle( 448, posY + 35, 12 )
+	local Circle3 = display.newCircle( 448, posY + 35, 20 )
 	Circle3:setFillColor( 1 )
-	grpBtnDetail:insert(Circle3)
 
 	-------
 
     local posY = 570
-	
-	-- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY + 10, intW - 160, 390, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    bottomCmp:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY + 10, intW - 164, 386, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    bottomCmp:insert(bgComp2)
     
     -- Options
     posY = posY + 55
@@ -496,14 +447,15 @@ function showInfoButton()
     end
     bottomCmp.alpha = 0
 	
-	posY = posY + 75
+	posY = posY + 50
 	
 	--btn perfil
 	btnViewProfile = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
     btnViewProfile.anchorY = 0
 	btnViewProfile.id = 0
     btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
-    bottomCmp:insert(btnViewProfile)
+    screen:insert(btnViewProfile)
+	btnViewProfile:addEventListener( 'tap', showProfiles )
 	local lblViewProfile = display.newText({
         text = "Ver perfil",
         x = midW, y = posY + 32,
@@ -511,10 +463,33 @@ function showInfoButton()
         fontSize = 32, align = "left"
     })
     lblViewProfile:setFillColor( 1 )
-    bottomCmp:insert(lblViewProfile)
-	
-	
+    screen:insert(lblViewProfile)
+    btnViewProfile.alpha = 0
+	lblViewProfile.alpha = 0
     
+    --[[
+    -- Buton
+    local bgBtn = display.newRoundedRect( midW, 870, intW - 160, 70, 10 )
+    bgBtn.anchorY = 0
+    bgBtn:setFillColor({
+        type = 'gradient',
+        color1 = { 129/255, 61/255, 153/255 }, 
+        color2 = { 89/255, 31/255, 103/255 },
+        direction = "bottom"
+    })
+    screen:insert(bgBtn)
+    
+    -- Circles
+    local circle1 = display.newRoundedRect( midW - 50, 905, 25, 25, 13 )
+    circle1:setFillColor( 1 )
+    screen:insert(circle1)
+    local circle2 = display.newRoundedRect( midW, 905, 25, 25, 13 )
+    circle2:setFillColor( 1 )
+    screen:insert(circle2)
+    local circle3 = display.newRoundedRect( midW + 50, 905, 25, 25, 13 )
+    circle3:setFillColor( 1 )
+    screen:insert(circle3)
+    ]]--
 end
 
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
@@ -526,28 +501,20 @@ end
 function scene:create( event )
 	screen = self.view
     screen.y = h
-    local isH = (intH - h) >  1300
-	print(intH - h)
-	
-    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    local isH = (intH - h) >  1240
+    
+    topCmp = display.newGroup()
+    screen:insert(topCmp)
+    
+    local o = display.newRoundedRect( midW, midH + 30, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
-    screen:insert(o)
+    topCmp:insert(o)
     
     tools = Tools:new()
     tools:buildHeader()
-    screen:insert(tools)
-	
-	container = display.newContainer( intW - 160, 700 )
-	container:translate( midW , 110 + h)
-	container.anchorY = 0
-    screen:insert(container)
-	
-    topCmp = display.newGroup()
-    container:insert(topCmp)
-	topCmp.x = - 384
-	topCmp.y = - 500
+    topCmp:insert(tools)
     
     -- Content profile
     local bgCard = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
@@ -615,11 +582,11 @@ function scene:create( event )
         showInfoDisplay()
     else
         bottomCmp = display.newGroup()
-        screen:insert(bottomCmp)
+        screen:insert(topCmp)
         showInfoButton()
     end
-	RestManager.getUsersById()
-    RestManager.getUsersByFilter()
+	
+    RestManager.getUsersByCity()
 end	
 
 -------------------------------------

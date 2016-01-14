@@ -40,10 +40,17 @@ function method()
     
 end
 
+-------------------------------------------
+-- deshabilita los eventos tap no deseados
+-- deshabilita el traspaso del componentes
+-------------------------------------------
 function noAction( event )
 	return true
 end
 
+--------------------------------
+-- cierra todo los componentes
+-------------------------------
 function closeAll( event )
 	if grpScrCity then
 		grpScrCity:removeSelf()
@@ -52,7 +59,9 @@ function closeAll( event )
 	return true
 end
 
---filtra los usuarios por las preferencias
+--------------------------------------------
+-- Filtra los usuarios por las preferencias
+--------------------------------------------
 function filterUser( event )
 	closeAll( 0 )
 	local textLocation = txtLocation.text
@@ -65,11 +74,12 @@ function filterUser( event )
 	--RestManager.getUsersByFilter()
 end
 
---seleciona la ciudades
+-------------------------
+-- Selecciona la ciudad
+-------------------------
 function selectCity( event )
 	txtLocation.text = event.target.city
 	event.target.alpha = .5
-
 	timeMarker = timer.performWithDelay( 100, function()
 		event.target.alpha = 1
 		if grpScrCity then
@@ -80,14 +90,18 @@ function selectCity( event )
 	return true
 end
 
---muestra las ciudades buscadas
+---------------------------------------------------
+-- Muestra una lista de las ciudades por el nombre
+-- @param item nombre de la ciudad y su pais
+---------------------------------------------------
 function showCities(item)
 
+	--elimina los componentes para crear otros
 	if grpScrCity then
 		grpScrCity:removeSelf()
 		grpScrCity = nil
 	end
-
+	--grp ciudad
 	grpScrCity = display.newGroup()
 	screen:insert( grpScrCity )
 
@@ -97,6 +111,7 @@ function showCities(item)
     grpScrCity:insert(bgComp1)
 	bgComp1:addEventListener( 'tap', noAction )
 	
+	--pinta la lista de las ciudades
 	if item ~= 0 then
 		local posY = 321
 		for i = 1, #item do
@@ -126,20 +141,26 @@ function showCities(item)
 	end
 end
 
---evento focus del textField
+-------------------------------------
+-- Evento focus del textField
+-- @param event datos del textField
+-------------------------------------
 function onTxtFocusFilter( event )
 	if ( event.phase == "began" ) then
 	
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		native.setKeyboardFocus(nil)
     elseif ( event.phase == "editing" ) then
+		--hace la busqueda de la ciudad
 		RestManager.getCity(txtLocation.text)
     end
 end
 
---
+--------------------------------------
+-- Marca el genero a buscar
+-- @param event datos de los checkBox
+--------------------------------------
 function changeGender( event )
-	
 	if event.target.name == "M" then
 		if genM.alpha == 0 then
 			genM.alpha = 1
@@ -153,9 +174,12 @@ function changeGender( event )
 			genH.alpha = 0
 		end
 	end
-	
 end
 
+-------------------------------------------
+-- Cuarda el porcentaje de edad a filtrar
+-- @param event valor de los slider
+-------------------------------------------
 function sliderListener( event )
 		
 	if event.phase == "moved" then
@@ -187,7 +211,9 @@ function sliderListener( event )
 	return true
 end
 
---llena las tablas de fecha
+------------------------------
+-- Llena las tablas de fecha
+------------------------------
 function setDate()
 	-- Populate the "days" table
 	for d = 1, 31 do
@@ -200,8 +226,12 @@ function setDate()
 	end
 end
 
+--------------------------------------------
+-- Cambia el valor de las diferentes fechas
+--------------------------------------------
 function changeDate( event )
 
+	-- valor del boton de cambio de fecha
 	local arrow = event.target
 	local total
 	if arrow.tabla == 1 then
@@ -211,6 +241,7 @@ function changeDate( event )
 	else
 		total = #years
 	end
+	--suma un digito a la fecha
 	if arrow.type == "up" and poscTabla[arrow.tabla] < total then
 		local x, y = scrDatePicker[arrow.tabla]:getContentPosition()
 		scrDatePicker[arrow.tabla]:scrollToPosition{
@@ -218,6 +249,7 @@ function changeDate( event )
 			time = 50,
 		}
 		poscTabla[arrow.tabla] = poscTabla[arrow.tabla]  + 1
+	--resta un digito a la fecha
 	elseif arrow.type == "down" and poscTabla[arrow.tabla] > 1 then
 		local x, y = scrDatePicker[arrow.tabla]:getContentPosition()
 		scrDatePicker[arrow.tabla]:scrollToPosition{
@@ -230,7 +262,9 @@ function changeDate( event )
 	return true
 end
 
---crea el datepicker
+--------------------------------------------
+-- Crea el componente de DatePicker
+--------------------------------------------
 function createDatePicker( event )
 	
 	if grpDatePicker then
@@ -260,7 +294,9 @@ function createDatePicker( event )
 	
 end
 
---crea un datePicker tipo android
+------------------------------------
+-- Crea un datePicker tipo android
+------------------------------------
 function datePickerAndroid( item )
 	-- Create two tables to hold data for days and years
 	local posXArrow = { 185, midW, 575 }
@@ -278,6 +314,7 @@ function datePickerAndroid( item )
     grpDatePicker:insert(bg2)
 	
 	posY = posY - 250
+	--titulo
 	local nameTitle = "Fecha de inicio"
 	if item.name == "endDate" then nameTitle = "Fecha de terminacion" end
 	local labelTitle = display.newText({
@@ -292,6 +329,7 @@ function datePickerAndroid( item )
 	
 	posY = posY + 40
 	
+	--linea encabezado
 	local line1 = display.newRect( midW, posY, 550, 4 )
 	line1:setFillColor( 1 )
 	line1.alpha = .8
@@ -299,28 +337,23 @@ function datePickerAndroid( item )
 	
 	posY = posY + 50
 	
-	--arrow
-	
 	for y=1, 3 do
-	
+		--flechas
 		local arrowUp = display.newImage( screen, "img/arrowUp.png" )
 		arrowUp:translate( posXArrow[y], posY )
 		arrowUp.type = "up"
 		arrowUp.tabla = y
 		grpDatePicker:insert(arrowUp)
 		arrowUp:addEventListener( 'tap', changeDate )
-	
 		local arrowDown = display.newImage( screen, "img/arrowDown.png" )
 		arrowDown:translate( posXArrow[y], posY + 310 )
 		arrowDown.type = "down"
 		arrowDown.tabla = y
 		grpDatePicker:insert(arrowDown)
 		arrowDown:addEventListener( 'tap', changeDate )
-		
 		poscTabla[y] = 1
-	
 		local lastY = 33
-	
+		--scroll
 		scrDatePicker[y] = widget.newScrollView({
 			top = posY + 55,
 			left = posXArrow[y] - 50,
@@ -333,13 +366,11 @@ function datePickerAndroid( item )
 		grpDatePicker:insert(scrDatePicker[y])
 		
 		local dateCurrent = dates[y]
-	
+		--llenamos los scroll con los digitos
 		for i=1, #dates[y] do
-		
 			if i == 1 then
 				lastY = lastY + 66
 			end	
-	
 			local lblMonth = display.newText({
 					text = dateCurrent[i], 
 					x = 50, y = lastY,
@@ -349,12 +380,11 @@ function datePickerAndroid( item )
             })
 			lblMonth:setFillColor( 1 )
 			scrDatePicker[y]:insert(lblMonth)
-		
 			lastY = lastY + 66
-		
 		end
 		scrDatePicker[y]:setScrollHeight(lastY + 33)
-	
+		
+		--bg 
 		local bg1 = display.newRect( posXArrow[y], posY + 85, 100, 64 )
 		bg1:setFillColor( 0 )
 		bg1.alpha = .2
@@ -423,6 +453,9 @@ function datePickerAndroid( item )
 	
 end
 
+---------------------------
+-- Destruye el datePicker
+---------------------------
 function destroyDatePicker( event )
 	if event.target.name == "accept" then
 		local month = poscTabla[1]
@@ -448,6 +481,13 @@ function destroyDatePicker( event )
 	return true
 end
 
+-----------------------------------------------
+-- Crea los componentes
+-- @param name nombre del componente
+-- @param wField tamaño del componente
+-- @param coordX coordenadas x donde se crea
+-- @param coordY coordenadas y donde se crea
+-----------------------------------------------
 --creamos los textField y opciones
 function createTextField( name, wField, coordX, coordY  )
 	local s
@@ -647,8 +687,7 @@ function scene:create( event )
         end
     end
 	
-	--slider
-	
+	--label slider
 	lblSlider1 = display.newText({
         text = settFilter.iniAge, 
         x = 340, y = posY,
@@ -667,6 +706,7 @@ function scene:create( event )
     lblSlider2:setFillColor( 0 )
     screen:insert(lblSlider2)
 	
+	--slider
 	local slider1 = widget.newSlider({
         top = posY - 20,
         left = 370,
@@ -717,8 +757,6 @@ function scene:create( event )
     screen:insert(lblSearch)
     
 	setDate()
--- or
-	--webView:request( "localfile.html", system.ResourceDirectory )
 	
 end	
 -- Called immediately after scene has moved onscreen:

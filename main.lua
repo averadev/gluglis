@@ -22,8 +22,6 @@ if isUser then
 else
 	composer.gotoScene("src.LoginSplash")
 end
---composer.gotoScene("src.LoginSplash")
---composer.gotoScene("src.LoginUserName")
 
 ---------------------Notificaciones---------------------------
 
@@ -80,8 +78,6 @@ OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "203224641778", DidReceiv
 ------------------------------------------------
 function IdsAvailable(playerID, pushToken)
 	playerId = playerID
-  --print("PLAYER_ID:" .. playerID)
-	--Globals.playerIdToken = playerID
 end
 
 ------------------------------------------------

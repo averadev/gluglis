@@ -30,7 +30,6 @@ function Tools:new()
 			bgShadow.anchorX = 0
 			bgShadow.anchorY = 0
 			bgShadow:setFillColor( 0 )
-			--self:insert(bgShadow)
 			bgShadow:addEventListener( 'tap', showMenu)
         end
         -- Icons
