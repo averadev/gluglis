@@ -424,7 +424,7 @@ function scene:create( event )
     local item = event.params.item
 	poscList = item.posc
 	screen = self.view
-    screen.y = h
+    --screen.y = h
     grpTextField = display.newGroup()
 	screen:insert( grpTextField )
     
@@ -526,7 +526,7 @@ function scene:create( event )
 	
 	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 50 )
     txtMessage.inputType = "default"
-    txtMessage.hasBackground = true
+    --txtMessage.hasBackground = true
 	--txtMessage.channelId = item.channelId
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
@@ -548,7 +548,6 @@ function scene:create( event )
 	
 	grpTextField:toFront()
 	
-	grpTextField.y = 500
     
 end	
 -- Called immediately after scene has moved onscreen:
