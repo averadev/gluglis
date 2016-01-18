@@ -109,13 +109,13 @@ local dbManager = {}
                 return true
             end
 		end
-		
+
 		query = "INSERT INTO config VALUES (1, 0, '', '', 'http://geekbucket.com.mx/gluglis/');"
 		--query = "INSERT INTO config VALUES (1, 0, '', '', 'http://localhost:8080/gluglis_api/');"
 		db:exec( query )
-		    
+
 		closeConnection( )
-    
+
         return false
 	end
 	

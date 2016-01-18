@@ -26,7 +26,7 @@ local RestManager = {}
 	
 	---------------------------------- Pantalla Login ----------------------------------
 	-------------------------------------
-    -- da de alta un nuevo usuario
+    -- da de alta un nuevo usuario por facebook
     -------------------------------------
 	RestManager.createUser = function(email, password, name, gender, facebookId, playerId)
 	
@@ -59,7 +59,7 @@ local RestManager = {}
 						DBManager.updateUser(data.idApp, email, name)
 						gotoHome()
 					else
-						--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+						
 					end
 				else
 					--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -69,7 +69,48 @@ local RestManager = {}
         end
         -- Do request
 		network.request( url, "GET", callback )
-		
+    end
+	
+	
+	---------------------------------- Pantalla Login ----------------------------------
+	-------------------------------------
+    -- da de alta un nuevo usuario
+    -------------------------------------
+	RestManager.createUserNormal = function(email, password, playerId)
+	
+        -- Set url
+		password = crypto.digest(crypto.md5, password)
+        local url = site
+        url = url.."api/createUser/format/json"
+        url = url.."/idApp/"..settings.idApp
+		url = url.."/email/"..urlencode(email)
+		url = url.."/pass/"..urlencode(password)
+		url = url.."/playerId/"..urlencode(playerId)
+	
+        local function callback(event)
+            if ( event.isError ) then
+				gotoHomeUN( "Error intentelo mas tarde", "login", false )
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						DBManager.updateUser(data.idApp, email, "")
+						gotoHomeUN( data.message, "register", true )
+					else
+						if data.error then
+							gotoHomeUN( data.error, "register", false )
+						else
+							gotoHomeUN( data.message, "register", false )
+						end
+					end
+				else
+					gotoHomeUN( "Error intentelo mas tarde", "login", false )
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
     end
 	
 	RestManager.validateUser = function( email, password, playerId )
@@ -81,26 +122,26 @@ local RestManager = {}
 		url = url.."/email/"..urlencode(email)
 		url = url.."/password/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
-		print(url)
 	
         local function callback(event)
             if ( event.isError ) then
-				print('error')
-				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				gotoHomeUN( "Error intentelo mas tarde", "login", false )
             else
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
 						local item = data.item[1]
-						--DBManager.updateUser(item.id, item.user_email, item.display_name)
+						DBManager.updateUser(item.id, item.user_email, item.display_name)
 						gotoHomeUN( data.message, "login", true )
 					else
-						gotoHomeUN( data.error, "login", false )
-						---native.showAlert( "Gluglis", data.error , {"OK"})
+						if data.error then
+							gotoHomeUN( data.error, "login", false )
+						else
+							gotoHomeUN( data.message, "login", false )
+						end
 					end
 				else
 					gotoHomeUN( "Error intentelo mas tarde", "login", false )
-					--native.showAlert( "Gluglis", "Error intentelo mas tarde" , {"OK"})
 				end
             end
             return true

@@ -22,6 +22,7 @@ local scene = composer.newScene()
 -- Variables
 local newH = 0
 local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS
+local btnNew, btnSignIn
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -48,7 +49,7 @@ end
 
 --manda a la pantalla de home(si el logueo fue exitoso)
 function gotoHomeUN( message, name, success )
-	
+	local result = success
 	tools:setLoading(false,grpLoad)
 	if success then
 		success = 1
@@ -59,13 +60,19 @@ function gotoHomeUN( message, name, success )
 	
 	timeMarker = timer.performWithDelay( 2000, function()
 		alertLogin(false,"",success)
-		composer.removeScene( "src.Home" )
-		composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+		btnNew:addEventListener( 'tap', doCreate )
+		btnSignIn:addEventListener( 'tap', toLogIn )
+		if result then 
+			composer.removeScene( "src.Home" )
+			composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+		end
 	end, 1 )
 end
 
 function toLogIn( event )
 	--trim
+	btnNew:removeEventListener( 'tap', doCreate )
+	btnSignIn:removeEventListener( 'tap', toLogIn )
 	local textEmail = string.gsub(txtEmailS.text , "%s", "")
 	local textPass = string.gsub(txtPassS.text , "%s", "")
 	if textEmail ~= "" and textPass ~= "" then
@@ -75,18 +82,22 @@ function toLogIn( event )
 		alertLogin(true,"Campos vacios",2)
 		timeMarker = timer.performWithDelay( 2000, function()
 			alertLogin(false,"",2)
+			btnNew:addEventListener( 'tap', doCreate )
+			btnSignIn:addEventListener( 'tap', toLogIn )
 		end, 1 )
 	end
 end
 
 function doCreate( event )
+	btnNew:removeEventListener( 'tap', doCreate )
+	btnSignIn:removeEventListener( 'tap', toLogIn )
 	local textEmail = string.gsub(txtEmail.text , "%s", "")
 	local textPass = string.gsub(txtPass.text , "%s", "")
 	local textRePass = string.gsub(txtRePass.text , "%s", "")
 	if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
 		tools:setLoading(true,grpLoad)
-		if textPass ~= "" and textRePass ~= "" then
-			RestManager.createUser(textEmail, textPass, "", "", "", playerId)
+		if textPass == textRePass then
+			RestManager.createUserNormal(textEmail, textPass, "", "", "", playerId)
 		else
 			alertLogin(true,"Contraseñas distintas",2)
 			timeMarker = timer.performWithDelay( 2000, function()
@@ -97,6 +108,8 @@ function doCreate( event )
 		alertLogin(true,"Campos vacios",2)
 		timeMarker = timer.performWithDelay( 2000, function()
 			alertLogin(false,"",2)
+			btnNew:addEventListener( 'tap', doCreate )
+			btnSignIn:addEventListener( 'tap', toLogIn )
 		end, 1 )
 	end
 	
@@ -226,7 +239,7 @@ function scene:create( event )
     txtRePass:addEventListener( "userInput", onTxtFocus )
 	grpNew:insert(txtRePass)
     -- Button
-    local btnNew = display.newRect( midR, midH + 450, intW, 100 )
+    btnNew = display.newRect( midR, midH + 450, intW, 100 )
     btnNew:setFillColor( 128/255, 72/255, 149/255 )
     btnNew:addEventListener( 'tap', doCreate )
     grpNew:insert(btnNew)
@@ -286,7 +299,7 @@ function scene:create( event )
     txtPassS:addEventListener( "userInput", onTxtFocus )
 	grpLogIn:insert(txtPassS)
     -- Button
-	local btnSignIn = display.newRect( midR, midH + 290, intW, 100 )
+	btnSignIn = display.newRect( midR, midH + 290, intW, 100 )
     btnSignIn:setFillColor( 128/255, 72/255, 149/255 )
     btnSignIn:addEventListener( 'tap', toLogIn )
     grpLogIn:insert(btnSignIn)
