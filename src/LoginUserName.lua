@@ -23,6 +23,7 @@ local scene = composer.newScene()
 local newH = 0
 local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS
 local btnNew, btnSignIn
+local flag = 0
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -60,8 +61,7 @@ function gotoHomeUN( message, name, success )
 	
 	timeMarker = timer.performWithDelay( 2000, function()
 		alertLogin(false,"",success)
-		btnNew:addEventListener( 'tap', doCreate )
-		btnSignIn:addEventListener( 'tap', toLogIn )
+		flag = 0
 		if result then 
 			composer.removeScene( "src.Home" )
 			composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
@@ -70,49 +70,52 @@ function gotoHomeUN( message, name, success )
 end
 
 function toLogIn( event )
-	--trim
-	btnNew:removeEventListener( 'tap', doCreate )
-	btnSignIn:removeEventListener( 'tap', toLogIn )
-	local textEmail = string.gsub(txtEmailS.text , "%s", "")
-	local textPass = string.gsub(txtPassS.text , "%s", "")
-	if textEmail ~= "" and textPass ~= "" then
-		tools:setLoading(true,grpLoad)
-		RestManager.validateUser( textEmail, textPass, 11 )
-	else
-		alertLogin(true,"Campos vacios",2)
-		timeMarker = timer.performWithDelay( 2000, function()
-			alertLogin(false,"",2)
-			btnNew:addEventListener( 'tap', doCreate )
-			btnSignIn:addEventListener( 'tap', toLogIn )
-		end, 1 )
+	if flag == 0 then
+		flag = 1
+		--trim
+		local textEmail = string.gsub(txtEmailS.text , "%s", "")
+		local textPass = string.gsub(txtPassS.text , "%s", "")
+		if textEmail ~= "" and textPass ~= "" then
+			tools:setLoading(true,grpLoad)
+			RestManager.validateUser( textEmail, textPass, 11 )
+		else
+			alertLogin(true,"Campos vacios",2)
+			timeMarker = timer.performWithDelay( 2000, function()
+				alertLogin(false,"",2)
+				flag = 0
+			end, 1 )
+		end
 	end
+	return true
 end
 
 function doCreate( event )
-	btnNew:removeEventListener( 'tap', doCreate )
-	btnSignIn:removeEventListener( 'tap', toLogIn )
-	local textEmail = string.gsub(txtEmail.text , "%s", "")
-	local textPass = string.gsub(txtPass.text , "%s", "")
-	local textRePass = string.gsub(txtRePass.text , "%s", "")
-	if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
-		tools:setLoading(true,grpLoad)
-		if textPass == textRePass then
-			RestManager.createUserNormal(textEmail, textPass, "", "", "", playerId)
+	if flag == 0 then
+		flag = 1
+		local textEmail = string.gsub(txtEmail.text , "%s", "")
+		local textPass = string.gsub(txtPass.text , "%s", "")
+		local textRePass = string.gsub(txtRePass.text , "%s", "")
+		if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
+			tools:setLoading(true,grpLoad)
+			if textPass == textRePass then
+				RestManager.createUserNormal(textEmail, textPass, "", "", "", playerId)
+			else
+				
+				alertLogin(true,"Contraseñas distintas",2)
+				timeMarker = timer.performWithDelay( 2000, function()
+					alertLogin(false,"",2)
+					flag = 0
+				end, 1 )
+			end
 		else
-			alertLogin(true,"Contraseñas distintas",2)
+			alertLogin(true,"Campos vacios",2)
 			timeMarker = timer.performWithDelay( 2000, function()
 				alertLogin(false,"",2)
+				flag = 0
 			end, 1 )
 		end
-	else
-		alertLogin(true,"Campos vacios",2)
-		timeMarker = timer.performWithDelay( 2000, function()
-			alertLogin(false,"",2)
-			btnNew:addEventListener( 'tap', doCreate )
-			btnSignIn:addEventListener( 'tap', toLogIn )
-		end, 1 )
 	end
-	
+	return true
 end
 
 function onTxtFocus(event)
@@ -338,6 +341,7 @@ end
 
 -- Hide Scene
 function scene:hide( event )
+	alertLogin(false,"",success)
 	--destruye los textField
 	if grpLogIn then
 		grpLogIn:removeSelf()
