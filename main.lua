@@ -21,6 +21,7 @@ if isUser then
 	composer.gotoScene("src.Home")
 else
 	composer.gotoScene("src.LoginSplash")
+	--composer.gotoScene("src.LoginUserName")
 end
 
 ---------------------Notificaciones---------------------------

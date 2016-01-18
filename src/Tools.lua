@@ -11,7 +11,7 @@ local composer = require( "composer" )
 local Sprites = require('src.resources.Sprites')
 require('src.Menu')
 
-local scrMenu, bgShadow
+local scrMenu, bgShadow, grpNewAlert, grpAlertLogin
 
 Tools = {}
 function Tools:new()
@@ -204,6 +204,77 @@ function Tools:new()
         end
         return true;
     end
+	
+	--creamos una alerta
+	function NewAlert(isTrue, text, button)
+		if true then
+			if grpNewAlert then
+				grpNewAlert:removeSelf()
+				grpNewAlert = nil
+			end
+			grpNewAlert = display.newGroup()
+			
+			
+			
+		else
+			if grpNewAlert then
+				grpNewAlert:removeSelf()
+				grpNewAlert = nil
+			end
+		end
+	end
+	
+	function alertLogin(isTrue, meessage, typeS)
+	
+		if isTrue then
+			if grpAlertLogin then
+				grpAlertLogin:removeSelf()
+				grpAlertLogin = nil
+			end
+			
+			grpAlertLogin = display.newGroup()
+			grpAlertLogin.y = intH
+		
+			local bgIconPasswordLogin = display.newRect( intW/2, intH - 100, intW, 200 )
+			if typeS == 1 then
+				bgIconPasswordLogin:setFillColor( 68/255, 157/255, 68/255, .9 )
+			else
+				bgIconPasswordLogin:setFillColor( 236/255, 151/255, 31/255, .9 )
+			end
+			grpAlertLogin:insert(bgIconPasswordLogin)
+		
+			local title = display.newText( meessage, 0, 15, fontDefault, 40)
+			title:setFillColor( 1 )
+			title.x = display.contentWidth / 2
+			title.y = intH - 140
+			grpAlertLogin:insert(title)
+		
+			if typeS == 1 then
+				iconMessageSignIn= display.newImage( "img/iconTickWhite.png"  )
+			else
+				iconMessageSignIn= display.newImage( "img/iconWarningWhite.png"  )
+			end
+			iconMessageSignIn.width = 70
+			iconMessageSignIn.height = 70
+			iconMessageSignIn.x = intW/2
+			iconMessageSignIn.y = intH - 60
+			grpAlertLogin:insert(iconMessageSignIn)
+		
+			--deleteLoadingLogin()
+		
+			transition.to( grpAlertLogin, { y = 0, time = 600, transition = easing.outExpo, onComplete=function()
+				end
+			})
+		else
+			if grpAlertLogin then
+				transition.to( grpAlertLogin, { y = 200, time = 300, transition = easing.inQuint, onComplete=function()
+					grpAlertLogin:removeSelf()
+					grpAlertLogin = nil
+				end})
+			end
+		end
+	
+	end
     
     return self
 end

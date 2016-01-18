@@ -54,7 +54,7 @@ local dbManager = {}
 	end
 	
 	--actualiza la informacion de los usuarios
-	dbManager.updateUser = function(idApp, user_login, user_email, display_name, facebookId )
+	dbManager.updateUser = function(idApp, user_email, display_name )
 		openConnection( )
         local query = "UPDATE config SET idApp = '"..idApp.."', user_email = '"..user_email.."', display_name = '"..display_name.."';"
         db:exec( query )

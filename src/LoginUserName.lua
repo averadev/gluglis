@@ -8,13 +8,15 @@
 -- OBJETOS Y VARIABLES
 ---------------------------------------------------------------------------------
 -- Includes
+require('src.Tools')
 require('src.resources.Globals')
 local composer = require( "composer" )
 local fxTap = audio.loadSound( "fx/click.wav")
 local DBManager = require('src.resources.DBManager')
+local RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
-local screen, grpMain, grpNew, grpLogIn
+local screen, grpMain, grpNew, grpLogIn, grpLoad
 local scene = composer.newScene()
 
 -- Variables
@@ -45,9 +47,59 @@ function moveNew(event)
 end
 
 --manda a la pantalla de home(si el logueo fue exitoso)
-function gotoHome(event)
-	composer.removeScene( "src.Home" )
-    composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+function gotoHomeUN( message, name, success )
+	
+	tools:setLoading(false,grpLoad)
+	if success then
+		success = 1
+	else
+		success = 2
+	end
+	alertLogin(true,message,success)
+	
+	timeMarker = timer.performWithDelay( 2000, function()
+		alertLogin(false,"",success)
+		composer.removeScene( "src.Home" )
+		composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+	end, 1 )
+end
+
+function toLogIn( event )
+	--trim
+	local textEmail = string.gsub(txtEmailS.text , "%s", "")
+	local textPass = string.gsub(txtPassS.text , "%s", "")
+	if textEmail ~= "" and textPass ~= "" then
+		tools:setLoading(true,grpLoad)
+		RestManager.validateUser( textEmail, textPass, 11 )
+	else
+		alertLogin(true,"Campos vacios",2)
+		timeMarker = timer.performWithDelay( 2000, function()
+			alertLogin(false,"",2)
+		end, 1 )
+	end
+end
+
+function doCreate( event )
+	local textEmail = string.gsub(txtEmail.text , "%s", "")
+	local textPass = string.gsub(txtPass.text , "%s", "")
+	local textRePass = string.gsub(txtRePass.text , "%s", "")
+	if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
+		tools:setLoading(true,grpLoad)
+		if textPass ~= "" and textRePass ~= "" then
+			RestManager.createUser(textEmail, textPass, "", "", "", playerId)
+		else
+			alertLogin(true,"Contraseñas distintas",2)
+			timeMarker = timer.performWithDelay( 2000, function()
+				alertLogin(false,"",2)
+			end, 1 )
+		end
+	else
+		alertLogin(true,"Campos vacios",2)
+		timeMarker = timer.performWithDelay( 2000, function()
+			alertLogin(false,"",2)
+		end, 1 )
+	end
+	
 end
 
 function onTxtFocus(event)
@@ -72,6 +124,8 @@ end
 function scene:create( event )
 	screen = self.view
 	
+	tools = Tools:new()
+	
     local o = display.newRect( midW, midH + h, intW, intH )
     o:setFillColor( 232/255 )   
     screen:insert(o)
@@ -80,7 +134,11 @@ function scene:create( event )
 	grpMain = display.newGroup()
     screen:insert(grpMain)
     grpMain.x = 0
-    
+	
+	grpLoad = display.newGroup()
+	screen:insert(grpLoad)
+    grpLoad.y = intH - 150
+	
     -- Logo on circle
     local circle1 = display.newCircle( grpMain, midW, (midH*.45), 160 )
     circle1:setFillColor( .84 )
@@ -170,7 +228,7 @@ function scene:create( event )
     -- Button
     local btnNew = display.newRect( midR, midH + 450, intW, 100 )
     btnNew:setFillColor( 128/255, 72/255, 149/255 )
-    btnNew:addEventListener( 'tap', gotoHome)
+    btnNew:addEventListener( 'tap', doCreate )
     grpNew:insert(btnNew)
     local lblRegistrar = display.newText({
         text = "Registrarme",     
@@ -222,14 +280,15 @@ function scene:create( event )
     lblPassS:setFillColor( .52 )
     grpLogIn:insert(lblPassS)
     txtPassS = native.newTextField( midR + 100, midH + 150, 400, 70 )
-    txtPassS.inputType = "password"
+    txtPassS.inputType = "default"
+	txtPassS.isSecure = true
     txtPassS.hasBackground = false
     txtPassS:addEventListener( "userInput", onTxtFocus )
 	grpLogIn:insert(txtPassS)
     -- Button
 	local btnSignIn = display.newRect( midR, midH + 290, intW, 100 )
     btnSignIn:setFillColor( 128/255, 72/255, 149/255 )
-    btnSignIn:addEventListener( 'tap', gotoHome)
+    btnSignIn:addEventListener( 'tap', toLogIn )
     grpLogIn:insert(btnSignIn)
     local lblSignIn = display.newText({
         text = "Acceder",     

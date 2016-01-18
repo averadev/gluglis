@@ -69,7 +69,7 @@ end
 function scene:create( event )
 	local item = event.params.item
 	screen = self.view
-    screen.y = h
+    --screen.y = h
     
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }

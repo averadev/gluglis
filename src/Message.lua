@@ -231,28 +231,33 @@ end
 function onTxtFocus( event )
 	local fieldOffset, fieldTrans
 	fieldOffset = intH/3 + 100
-	if string.sub(system.getInfo("model"),1,4) == "iPad" then
-	end
 	fieldTrans = 200
 	if ( event.phase == "began" ) then
-		scrChat.height = scrChatH - fieldOffset
+		--screen.y = -500
+		--[[scrChat.height = scrChatH - fieldOffset
 		scrChat.anchorY = 0
 		transition.to( scrChat, { time=fieldTrans, y=(130 + h)} )
 		transition.to( grpTextField, { time=fieldTrans, y=(-fieldOffset)} )
 		grpChat.y = (scrChatH - scrChat.height) / 2
-		scrChat:setScrollHeight( posY + fieldOffset )
+		scrChat:setScrollHeight( posY + fieldOffset )]]
     elseif ( event.phase == "ended") then
 		native.setKeyboardFocus( nil )
-		scrChat.anchorY = .5
+		
+		--[[scrChat.anchorY = .5
 		scrChat.height = scrChatH
 		transition.to( scrChat, { time=fieldTrans, y=(scrChatY)} )
 		transition.to( grpTextField, { time=fieldTrans, y=(0)} )
 		grpChat.y = 0
-		scrChat:setScrollHeight( posY )
+		scrChat:setScrollHeight( posY )]]
 	elseif (event.phase == "submitted" ) then	
 		sentMessage()
     elseif ( event.phase == "editing" ) then
-		
+		--[[print(txtMessage.y)
+		print(display.contentCenterY)
+		print(display.contentScaleY)
+		print(display.pixelHeight)
+		print(display.screenOriginY)
+		print(display.viewableContentHeight)]]
     end
 end
 
@@ -526,6 +531,12 @@ function scene:create( event )
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
 	grpTextField:insert( txtMessage )
+	--[[print(txtMessage.y)
+	print(display.contentCenterY)
+	print(display.contentScaleY)
+	print(display.pixelHeight)
+	print(display.screenOriginY)
+	print(display.viewableContentHeight)]]
 	
 	posY = 30
 	scrChatY = scrChat.y
@@ -536,6 +547,8 @@ function scene:create( event )
 	RestManager.getChatMessages(item.channelId)
 	
 	grpTextField:toFront()
+	
+	grpTextField.y = 500
     
 end	
 -- Called immediately after scene has moved onscreen:
