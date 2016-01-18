@@ -59,7 +59,7 @@ function Menu:new()
         
         local bgExit = display.newRect(250, intH-h-55, 500, 110 )
         bgExit:setFillColor( 37/255, 41/255, 49/255 )
-        bgExit.screen = "Login"
+        bgExit.screen = "LoginSplash"
         bgExit:addEventListener( 'tap', toScreen)
         selfMenu:insert(bgExit)
         local imgExit = display.newImage( selfMenu, "img/icoExit.png" )

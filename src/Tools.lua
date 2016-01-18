@@ -7,9 +7,10 @@
 ---------------------------------------------------------------------------------
 -- Encabezao general
 ---------------------------------------------------------------------------------
+require('src.Menu')
 local composer = require( "composer" )
 local Sprites = require('src.resources.Sprites')
-require('src.Menu')
+local DBManager = require('src.resources.DBManager')
 
 local scrMenu, bgShadow, grpNewAlert, grpAlertLogin
 
@@ -179,10 +180,11 @@ function Tools:new()
         else
             composer.removeScene( "src."..t.screen )
 			if t.screen == "Profile" then
-				
-				--local itemProfile = {id = 1, userName = "Ricardo Rodriguez", image = "1.png", edad = "24", genero = "Hombre", alojamiento = "Sí", residencia = "Cancun, Quintana Roo Mexico", isMe = true}
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
 			else
+				if t.screen == "LoginSplash" then
+					DBManager.clearUser()
+				end
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
 			end
             
@@ -268,8 +270,10 @@ function Tools:new()
 		else
 			if grpAlertLogin then
 				transition.to( grpAlertLogin, { y = 200, time = 300, transition = easing.inQuint, onComplete=function()
-					grpAlertLogin:removeSelf()
-					grpAlertLogin = nil
+					if grpAlertLogin then
+						grpAlertLogin:removeSelf()
+						grpAlertLogin = nil
+					end
 				end})
 			end
 		end
