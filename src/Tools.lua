@@ -9,6 +9,7 @@
 ---------------------------------------------------------------------------------
 require('src.Menu')
 local composer = require( "composer" )
+local facebook = require("plugin.facebook.v4")
 local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 
@@ -184,6 +185,7 @@ function Tools:new()
 			else
 				if t.screen == "LoginSplash" then
 					DBManager.clearUser()
+					facebook.logout()
 				end
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
 			end
@@ -215,9 +217,6 @@ function Tools:new()
 				grpNewAlert = nil
 			end
 			grpNewAlert = display.newGroup()
-			
-			
-			
 		else
 			if grpNewAlert then
 				grpNewAlert:removeSelf()
