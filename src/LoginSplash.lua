@@ -50,16 +50,32 @@ end
 function facebookListener( event )
 	--pide los datos del usuario
     if ( "session" == event.type ) then
-		local params = { fields = "id,name,first_name,last_name,gender,locale,email" }
+		local params = { fields = "id,name,first_name,last_name,gender,locale,email,birthday,location" }
         facebook.request( "me", "GET", params )
 	--resibe los datos pedidos y verifica el loqueo
     elseif ( "request" == event.type ) then
         local response = event.response
 		if ( not event.isError ) then
 	        response = json.decode( event.response )
+			
 			--si devuelve los datos verifica el correo
             if not (response.email == nil) then
-                RestManager.createUser(response.email, '', response.name, response.gender, response.id, playerId)
+				-- Birthday user
+				local birthday = ""
+                if not (response.birthday == nil) then
+					local t = {}
+					for mo, da, ye in string.gmatch( response.birthday, "(%w+)/(%w+)/(%w+)" ) do
+						t[1] = mo
+						t[2] = da
+						t[3] = ye
+					end
+					birthday = t[3] .. "-" .. t[1] .. "-" .. t[2] .. " " .. "00:00:00"
+                end
+				local location = ""
+                if not (response.location == nil) then
+					location = response.location.name
+                end
+                RestManager.createUser(response.email, '', response.name, response.gender, birthday, location, response.id, playerId)
             end
         else
 			-- printTable( event.response, "Post Failed Response", 3 )
@@ -70,7 +86,7 @@ end
 --login por medio de facebook
 function loginFB(event)
 	--se inicia el login y pide los perrmisos
-    facebook.login( facebookListener, {"public_profile","email"} )
+    facebook.login( facebookListener, {"public_profile","email","user_birthday","user_location"} )
 end
 
 -- Le da movimiento a las pantallas del cel

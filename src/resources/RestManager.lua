@@ -28,7 +28,7 @@ local RestManager = {}
 	-------------------------------------
     -- da de alta un nuevo usuario por facebook
     -------------------------------------
-	RestManager.createUser = function(email, password, name, gender, facebookId, playerId)
+	RestManager.createUser = function(email, password, name, gender, birthday, location, facebookId, playerId)
 	
         -- Set url
 		password = crypto.digest(crypto.md5, password)
@@ -42,6 +42,12 @@ local RestManager = {}
 		end
 		if gender ~= "" then
 			url = url.."/gender/"..urlencode(gender)
+		end
+		if birthday ~= "" then
+			url = url.."/birthday/"..urlencode(birthday)
+		end
+		if location ~= "" then
+			url = url.."/location/"..urlencode(location)
 		end
 		if facebookId ~= "" then
 			url = url.."/facebookId/"..urlencode(facebookId)
@@ -564,7 +570,6 @@ local RestManager = {}
                 -- Descargamos de la nube
 				local url
 				if obj.items[obj.idx].identifier then
-					print('sadas')
 					local sizeAvatar = 'width=550&height=550'
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 				else
