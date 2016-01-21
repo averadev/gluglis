@@ -379,7 +379,7 @@ local RestManager = {}
     -- Obtiene los datos del usuario por id
     -------------------------------------
     RestManager.getUsersById = function()
-		local settings = DBManager.getSettings()
+		settings = DBManager.getSettings()
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
@@ -418,9 +418,8 @@ local RestManager = {}
     end
 	
 	RestManager.getUsersByFilter = function()
-	
+		settings = DBManager.getSettings()
 		local settFilter = DBManager.getSettingFilter()
-		
         local url = site.."api/getUsersByFilter/format/json"
 		url = url.."/idApp/" 	.. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
@@ -433,6 +432,7 @@ local RestManager = {}
 	
         local function callback(event)
             if ( event.isError ) then
+				HomeError( "Error con el servidor" )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -440,20 +440,21 @@ local RestManager = {}
 						local data = json.decode(event.response)
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
-						noConnectionMessage('Error con el servidor')
+						if data.error then
+							HomeError( "Error con el servidor" )
+						else
+							HomeError(data.message)
+						end
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					HomeError( "Error con el servidor" )
 				end
-				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
             end
             return true
         end
         -- Do request
 		network.request( url, "GET", callback )
     end
-	
-	
 	
 	---------------------------------- Pantalla PROFILE ----------------------------------
     -------------------------------------

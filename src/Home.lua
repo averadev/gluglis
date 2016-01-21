@@ -9,15 +9,15 @@
 -- Includes
 require('src.Tools')
 require('src.resources.Globals')
-RestManager = require('src.resources.RestManager')
 local composer = require( "composer" )
+local RestManager = require('src.resources.RestManager')
+
 
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local topCmp, bottomCmp, profiles, grpBtnDetail, grpDetail
+local topCmp, bottomCmp, profiles, grpBtnDetail, grpLoad
 local container
-
 
 -- Variables
 local isCard = false
@@ -45,22 +45,44 @@ end
 -- Creamos primera tanda de tarjetas
 ------------------------------------
 function getFirstCards(items)
+	tools:setLoading(false,grpLoad)
     loadUsers = items
-    idxA = 1
-    countA = #loadUsers
+	if #loadUsers > 0 then
+		idxA = 1
+		countA = #loadUsers
     
-    for i = 1, countA, 1 do
-        buildCard(loadUsers[i])
-    end
+		for i = 1, countA, 1 do
+			buildCard(loadUsers[i])
+		end
     
-    setInfo(1)
-    avaL[1].alpha = 1
-    avaR[1].alpha = 1
-    borders[4].alpha = 1
-    borders[5].alpha = 1
-    borders[6].alpha = 1
-    screen:addEventListener( "touch", touchScreen )
-	btnViewProfile:addEventListener( 'tap', showProfiles )
+		setInfo(1)
+		avaL[1].alpha = 1
+		avaR[1].alpha = 1
+		borders[4].alpha = 1
+		borders[5].alpha = 1
+		borders[6].alpha = 1
+		screen:addEventListener( "touch", touchScreen )
+		btnViewProfile:addEventListener( 'tap', showProfiles )
+	else
+		HomeError( "No se encontro usuarios")
+	end
+end
+
+function HomeError( message )
+
+	tools:setLoading(false,grpLoad)
+
+	local bgavatarDefault = display.newRect( midW, 172, 580, 558 )
+	bgavatarDefault.anchorY = 0
+	bgavatarDefault:setFillColor( 1 )
+	topCmp:insert(bgavatarDefault)
+		
+	local avatarDefault = display.newImage( "img/avatar.png" )
+	avatarDefault:translate( midW, 450 )
+	topCmp:insert(avatarDefault)
+		
+	lblName.text = message
+
 end
 
 -------------------------------------
@@ -68,6 +90,7 @@ end
 -- @param item registro que incluye el nombre de la imagen
 ------------------------------------
 function buildCard(item)
+	print(item.image)
     local idx = #avaL + 1
     local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
@@ -93,9 +116,11 @@ end
 -- @param event datos del boton
 ------------------------------------
 function showProfiles( event )
+	print('holamajk')
 	event.target.item.isMe = false
 	composer.removeScene( "src.Profile" )
 	composer.gotoScene( "src.Profile", { time = 400, effect = "fade", params = { item = event.target.item }})
+	return true
 end
 
 ------------------------------------------------
@@ -104,15 +129,19 @@ end
 ------------------------------------------------
 function showDetail( event )
 	if event.target.flag == 0 then
-		topCmp.y = -850
-		grpBtnDetail.y = grpBtnDetail.y - 350
+		if (intH < 1100) then
+			topCmp.y = -900
+		else
+			topCmp.y = -830
+		end
+		grpBtnDetail.y = midH - 100 + h
 		bottomCmp.alpha = 1
 		event.target.flag = 1
 		screen:removeEventListener( "touch", touchScreen )
 	else
 		bottomCmp.alpha = 0
 		topCmp.y =  -500
-		grpBtnDetail.y = 0
+		grpBtnDetail.y = 800 + h
 		event.target.flag = 0
 		screen:addEventListener( "touch", touchScreen )
 	end
@@ -409,7 +438,7 @@ function showInfoDisplay()
 	btnViewProfile.id = 0
     btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
     screen:insert(btnViewProfile)
-	btnViewProfile:addEventListener( 'tap', showProfiles )
+	--btnViewProfile:addEventListener( 'tap', showProfiles )
 	local lblViewProfile = display.newText({
         text = "Ver perfil",
         x = midW, y = posY + 32,
@@ -426,31 +455,33 @@ end
 ------------------------------------
 function showInfoButton()
 
-	local posY = 830 + h
+	local posY = 800 + h
 	
 	grpBtnDetail = display.newGroup()
+	grpBtnDetail.anchorY = 0
+	grpBtnDetail.y = posY
     screen:insert( grpBtnDetail )
 	
     -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, intW - 160, 70, 10 )
+    local bgTitle = display.newRoundedRect( midW, 35, intW - 160, 70, 10 )
     bgTitle.anchorY = 0
     bgTitle:setFillColor( 68/255, 14/255, 98/255 )
 	bgTitle.flag = 0
     grpBtnDetail:insert(bgTitle)
 	bgTitle:addEventListener( 'tap', showDetail )
-    local Circle1 = display.newCircle( 320, posY + 35, 12 )
+    local Circle1 = display.newCircle( 320, 70, 12 )
 	Circle1:setFillColor( 1 )
 	grpBtnDetail:insert(Circle1)
-	local Circle2 = display.newCircle( 384, posY + 35, 12 )
+	local Circle2 = display.newCircle( 384, 70, 12 )
 	Circle2:setFillColor( 1 )
 	grpBtnDetail:insert(Circle2)
-	local Circle3 = display.newCircle( 448, posY + 35, 12 )
+	local Circle3 = display.newCircle( 448, 70, 12 )
 	Circle3:setFillColor( 1 )
 	grpBtnDetail:insert(Circle3)
 
 	-------
 
-    local posY = 570
+    local posY = midH + h - 50
 	
 	-- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY + 10, intW - 160, 390, 10 )
@@ -513,8 +544,6 @@ function showInfoButton()
     lblViewProfile:setFillColor( 1 )
     bottomCmp:insert(lblViewProfile)
 	
-	
-    
 end
 
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
@@ -527,7 +556,6 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
     local isH = (intH - h) >  1300
-	print(intH - h)
 	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
@@ -618,6 +646,10 @@ function scene:create( event )
         screen:insert(bottomCmp)
         showInfoButton()
     end
+	grpLoad = display.newGroup()
+	screen:insert(grpLoad)
+	grpLoad.y = 650 + h
+	tools:setLoading(true,grpLoad)
 	RestManager.getUsersById()
     RestManager.getUsersByFilter()
 end	
@@ -634,6 +666,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:hide( event )
+	tools:setLoading(false,grpLoad)
 end
 
 -------------------------------------
