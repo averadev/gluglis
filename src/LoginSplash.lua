@@ -161,15 +161,18 @@ function newScr(idx)
     end
 	
 	if idx == 1 then 
-		labelTitle.y = 120
+		labelTitle.y = 140
 		labelTitle.text = "ESTA POR COMENZAR,\nEL MEJOR VIAJE DE TU VIDA..." 
 		labelSubTitle.alpha = 0
+		if (intH < 1300) then
+			labelTitle.y = 130
+		end
 	else
-		labelTitle.y = 80
+		labelTitle.y = 90
 		labelSubTitle.alpha = 1
 		if idx == 2 then 
 			labelTitle.text = "CONOCE A TUS ANFITRIONES..." 
-			labelSubTitle.text = "¿A donde? ¿con que tipo de persona \nte gustaria conectarte?"
+			labelSubTitle.text = "¿A dondé? ¿con que tipo de persona \nte gustaría conectarte?"
 		end
 		if idx == 3 then 
 			labelTitle.text = "CONOCE QUIEN SERÁ TU PRÓXIMO GUÍA  " 
@@ -242,7 +245,7 @@ function scene:create( event )
     screen:insert(bgSplash3)
 	
 	--title heard
-	local bgTextHeard = display.newRect( midW, 50, intW, 150  )
+	local bgTextHeard = display.newRect( midW, 60, intW, 160  )
 	bgTextHeard.anchorY = 0
 	bgTextHeard:setFillColor( .3 )
 	screen:insert(bgTextHeard)
@@ -250,7 +253,7 @@ function scene:create( event )
 	
 	labelTitle = display.newText( {
 		text = "ESTA POR COMENZAR,\nEL MEJOR VIAJE DE TU VIDA...",
-		x = midW, y = 120,
+		x = midW, y = 140,
 		font = native.systemFontBold,  
 		width = intW,
 		fontSize = 30, align = "center"
@@ -259,20 +262,30 @@ function scene:create( event )
 	screen:insert(labelTitle)
 	labelSubTitle = display.newText( {
 		text = "",
-		x = midW, y = 145,
+		x = midW, y = 160,
 		font = native.systemFont,  
-		width = intW - 100, height = 80,
+		width = intW - 100, height = 100,
 		fontSize = 24, align = "center"
 	})
 	labelSubTitle:setFillColor( 1 )
 	screen:insert(labelSubTitle)
 	labelSubTitle.alpha = 0
 	
+	if (intH < 1300) then
+		bgTextHeard.y = 50
+		labelTitle.y = 130
+	end
+	
 	-- posicion de los circulos
 	for i = 1, 4 do
-        circles[i] = display.newRoundedRect( 260 + (i * 50), posYBg - 100, 30, 30, 16 )
+        --[[circles[i] = display.newRoundedRect( 260 + (i * 50), posYBg - 100, 30, 30, 16 )
         circles[i]:setFillColor( 182/255, 207/255, 229/255 )
-        screen:insert(circles[i])
+        screen:insert(circles[i])]]
+		
+		circles[i] = display.newCircle(  260 + (i * 50), posYBg - 90, 10 )
+		circles[i]:setFillColor( 182/255, 207/255, 229/255 )
+		screen:insert(circles[i])
+		
     end
     circles[1]:setFillColor( 75/255, 176/255, 217/255 )
 	
