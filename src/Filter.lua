@@ -294,7 +294,7 @@ function createDatePicker( event )
     grpDatePicker:insert(bgDatePicker)
 	
 	--mostramos el tipo de datePicker
-	datePickerAndroid(event.target)
+	--datePickerAndroid(event.target)
 	local platformName = system.getInfo( "platformName" )
 	
 	--[[if platformName == "Mac OS X" or platformName == "iPhone OS"  then

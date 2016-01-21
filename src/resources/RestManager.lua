@@ -56,7 +56,6 @@ local RestManager = {}
 	
         local function callback(event)
             if ( event.isError ) then
-				print('error')
 				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
             else
                 local data = json.decode(event.response)
@@ -507,7 +506,6 @@ local RestManager = {}
 					end
 				else
 				end
-				--print(json.encode(event.response.status))
             end
             return true
         end
@@ -563,6 +561,7 @@ local RestManager = {}
 							loadImage(obj)
 						else
 							obj.items[obj.idx].image = "avatar.png"
+							obj.items[obj.idx].identifier = nil
 							obj.idx = obj.idx - 1
 							loadImage(obj)
 						end

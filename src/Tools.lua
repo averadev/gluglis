@@ -166,6 +166,7 @@ function Tools:new()
 	
     -- Cambia pantalla
     function toScreen(event)
+		tools:setLoading(false,"")
         -- Hide Menu
         if bgShadow.alpha > 0 then
             showMenu()

@@ -90,7 +90,6 @@ end
 -- @param item registro que incluye el nombre de la imagen
 ------------------------------------
 function buildCard(item)
-	print(item.image)
     local idx = #avaL + 1
     local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
@@ -116,7 +115,6 @@ end
 -- @param event datos del boton
 ------------------------------------
 function showProfiles( event )
-	print('holamajk')
 	event.target.item.isMe = false
 	composer.removeScene( "src.Profile" )
 	composer.gotoScene( "src.Profile", { time = 400, effect = "fade", params = { item = event.target.item }})
@@ -666,7 +664,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:hide( event )
-	tools:setLoading(false,grpLoad)
+	
 end
 
 -------------------------------------
