@@ -32,6 +32,7 @@ local scrDatePicker
 local lblSlider1, lblSlider2
 local genH, genM
 local lblIniDate, lblEndDate
+local slider1, slider2
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -162,16 +163,23 @@ end
 --------------------------------------
 function changeGender( event )
 	if event.target.name == "M" then
+		--si esta inactivo
 		if genM.alpha == 0 then
 			genM.alpha = 1
+			event.target:setFillColor( .93 )
+		--si esta activo
 		else
 			genM.alpha = 0
+			event.target:setFillColor( 1 )
 		end
 	else
+		--si esta inactivo
 		if genH.alpha == 0 then
 			genH.alpha = 1
+			event.target:setFillColor( .93 )
 		else
 			genH.alpha = 0
+			event.target:setFillColor( 1 )
 		end
 	end
 end
@@ -181,19 +189,17 @@ end
 -- @param event valor de los slider
 -------------------------------------------
 function sliderListener( event )
-		
 	if event.phase == "moved" then
-	
 		if event.value > 17 and event.value < 100 then
 			if event.target.name == "slider1" then
-				if event.value >= tonumber(lblSlider2.text) then
-					event.target:setValue(tonumber(lblSlider1.text))
+				if slider1.value >= slider2.value then
+					slider1:setValue(slider2.value - 1)
 				else
 					lblSlider1.text = event.value
 				end
 			elseif event.target.name == "slider2" then
-				if event.value <= tonumber(lblSlider1.text) then
-					event.target:setValue(tonumber(lblSlider2.text))
+				if slider2.value <= slider1.value then
+					slider2:setValue(slider1.value + 1)
 				else
 					lblSlider2.text = event.value
 				end
@@ -206,7 +212,12 @@ function sliderListener( event )
 		if event.value > 99 then
 			event.target:setValue(99)
 		end
-		
+	elseif event.phase == "ended" then
+		if event.target.name == "slider1" then
+			event.target:setValue(tonumber(lblSlider1.text))
+		elseif event.target.name == "slider2" then
+			event.target:setValue(tonumber(lblSlider2.text))
+		end
 	end
 	return true
 end
@@ -505,6 +516,9 @@ function createTextField( name, wField, coordX, coordY  )
 	end
 		
 	local dateC = t[3] .. "-" .. t[2] .. "-" .. t[1]
+	if dateC == "00-00-0000" then
+		dateC = ""
+	end
 
 	if name == "location" then
 		txtLocation = native.newTextField( coordX, coordY, wField, 50 )
@@ -568,11 +582,11 @@ function scene:create( event )
     screen:insert(tools)
     
     -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, 160, 650, 503, 10 )
+    local bgComp1 = display.newRoundedRect( midW, 160, 650, 523, 10 )
     bgComp1.anchorY = 0
     bgComp1:setFillColor( .88 )
     screen:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, 160, 646, 500, 10 )
+    local bgComp2 = display.newRoundedRect( midW, 160, 646, 520, 10 )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
     screen:insert(bgComp2)
@@ -587,7 +601,7 @@ function scene:create( event )
     bgTitleX:setFillColor( .93 )
     screen:insert(bgTitleX)
     local lblTitle = display.newText({
-        text = "BUSQUEDA AVANZADA", 
+        text = "BÚSQUEDA AVANZADA", 
         x = 310, y = 195,
         width = 400,
         font = native.systemFontBold,   
@@ -601,7 +615,7 @@ function scene:create( event )
     local opt = {
         {icon = 'icoFilterCity', label= 'Ciudad:', wField = 410, nameField = "location"}, 
         {icon = 'icoFilterAvailable', label= 'Disponible entre:', wField = 140, nameField = "endDate"}, 
-        {label= 'Genero:'}, 
+        {label= 'Género:'}, 
         {label= 'Edad Entre:'}
 		}
     for i=1, #opt do
@@ -651,11 +665,27 @@ function scene:create( event )
     xFields = {
         {label = "y", x = 540, y = -180},
         {w = 140, x = 470, y = -180, nameField = "iniDate"},
-		{label = "HOMBRE", x = 430, y = -90, isGen = "H"},
-        {label = "MUJER", x = 630, y = -90, isGen = "M"} ,
+		{label = "HOMBRE", x = 430, y = -90, w = 170, isGen = "H"},
+        {label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
 		}
     for i=1, #xFields do
         if  xFields[i].label then
+			
+			if xFields[i].isGen then
+				local bg0 = display.newRoundedRect( xFields[i].x - 110, posY + xFields[i].y, xFields[i].w, 70, 10 )
+				bg0.anchorX = 0
+				bg0:setFillColor( .93 )
+				screen:insert(bg0)
+				bg0:addEventListener( 'tap', changeGender )
+				bg0.name = xFields[i].isGen
+				
+				if xFields[i].isGen == "H" and settFilter.genH == 0 then
+					bg0:setFillColor( 1 )
+				elseif xFields[i].isGen == "M" and settFilter.genM == 0 then
+					bg0:setFillColor( 1 )
+				end
+			end
+		
             local lbl = display.newText({
                 text = xFields[i].label, 
                 x = xFields[i].x, y = posY + xFields[i].y,
@@ -666,10 +696,6 @@ function scene:create( event )
             lbl:setFillColor( .5 )
             screen:insert(lbl)
 			
-			if xFields[i].isGen then
-				lbl:addEventListener( 'tap', changeGender )
-				lbl.name = xFields[i].isGen
-			end
         else
             local bg1 = display.newRoundedRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50, 5 )
             bg1.anchorX = 1
@@ -690,7 +716,7 @@ function scene:create( event )
 	--label slider
 	lblSlider1 = display.newText({
         text = settFilter.iniAge, 
-        x = 340, y = posY,
+        x = 310, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
     })
@@ -699,7 +725,7 @@ function scene:create( event )
 	
 	lblSlider2 = display.newText({
         text = settFilter.endAge, 
-        x = 650, y = posY,
+        x = 670, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
     })
@@ -707,28 +733,66 @@ function scene:create( event )
     screen:insert(lblSlider2)
 	
 	--slider
-	local slider1 = widget.newSlider({
-        top = posY - 20,
-        left = 370,
-        width = 250,
-        value = settFilter.iniAge,  -- Start slider at 10% (optional)
+	
+	local options = {
+		frames = {
+			{ x=0, y=0, width=36, height=64 },
+			{ x=40, y=0, width=36, height=64 },
+			{ x=80, y=0, width=36, height=64 },
+			{ x=124, y=0, width=36, height=64 },
+			{ x=168, y=0, width=64, height=64 }
+		},
+		sheetContentWidth = 232,
+		sheetContentHeight = 64
+	}
+	local sliderSheet = graphics.newImageSheet( "img/sliderSheet2.png", options )
+	
+	slider1 = widget.newSlider({
+        sheet = sliderSheet,
+        leftFrame = 1,
+        middleFrame = 2,
+        rightFrame = 3,
+        fillFrame = 4,
+        frameWidth = 36,
+        frameHeight = 64,
+        handleFrame = 5,
+        handleWidth = 64,
+        handleHeight = 64,
+        top = posY - 30,
+        left= 310,
+        orientation = "horizontal",
+        width = 350,
+		value = settFilter.iniAge,
         listener = sliderListener
-    })
+	})
 	slider1.name = "slider1"
 	screen:insert(slider1)
 	
 	--slider
-	local slider2 = widget.newSlider({
-        top = posY + 20 ,
-        left = 370,
-        width = 250,
-        value = settFilter.endAge,  -- Start slider at 10% (optional)
+	slider2 = widget.newSlider({
+        sheet = sliderSheet,
+        leftFrame = 1,
+        middleFrame = 2,
+        rightFrame = 3,
+        fillFrame = 4,
+        frameWidth = 36,
+        frameHeight = 64,
+        handleFrame = 5,
+        handleWidth = 64,
+        handleHeight = 64,
+        top = posY + 35,
+        left= 310,
+        orientation = "horizontal",
+        width = 350,
+		value = settFilter.endAge,
         listener = sliderListener
-    })
+	})
 	slider2.name = "slider2"
 	screen:insert(slider2)
     
     -- Genero
+	--genH = Hombre
+	--genM = Mujer
     genH = display.newImage( screen, "img/icoFilterH.png" )
     genH:translate( 350, posY - 90 )
 	genH.alpha = settFilter.genH
@@ -737,7 +801,7 @@ function scene:create( event )
 	genM.alpha = settFilter.genM
     
     -- Search Button
-    posY = posY + 150
+    posY = posY + 170
     local btnSearch = display.newRoundedRect( midW, posY, 650, 80, 10 )
     btnSearch:setFillColor( {
         type = 'gradient',
