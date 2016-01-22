@@ -70,7 +70,7 @@ function scene:create( event )
 	local item = event.params.item
 	screen = self.view
     --screen.y = h
-    
+    print('holaaaaaa')
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
@@ -128,6 +128,7 @@ function scene:create( event )
     lblName:setFillColor( 0 )
     scrPerfile:insert(lblName)
 	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
+	print(item.edad)
     local lblAge= display.newText({
         text = item.edad, 
         x = 550, y = 200,

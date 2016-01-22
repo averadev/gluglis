@@ -19,6 +19,7 @@ display.setDefault( "textureWrapY", "clampToEdge" )
 local isUser = DBManager.setupSquema()
 if isUser then
 	composer.gotoScene("src.Home")
+	--composer.gotoScene("src.Filter")
 else
 	composer.gotoScene("src.LoginSplash")
 	--composer.gotoScene("src.LoginUserName")

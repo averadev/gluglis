@@ -25,7 +25,7 @@ local settFilter
 local txtLocation
 local datePicker
 local days = {}
-local months = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"}
+local months = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre" }
 local years = {}
 local poscTabla = {}
 local scrDatePicker
@@ -33,6 +33,7 @@ local lblSlider1, lblSlider2
 local genH, genM
 local lblIniDate, lblEndDate
 local slider1, slider2
+local pickerWheel2
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -53,9 +54,14 @@ end
 -- cierra todo los componentes
 -------------------------------
 function closeAll( event )
+	native.setKeyboardFocus(nil)
 	if grpScrCity then
 		grpScrCity:removeSelf()
 		grpScrCity = nil
+	end
+	if grpDatePicker then
+		grpDatePicker:removeSelf()
+		grpDatePicker = nil
 	end
 	return true
 end
@@ -204,6 +210,10 @@ function sliderListener( event )
 					lblSlider2.text = event.value
 				end
 			end
+		elseif event.value < 18 then
+			event.target:setValue(18)
+		elseif event.value > 99 then
+			event.target:setValue(99)
 		end
 	
 		if event.value < 18 then
@@ -273,6 +283,126 @@ function changeDate( event )
 	return true
 end
 
+function createDatetime()
+	
+	-- Create two tables to hold data for days and years      
+	local days = {}
+	local years = {}
+
+	-- Populate the "days" table
+	for d = 1, 31 do
+		days[d] = d
+	end
+
+	-- Populate the "years" table
+	for y = 1, 15 do
+		years[y] = 2015 + y
+	end
+
+	-- Configure the picker wheel columns
+	local columnData = {
+		-- Days
+		{
+			align = "left",
+			width = 120,
+			startIndex = 22,
+			labels = days
+		},
+		-- Months
+		{ 
+			align = "center",
+			width = 200,
+			startIndex = 1,
+			labels = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre" }
+		},
+		-- Years
+		{
+			align = "right",
+			width = 200,
+			startIndex = 10,
+			labels = years
+		}
+	}
+
+	-- Image sheet options and declaration
+	local options = {
+		frames = 
+		{
+			{ x=0, y=0, width=900, height=222 },
+			{ x=900, y=0, width=900, height=222 },
+			{ x=2000, y=0, width=8, height=222 }
+		},
+		sheetContentWidth = 1808,
+		sheetContentHeight = 222
+	}
+	local pickerWheelSheet = graphics.newImageSheet( "img/pickerSheet4.png", options )
+	
+	-- Create the widget
+	pickerWheel2 = widget.newPickerWheel({
+		top = midH - 550,
+		left = -100,
+		columns = columnData,
+        sheet = pickerWheelSheet,
+        overlayFrame = 1,
+        overlayFrameWidth = 900,
+        overlayFrameHeight = 222,
+        backgroundFrame = 2,
+        backgroundFrameWidth = 900,
+        backgroundFrameHeight = 222,
+        separatorFrame = 3,
+        separatorFrameWidth = 8,
+        separatorFrameHeight = 222,
+        columnColor = { 0, 0, 0, 0 },
+        fontColor = { 0.4, 0.4, 0.4, 0.5 },
+        fontColorSelected = { 129/255, 61/255, 153/255},
+		fontSize = 32,
+    })
+	pickerWheel2:addEventListener( 'tap', noAction )
+	
+	grpDatePicker:insert(pickerWheel2)
+	-- Get the table of current values for all columns
+	-- This can be performed on a button tap, timer execution, or other event
+	--local values = pickerWheel2:getValues()
+
+	-- Get the value for each column in the wheel (by column index)
+	--[[local currentMonth = values[1].value
+	local currentDay = values[2].value
+	local currentYear = values[3].value]]
+
+	--print( currentMonth, currentDay, currentYear )
+	
+end
+
+function createTime2()
+	
+	local function webListener( event )
+    if event.url then
+        print( "You are visiting: " .. event.url )
+    end
+
+    if event.type then
+        print( "The event.type is " .. event.type ) -- print the type of request
+    end
+
+    if event.errorCode then
+        native.showAlert( "Error!", event.errorMessage, { "OK" } )
+    end
+	
+	 local url = event.url
+    if 1 == string.find( url, "corona:close" ) then
+        -- Close the web popup
+        print('holaaaaa')
+    end
+	
+end
+
+local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 600, 600 )
+webView:request( "html/localpage1.html" )
+
+webView:addEventListener( "urlRequest", webListener )
+	
+end
+
 --------------------------------------------
 -- Crea el componente de DatePicker
 --------------------------------------------
@@ -283,15 +413,58 @@ function createDatePicker( event )
 		grpDatePicker = nil
 	end
 	
-	grpTextField.x = -intW
+	--grpTextField.x = -intW
 	
 	grpDatePicker = display.newGroup()
 	screen:insert(grpDatePicker)
+	grpDatePicker.y = intH
 	
-	local bgDatePicker = display.newRect( midW, midH + h, intW, intH )
-	bgDatePicker:setFillColor( 0 )
+	--[[local bgDatePicker = display.newRect( midW, midH + h, intW, intH )
+	bgDatePicker:setFillColor( 1 )
 	bgDatePicker.alpha = .9
+    grpDatePicker:insert(bgDatePicker)]]
+	
+	local bgDatePicker = display.newRect( midW, 80, intW, 400 )
+	bgDatePicker.anchorY = 0
+	bgDatePicker:setFillColor( 1 )
     grpDatePicker:insert(bgDatePicker)
+	
+	local bgBtnDatePicker = display.newRect( midW, 50, intW, 80 )
+    grpDatePicker:insert(bgBtnDatePicker)
+	bgBtnDatePicker:setFillColor( {
+        type = 'gradient',
+        color1 = { 129/255, 61/255, 153/255 }, 
+        color2 = { 89/255, 31/255, 103/255 },
+        direction = "bottom"
+    } )
+	
+	local btnAceptDate = display.newRect( intW, 50, 250, 80 )
+	btnAceptDate.anchorX = 1
+	btnAceptDate.type = event.target.name
+	btnAceptDate.name = "accept"
+    grpDatePicker:insert(btnAceptDate)
+	btnAceptDate:addEventListener( 'tap', destroyDatePicker )
+	btnAceptDate:setFillColor( {
+        type = 'gradient',
+        color1 = { 129/255, 61/255, 153/255 }, 
+        color2 = { 89/255, 31/255, 103/255 },
+        direction = "bottom"
+    })
+	
+	local labelAcceptDate = display.newText({
+            text = "Aceptar", 
+            x = intW, y = 50,
+            width = 250,
+            font = native.systemFont,   
+            fontSize = 35, align = "center"
+        })
+	labelAcceptDate:setFillColor( 1 )
+	labelAcceptDate.anchorX = 1
+	grpDatePicker:insert(labelAcceptDate)
+	
+	createDatetime()
+	
+	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })
 	
 	--mostramos el tipo de datePicker
 	--datePickerAndroid(event.target)
@@ -302,6 +475,8 @@ function createDatePicker( event )
 	else
 		datePickerAndroid(event.target)
 	end]]
+	
+	return true
 	
 end
 
@@ -469,13 +644,27 @@ end
 ---------------------------
 function destroyDatePicker( event )
 	if event.target.name == "accept" then
-		local month = poscTabla[1]
-		local day = days[poscTabla[2]]
-		local year = years[poscTabla[3]]
-		if month < 10 then month = "0" .. month end
-		if day < 10 then day = "0" .. day end
+	
+		local values = pickerWheel2:getValues()
+
+		-- Get the value for each column in the wheel (by column index)
+		local day = values[1].value
+		local month = values[2].value
+		local year = values[3].value
+		local month2 = 1
+		for i=1,12,1 do
+			if month == months[i] then
+				month = i
+				break
+			end
+		end
+	
+		if tonumber(month) < 10 then month = "0" .. month2 end
+		if tonumber(day) < 10 then day = "0" .. day end
 		local dateS = day .. "/" .. month .. "/" .. year
 		local dateS2 = year .. "-" .. month .. "-" .. day
+		print(dateS)
+		print(dateS2)
 		if event.target.type == "iniDate" then
 			lblIniDate.text = dateS
 			lblIniDate.date = dateS2
