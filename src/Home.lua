@@ -90,6 +90,29 @@ end
 -- @param item registro que incluye el nombre de la imagen
 ------------------------------------
 function buildCard(item)
+
+	local grpImage = display.newGroup()
+	grpImage.alpha = 0
+	grpImage.y = midH
+	grpImage.x = midW
+	local img = display.newImage( item.image, system.TemporaryDirectory )
+	grpImage:insert(img)
+	local imgWidth = img.contentWidth 
+	local imgHeight = img.contentHeight
+	if imgWidth < 550 then
+		img.width = 550
+	end
+	if imgHeight < 550 then
+		img.height = 550
+	end
+	if imgWidth < 550 or imgHeight < 550 then
+		item.image = "a" .. item.image
+		grpImage.alpha = 1
+		display.save( grpImage, { filename=item.image , baseDir=system.TemporaryDirectory, isFullResolution=false, backgroundColor={0, 0, 0, 0} } )
+	end
+	grpImage:removeSelf()
+	grpImage = nil
+
     local idx = #avaL + 1
     local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
