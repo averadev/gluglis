@@ -13,9 +13,6 @@ display.setDefault( "background", 0 )
 display.setDefault( "textureWrapX", "repeat" )
 display.setDefault( "textureWrapY", "repeat" )
 
-display.setDefault( "textureWrapX", "clampToEdge" )
-display.setDefault( "textureWrapY", "clampToEdge" ) 
-
 local isUser = DBManager.setupSquema()
 if isUser then
 	composer.gotoScene("src.Home")
