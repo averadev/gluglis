@@ -232,58 +232,7 @@ function sliderListener( event )
 	return true
 end
 
-------------------------------
--- Llena las tablas de fecha
-------------------------------
-function setDate()
-	-- Populate the "days" table
-	for d = 1, 31 do
-		days[d] = d
-	end
-
-	-- Populate the "years" table
-	for y = 1, 10 do
-		years[y] = 2015 + y
-	end
-end
-
---------------------------------------------
--- Cambia el valor de las diferentes fechas
---------------------------------------------
-function changeDate( event )
-
-	-- valor del boton de cambio de fecha
-	local arrow = event.target
-	local total
-	if arrow.tabla == 1 then
-		total = #months
-	elseif arrow.tabla == 2 then
-		total = #days
-	else
-		total = #years
-	end
-	--suma un digito a la fecha
-	if arrow.type == "up" and poscTabla[arrow.tabla] < total then
-		local x, y = scrDatePicker[arrow.tabla]:getContentPosition()
-		scrDatePicker[arrow.tabla]:scrollToPosition{
-			y = y - 66,
-			time = 50,
-		}
-		poscTabla[arrow.tabla] = poscTabla[arrow.tabla]  + 1
-	--resta un digito a la fecha
-	elseif arrow.type == "down" and poscTabla[arrow.tabla] > 1 then
-		local x, y = scrDatePicker[arrow.tabla]:getContentPosition()
-		scrDatePicker[arrow.tabla]:scrollToPosition{
-			y = y + 66,
-			time = 50,
-		}
-		poscTabla[arrow.tabla] = poscTabla[arrow.tabla]  - 1
-	end
-
-	return true
-end
-
-function createDatetime()
+function DatePicker()
 	
 	-- Create two tables to hold data for days and years      
 	local days = {}
@@ -360,46 +309,6 @@ function createDatetime()
 	pickerWheel2:addEventListener( 'tap', noAction )
 	
 	grpDatePicker:insert(pickerWheel2)
-	-- Get the table of current values for all columns
-	-- This can be performed on a button tap, timer execution, or other event
-	--local values = pickerWheel2:getValues()
-
-	-- Get the value for each column in the wheel (by column index)
-	--[[local currentMonth = values[1].value
-	local currentDay = values[2].value
-	local currentYear = values[3].value]]
-
-	--print( currentMonth, currentDay, currentYear )
-	
-end
-
-function createTime2()
-	
-	local function webListener( event )
-    if event.url then
-        print( "You are visiting: " .. event.url )
-    end
-
-    if event.type then
-        print( "The event.type is " .. event.type ) -- print the type of request
-    end
-
-    if event.errorCode then
-        native.showAlert( "Error!", event.errorMessage, { "OK" } )
-    end
-	
-	 local url = event.url
-    if 1 == string.find( url, "corona:close" ) then
-        -- Close the web popup
-        print('holaaaaa')
-    end
-	
-end
-
-local webView = native.newWebView( display.contentCenterX, display.contentCenterY, 600, 600 )
-webView:request( "html/localpage1.html" )
-
-webView:addEventListener( "urlRequest", webListener )
 	
 end
 
@@ -419,10 +328,8 @@ function createDatePicker( event )
 	screen:insert(grpDatePicker)
 	grpDatePicker.y = intH
 	
-	--[[local bgDatePicker = display.newRect( midW, midH + h, intW, intH )
-	bgDatePicker:setFillColor( 1 )
-	bgDatePicker.alpha = .9
-    grpDatePicker:insert(bgDatePicker)]]
+	local index = {}
+	--event.target.name
 	
 	local bgDatePicker = display.newRect( midW, 80, intW, 400 )
 	bgDatePicker.anchorY = 0
@@ -462,7 +369,7 @@ function createDatePicker( event )
 	labelAcceptDate.anchorX = 1
 	grpDatePicker:insert(labelAcceptDate)
 	
-	createDatetime()
+	DatePicker()
 	
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })
 	
@@ -477,165 +384,6 @@ function createDatePicker( event )
 	end]]
 	
 	return true
-	
-end
-
-------------------------------------
--- Crea un datePicker tipo android
-------------------------------------
-function datePickerAndroid( item )
-	-- Create two tables to hold data for days and years
-	local posXArrow = { 185, midW, 575 }
-	scrDatePicker = {}
-	local dates = { 
-		months, days, years,
-	}
-	local posY = midH + h - 100
-	local bg1 = display.newRect( midW, posY, 606, 606 )
-	bg1:setFillColor( 1 )
-    grpDatePicker:insert(bg1)
-	
-	local bg2 = display.newRoundedRect( midW, posY, 600, 600, 5 )
-	bg2:setFillColor( .2 )
-    grpDatePicker:insert(bg2)
-	
-	posY = posY - 250
-	--titulo
-	local nameTitle = "Fecha de inicio"
-	if item.name == "endDate" then nameTitle = "Fecha de terminacion" end
-	local labelTitle = display.newText({
-            text = nameTitle, 
-            x = midW, y = posY,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 40, align = "center"
-        })
-	labelTitle:setFillColor( 1 )
-	grpDatePicker:insert(labelTitle)
-	
-	posY = posY + 40
-	
-	--linea encabezado
-	local line1 = display.newRect( midW, posY, 550, 4 )
-	line1:setFillColor( 1 )
-	line1.alpha = .8
-    grpDatePicker:insert(line1)
-	
-	posY = posY + 50
-	
-	for y=1, 3 do
-		--flechas
-		local arrowUp = display.newImage( screen, "img/arrowUp.png" )
-		arrowUp:translate( posXArrow[y], posY )
-		arrowUp.type = "up"
-		arrowUp.tabla = y
-		grpDatePicker:insert(arrowUp)
-		arrowUp:addEventListener( 'tap', changeDate )
-		local arrowDown = display.newImage( screen, "img/arrowDown.png" )
-		arrowDown:translate( posXArrow[y], posY + 310 )
-		arrowDown.type = "down"
-		arrowDown.tabla = y
-		grpDatePicker:insert(arrowDown)
-		arrowDown:addEventListener( 'tap', changeDate )
-		poscTabla[y] = 1
-		local lastY = 33
-		--scroll
-		scrDatePicker[y] = widget.newScrollView({
-			top = posY + 55,
-			left = posXArrow[y] - 50,
-			width = 100,
-			height = 200,
-			horizontalScrollDisabled = true,
-			verticalScrollDisabled = true,
-			backgroundColor = { .2  }
-		})
-		grpDatePicker:insert(scrDatePicker[y])
-		
-		local dateCurrent = dates[y]
-		--llenamos los scroll con los digitos
-		for i=1, #dates[y] do
-			if i == 1 then
-				lastY = lastY + 66
-			end	
-			local lblMonth = display.newText({
-					text = dateCurrent[i], 
-					x = 50, y = lastY,
-					width = 100,
-					font = native.systemFont,   
-                fontSize = 30, align = "center"
-            })
-			lblMonth:setFillColor( 1 )
-			scrDatePicker[y]:insert(lblMonth)
-			lastY = lastY + 66
-		end
-		scrDatePicker[y]:setScrollHeight(lastY + 33)
-		
-		--bg 
-		local bg1 = display.newRect( posXArrow[y], posY + 85, 100, 64 )
-		bg1:setFillColor( 0 )
-		bg1.alpha = .2
-		grpDatePicker:insert(bg1)
-	
-		local line1 = display.newRect( posXArrow[y], posY + 54 + 64, 100, 4 )
-		line1:setFillColor( 1 )
-		grpDatePicker:insert(line1)
-		
-		local bg2 = display.newRect( posXArrow[y], posY + 221, 100, 64 )
-		bg2:setFillColor( 0 )
-		bg2.alpha = .2
-		grpDatePicker:insert(bg2)
-		
-		local line2 = display.newRect( posXArrow[y], posY + 189, 100, 4 )
-		line2:setFillColor( 1 )
-		grpDatePicker:insert(line2)
-	end
-	
-	--buttom
-	posY = posY + 410
-	
-	local bgButtomAccept = display.newRect( 234, posY, 300, 100 )
-	bgButtomAccept:setFillColor( 1 )
-    grpDatePicker:insert(bgButtomAccept)
-	
-	local buttomAccept = display.newRect( 233, posY + 2, 298, 98 )
-	buttomAccept:setFillColor( .2 )
-	buttomAccept.name = "accept"
-	buttomAccept.type = item.name
-    grpDatePicker:insert(buttomAccept)
-	buttomAccept:addEventListener( 'tap', destroyDatePicker )
-	
-	local labelAccept = display.newText({
-            text = "Aceptar", 
-            x = 233, y = posY,
-            width = 300,
-            font = native.systemFont,   
-            fontSize = 36, align = "center"
-        })
-	labelAccept:setFillColor( 1 )
-	grpDatePicker:insert(labelAccept)
-	
-	local bgButtomCancel = display.newRect( 535, posY, 300, 100 )
-	bgButtomCancel:setFillColor( 1 )
-    grpDatePicker:insert(bgButtomCancel)
-	
-	local buttomCancel = display.newRect( 535, posY + 2, 298, 98 )
-	buttomCancel:setFillColor( .2 )
-	buttomCancel.name = "cancel"
-    grpDatePicker:insert(buttomCancel)
-	buttomCancel:addEventListener( 'tap', destroyDatePicker )
-	
-	local labelCancel = display.newText({
-            text = "Cancelar", 
-            x = 535, y = posY,
-            width = 300,
-            font = native.systemFont,   
-            fontSize = 36, align = "center"
-        })
-	labelCancel:setFillColor( 1 )
-	grpDatePicker:insert(labelCancel)
-	
-	-----------------------------------
-	-----------------------------------
 	
 end
 
@@ -1008,8 +756,6 @@ function scene:create( event )
     })
     lblSearch:setFillColor( 1 )
     screen:insert(lblSearch)
-    
-	setDate()
 	
 end	
 -- Called immediately after scene has moved onscreen:

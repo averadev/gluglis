@@ -106,15 +106,21 @@ function buildCard(item)
 		img.height = 550
 	end
 	if imgWidth < 550 or imgHeight < 550 then
-		item.image = "a" .. item.image
-		grpImage.alpha = 1
-		display.save( grpImage, { filename=item.image , baseDir=system.TemporaryDirectory, isFullResolution=false, backgroundColor={0, 0, 0, 0} } )
+		--item.image = "a" .. item.image
+		--grpImage.alpha = 1
+		--display.save( grpImage, { filename=item.image , baseDir=system.TemporaryDirectory, isFullResolution=false, backgroundColor={0, 0, 0, 0} } )
 	end
 	grpImage:removeSelf()
 	grpImage = nil
 
     local idx = #avaL + 1
-    local imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
+	local imgS = nil
+	if imgWidth < 550 or imgHeight < 550 then 
+		imgS = graphics.newImageSheet( "img/avatar2.png", { width = 275, height = 550, numFrames = 2 })
+	else
+		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
+	end
+    
     avaL[idx] = display.newRect( midW, 176, 275, 550 )
     avaL[idx].alpha = 0
     avaL[idx].anchorY = 0
