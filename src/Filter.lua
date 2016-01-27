@@ -37,6 +37,9 @@ local pickerWheel2
 local sliderX = 0
 local circleSlider1, circleSlider2
 local checkGen = {}
+local poscCircle1, poscCircle2
+local newPoscCircle = nil
+local isCircle = false
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -485,15 +488,42 @@ function createTextField( name, wField, coordX, coordY  )
 end
 
 function listenerSlider( event )
+	--print(poscCircle1)
+	--print(poscCircle2)
+	
 	if event.phase == "began" then
+		isCircle = false
+		print(poscCircle1)
+		if event.yStart > 557 and event.yStart < 625 then
+			newPoscCircle = nil
+			if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30  then
+				isCircle = true
+				circleSlider1:toFront()
+				newPoscCircle = circleSlider1
+			elseif event.x > poscCircle2 - 30 and event.x < poscCircle2 + 30  then
+				isCircle = true
+				circleSlider2:toFront()
+				newPoscCircle = circleSlider2
+			end
+		end
+	elseif event.phase == "moved" then
+		if isCircle then
+			if event.x >= 339 and event.x <= 638 then
+				newPoscCircle.x = event.x
+			end
+		end
+	elseif event.phase == "ended" or event.phase == "cancelled" then
+		poscCircle1 = circleSlider1.x
+		poscCircle2 = circleSlider2.x
+		newPoscCircle = nil
+		isCircle = false
+	end
+	
+	--[[if event.phase == "began" then
 		direction = 0
 		event.target:toFront()
 		sliderX = event.x
 		--print(event.x)
-        --[[if event.yStart > 140 and event.yStart < 820 then
-            --isCard = true
-            direction = 0
-        end]]
 	
     elseif event.phase == "moved" then
         local x = (event.x - sliderX)
@@ -553,7 +583,7 @@ function listenerSlider( event )
 			lblSlider2.text = tonumber(poscX) + 18
 		end
         direction = 0
-    end
+    end]]
 	
 	return true
 end
@@ -583,22 +613,26 @@ function newSlider()
     bgSlider1.anchorY = 0
     bgSlider1:setFillColor( 1 )
     screen:insert(bgSlider1)
-	--circleSlider1 = display.newCircle( 340, 590, 25 )
-	circleSlider1 = display.newCircle( 372, 569, 30 )
+	circleSlider1 = display.newCircle( 340, 595, 30 )
+	--circleSlider1 = display.newCircle( 370, 595, 30 )
 	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
-	circleSlider1.anchorX = 1
+	--circleSlider1.anchorX = 1
 	circleSlider1.name = "slider1"
 	screen:insert(circleSlider1)
-	circleSlider1:addEventListener( 'touch', listenerSlider )
+	--circleSlider1:addEventListener( 'touch', listenerSlider )
 	circleSlider1:addEventListener( 'tap', noAction )
-	circleSlider2 = display.newCircle( 605, 569, 30 )
+	poscCircle1 = circleSlider1.x
+	
+	--circleSlider2 = display.newCircle( 605, 569, 30 )
+	circleSlider2 = display.newCircle( 636, 595, 30 )
 	--circle2:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider2:setFillColor( .5 )
 	circleSlider2.name = "slider2"
-	circleSlider2.anchorX = 0
-	circleSlider2:addEventListener( 'touch', listenerSlider )
+	--circleSlider2.anchorX = 0
+	--circleSlider2:addEventListener( 'touch', listenerSlider )
 	circleSlider2:addEventListener( 'tap', noAction )
 	screen:insert(circleSlider2)
+	poscCircle2 = circleSlider2.x
 	--569
 	
 end
@@ -623,6 +657,7 @@ function scene:create( event )
     o.fill.scaleY = .2
     screen:insert(o)
 	o:addEventListener( 'tap', closeAll )
+	o:addEventListener( 'touch', listenerSlider )
 	
     tools = Tools:new()
     tools:buildHeader()
