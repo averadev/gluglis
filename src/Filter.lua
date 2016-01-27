@@ -34,6 +34,8 @@ local genH, genM
 local lblIniDate, lblEndDate
 local slider1, slider2
 local pickerWheel2
+local sliderX = 0
+local circleSlider1, circleSlider2
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -492,6 +494,124 @@ function createTextField( name, wField, coordX, coordY  )
 	end
 end
 
+function listenerSlider( event )
+	if event.phase == "began" then
+		direction = 0
+		event.target:toFront()
+		sliderX = event.x
+		--print(event.x)
+        --[[if event.yStart > 140 and event.yStart < 820 then
+            --isCard = true
+            direction = 0
+        end]]
+	
+    elseif event.phase == "moved" then
+        local x = (event.x - sliderX)
+        local xM = (event.target.x * 1.5)
+		if direction == 0 then
+			
+		end
+		if x < 0 then
+				direction = 1
+		elseif x > 0 then
+			direction = -1
+		end
+		local circleName = event.target.name
+		--local poscX = (event.target.x - 295)/3.6
+		local poscX = 0
+		if circleName == "slider1" then
+			poscX = (event.target.x - 365)/3.65
+		elseif circleName == "slider2" then
+			poscX = (event.target.x - 315)/3.65
+		end
+		poscX = math.round( poscX )
+		if direction == -1 and circleName == "slider1" and  event.x < 633  then
+			if tonumber(lblSlider1.text) < tonumber(lblSlider2.text) then
+				event.target.x = event.x + 39
+			end
+		elseif direction == 1 and circleName == "slider1" and  event.x > 337 then
+			event.target.x = event.x + 37
+		elseif direction == -1 and circleName == "slider2" and event.x < 633 then
+			event.target.x = event.x - 32
+		elseif direction == 1 and circleName == "slider2" and event.x > 343 then
+			if tonumber(lblSlider2.text) > tonumber(lblSlider1.text) then
+				event.target.x = event.x - 39
+			end
+			
+		end
+		if circleName == "slider1" then
+			lblSlider1.text = tonumber(poscX) + 18
+		elseif circleName == "slider2" then
+			lblSlider2.text = tonumber(poscX) + 18
+		end
+		
+		sliderX = event.x
+		
+    elseif event.phase == "ended" or event.phase == "cancelled" then
+		local circleName = event.target.name
+		--local poscX = (event.target.x - 295)/3.6
+		local poscX = 0
+		if circleName == "slider1" then
+			poscX = (event.target.x - 365)/3.65
+		elseif circleName == "slider2" then
+			poscX = (event.target.x - 315)/3.65
+		end
+		poscX = math.round( poscX )
+		if circleName == "slider1" then
+			lblSlider1.text = tonumber(poscX) + 18
+		elseif circleName == "slider2" then
+			lblSlider2.text = tonumber(poscX) + 18
+		end
+        direction = 0
+    end
+	
+	return true
+end
+
+function newSlider()
+
+	--[[local bgSlider0 = display.newRoundedRect( 488, 554, 324, 26, 5 )
+    bgSlider0.anchorY = 0
+    bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
+    screen:insert(bgSlider0)
+	local bgSlider1 = display.newRect( 488, 557, 318, 20 )
+    bgSlider1.anchorY = 0
+    bgSlider1:setFillColor( 1 )
+    screen:insert(bgSlider1)
+	local circle1 = display.newCircle( 326, 568, 20 )
+	circle1:setFillColor( 129/255, 61/255, 153/255 )
+	screen:insert(circle1)
+	local circle2 = display.newCircle( 648, 568, 20 )
+	circle2:setFillColor( 129/255, 61/255, 153/255 )
+	screen:insert(circle2)]]
+	
+	local bgSlider0 = display.newRoundedRect( 488, 556, 300, 22, 5 )
+    bgSlider0.anchorY = 0
+    bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
+    screen:insert(bgSlider0)
+	local bgSlider1 = display.newRect( 488, 559, 294, 16 )
+    bgSlider1.anchorY = 0
+    bgSlider1:setFillColor( 1 )
+    screen:insert(bgSlider1)
+	--circleSlider1 = display.newCircle( 340, 590, 25 )
+	circleSlider1 = display.newCircle( 372, 569, 30 )
+	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
+	circleSlider1.anchorX = 1
+	circleSlider1.name = "slider1"
+	screen:insert(circleSlider1)
+	circleSlider1:addEventListener( 'touch', listenerSlider )
+	circleSlider1:addEventListener( 'tap', noAction )
+	circleSlider2 = display.newCircle( 605, 569, 30 )
+	--circle2:setFillColor( 129/255, 61/255, 153/255 )
+	circleSlider2:setFillColor( .5 )
+	circleSlider2.name = "slider2"
+	circleSlider2.anchorX = 0
+	circleSlider2:addEventListener( 'touch', listenerSlider )
+	circleSlider2:addEventListener( 'tap', noAction )
+	screen:insert(circleSlider2)
+	--569
+	
+end
 
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
@@ -653,7 +773,7 @@ function scene:create( event )
 	--label slider
 	lblSlider1 = display.newText({
         text = settFilter.iniAge, 
-        x = 310, y = posY,
+        x = 295, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
     })
@@ -662,16 +782,18 @@ function scene:create( event )
 	
 	lblSlider2 = display.newText({
         text = settFilter.endAge, 
-        x = 670, y = posY,
+        x = 680, y = posY,
         font = native.systemFontBold,   
         fontSize = 25, align = "center"
     })
     lblSlider2:setFillColor( 0 )
     screen:insert(lblSlider2)
 	
+	newSlider()
+	
 	--slider
 	
-	local options = {
+	--[[local options = {
 		frames = {
 			{ x=0, y=0, width=36, height=64 },
 			{ x=40, y=0, width=36, height=64 },
@@ -725,7 +847,7 @@ function scene:create( event )
         listener = sliderListener
 	})
 	slider2.name = "slider2"
-	screen:insert(slider2)
+	screen:insert(slider2)]]
     
     -- Genero
 	--genH = Hombre
