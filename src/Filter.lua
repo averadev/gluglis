@@ -36,6 +36,7 @@ local slider1, slider2
 local pickerWheel2
 local sliderX = 0
 local circleSlider1, circleSlider2
+local checkGen = {}
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -77,7 +78,7 @@ function filterUser( event )
 	if txtLocation.text == "" or txtLocation.text == " " or txtLocation.text == "  "then
 		textLocation = 0
 	end
-	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, genH.alpha, genM.alpha, lblSlider1.text, lblSlider2.text )
+	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
 	--RestManager.getUsersByFilter()
@@ -170,25 +171,14 @@ end
 -- @param event datos de los checkBox
 --------------------------------------
 function changeGender( event )
-	if event.target.name == "M" then
-		--si esta inactivo
-		if genM.alpha == 0 then
-			genM.alpha = 1
-			event.target:setFillColor( .93 )
-		--si esta activo
-		else
-			genM.alpha = 0
-			event.target:setFillColor( 1 )
-		end
+	local posc = event.target.posc
+	if checkGen[posc].isTrue == 0 then
+		checkGen[posc].isTrue = 1
+		checkGen[posc]:setFillColor( .93 )
+	--si esta activo
 	else
-		--si esta inactivo
-		if genH.alpha == 0 then
-			genH.alpha = 1
-			event.target:setFillColor( .93 )
-		else
-			genH.alpha = 0
-			event.target:setFillColor( 1 )
-		end
+		checkGen[posc].isTrue = 0
+		checkGen[posc]:setFillColor( 1 )
 	end
 end
 
@@ -729,17 +719,24 @@ function scene:create( event )
         if  xFields[i].label then
 			
 			if xFields[i].isGen then
+				local numCheck = #checkGen + 1
 				local bg0 = display.newRoundedRect( xFields[i].x - 110, posY + xFields[i].y, xFields[i].w, 70, 10 )
 				bg0.anchorX = 0
 				bg0:setFillColor( .93 )
 				screen:insert(bg0)
 				bg0:addEventListener( 'tap', changeGender )
-				bg0.name = xFields[i].isGen
-				
+				bg0.posc = numCheck
+				checkGen[numCheck] = display.newRoundedRect( xFields[i].x - 107, posY + xFields[i].y, xFields[i].w - 6, 64, 10 )
+				checkGen[numCheck].anchorX = 0
+				checkGen[numCheck]:setFillColor( .93 )
+				checkGen[numCheck].isTrue = 1
+				screen:insert(checkGen[numCheck])
 				if xFields[i].isGen == "H" and settFilter.genH == 0 then
-					bg0:setFillColor( 1 )
+					checkGen[numCheck]:setFillColor( 1 )
+					checkGen[numCheck].isTrue = 0
 				elseif xFields[i].isGen == "M" and settFilter.genM == 0 then
-					bg0:setFillColor( 1 )
+					checkGen[numCheck]:setFillColor( 1 )
+					checkGen[numCheck].isTrue = 0
 				end
 			end
 		
@@ -854,10 +851,10 @@ function scene:create( event )
 	--genM = Mujer
     genH = display.newImage( screen, "img/icoFilterH.png" )
     genH:translate( 350, posY - 90 )
-	genH.alpha = settFilter.genH
+	--genH.alpha = settFilter.genH
     genM = display.newImage( screen, "img/icoFilterM.png" )
     genM:translate( 548, posY - 90 )
-	genM.alpha = settFilter.genM
+	--genM.alpha = settFilter.genM
     
     -- Search Button
     posY = posY + 170
