@@ -40,6 +40,7 @@ local checkGen = {}
 local poscCircle1, poscCircle2
 local newPoscCircle = nil
 local isCircle = false
+local blockTouch = false
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -493,117 +494,123 @@ function listenerSlider( event )
 	
 	if event.phase == "began" then
 		isCircle = false
-		print(poscCircle1)
 		if event.yStart > 557 and event.yStart < 625 then
 			newPoscCircle = nil
-			if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30  then
+			direction = 0
+			sliderX = event.x
+			
+			if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30 and circleSlider1.front == 1   then
 				isCircle = true
 				circleSlider1:toFront()
+				circleSlider1.front = 1
+				circleSlider2.front = 0
 				newPoscCircle = circleSlider1
-			elseif event.x > poscCircle2 - 30 and event.x < poscCircle2 + 30  then
+				newPoscCircle.name = "slider1"
+			elseif event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30 and circleSlider2.front == 1  then
 				isCircle = true
 				circleSlider2:toFront()
+				circleSlider1.front = 0
+				circleSlider2.front = 1
 				newPoscCircle = circleSlider2
+				newPoscCircle.name = "slider2"
+			else
+				if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30  then
+					isCircle = true
+					newPoscCircle = circleSlider1
+					newPoscCircle.name = "slider1"
+				elseif event.x > poscCircle2 - 30 and event.x < poscCircle2 + 30  then
+					isCircle = true
+					newPoscCircle = circleSlider2
+					newPoscCircle.name = "slider2"
+				end
 			end
+			
 		end
 	elseif event.phase == "moved" then
 		if isCircle then
-			if event.x >= 339 and event.x <= 638 then
-				newPoscCircle.x = event.x
+			local x = (event.x - sliderX)
+			local xM = (event.target.x * 1.5)
+			if x < 0 then
+					direction = 1
+			elseif x > 0 then
+				direction = -1
+			end
+			if event.x <= 339 then
+				newPoscCircle.x = 340
+			elseif event.x >= 638 then
+				newPoscCircle.x = 637
+			else
+				if (circleSlider1.x >= circleSlider2.x and direction == -1 and newPoscCircle.name == "slider1" ) then
+					circleSlider1.x = circleSlider2.x
+				
+				elseif (circleSlider1.x >= circleSlider2.x and direction == 1 and newPoscCircle.name == "slider2" ) then
+					circleSlider2.x = circleSlider1.x
+				else
+					newPoscCircle.x = event.x
+				end
+				local poscX = 0
+				poscX = (newPoscCircle.x - 299)/3.69
+				poscX = math.round( poscX ) + 7
+				if newPoscCircle.name == "slider1" then
+					lblSlider1.text = tonumber(poscX)
+				elseif newPoscCircle.name == "slider2" then
+					lblSlider2.text = tonumber(poscX)
+				end
 			end
 		end
 	elseif event.phase == "ended" or event.phase == "cancelled" then
+		if isCircle then
+			if event.x <= 339 then
+				newPoscCircle.x = 339
+			elseif event.x >= 638 then
+				newPoscCircle.x = 637
+			else
+				if (circleSlider1.x >= circleSlider2.x and newPoscCircle.name == "slider1" ) then
+					circleSlider1.x = circleSlider2.x
+				elseif (circleSlider1.x >= circleSlider2.x and newPoscCircle.name == "slider2" ) then
+					circleSlider2.x = circleSlider1.x
+				else
+					newPoscCircle.x = event.x
+				end
+			end
+			local poscX = 0
+			poscX = (newPoscCircle.x - 299)/3.69
+			poscX = math.round( poscX ) + 7
+			if newPoscCircle.name == "slider1" then
+				lblSlider1.text = tonumber(poscX)
+			elseif newPoscCircle.name == "slider2" then
+				lblSlider2.text = tonumber(poscX)
+			end
+		end
 		poscCircle1 = circleSlider1.x
 		poscCircle2 = circleSlider2.x
-		newPoscCircle = nil
 		isCircle = false
+		
 	end
-	
-	--[[if event.phase == "began" then
-		direction = 0
-		event.target:toFront()
-		sliderX = event.x
-		--print(event.x)
-	
-    elseif event.phase == "moved" then
-        local x = (event.x - sliderX)
-        local xM = (event.target.x * 1.5)
-		if direction == 0 then
-			
-		end
-		if x < 0 then
-				direction = 1
-		elseif x > 0 then
-			direction = -1
-		end
-		local circleName = event.target.name
-		--local poscX = (event.target.x - 295)/3.6
-		local poscX = 0
-		if circleName == "slider1" then
-			poscX = (event.target.x - 365)/3.65
-		elseif circleName == "slider2" then
-			poscX = (event.target.x - 315)/3.65
-		end
-		poscX = math.round( poscX )
-		if direction == -1 and circleName == "slider1" and  event.x < 633  then
-			if tonumber(lblSlider1.text) < tonumber(lblSlider2.text) then
-				event.target.x = event.x + 39
-			end
-		elseif direction == 1 and circleName == "slider1" and  event.x > 337 then
-			event.target.x = event.x + 37
-		elseif direction == -1 and circleName == "slider2" and event.x < 633 then
-			event.target.x = event.x - 32
-		elseif direction == 1 and circleName == "slider2" and event.x > 343 then
-			if tonumber(lblSlider2.text) > tonumber(lblSlider1.text) then
-				event.target.x = event.x - 39
-			end
-			
-		end
-		if circleName == "slider1" then
-			lblSlider1.text = tonumber(poscX) + 18
-		elseif circleName == "slider2" then
-			lblSlider2.text = tonumber(poscX) + 18
-		end
-		
-		sliderX = event.x
-		
-    elseif event.phase == "ended" or event.phase == "cancelled" then
-		local circleName = event.target.name
-		--local poscX = (event.target.x - 295)/3.6
-		local poscX = 0
-		if circleName == "slider1" then
-			poscX = (event.target.x - 365)/3.65
-		elseif circleName == "slider2" then
-			poscX = (event.target.x - 315)/3.65
-		end
-		poscX = math.round( poscX )
-		if circleName == "slider1" then
-			lblSlider1.text = tonumber(poscX) + 18
-		elseif circleName == "slider2" then
-			lblSlider2.text = tonumber(poscX) + 18
-		end
-        direction = 0
-    end]]
 	
 	return true
 end
 
-function newSlider()
+function inFront( event )
+	if event.phase == "began" then
+		if blockTouch == false then
+			blockTouch = true
+			if event.target.name == "slider1" then
+				circleSlider1:toFront()
+				circleSlider2.front = 0
+				circleSlider1.front = 1
+			elseif event.target.name == "slider2" then
+				circleSlider2:toFront()
+				circleSlider1.front = 0
+				circleSlider2.front = 1
+			end
+		end
+	elseif event.phase == "ended" or event.phase == "cancelled" then
+		blockTouch = false
+	end
+end
 
-	--[[local bgSlider0 = display.newRoundedRect( 488, 554, 324, 26, 5 )
-    bgSlider0.anchorY = 0
-    bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
-    screen:insert(bgSlider0)
-	local bgSlider1 = display.newRect( 488, 557, 318, 20 )
-    bgSlider1.anchorY = 0
-    bgSlider1:setFillColor( 1 )
-    screen:insert(bgSlider1)
-	local circle1 = display.newCircle( 326, 568, 20 )
-	circle1:setFillColor( 129/255, 61/255, 153/255 )
-	screen:insert(circle1)
-	local circle2 = display.newCircle( 648, 568, 20 )
-	circle2:setFillColor( 129/255, 61/255, 153/255 )
-	screen:insert(circle2)]]
+function newSlider()
 	
 	local bgSlider0 = display.newRoundedRect( 488, 556, 300, 22, 5 )
     bgSlider0.anchorY = 0
@@ -616,23 +623,20 @@ function newSlider()
 	circleSlider1 = display.newCircle( 340, 595, 30 )
 	--circleSlider1 = display.newCircle( 370, 595, 30 )
 	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
-	--circleSlider1.anchorX = 1
 	circleSlider1.name = "slider1"
 	screen:insert(circleSlider1)
-	--circleSlider1:addEventListener( 'touch', listenerSlider )
-	circleSlider1:addEventListener( 'tap', noAction )
+	circleSlider1.front = 0
 	poscCircle1 = circleSlider1.x
+	circleSlider1:addEventListener( 'touch', inFront )
 	
 	--circleSlider2 = display.newCircle( 605, 569, 30 )
 	circleSlider2 = display.newCircle( 636, 595, 30 )
-	--circle2:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider2:setFillColor( .5 )
 	circleSlider2.name = "slider2"
-	--circleSlider2.anchorX = 0
-	--circleSlider2:addEventListener( 'touch', listenerSlider )
-	circleSlider2:addEventListener( 'tap', noAction )
 	screen:insert(circleSlider2)
 	poscCircle2 = circleSlider2.x
+	circleSlider2.front = 0
+	circleSlider2:addEventListener( 'touch', inFront )
 	--569
 	
 end
@@ -821,65 +825,8 @@ function scene:create( event )
     lblSlider2:setFillColor( 0 )
     screen:insert(lblSlider2)
 	
+	--slider
 	newSlider()
-	
-	--slider
-	
-	--[[local options = {
-		frames = {
-			{ x=0, y=0, width=36, height=64 },
-			{ x=40, y=0, width=36, height=64 },
-			{ x=80, y=0, width=36, height=64 },
-			{ x=124, y=0, width=36, height=64 },
-			{ x=168, y=0, width=64, height=64 }
-		},
-		sheetContentWidth = 232,
-		sheetContentHeight = 64
-	}
-	local sliderSheet = graphics.newImageSheet( "img/sliderSheet2.png", options )
-	
-	slider1 = widget.newSlider({
-        sheet = sliderSheet,
-        leftFrame = 1,
-        middleFrame = 2,
-        rightFrame = 3,
-        fillFrame = 4,
-        frameWidth = 36,
-        frameHeight = 64,
-        handleFrame = 5,
-        handleWidth = 64,
-        handleHeight = 64,
-        top = posY - 30,
-        left= 310,
-        orientation = "horizontal",
-        width = 350,
-		value = settFilter.iniAge,
-        listener = sliderListener
-	})
-	slider1.name = "slider1"
-	screen:insert(slider1)
-	
-	--slider
-	slider2 = widget.newSlider({
-        sheet = sliderSheet,
-        leftFrame = 1,
-        middleFrame = 2,
-        rightFrame = 3,
-        fillFrame = 4,
-        frameWidth = 36,
-        frameHeight = 64,
-        handleFrame = 5,
-        handleWidth = 64,
-        handleHeight = 64,
-        top = posY + 35,
-        left= 310,
-        orientation = "horizontal",
-        width = 350,
-		value = settFilter.endAge,
-        listener = sliderListener
-	})
-	slider2.name = "slider2"
-	screen:insert(slider2)]]
     
     -- Genero
 	--genH = Hombre
