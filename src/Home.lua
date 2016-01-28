@@ -584,11 +584,17 @@ function scene:create( event )
     screen.y = h
     local isH = (intH - h) >  1300
 	
+	display.setDefault( "textureWrapX", "repeat" )
+	display.setDefault( "textureWrapY", "repeat" )
+	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
+	
+	display.setDefault( "textureWrapX", "clampToEdge" )
+	display.setDefault( "textureWrapY", "clampToEdge" )
     
     tools = Tools:new()
     tools:buildHeader()

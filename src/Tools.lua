@@ -23,6 +23,7 @@ function Tools:new()
     local h = display.topStatusBarContentHeight
     local fxTap = audio.loadSound( "fx/click.wav")
     self.y = h
+	
     
     -- Creamos la el toolbar
     function self:buildHeader()

@@ -252,6 +252,14 @@ function onTxtFocus( event )
 	elseif (event.phase == "submitted" ) then	
 		sentMessage()
     elseif ( event.phase == "editing" ) then
+		print("-----A-----")
+		local sqCenterX, sqCenterY = screen:localToContent( 0, 0 )
+		print(sqCenterX)
+		print(sqCenterY)
+		print("-----------")
+		local sqCenterX, sqCenterY = grpTextField:localToContent( 0, 0 )
+		print(sqCenterX)
+		print(sqCenterY)
 		--[[print(txtMessage.y)
 		print(display.contentCenterY)
 		print(display.contentScaleY)
@@ -432,11 +440,17 @@ function scene:create( event )
     bg:setFillColor( 1 )
     screen:insert(bg)
 	
+	display.setDefault( "textureWrapX", "repeat" )
+	display.setDefault( "textureWrapY", "repeat" )
+	
     local o = display.newRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
+	
+	display.setDefault( "textureWrapX", "clampToEdge" )
+	display.setDefault( "textureWrapY", "clampToEdge" )
 	    
     local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
     bgH:setFillColor( 1 )

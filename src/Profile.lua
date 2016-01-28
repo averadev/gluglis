@@ -70,12 +70,18 @@ function scene:create( event )
 	local item = event.params.item
 	screen = self.view
     --screen.y = h
-    print('holaaaaaa')
+	
+	display.setDefault( "textureWrapX", "repeat" )
+	display.setDefault( "textureWrapY", "repeat" )
+	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
+	
+	display.setDefault( "textureWrapX", "clampToEdge" )
+	display.setDefault( "textureWrapY", "clampToEdge" )
 	
 	--tools
     tools = Tools:new()

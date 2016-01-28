@@ -604,6 +604,8 @@ function inFront( event )
 				circleSlider1.front = 0
 				circleSlider2.front = 1
 			end
+		else
+			blockTouch = false
 		end
 	elseif event.phase == "ended" or event.phase == "cancelled" then
 		blockTouch = false
@@ -620,18 +622,16 @@ function newSlider()
     bgSlider1.anchorY = 0
     bgSlider1:setFillColor( 1 )
     screen:insert(bgSlider1)
-	circleSlider1 = display.newCircle( 340, 595, 30 )
-	--circleSlider1 = display.newCircle( 370, 595, 30 )
+	circleSlider1 = display.newRoundedRect( 340, 569, 40, 40, 10 )
 	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider1.name = "slider1"
 	screen:insert(circleSlider1)
 	circleSlider1.front = 0
 	poscCircle1 = circleSlider1.x
 	circleSlider1:addEventListener( 'touch', inFront )
-	
 	--circleSlider2 = display.newCircle( 605, 569, 30 )
-	circleSlider2 = display.newCircle( 636, 595, 30 )
-	circleSlider2:setFillColor( .5 )
+	circleSlider2 = display.newRoundedRect( 636, 569, 40, 40, 10 )
+	circleSlider2:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider2.name = "slider2"
 	screen:insert(circleSlider2)
 	poscCircle2 = circleSlider2.x
@@ -655,13 +655,20 @@ function scene:create( event )
     
 	grpTextField = display.newGroup()
 	
+	display.setDefault( "textureWrapX", "repeat" )
+	display.setDefault( "textureWrapY", "repeat" )
+	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
-    screen:insert(o)
-	o:addEventListener( 'tap', closeAll )
 	o:addEventListener( 'touch', listenerSlider )
+	o:addEventListener( 'tap', closeAll )
+	
+    screen:insert(o)
+	
+	display.setDefault( "textureWrapX", "clampToEdge" )
+	display.setDefault( "textureWrapY", "clampToEdge" )
 	
     tools = Tools:new()
     tools:buildHeader()
