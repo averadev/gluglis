@@ -224,7 +224,40 @@ function scene:create( event )
     }
     screen:insert(scrMs)
 	
-	RestManager.getListMessageChat()
+	if isReadOnly then
+		
+		local iconReadOnly = display.newImage( "img/lock.png" )
+		iconReadOnly:translate( 384, midH - 350)
+        iconReadOnly.alpha = .5
+		scrMs:insert(iconReadOnly)
+
+		local lblReadOnly = display.newText( {
+			text = "CONSULTA AQUI LA LISTA DE TODAS LAS PERSONAS QUE QUIEREN CONTACTAR CONTIGO.",     
+			x = midW, y = midH - 150, width = 600,
+			font = "Lato-Regular", fontSize = 26, align = "center"
+		})
+		lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
+		scrMs:insert(lblReadOnly)
+        
+        local rctFree = display.newRoundedRect( midW, midH, 350, 100, 5 )
+        rctFree:setFillColor( .2, .6 ,0 )
+		rctFree.screen = "LoginSplash"
+        rctFree:addEventListener( 'tap', toScreen)
+        scrMs:insert(rctFree)
+        
+        local lblSign = display.newText( {
+			text = "¡Registrate ahora!",     
+			x = midW, y = midH, width = 600,
+			fontSize = 36, align = "center"
+		})
+		lblSign:setFillColor( 1 )
+		scrMs:insert(lblSign)
+		
+		tools:setLoading( false, screen )
+		
+	else
+		RestManager.getListMessageChat()
+	end
 	
 end	
 -- Called immediately after scene has moved onscreen:

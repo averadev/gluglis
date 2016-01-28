@@ -54,8 +54,13 @@ function Menu:new()
             local bgSeparate = display.newRect(250, posc+52, 500, 4 )
             bgSeparate:setFillColor( .26 )
             selfMenu:insert(bgSeparate)
+			if i == 2 then
+				if isReadOnly then
+					bgOpt1:removeEventListener( 'tap', toScreen)
+					bgOpt1:setFillColor( 35/255, 41/255, 54/255 )
+				end
+			end
         end
-        
         
         local bgExit = display.newRect(250, intH-h-55, 500, 110 )
         bgExit:setFillColor( 37/255, 41/255, 49/255 )

@@ -134,7 +134,6 @@ function scene:create( event )
     lblName:setFillColor( 0 )
     scrPerfile:insert(lblName)
 	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
-	print(item.edad)
     local lblAge= display.newText({
         text = item.edad, 
         x = 550, y = 200,
@@ -283,26 +282,54 @@ function scene:create( event )
     end
 	
 	if item.isMe == false then
-		-- Btn Iniciar conversación
-		posY = posY + 120
-		local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
-		btnStartChat.id = item.id
-		btnStartChat:setFillColor( {
-			type = 'gradient',
-			color1 = { 129/255, 61/255, 153/255 }, 
-			color2 = { 89/255, 31/255, 103/255 },
-			direction = "bottom"
-		} )
-		scrPerfile:insert(btnStartChat)
-		btnStartChat:addEventListener( 'tap', startConversation)
-		local lblStartChat = display.newText({
-			text = "INICIAR CONVERSACIÓN", 
-			x = midW, y = posY,
-			font = native.systemFontBold,   
-			fontSize = 25, align = "center"
-		})
-		lblStartChat:setFillColor( 1 )
-		scrPerfile:insert(lblStartChat)
+		if isReadOnly then
+			posY = posY + 120
+			local lblReadOnly = display.newText( {
+			text = "¿QUIERES CONVERSAR CON " .. item.userName .. "?",     
+			x = midW, y = posY, width = 600,
+			font = "Lato-Regular", fontSize = 26, align = "center"
+			})
+			lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
+			scrPerfile:insert(lblReadOnly)
+			
+			posY = posY + 100
+        
+			local rctFree = display.newRoundedRect( midW, posY, 350, 80, 5 )
+			rctFree:setFillColor( .2, .6 ,0 )
+			rctFree.screen = "LoginSplash"
+			rctFree:addEventListener( 'tap', toScreen)
+			scrPerfile:insert(rctFree)
+        
+			local lblSign = display.newText( {
+				text = "¡Registrate ahora!",     
+				x = midW, y = posY, width = 600,
+				fontSize = 32, align = "center"
+			})
+			lblSign:setFillColor( 1 )
+			scrPerfile:insert(lblSign)
+		
+		else
+			-- Btn Iniciar conversación
+			posY = posY + 120
+			local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
+			btnStartChat.id = item.id
+			btnStartChat:setFillColor( {
+				type = 'gradient',
+				color1 = { 129/255, 61/255, 153/255 }, 
+				color2 = { 89/255, 31/255, 103/255 },
+				direction = "bottom"
+			} )
+			scrPerfile:insert(btnStartChat)
+			btnStartChat:addEventListener( 'tap', startConversation)
+			local lblStartChat = display.newText({
+				text = "INICIAR CONVERSACIÓN", 
+				x = midW, y = posY,
+				font = native.systemFontBold,   
+				fontSize = 25, align = "center"
+			})
+			lblStartChat:setFillColor( 1 )
+			scrPerfile:insert(lblStartChat)
+		end
 	end
     
 end	

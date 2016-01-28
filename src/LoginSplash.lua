@@ -34,14 +34,21 @@ local labelTitle, labelSubTitle
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
---manda a la pantalla de login o registro normal
+--llama a la pantalla de login o registro normal
 function toLoginUserName(event)
     composer.removeScene( "src.LoginUserName" )
 	composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
 end
 
---manda a la pantalla de home(si el logueo fue exitoso)
+function toLoginFree( event )
+	isReadOnly = true
+	composer.removeScene( "src.Home" )
+    composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+end
+
+--llama a la pantalla de home(si el logueo fue exitoso)
 function gotoHome()
+	isReadOnly = false
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
 end
@@ -343,6 +350,13 @@ function scene:create( event )
 	local lineSep = display.newRect( midW, posYBg + 197, 8, 40 )
 	lineSep:setFillColor( .6 )
 	screen:insert(lineSep)
+	
+	-- free app
+    local bgBtnFree = display.newRect( 510, posYBg + 198, 200, 100 )
+	bgBtnFree:setFillColor( 0 )
+    bgBtnFree.alpha = .02
+    bgBtnFree:addEventListener( "tap", toLoginFree )
+	screen:insert(bgBtnFree)
 	
 	local lblFree = display.newText( {
         text = "CONOCE MÁS SOBRE LA APLICACIÓN",

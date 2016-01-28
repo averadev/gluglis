@@ -580,6 +580,9 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:create( event )
+
+	print(isReadOnly)
+
 	screen = self.view
     screen.y = h
     local isH = (intH - h) >  1300

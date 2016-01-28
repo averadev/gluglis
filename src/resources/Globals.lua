@@ -13,3 +13,4 @@ hm3 = intH / 3
 h = display.topStatusBarContentHeight
 playerId = 0
 itemProfile = nil
+isReadOnly = false

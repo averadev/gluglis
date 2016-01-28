@@ -50,6 +50,7 @@ end
 
 --manda a la pantalla de home(si el logueo fue exitoso)
 function gotoHomeUN( message, name, success )
+	isReadOnly = false
 	local result = success
 	tools:setLoading(false,grpLoad)
 	if success then
