@@ -13,7 +13,7 @@ local facebook = require("plugin.facebook.v4")
 local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 
-local scrMenu, bgShadow, grpNewAlert, grpAlertLogin
+local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity
 
 Tools = {}
 function Tools:new()
@@ -212,13 +212,39 @@ function Tools:new()
     end
 	
 	--creamos una alerta
-	function NewAlert(isTrue, text, button)
-		if true then
+	function NewAlert(isTrue, text)
+		if isTrue then
 			if grpNewAlert then
 				grpNewAlert:removeSelf()
 				grpNewAlert = nil
 			end
 			grpNewAlert = display.newGroup()
+			
+			--combobox
+			local bg0 = display.newRect( midW, midH + h, intW, intH )
+			bg0:setFillColor( 0 )
+			bg0.alpha = .8
+			grpNewAlert:insert( bg0 )
+			bg0:addEventListener( 'tap', noAction )
+		
+			local bg1 = display.newRoundedRect( midW, midH + h, 608, 310, 10 )
+			bg1:setFillColor( 129/255, 61/255, 153/255 )
+			grpNewAlert:insert( bg1 )
+			
+			local bg2 = display.newRoundedRect( midW, midH + h, 600, 300, 10 )
+			bg2:setFillColor( 1 )
+			grpNewAlert:insert( bg2 )
+			
+			local lbl0 = display.newText({
+				text = text, 
+				x = midW, y = midH + h,
+				width = 500,
+				font = native.systemFontBold,   
+				fontSize = 38, align = "center"
+			})
+			lbl0:setFillColor( .5 )
+			grpNewAlert:insert(lbl0)
+			
 		else
 			if grpNewAlert then
 				grpNewAlert:removeSelf()
@@ -279,6 +305,112 @@ function Tools:new()
 			end
 		end
 	
+	end
+	
+	-------------------------------------------
+	-- deshabilita los eventos tap no deseados
+	-- deshabilita el traspaso del componentes
+	-------------------------------------------
+	function noAction( event )
+		return true
+	end
+	
+	-------------------------
+	-- Elimina la lista de ciudades
+	-------------------------
+	function deleteGrpScrCity()
+		if grpScrCity then
+			grpScrCity:removeSelf()
+			grpScrCity = nil
+		end
+	end
+	
+	-------------------------
+	-- Selecciona la ciudad
+	-------------------------
+	function selectCity( event )
+		event.target.alpha = .5
+		timeMarker = timer.performWithDelay( 100, function()
+			event.target.alpha = 1
+			if grpScrCity then
+				grpScrCity:removeSelf()
+				grpScrCity = nil
+			end
+			if event.target.name == "residence" then
+				getCityProfile(event.target.city)
+			elseif event.target.name == "location" then
+				getCityFilter(event.target.city)
+			end
+		end, 1 )
+		return true
+	end
+	
+	---------------------------------------------------
+-- Muestra una lista de las ciudades por el nombre
+-- @param item nombre de la ciudad y su pais
+---------------------------------------------------
+	function showCities(item, name, parent)
+
+		--elimina los componentes para crear otros
+		if grpScrCity then
+			grpScrCity:removeSelf()
+			grpScrCity = nil
+		end
+		--grp ciudad
+		grpScrCity = display.newGroup()
+		parent:insert( grpScrCity )
+
+		local bgComp1 = display.newRect( 453, 320, 410, 340 )
+		bgComp1.anchorY = 0
+		bgComp1:setFillColor( .88 )
+		grpScrCity:insert(bgComp1)
+		bgComp1:addEventListener( 'tap', noAction )
+		
+		if name == "residence" then
+			bgComp1.y = 450
+			bgComp1.x = 500
+			bgComp1.anchorY = 1
+		end
+		
+		--pinta la lista de las ciudades
+		if item ~= 0 then
+			local posY = 321
+			local posX = 453
+			if name == "residence" then
+				posY = 388
+				posX = 500
+			end
+			for i = 1, #item do
+				local bg0 = display.newRect( posX, posY, 406, 60 )
+				bg0.anchorY = 0
+				bg0.city = item[i].description
+				bg0:setFillColor( 1 )
+				grpScrCity:insert(bg0)
+				bg0.name = name
+				bg0:addEventListener( 'tap', selectCity )
+			
+				local lbl0 = display.newText({
+					text = item[i].description, 
+					x = posX, y = posY + 50,
+					width = 390, height = 60,
+					font = native.systemFont,   
+					fontSize = 20, align = "left"
+				})
+				lbl0:setFillColor( 0 )
+				grpScrCity:insert(lbl0)
+			
+				if name == "residence" then
+					posY = posY - 63
+				else
+					posY = posY + 63
+				end
+				
+			end
+			bgComp1.height = 63 * #item + 2
+			
+		else
+	
+		end
 	end
     
     return self

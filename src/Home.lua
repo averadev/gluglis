@@ -38,7 +38,7 @@ local btnViewProfile
 ------------------------------------
 function getUserPerfil(item)
 	itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
-	residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}
+	vehiculo = item.vehiculo, residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}
 end
 
 -------------------------------------
@@ -581,7 +581,7 @@ end
 ------------------------------------
 function scene:create( event )
 
-	print(isReadOnly)
+	print(intH)
 
 	screen = self.view
     screen.y = h

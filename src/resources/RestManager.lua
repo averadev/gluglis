@@ -486,11 +486,82 @@ local RestManager = {}
         loadImage({idx = 0, name = "ProfileAvatars", path = "assets/img/avatar/", items = item})
     end
 	
+    -------------------------------------
+    -- Actualiza los datos del usuario
+	--@param idUser usuario con que se iniciara el chat
+    -------------------------------------
+    RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
+		
+		local hobbies2 = json.encode(hobbies)
+		local language2 = json.encode(language)
+        local url = site.."api/saveProfile/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		if name ~= '' then
+			url = url.."/name/" .. urlencode(name)
+		end
+		if residence ~= '' then
+			url = url.."/residence/" .. urlencode(residence)
+		end
+		url = url.."/accommodation/" .. accommodation
+		url = url.."/vehicle/" .. vehicle
+		url = url.."/available/" .. available
+		url = url.."/hobbies/" .. urlencode(hobbies2)
+		url = url.."/language/" .. urlencode(language2)
+		
+        local function callback(event)
+            if ( event.isError ) then
+				resultSaveProfile( false, event.error)
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						resultSaveProfile( true, data.message)
+					else
+						resultSaveProfile( false, "error al guardar los datos del perfil")
+					end
+				else
+					resultSaveProfile( false, "error al guardar los datos del perfil")
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	-------------------------------------
+    -- Obtiene la lista de hobbies
+    -------------------------------------
+    RestManager.getHobbies = function()
+        local url = site.."api/getHobbies/format/json"
+		url = url.."/idApp/" .. settings.idApp
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						setList(data.hobbies, data.language)
+					else
+						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					end
+				else
+					noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
 	---------------------------------- Pantalla FILTER ----------------------------------
     -------------------------------------
     -- Obtiene los usuarios por ubicacion
     -------------------------------------
-    RestManager.getCity = function(city)
+    RestManager.getCity = function(city,name,parent)
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
@@ -500,9 +571,9 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.status == "OK" then
-						showCities(data.predictions)
+						showCities(data.predictions, name, parent)
 					elseif data.status == "ZERO_RESULTS" then
-						showCities(0)
+						showCities(0, name, parent)
 					end
 				else
 				end

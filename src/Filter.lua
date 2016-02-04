@@ -62,10 +62,7 @@ end
 -------------------------------
 function closeAll( event )
 	native.setKeyboardFocus(nil)
-	if grpScrCity then
-		grpScrCity:removeSelf()
-		grpScrCity = nil
-	end
+	deleteGrpScrCity()
 	if grpDatePicker then
 		grpDatePicker:removeSelf()
 		grpDatePicker = nil
@@ -88,71 +85,8 @@ function filterUser( event )
 	--RestManager.getUsersByFilter()
 end
 
--------------------------
--- Selecciona la ciudad
--------------------------
-function selectCity( event )
-	txtLocation.text = event.target.city
-	event.target.alpha = .5
-	timeMarker = timer.performWithDelay( 100, function()
-		event.target.alpha = 1
-		if grpScrCity then
-			grpScrCity:removeSelf()
-			grpScrCity = nil
-		end
-	end, 1 )
-	return true
-end
-
----------------------------------------------------
--- Muestra una lista de las ciudades por el nombre
--- @param item nombre de la ciudad y su pais
----------------------------------------------------
-function showCities(item)
-
-	--elimina los componentes para crear otros
-	if grpScrCity then
-		grpScrCity:removeSelf()
-		grpScrCity = nil
-	end
-	--grp ciudad
-	grpScrCity = display.newGroup()
-	screen:insert( grpScrCity )
-
-	local bgComp1 = display.newRect( 453, 320, 410, 340 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    grpScrCity:insert(bgComp1)
-	bgComp1:addEventListener( 'tap', noAction )
-	
-	--pinta la lista de las ciudades
-	if item ~= 0 then
-		local posY = 321
-		for i = 1, #item do
-			local bg0 = display.newRect( 453, posY, 406, 60 )
-			bg0.anchorY = 0
-			bg0.city = item[i].description
-			bg0:setFillColor( 1 )
-			grpScrCity:insert(bg0)
-			bg0:addEventListener( 'tap', selectCity )
-			
-			local lbl0 = display.newText({
-				text = item[i].description, 
-				x = 453, y = posY + 50,
-				width = 390, height = 60,
-				font = native.systemFont,   
-				fontSize = 20, align = "left"
-			})
-			lbl0:setFillColor( 0 )
-			grpScrCity:insert(lbl0)
-			
-			posY = posY + 63
-		end
-		bgComp1.height = 63 * #item + 2
-		
-	else
-	
-	end
+function getCityFilter(city)
+	txtLocation.text = city
 end
 
 -------------------------------------
@@ -166,7 +100,7 @@ function onTxtFocusFilter( event )
 		native.setKeyboardFocus(nil)
     elseif ( event.phase == "editing" ) then
 		--hace la busqueda de la ciudad
-		RestManager.getCity(txtLocation.text)
+		RestManager.getCity(txtLocation.text, "location", screen )
     end
 end
 
