@@ -11,6 +11,7 @@
 require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
+require('src.resources.majorCities')
 local composer = require( "composer" )
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
@@ -32,7 +33,6 @@ local scrDatePicker
 local lblSlider1, lblSlider2
 local genH, genM
 local lblIniDate, lblEndDate
-local slider1, slider2
 local pickerWheel2
 local sliderX = 0
 local circleSlider1, circleSlider2
@@ -41,6 +41,7 @@ local poscCircle1, poscCircle2
 local newPoscCircle = nil
 local isCircle = false
 local blockTouch = false
+local accommodation
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -79,12 +80,14 @@ function filterUser( event )
 	if txtLocation.text == "" or txtLocation.text == " " or txtLocation.text == "  "then
 		textLocation = 0
 	end
-	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text )
+	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, accommodation )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
-	--RestManager.getUsersByFilter()
 end
 
+-------------------------------------------
+-- asigna la ciudad selecionada
+-------------------------------------------
 function getCityFilter(city)
 	txtLocation.text = city
 end
@@ -104,6 +107,33 @@ function onTxtFocusFilter( event )
     end
 end
 
+-------------------------------------
+-- Genera una ciudad aleatoriamente
+-- @param event datos del boton
+-------------------------------------
+function randomCities( event )
+	local numCity = math.random(1, 100)
+	txtLocation.text = majorCities[numCity]
+	
+end
+
+-------------------------------------
+-- Mueve el toggleButton
+-- @param event datos del toggleButton
+-------------------------------------
+function moveToggleButton( event )
+	local t = event.target
+	if t.onOff == "Sí" then
+		t.onOff = "No"
+		transition.to( t, { x = t.x - 100, time = 200})
+		accommodation = "No"
+	else
+		t.onOff = "Sí"
+		transition.to( t, { x = t.x + 100, time = 200})
+		accommodation = "Sí"
+	end
+end
+
 --------------------------------------
 -- Marca el genero a buscar
 -- @param event datos de los checkBox
@@ -121,47 +151,8 @@ function changeGender( event )
 end
 
 -------------------------------------------
--- Cuarda el porcentaje de edad a filtrar
--- @param event valor de los slider
+-- crea el el widget de  fecha
 -------------------------------------------
-function sliderListener( event )
-	if event.phase == "moved" then
-		if event.value > 17 and event.value < 100 then
-			if event.target.name == "slider1" then
-				if slider1.value >= slider2.value then
-					slider1:setValue(slider2.value - 1)
-				else
-					lblSlider1.text = event.value
-				end
-			elseif event.target.name == "slider2" then
-				if slider2.value <= slider1.value then
-					slider2:setValue(slider1.value + 1)
-				else
-					lblSlider2.text = event.value
-				end
-			end
-		elseif event.value < 18 then
-			event.target:setValue(18)
-		elseif event.value > 99 then
-			event.target:setValue(99)
-		end
-	
-		if event.value < 18 then
-			event.target:setValue(18)
-		end
-		if event.value > 99 then
-			event.target:setValue(99)
-		end
-	elseif event.phase == "ended" then
-		if event.target.name == "slider1" then
-			event.target:setValue(tonumber(lblSlider1.text))
-		elseif event.target.name == "slider2" then
-			event.target:setValue(tonumber(lblSlider2.text))
-		end
-	end
-	return true
-end
-
 function DatePicker()
 	
 	-- Create two tables to hold data for days and years      
@@ -252,20 +243,17 @@ function createDatePicker( event )
 		grpDatePicker = nil
 	end
 	
-	--grpTextField.x = -intW
-	
 	grpDatePicker = display.newGroup()
 	screen:insert(grpDatePicker)
 	grpDatePicker.y = intH
 	
 	local index = {}
-	--event.target.name
-	
+	--background
 	local bgDatePicker = display.newRect( midW, 80, intW, 400 )
 	bgDatePicker.anchorY = 0
 	bgDatePicker:setFillColor( 1 )
     grpDatePicker:insert(bgDatePicker)
-	
+	--background buttom
 	local bgBtnDatePicker = display.newRect( midW, 50, intW, 80 )
     grpDatePicker:insert(bgBtnDatePicker)
 	bgBtnDatePicker:setFillColor( {
@@ -274,7 +262,7 @@ function createDatePicker( event )
         color2 = { 89/255, 31/255, 103/255 },
         direction = "bottom"
     } )
-	
+	--buttom
 	local btnAceptDate = display.newRect( intW, 50, 250, 80 )
 	btnAceptDate.anchorX = 1
 	btnAceptDate.type = event.target.name
@@ -287,7 +275,7 @@ function createDatePicker( event )
         color2 = { 89/255, 31/255, 103/255 },
         direction = "bottom"
     })
-	
+	--label buttom
 	local labelAcceptDate = display.newText({
             text = "Aceptar", 
             x = intW, y = 50,
@@ -299,19 +287,10 @@ function createDatePicker( event )
 	labelAcceptDate.anchorX = 1
 	grpDatePicker:insert(labelAcceptDate)
 	
+	--crea el datePicker
 	DatePicker()
-	
+	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })
-	
-	--mostramos el tipo de datePicker
-	--datePickerAndroid(event.target)
-	local platformName = system.getInfo( "platformName" )
-	
-	--[[if platformName == "Mac OS X" or platformName == "iPhone OS"  then
-		
-	else
-		datePickerAndroid(event.target)
-	end]]
 	
 	return true
 	
@@ -321,11 +300,11 @@ end
 -- Destruye el datePicker
 ---------------------------
 function destroyDatePicker( event )
+	--define si se quiere obtener la fecha o solo destruir el componente
 	if event.target.name == "accept" then
-	
 		local values = pickerWheel2:getValues()
 
-		-- Get the value for each column in the wheel (by column index)
+		-- obtiene los valores de las columnas
 		local day = values[1].value
 		local month = values[2].value
 		local year = values[3].value
@@ -337,12 +316,12 @@ function destroyDatePicker( event )
 			end
 		end
 	
+		--hace la conversion
 		if tonumber(month) < 10 then month = "0" .. month2 end
 		if tonumber(day) < 10 then day = "0" .. day end
 		local dateS = day .. "/" .. month .. "/" .. year
 		local dateS2 = year .. "-" .. month .. "-" .. day
-		print(dateS)
-		print(dateS2)
+		--devuelve el resultado a los campos
 		if event.target.type == "iniDate" then
 			lblIniDate.text = dateS
 			lblIniDate.date = dateS2
@@ -351,6 +330,7 @@ function destroyDatePicker( event )
 			lblEndDate.date = dateS2
 		end
 	end
+	--destruye el widget
 	if grpDatePicker then
 		grpDatePicker:removeSelf()
 		grpDatePicker = nil
@@ -367,72 +347,128 @@ end
 -- @param coordY coordenadas y donde se crea
 -----------------------------------------------
 --creamos los textField y opciones
-function createTextField( name, wField, coordX, coordY  )
-	local s
-	if name == "iniDate" then
-		s = settFilter.iniDate
-	else
-		s = settFilter.endDate
-	end
-
-	local t = {}
-	for Ye, Mi, Da in string.gmatch( s, "(%w+)-(%w+)-(%w+)" ) do
-		t[1] = Ye
-		t[2] = Mi
-		t[3] = Da
-	end
+function createTextField( name, wField, coordX, coordY, typeF )
+	if typeF == "textField" then
+		--crea un textField si es la opcion de ciudad
+		if name == "location" then
+			txtLocation = native.newTextField( coordX, coordY, wField, 50 )
+			txtLocation.anchorX = 1
+			txtLocation.inputType = "default"
+			txtLocation.hasBackground = false
+			txtLocation:addEventListener( "userInput", onTxtFocusFilter )
+			txtLocation:setReturnKey( "next" )
+			grpTextField:insert( txtLocation )
+			grpTextField.text = settFilter.city
+			
+			local imgDado = display.newImage( screen, "img/1454731709.png" )
+			imgDado:translate( coordX + 50, coordY )
+			imgDado.height = 50
+			imgDado.width = 50
+			screen:insert(imgDado)
+			imgDado:addEventListener( 'tap', randomCities )
+		end
+	elseif typeF == "datePicker" then
+		print(name)
+		--asigna la fecha de ida o vuelta
+		local s
+		if name == "iniDate" then
+			s = settFilter.iniDate
+		else
+			s = settFilter.endDate
+		end
+		--split
+		local t = {}
+		for Ye, Mi, Da in string.gmatch( s, "(%w+)-(%w+)-(%w+)" ) do
+			t[1] = Ye
+			t[2] = Mi
+			t[3] = Da
+		end
+		--convierte la fehca a un formato dd/mm/yyyy
+		local dateC = t[3] .. "-" .. t[2] .. "-" .. t[1]
+		if dateC == "00-00-0000" then
+			dateC = ""
+		end
+		--crea el componente de fecha de ida
+		if name == "iniDate" then
+			lblIniDate = display.newText({
+				text = dateC, 
+				x = coordX - 70, y = coordY,
+				width = 140,
+				font = native.systemFont,   
+				fontSize = 24, align = "left"
+			})
+			lblIniDate:setFillColor( 0 )
+			lblIniDate.date = settFilter.iniDate
+			screen:insert(lblIniDate)
+		--crea el componente de fecha de vuelta
+		elseif name == "endDate" then
+			lblEndDate = display.newText({
+				text = dateC, 
+				x = coordX - 70, y = coordY,
+				width = 140,
+				font = native.systemFont,   
+				fontSize = 24, align = "left"
+			})
+			lblEndDate:setFillColor( 0 )
+			lblEndDate.date = settFilter.endDate
+			screen:insert(lblEndDate)
+		end
+	elseif typeF == "toggleButton" then
+		local lblYes = display.newText({
+			text = "Si", 
+			x = coordX - 150, y = coordY,
+			width = 100,
+			font = native.systemFont, 
+			fontSize = 35, align = "center"
+		})
+		lblYes:setFillColor( 1 )
+		screen:insert(lblYes)
 		
-	local dateC = t[3] .. "-" .. t[2] .. "-" .. t[1]
-	if dateC == "00-00-0000" then
-		dateC = ""
-	end
-
-	if name == "location" then
-		txtLocation = native.newTextField( coordX, coordY, wField, 50 )
-		txtLocation.anchorX = 1
-		txtLocation.inputType = "default"
-		txtLocation.hasBackground = false
-		txtLocation:addEventListener( "userInput", onTxtFocusFilter )
-		txtLocation:setReturnKey( "next" )
-		grpTextField:insert( txtLocation )
-		grpTextField.text = settFilter.city
-	elseif name == "iniDate" then
+		local lblNo = display.newText({
+			text = "No", 
+			x = coordX - 50, y = coordY,
+			width = 100,
+			font = native.systemFont, 
+			fontSize = 35, align = "center"
+		})
+		lblNo:setFillColor( 1 )
+		lblNo.alpha = .8
+		screen:insert(lblNo)
+		
+		local posXTB = 303 + 100
+		local onOff = "Sí"
+		accommodation = "Sí"
+		if settFilter.accommodation == "No" then
+			posXTB = 303
+			onOff = "No"
+			accommodation = "No"
+		end
+		local toggleButton = display.newRect( posXTB, coordY - 22, 97, 44 )
+		toggleButton.anchorY = 0
+		toggleButton.anchorX = 0
+		toggleButton.onOff = onOff
+		toggleButton:setFillColor( 89/255, 31/255, 103/255 )
+		screen:insert(toggleButton)
+		toggleButton.name = name
+		toggleButton:addEventListener( 'tap', moveToggleButton )
 	
-		lblIniDate = display.newText({
-            text = dateC, 
-            x = coordX - 60, y = coordY,
-            width = 140,
-            font = native.systemFont,   
-            fontSize = 24, align = "left"
-        })
-        lblIniDate:setFillColor( 0 )
-		lblIniDate.date = settFilter.iniDate
-        screen:insert(lblIniDate)
-	elseif name == "endDate" then
-		lblEndDate = display.newText({
-            text = dateC, 
-            x = coordX - 60, y = coordY,
-            width = 140,
-            font = native.systemFont,   
-            fontSize = 24, align = "left"
-        })
-        lblEndDate:setFillColor( 0 )
-		lblEndDate.date = settFilter.endDate
-        screen:insert(lblEndDate)
 	end
 end
 
+---------------------------------------------------------------------
+-- Evento touch de los componentes de slider
+-- definen el rango de fechas de los slider cada vez que se mueven
+---------------------------------------------------------------------
 function listenerSlider( event )
-	--print(poscCircle1)
-	--print(poscCircle2)
-	
 	if event.phase == "began" then
 		isCircle = false
+		--rango valido para hacer funcionar los slider
 		if event.yStart > 557 and event.yStart < 625 then
 			newPoscCircle = nil
 			direction = 0
 			sliderX = event.x
 			
+			--detecta cual boton esta activo y encima de otro
 			if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30 and circleSlider1.front == 1   then
 				isCircle = true
 				circleSlider1:toFront()
@@ -469,6 +505,7 @@ function listenerSlider( event )
 			elseif x > 0 then
 				direction = -1
 			end
+			--mueve los botones de izquierda o derecha
 			if event.x <= 339 then
 				newPoscCircle.x = 340
 			elseif event.x >= 638 then
@@ -494,6 +531,7 @@ function listenerSlider( event )
 		end
 	elseif event.phase == "ended" or event.phase == "cancelled" then
 		if isCircle then
+			--acomoda los botones a una pocision valida
 			if event.x <= 339 then
 				newPoscCircle.x = 339
 			elseif event.x >= 638 then
@@ -525,6 +563,9 @@ function listenerSlider( event )
 	return true
 end
 
+------------------------------------------------
+-- detecta y manda los botones hacia adelante
+------------------------------------------------
 function inFront( event )
 	if event.phase == "began" then
 		if blockTouch == false then
@@ -546,8 +587,11 @@ function inFront( event )
 	end
 end
 
+-----------------------------------
+--crea los componentes del slider
+-----------------------------------
 function newSlider()
-	
+	--background
 	local bgSlider0 = display.newRoundedRect( 488, 556, 300, 22, 5 )
     bgSlider0.anchorY = 0
     bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
@@ -556,6 +600,7 @@ function newSlider()
     bgSlider1.anchorY = 0
     bgSlider1:setFillColor( 1 )
     screen:insert(bgSlider1)
+	--botones
 	circleSlider1 = display.newRoundedRect( 340, 569, 40, 40, 10 )
 	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider1.name = "slider1"
@@ -563,7 +608,6 @@ function newSlider()
 	circleSlider1.front = 0
 	poscCircle1 = circleSlider1.x
 	circleSlider1:addEventListener( 'touch', inFront )
-	--circleSlider2 = display.newCircle( 605, 569, 30 )
 	circleSlider2 = display.newRoundedRect( 636, 569, 40, 40, 10 )
 	circleSlider2:setFillColor( 129/255, 61/255, 153/255 )
 	circleSlider2.name = "slider2"
@@ -571,8 +615,6 @@ function newSlider()
 	poscCircle2 = circleSlider2.x
 	circleSlider2.front = 0
 	circleSlider2:addEventListener( 'touch', inFront )
-	--569
-	
 end
 
 ---------------------------------------------------------------------------------
@@ -586,39 +628,38 @@ function scene:create( event )
 
 	screen = self.view
     screen.y = h
-    
 	grpTextField = display.newGroup()
 	
+	--se crea y se deshace la imagen del fondo
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
-	
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
 	o:addEventListener( 'touch', listenerSlider )
 	o:addEventListener( 'tap', closeAll )
-	
     screen:insert(o)
-	
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
 	
+	--creacion del toolbar
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)
     
     -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, 160, 650, 523, 10 )
+	--523
+    local bgComp1 = display.newRoundedRect( midW, 160, 650, 603, 10 )
     bgComp1.anchorY = 0
     bgComp1:setFillColor( .88 )
     screen:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, 160, 646, 520, 10 )
+    local bgComp2 = display.newRoundedRect( midW, 160, 646, 600, 10 )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
     screen:insert(bgComp2)
     
-    -- Title
+    -- Titulo
     local bgTitle = display.newRoundedRect( midW, 160, 650, 70, 10 )
     bgTitle.anchorY = 0
     bgTitle:setFillColor( .93 )
@@ -637,13 +678,14 @@ function scene:create( event )
     lblTitle:setFillColor( 0 )
     screen:insert(lblTitle)
     
-    -- Options
+    -- Opciones
     local posY = 205
     local opt = {
-        {icon = 'icoFilterCity', label= 'Ciudad:', wField = 410, nameField = "location"}, 
-        {icon = 'icoFilterAvailable', label= 'Disponible entre:', wField = 140, nameField = "endDate"}, 
+        {icon = 'icoFilterCity', label= 'Ciudad:', wField = 350, nameField = "location", type="textField"}, 
+        {icon = 'icoFilterAvailable', label= ' ida', wField = 160, nameField = "endDate", type="datePicker"}, 
         {label= 'Género:'}, 
-        {label= 'Edad Entre:'}
+        {label= 'Edad Entre:'},
+		{icon = 'icoFilterCheck', label= 'Alojamiento'},
 		}
     for i=1, #opt do
         posY = posY + 90
@@ -665,11 +707,13 @@ function scene:create( event )
         screen:insert(lbl)
         
         if opt[i].wField then
-            local bg1 = display.newRoundedRect( 660, posY, opt[i].wField, 50, 5 )
+			local disX = 0
+			if opt[i].nameField == "location" then disX = 60 end
+            local bg1 = display.newRoundedRect( 660 - disX, posY, opt[i].wField, 50, 5 )
             bg1.anchorX = 1
             bg1:setFillColor( .93 )
             screen:insert(bg1)
-            local bg2 = display.newRoundedRect( 658, posY, opt[i].wField - 4, 46, 5 )
+            local bg2 = display.newRoundedRect( 658 - disX, posY, opt[i].wField - 4, 46, 5 )
             bg2.anchorX = 1
             bg2:setFillColor( 1 )
 			bg2.name = opt[i].nameField
@@ -677,7 +721,8 @@ function scene:create( event )
 			if opt[i].nameField == "endDate" then
 				bg2:addEventListener( 'tap', createDatePicker )
 			end
-			createTextField(opt[i].nameField, opt[i].wField, 658, posY)
+			createTextField(opt[i].nameField, opt[i].wField, 658 - disX, posY,  opt[i].type)
+			-- - 60
 			
         end
         
@@ -686,15 +731,17 @@ function scene:create( event )
             ico.x = 350 
             lbl.x = 590 
         end
-    end
-    
-    -- Fields
+    end 
+	posY = 565
+    -- Campos
     xFields = {
-        {label = "y", x = 540, y = -180},
-        {w = 140, x = 470, y = -180, nameField = "iniDate"},
+        {label = "vuelta", x = 460, y = -180},
+        {w = 160, x = 380, y = -180, nameField = "iniDate", type = "datePicker"},
 		{label = "HOMBRE", x = 430, y = -90, w = 170, isGen = "H"},
         {label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
-		}
+		{label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
+		{x = 500, y = 90, w = 200, nameField = "alojamiento", type = "toggleButton"} ,
+	}
     for i=1, #xFields do
         if  xFields[i].label then
 			
@@ -727,9 +774,20 @@ function scene:create( event )
                 font = native.systemFont,   
                 fontSize = 22, align = "left"
             })
-            lbl:setFillColor( .5 )
+            lbl:setFillColor( 0 )
             screen:insert(lbl)
 			
+		elseif  xFields[i].type == "toggleButton" then 
+			-- BG Component
+			local bg1 = display.newRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50 )
+			bg1.anchorX = 1
+			bg1:setFillColor( 89/255, 31/255, 103/255 )
+			screen:insert(bg1)
+			local bg2 = display.newRect( xFields[i].x - 3, posY + xFields[i].y, xFields[i].w - 6, 44 )
+			bg2.anchorX = 1
+			bg2:setFillColor( 129/255, 61/255, 153/255 )
+			screen:insert(bg2)
+			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
         else
             local bg1 = display.newRoundedRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50, 5 )
             bg1.anchorX = 1
@@ -743,7 +801,7 @@ function scene:create( event )
 			if xFields[i].nameField == "iniDate" then
 				bg2:addEventListener( 'tap', createDatePicker )
 			end
-			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y)
+			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
         end
     end
 	
@@ -756,7 +814,6 @@ function scene:create( event )
     })
     lblSlider1:setFillColor( 0 )
     screen:insert(lblSlider1)
-	
 	lblSlider2 = display.newText({
         text = settFilter.endAge, 
         x = 680, y = posY,
@@ -766,7 +823,7 @@ function scene:create( event )
     lblSlider2:setFillColor( 0 )
     screen:insert(lblSlider2)
 	
-	--slider
+	--creacion del slider para edad
 	newSlider()
     
     -- Genero
@@ -780,7 +837,8 @@ function scene:create( event )
 	--genM.alpha = settFilter.genM
     
     -- Search Button
-    posY = posY + 170
+	--170
+    posY = posY + 250
     local btnSearch = display.newRoundedRect( midW, posY, 650, 80, 10 )
     btnSearch:setFillColor( {
         type = 'gradient',

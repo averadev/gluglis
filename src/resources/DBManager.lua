@@ -62,9 +62,9 @@ local dbManager = {}
 	end
 	
 	--actualiza la configuracion de los filtros
-	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge )
+	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge, accommodation )
 		openConnection( )
-        local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."';"
+        local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."', accommodation = '"..accommodation.."';"
         db:exec( query )
 		closeConnection( )
 	end
@@ -88,7 +88,7 @@ local dbManager = {}
 		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_email TEXT, display_name TEXT, url TEXT);"
 		db:exec( query )
 		
-		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER );"
+		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER, accommodation TEXT );"
 		db:exec( query )
 		
 		local countFilter = 0
@@ -96,7 +96,7 @@ local dbManager = {}
 			countFilter = countFilter + 1
 		end
 		if countFilter == 0 then
-			query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
+			query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí');"
 			db:exec( query )
 		end
 		

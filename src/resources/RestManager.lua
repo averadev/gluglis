@@ -428,6 +428,7 @@ local RestManager = {}
 		url = url.."/genM/" 	.. settFilter.genM
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
+		url = url.."/accommodation/" 	.. settFilter.accommodation
 	
         local function callback(event)
             if ( event.isError ) then
