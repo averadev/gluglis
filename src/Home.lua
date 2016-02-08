@@ -180,7 +180,7 @@ end
 ------------------------------------
 function setInfo(idx)
     -- Hide Icons
-    for i=3, 5 do
+    for i=3, 4 do
         detail[i].icon.alpha = 0
         detail[i].icon2.alpha = 0
     end
@@ -228,21 +228,13 @@ function setInfo(idx)
         detail[3].icon2.alpha = 1
         detail[3].lbl.text = 'No ofrece alojamiento'
     end 
-    -- Alojamiento
-    if loadUsers[idx].vehiculo and loadUsers[idx].vehiculo == 'Sí' then
-        detail[4].icon.alpha = 1
-        detail[4].lbl.text = 'Cuenta con vehiculo propio'
-    else 
-        detail[4].icon2.alpha = 1
-        detail[4].lbl.text = 'No cuenta con vehiculo propio'
-    end 
     -- Disponibilidad
     if loadUsers[idx].diponibilidad and loadUsers[idx].diponibilidad == 'Siempre' then
-        detail[5].icon.alpha = 1
-        detail[5].lbl.text = 'Disponible'
+        detail[4].icon.alpha = 1
+        detail[4].lbl.text = 'Disponible'
     else 
-        detail[5].icon2.alpha = 1
-        detail[5].lbl.text = 'No disponible'
+        detail[4].icon2.alpha = 1
+        detail[4].lbl.text = 'No disponible'
     end 
 	
 	btnViewProfile.item = loadUsers[idx]
@@ -430,10 +422,10 @@ function showInfoDisplay()
         {icon = 'icoFilterCity'},
         {icon = 'icoFilterLanguage'}, 
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+        --{icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
         {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
     
-    for i=1, 5 do
+    for i=1, 4 do
         detail[i] = {}
         posY = posY + 60
         
@@ -526,10 +518,10 @@ function showInfoButton()
         {icon = 'icoFilterCity'}, 
         {icon = 'icoFilterLanguage'}, 
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
+       -- {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
         {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
     
-    for i=1, 5 do
+    for i=1, 4 do
         detail[i] = {}
         posY = posY + 60
         
@@ -580,9 +572,6 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:create( event )
-
-	print(intH)
-
 	screen = self.view
     screen.y = h
     local isH = (intH - h) >  1300
@@ -614,7 +603,7 @@ function scene:create( event )
 	topCmp.y = - 500
     
     -- Content profile
-    local bgCard = display.newRoundedRect( midW, 150, intW - 160, 700, 10 )
+    local bgCard = display.newRoundedRect( midW, 162, intW - 168, 685, 10 )
     bgCard.anchorY = 0
     bgCard:setFillColor( 11/225, 163/225, 212/225 )
     topCmp:insert(bgCard)

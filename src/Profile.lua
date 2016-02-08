@@ -184,7 +184,6 @@ end
 
 --mueve el toggleButton
 function moveToggleButtons( event )
-	
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
@@ -193,7 +192,6 @@ function moveToggleButtons( event )
 		t.onOff = "Sí"
 		transition.to( t, { x = 403, time = 200})
 	end
-	
 end
 
 --se crean los togle buttons
@@ -928,11 +926,11 @@ function scene:create( event )
 	screen:insert(scrPerfile)
     
     -- Avatar
-    local bgA1 = display.newRoundedRect( midW - 190, 170, 270, 270, 10 )
+    local bgA1 = display.newRoundedRect( midW - 190, 170, 250, 250, 10 )
     bgA1:setFillColor( 11/225, 163/225, 212/225 )
     scrPerfile:insert(bgA1)
     
-    local bgA2 = display.newRect( midW - 190, 170, 240, 240 )
+    local bgA2 = display.newRect( midW - 190, 170, 235, 235 )
     bgA2:setFillColor( 0, 193/225, 1 )
     scrPerfile:insert(bgA2)
     
@@ -1038,6 +1036,10 @@ end
 
 -- Hide scene
 function scene:hide( event )
+	if grpTextProfile then
+		grpTextProfile:removeSelf()
+		grpTextProfile = nil
+	end
 end
 
 -- Destroy scene
