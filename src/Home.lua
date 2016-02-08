@@ -4,7 +4,6 @@
 -- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
-
 ---------------------------------- OBJETOS Y VARIABLES ----------------------------------
 -- Includes
 require('src.Tools')
@@ -33,7 +32,7 @@ local btnViewProfile
 
 ---------------------------------- FUNCIONES ----------------------------------
 
--------------------------------------
+------------------------------------
 -- carga los datos del usuario
 ------------------------------------
 function getUserPerfil(item)
@@ -68,8 +67,11 @@ function getFirstCards(items)
 	end
 end
 
+----------------------------------------------------------
+-- Muestra un mensaje si ocurre error al mostrar la info
+-- @param message mensaje que se muestra 
+----------------------------------------------------------
 function HomeError( message )
-
 	tools:setLoading(false,grpLoad)
 
 	local bgavatarDefault = display.newRect( midW, 172, 580, 558 )
@@ -80,9 +82,8 @@ function HomeError( message )
 	local avatarDefault = display.newImage( "img/avatar.png" )
 	avatarDefault:translate( midW, 450 )
 	topCmp:insert(avatarDefault)
-		
+	
 	lblName.text = message
-
 end
 
 -------------------------------------
@@ -380,9 +381,9 @@ function touchScreen(event)
 end
 
 
--------------------------------------
+------------------------------------------
 -- Mostramos el detalle en recuadro fijo
-------------------------------------
+------------------------------------------
 function showInfoDisplay()
     -- Position
     local posY = 830 + h
@@ -469,9 +470,9 @@ function showInfoDisplay()
 	
 end
 
--------------------------------------
+-----------------------------------------------
 -- Mostramos el detalle en recuadro dinamico
-------------------------------------
+-----------------------------------------------
 function showInfoButton()
 
 	local posY = 800 + h

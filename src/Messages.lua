@@ -28,6 +28,9 @@ local ListChats = {}
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
+-----------------------------
+-- Carga los elementos 
+------------------------------
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
 		tmpList[i] = {id = items[i].idMessage, photo = items[i].image, name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
@@ -37,19 +40,25 @@ function setItemsListMessages( items )
 	tools:setLoading( false,screen )
 end
 
---mensaje no lista de mensajes
+--------------------------------------------------------
+-- Muestra una alert cuando no se encuentran mensajes
+---------------------------------------------------------
 function notListMessages()
 	tools:setLoading( false,screen )
 	tools:NoMessages( true, scrMs, "No cuenta con mensajes en este momento" )
 end
 
+-------------------------------------
 --mensaje no hay conexion
+-------------------------------------
 function noConnectionMessages(message)
 	tools:noConnection( true, screen, message )
 	tools:setLoading( false,screen )
 end
 
---llama a la scena del los mensajes por canal
+-------------------------------------------------
+-- Llama a la scena del los mensajes por canal
+-------------------------------------------------
 function tapMessage(event)
     local t = event.target
     t:setFillColor( 89/255, 31/255, 103/255 )
@@ -59,7 +68,9 @@ function tapMessage(event)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = t.item } } )
 end
 
---cambia la posicion del chat
+----------------------------------
+-- Cambia la posicion del chat
+----------------------------------
 function movedChat( item, message, numChat )
 	local posc = 100
 	local thereChannel = false
@@ -85,7 +96,9 @@ function movedChat( item, message, numChat )
 	return true
 end 
 
---crea o destruye las borbujas de numeros de mensajes sin leer
+------------------------------------------------------------------
+-- Crea o destruye las borbujas de numeros de mensajes sin leer
+------------------------------------------------------------------
 function createNotBubble(poscC, numChat)
 	local child = ListChats[poscC]
 	if numChat == 0 then
@@ -115,7 +128,9 @@ function createNotBubble(poscC, numChat)
 	end
 end
 
---crea la lista de mensajes
+---------------------------------
+-- Crea la lista de mensajes
+---------------------------------
 function buildListMsg(posc, item )
     local posY = posc
     for i = 1, #item do
@@ -194,24 +209,22 @@ end
 function scene:create( event )
 	screen = self.view
     screen.y = h
-	
+	--background
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
-    
     local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
-	
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
-	
+	--toolbar
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)   
 	tools:setLoading( true,screen )
-    
+    --scrollView
 	scrMs = widget.newScrollView
     {
         top = 150,
@@ -223,7 +236,7 @@ function scene:create( event )
 		hideBackground = true,
     }
     screen:insert(scrMs)
-	
+	--bloquea el chat si el usuario no esta loqueado
 	if isReadOnly then
 		
 		local iconReadOnly = display.newImage( "img/lock.png" )
@@ -256,6 +269,7 @@ function scene:create( event )
 		tools:setLoading( false, screen )
 		
 	else
+		--muestra los mensajes
 		RestManager.getListMessageChat()
 	end
 	

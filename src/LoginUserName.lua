@@ -29,7 +29,9 @@ local flag = 0
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
---regresa a la pantalla de login normal o login con FB
+-----------------------------------------------------------
+-- Regresa a la pantalla de login normal o login con FB
+-----------------------------------------------------------
 function moveBack(event)
 	if grpLogIn.x == 0 then
 		composer.gotoScene( "src.LoginSplash", { time = 400, effect = "crossFade" })
@@ -39,7 +41,9 @@ function moveBack(event)
 	end
 end
 
+------------------------------------
 --mueve a la pantalla de registro
+------------------------------------
 function moveNew(event)
     local t = event.target
     t.alpha = .5
@@ -48,7 +52,12 @@ function moveNew(event)
     
 end
 
---manda a la pantalla de home(si el logueo fue exitoso)
+---------------------------------------------------------
+-- Manda a la pantalla de home(si el logueo fue exitoso)
+-- @param message mensaje que regresa el logueo
+-- @param name define si fue un registo o un logueo
+-- @param success indica si fue exitoso el logueo
+----------------------------------------------------------
 function gotoHomeUN( message, name, success )
 	isReadOnly = false
 	local result = success
@@ -70,6 +79,9 @@ function gotoHomeUN( message, name, success )
 	end, 1 )
 end
 
+-----------------------------
+-- Realiza el login normal
+-----------------------------
 function toLogIn( event )
 	if flag == 0 then
 		flag = 1
@@ -90,9 +102,13 @@ function toLogIn( event )
 	return true
 end
 
+--------------------------------------------
+-- Realiza el registo de un nuevo usuario
+--------------------------------------------
 function doCreate( event )
 	if flag == 0 then
 		flag = 1
+		-- trim  de los campos
 		local textEmail = string.gsub(txtEmail.text , "%s", "")
 		local textPass = string.gsub(txtPass.text , "%s", "")
 		local textRePass = string.gsub(txtRePass.text , "%s", "")
@@ -101,7 +117,6 @@ function doCreate( event )
 			if textPass == textRePass then
 				RestManager.createUserNormal(textEmail, textPass, "", "", "", playerId)
 			else
-				
 				alertLogin(true,"Contraseñas distintas",2)
 				timeMarker = timer.performWithDelay( 2000, function()
 					alertLogin(false,"",2)
@@ -119,10 +134,15 @@ function doCreate( event )
 	return true
 end
 
+----------------------------------
+-- event focus de los textField
+----------------------------------
 function onTxtFocus(event)
 end
 
---pinta las lineas requeridas
+---------------------------------
+-- Pinta las lineas requeridas
+---------------------------------
 function getLine(parent, x, y)
     local line = display.newRect( x, y, intW, 6 )
     line:setFillColor( {

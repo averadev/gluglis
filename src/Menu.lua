@@ -4,7 +4,12 @@
 -- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
+--tabla
 Menu = {}
+
+--------------------------
+--inicializa el menu
+--------------------------
 function Menu:new()
     -- Variables
     require('src.resources.Globals')

@@ -38,7 +38,10 @@ local NoMessage
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
---cargamos los elementos del los mensajes
+---------------------------------------------
+-- Cargamos los elementos del los mensajes
+-- @param items elementos de los chats 
+---------------------------------------------
 function setItemsMessages( items )
 	for i = 1, #items, 1 do
 		local item = items[i]
@@ -52,19 +55,26 @@ function setItemsMessages( items )
 	buildChat(0)
 end
 
---muestra un mensaje cuando no se encuentren chats
+------------------------------------------------------
+-- Muestra un mensaje cuando no se encuentren chats
+------------------------------------------------------
 function notChatsMessages()
 	tools:setLoading( false,screen )
 	NoMessage = tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
 end
 
---muestra un mensaje cuando no exista conexion a internet
+------------------------------------------------------------
+-- Muestra un mensaje cuando no exista conexion a internet
+-- @param message mensaje a mostrar
+------------------------------------------------------------
 function noConnectionMessage(message)
 	tools:noConnection( true, screen, message )
 	tools:setLoading( false,screen )	
 end
 
---envia el mensaje
+-----------------------
+-- Envia el mensaje
+-----------------------
 function sentMessage()
 	--verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
@@ -93,7 +103,11 @@ function sentMessage()
 	return true
 end
 
---prepara los datos para pintarlo en el scroll
+--------------------------------------------------
+-- Prepara los datos para pintarlo en el scroll
+-- @param itemTemp informacion del mensaje
+-- @param isMe indica si el mensaje es nuestro
+--------------------------------------------------
 function displaysInList(itemTemp, isMe)
 	tmpList = nil
 	tmpList = {}
@@ -125,7 +139,11 @@ function displaysInList(itemTemp, isMe)
 	end
 end
 
---cambia la fecha del mensaje
+---------------------------------------------------
+-- Cambia la fecha del mensaje
+-- @param item informacion del mensaje
+-- @param poscD posicion del mensaje en la tabla
+---------------------------------------------------
 function changeDateOfMSG(item, poscD)
 	lblDateTemp[poscD].text = item.hora
 	local titleScene = composer.getScene( "src.Messages" )
@@ -134,12 +152,17 @@ function changeDateOfMSG(item, poscD)
 	end
 end
 
+----------------------------------
+-- Regresa a la scena anterior
+----------------------------------
 function toBack()
     audio.play(fxTap)
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
 end
 
---muestra un aviso si se desea bloquear o desbloquear el chat
+------------------------------------------------------------------
+-- Muestra un aviso si se desea bloquear o desbloquear el chat
+------------------------------------------------------------------
 function blockedChat( event )
 	if itemsConfig.blockMe == "closed" then
 		blockedChatMsg('¿desea desbloquear a ' .. itemsConfig.display_name .. '? para enviarle mensajes', true, true)
@@ -148,7 +171,12 @@ function blockedChat( event )
 	end
 end
 
---crea el aviso de chats bloqueado
+---------------------------------------------------
+-- Crea el aviso de chats bloqueado
+-- @param message mensaje que muestra el bloqueo
+-- @param isShow indica si esta activo el aviso
+-- @param isBlock indica si esta o no bloqueado
+---------------------------------------------------
 function blockedChatMsg(message, isShow, isBlock)
 	if isShow then
 		grpBlocked = display.newGroup()
@@ -203,76 +231,67 @@ function blockedChatMsg(message, isShow, isBlock)
 	end
 end
 
+-----------------------------------
 --bloquea o desbloquea el chats
+-----------------------------------
 function blocked( event )
 	event.target:removeEventListener( "tap", blocked )
 	RestManager.blokedChat(itemsConfig.channelId, itemsConfig.blockMe)
 end
 
+---------------------------------------------
+-- deshabilita los eventos tap no deseados
+-- deshabilita el traspaso del componentes
+---------------------------------------------
 function noAction( event )
 	return true
 end
 
---cambia el estatus del bloqueo personal
+----------------------------------------------------
+-- Cambia el estatus del bloqueo personal
+-- @param status indica si se bloquea o debloquea
+----------------------------------------------------
 function changeStatusBlock(status)
 	itemsConfig.blockMe = status
 	blockedChatMsg("", false, false)
 end
 
---elimina la burbuja de mensajes no leidos
+---------------------------------------------
+-- Elimina la burbuja de mensajes no leidos
+---------------------------------------------
 function deleteNotBubble()
 	local titleScene = composer.getScene( "src.Messages" )
 	if titleScene then
 		createNotBubble( poscList, 0 )
 	end
 end
-	
+
+-----------------------------------
 --envento input del textbox
+-----------------------------------
 function onTxtFocus( event )
 	local fieldOffset, fieldTrans
 	fieldOffset = intH/3 + 100
 	fieldTrans = 200
 	if ( event.phase == "began" ) then
-		--screen.y = -500
-		--[[scrChat.height = scrChatH - fieldOffset
-		scrChat.anchorY = 0
-		transition.to( scrChat, { time=fieldTrans, y=(130 + h)} )
-		transition.to( grpTextField, { time=fieldTrans, y=(-fieldOffset)} )
-		grpChat.y = (scrChatH - scrChat.height) / 2
-		scrChat:setScrollHeight( posY + fieldOffset )]]
     elseif ( event.phase == "ended") then
 		native.setKeyboardFocus( nil )
-		
-		--[[scrChat.anchorY = .5
-		scrChat.height = scrChatH
-		transition.to( scrChat, { time=fieldTrans, y=(scrChatY)} )
-		transition.to( grpTextField, { time=fieldTrans, y=(0)} )
-		grpChat.y = 0
-		scrChat:setScrollHeight( posY )]]
-	elseif (event.phase == "submitted" ) then	
+	elseif (event.phase == "submitted" ) then
+		-- Envia el mensaje 
 		sentMessage()
     elseif ( event.phase == "editing" ) then
-		print("-----A-----")
-		local sqCenterX, sqCenterY = screen:localToContent( 0, 0 )
-		print(sqCenterX)
-		print(sqCenterY)
-		print("-----------")
-		local sqCenterX, sqCenterY = grpTextField:localToContent( 0, 0 )
-		print(sqCenterX)
-		print(sqCenterY)
-		--[[print(txtMessage.y)
-		print(display.contentCenterY)
-		print(display.contentScaleY)
-		print(display.pixelHeight)
-		print(display.screenOriginY)
-		print(display.viewableContentHeight)]]
+		
     end
 end
 
---contruye el los mensajes del chats
+----------------------------------------------------
+-- Contruye el los mensajes del chats
+-- @param poscD posicion del mensaje en la tabla
+----------------------------------------------------
 function buildChat(poscD)
     for z = 1, #tmpList do
         local i = tmpList[z]
+		-- muestra la fecha
         if i.date then
 			lastDate = i.date
             local bgDate = display.newRoundedRect( midW, posY, 350, 40, 20 )
@@ -290,6 +309,7 @@ function buildChat(poscD)
             grpChat:insert(lblDate)
             
             posY = posY + 70
+		--muestra los mensajes
         else
             local bgM0 = display.newRoundedRect( 20, posY, 502, 80, 20 )
             bgM0.anchorX = 0
@@ -315,6 +335,7 @@ function buildChat(poscD)
             lblM:setFillColor( .1 )
             grpChat:insert(lblM)
             
+			--ajusta el tamaño del background
             if lblM.contentWidth > 450 then
                 lblM:removeSelf()
                 
@@ -349,7 +370,7 @@ function buildChat(poscD)
                     lblM.x = intW - 40
                 end
             end
-            
+            --muestra un cargando mientra se confirma el mensaje
 			if poscD ~= 0 then
 				lblDateTemp[poscD] = display.newText({
 					text = "Cargando",
@@ -364,6 +385,7 @@ function buildChat(poscD)
 					lblDateTemp[poscD].anchorX = 0
 					lblDateTemp[poscD].x = intW - bgM.width
 				end
+			--muestra la hora en que se envio el mensaje
 			else
 				local lblTime = display.newText({
 					text = i.time,
@@ -380,6 +402,7 @@ function buildChat(poscD)
 				end
 			end
             
+			--cambia la posicion del mensaje si es del usuario
             if i.isMe then
                 bgM0.x = intW - 20
                 bgM.x = intW - 20
@@ -413,6 +436,9 @@ function buildChat(poscD)
 	end
 end
 
+-----------------------------------
+-- Muestra la imagen del usuario
+-----------------------------------
 function setImagePerfilMessage(item)
 	local avatar = display.newImage(item.photo, system.TemporaryDirectory)
 	avatar:translate(150, 50 + h)
@@ -421,7 +447,6 @@ function setImagePerfilMessage(item)
 	screen:insert( avatar )
 	local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
 	avatar:setMask( maskCircle80 )
-	
 end
 
 ---------------------------------------------------------------------------------
@@ -435,31 +460,26 @@ function scene:create( event )
     --screen.y = h
     grpTextField = display.newGroup()
 	screen:insert( grpTextField )
-    
     local bg = display.newRect( midW, midH + h, intW, intH, 20 )
     bg:setFillColor( 1 )
     screen:insert(bg)
-	
+	--background
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
-	
     local o = display.newRect( midW, midH + h, intW, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
-	
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
-	    
+	--bg component
     local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
     bgH:setFillColor( 1 )
     screen:insert(bgH)
-    
     local bgHBtn = display.newRect( intW - 55, 50 + h, 130, 100 )
     bgHBtn:setFillColor( .95 )
     screen:insert(bgHBtn)
-    
     -- Back button
 	local btnBack = display.newImage("img/icoBack.png")
 	btnBack:translate(50, 50 + h)
@@ -482,7 +502,6 @@ function scene:create( event )
 		items[1] = item
 		RestManager.getImagePerfilMessage(items)
 	end
-	
 	--btn bloquear
 	local btnBlock = display.newImage("img/cancel-icon-2.png")
     btnBlock:translate(intW - 55, 50 + h)
@@ -490,7 +509,6 @@ function scene:create( event )
     btnBlock.height = 70
     screen:insert( btnBlock )
     btnBlock:addEventListener( 'tap', blockedChat )
-	
     -- Name
     local lblName = display.newText({
         text = item.name,     
@@ -501,9 +519,8 @@ function scene:create( event )
     })
     lblName:setFillColor( .3 )
     screen:insert(lblName)
-    
-   scrChat = widget.newScrollView
-    {
+	--scrollView
+	scrChat = widget.newScrollView{
         top = 130 + h,
         left = 0,
         width = intW,
@@ -515,16 +532,15 @@ function scene:create( event )
     screen:insert(scrChat)  
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
-    
+	--bg enviar
     local bgSendField = display.newRect( midW, intH - 45, intW, 90 )
     bgSendField:setFillColor( .84 )
     grpTextField:insert(bgSendField)
-    
     local bgSend = display.newRect( intW - 75, intH - 45, 150, 90 )
     bgSend:setFillColor( 68/255, 14/255, 98/255 )
 	bgSend:addEventListener( 'tap', sentMessage )
     grpTextField:insert(bgSend)
-    
+    --label enviar
     local lblSend = display.newText({
         text = "ENVIAR",     
         x = intW - 75, y = intH - 45, width = 150,
@@ -533,36 +549,21 @@ function scene:create( event )
     })
     lblSend:setFillColor( 1 )
     grpTextField:insert(lblSend)
-    
     local bgField = display.newRoundedRect(  midW - 75, intH - 45, intW - 190, 60, 20 )
     bgField:setFillColor( 1 )
     grpTextField:insert(bgField)
-	
+	--textField enviar
 	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 50 )
     txtMessage.inputType = "default"
-    --txtMessage.hasBackground = true
-	--txtMessage.channelId = item.channelId
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
 	grpTextField:insert( txtMessage )
-	--[[print(txtMessage.y)
-	print(display.contentCenterY)
-	print(display.contentScaleY)
-	print(display.pixelHeight)
-	print(display.screenOriginY)
-	print(display.viewableContentHeight)]]
-	
 	posY = 30
 	scrChatY = scrChat.y
 	scrChatH = scrChat.height
-	
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
-	
 	RestManager.getChatMessages(item.channelId)
-	
 	grpTextField:toFront()
-	
-    
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )

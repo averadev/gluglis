@@ -50,10 +50,10 @@ function method()
     
 end
 
--------------------------------------------
+---------------------------------------------
 -- deshabilita los eventos tap no deseados
 -- deshabilita el traspaso del componentes
--------------------------------------------
+---------------------------------------------
 function noAction( event )
 	return true
 end
@@ -114,7 +114,6 @@ end
 function randomCities( event )
 	local numCity = math.random(1, 100)
 	txtLocation.text = majorCities[numCity]
-	
 end
 
 -------------------------------------
@@ -298,6 +297,7 @@ end
 
 ---------------------------
 -- Destruye el datePicker
+-- Obtiene la fecha selecionada
 ---------------------------
 function destroyDatePicker( event )
 	--define si se quiere obtener la fecha o solo destruir el componente
@@ -368,7 +368,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			imgDado:addEventListener( 'tap', randomCities )
 		end
 	elseif typeF == "datePicker" then
-		print(name)
 		--asigna la fecha de ida o vuelta
 		local s
 		if name == "iniDate" then
@@ -413,6 +412,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			lblEndDate.date = settFilter.endDate
 			screen:insert(lblEndDate)
 		end
+	--crea el componente toggleButton
 	elseif typeF == "toggleButton" then
 		local lblYes = display.newText({
 			text = "Si", 
@@ -443,6 +443,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			onOff = "No"
 			accommodation = "No"
 		end
+		--boton del toggleButton
 		local toggleButton = display.newRect( posXTB, coordY - 22, 97, 44 )
 		toggleButton.anchorY = 0
 		toggleButton.anchorX = 0
@@ -451,7 +452,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 		screen:insert(toggleButton)
 		toggleButton.name = name
 		toggleButton:addEventListener( 'tap', moveToggleButton )
-	
 	end
 end
 

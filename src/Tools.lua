@@ -24,8 +24,9 @@ function Tools:new()
     local fxTap = audio.loadSound( "fx/click.wav")
     self.y = h
 	
-    
+    -------------------------------
     -- Creamos la el toolbar
+	-------------------------------
     function self:buildHeader()
 		if not bgShadow then 
 			bgShadow = display.newRect( 0, 0, display.contentWidth, display.contentHeight )
@@ -66,7 +67,9 @@ function Tools:new()
         end
     end
     
+	--------------------------
     -- Creamos loading
+	--------------------------
     function self:setLoading(isLoading, parent)
         if isLoading then
             if grpLoading then
@@ -104,7 +107,9 @@ function Tools:new()
         end
     end
 	
-	--creamos mensaje de problema con la conexion
+	-----------------------------------------------------
+	-- creacion de mensaje de problema con la conexion
+	-----------------------------------------------------
 	function self:noConnection(isConnection, parent, message)
 		if isConnection then
             if grpConnection then
@@ -135,7 +140,9 @@ function Tools:new()
         end
 	end
 	
-	--creamos mensaje cuando no se encuentren mensajes o canales
+	---------------------------------------------------------------------
+	-- creacion de mensaje cuando no se encuentren mensajes o canales
+	---------------------------------------------------------------------
 	function self:NoMessages(isMesage, parent, message)
 	
 		if isMesage then
@@ -165,7 +172,9 @@ function Tools:new()
 		return grpNoMessages
 	end
 	
+	-----------------------
     -- Cambia pantalla
+	-----------------------
     function toScreen(event)
 		tools:setLoading(false,"")
         -- Hide Menu
@@ -196,7 +205,9 @@ function Tools:new()
         return true
     end
     
+	----------------------------------
     -- Cerramos o mostramos shadow
+	----------------------------------
     function showMenu(event)
         if bgShadow.alpha == 0 then
             self:toFront()
@@ -211,7 +222,9 @@ function Tools:new()
         return true;
     end
 	
+	-------------------------
 	--creamos una alerta
+	-------------------------
 	function NewAlert(isTrue, text)
 		if isTrue then
 			if grpNewAlert then
@@ -253,6 +266,9 @@ function Tools:new()
 		end
 	end
 	
+	------------------------------------------
+	-- alerta que se despliega desde abajo
+	------------------------------------------
 	function alertLogin(isTrue, meessage, typeS)
 	
 		if isTrue then
@@ -289,8 +305,6 @@ function Tools:new()
 			iconMessageSignIn.y = intH - 60
 			grpAlertLogin:insert(iconMessageSignIn)
 		
-			--deleteLoadingLogin()
-		
 			transition.to( grpAlertLogin, { y = 0, time = 600, transition = easing.outExpo, onComplete=function()
 				end
 			})
@@ -325,9 +339,9 @@ function Tools:new()
 		end
 	end
 	
-	-------------------------
+	--------------------------
 	-- Selecciona la ciudad
-	-------------------------
+	--------------------------
 	function selectCity( event )
 		event.target.alpha = .5
 		timeMarker = timer.performWithDelay( 100, function()
@@ -346,9 +360,9 @@ function Tools:new()
 	end
 	
 	---------------------------------------------------
--- Muestra una lista de las ciudades por el nombre
--- @param item nombre de la ciudad y su pais
----------------------------------------------------
+	-- Muestra una lista de las ciudades por el nombre
+	-- @param item nombre de la ciudad y su pais
+	---------------------------------------------------
 	function showCities(item, name, parent)
 
 		--elimina los componentes para crear otros

@@ -64,7 +64,9 @@ function saveProfile()
 	RestManager.saveProfile(textUserName.text, textUserResidence.text, toggleButtons[1].onOff, toggleButtons[2].onOff,toggleButtons[3].onOff,myHobbies, myLanguages)
 end
 
---devuelve el resultado de guardar los datos
+-------------------------------------------------------------
+-- Muestra una alerta con los resulado de guardar un perfil 
+-------------------------------------------------------------
 function resultSaveProfile( isTrue, message)
 	grpTextProfile.x = intW
 	NewAlert(true, message)
@@ -77,9 +79,14 @@ function resultSaveProfile( isTrue, message)
 	
 end
 
+------------------------------------------------------------
+-- Actualiza los tablas con las preferencias selecionadas
+-- tabla hobbie e idioma
+------------------------------------------------------------
 function savePreferences( event )
 	t = event.target
 	local labelPreferences
+	--genera el nuevo texto a mostrar en perfil
 	if #myElements > 0 then
         local max = 4
         if #myElements < max then 
@@ -100,7 +107,7 @@ function savePreferences( event )
 			labelPreferences = 'Editar pasatiempos'
 		end
     end
-	
+	--guarda las opciones en sus tablas
 	if t.name == "hobbies" then
 		myHobbies = myElements
 		lblInts.text = labelPreferences
@@ -146,10 +153,10 @@ function showNewConversation(item)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 -- Pinta la imagen del usuario en caso de no encontrarse al crear la scena
 -- @param item nombre de la imagen
----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 function setImagePerfil( item )
 	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
 	avatar:translate(midW - 190, 170)
@@ -158,10 +165,17 @@ function setImagePerfil( item )
 	scrPerfile:insert(avatar)
 end
 
+-----------------------------------
+-- Obtiene la ciudad selecionada
+-----------------------------------
 function getCityProfile(city)
 	textUserResidence.text = city
 end
 
+-------------------------------------------------------------------
+-- event focus de los textField
+-- @param event name residence: realiza la buqueda de ciudades
+-------------------------------------------------------------------
 function userInputProfile( event )
 	local t = event.target
 	if ( event.phase == "began" ) then
@@ -182,7 +196,9 @@ function userInputProfile( event )
 	return true
 end
 
+----------------------------
 --mueve el toggleButton
+---------------------------
 function moveToggleButtons( event )
 	local t = event.target
 	if t.onOff == "Sí" then
@@ -194,7 +210,11 @@ function moveToggleButtons( event )
 	end
 end
 
---se crean los togle buttons
+-------------------------------------------------
+-- Creacion de los togle buttons
+-- @param item valor inicia de los elementos
+-- @param posY2 coordenada y del elemento
+-------------------------------------------------
 function createToggleButtons(item, posY2)
 
 	for i=1, 3, 1 do
@@ -204,13 +224,13 @@ function createToggleButtons(item, posY2)
 		bg0CheckAcco.anchorX = 0
 		bg0CheckAcco:setFillColor( 89/255, 31/255, 103/255 )
 		scrPerfile:insert(bg0CheckAcco)
-		
 		local bg0CheckAcco = display.newRect( 303, posY2 + 3, 194, 44 )
 		bg0CheckAcco.anchorY = 0
 		bg0CheckAcco.anchorX = 0
 		bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
 		scrPerfile:insert(bg0CheckAcco)
 		
+		--label si/no
 		local lblYes = display.newText({
 			text = "Si", 
 			x = 350, y = posY2 + 25,
@@ -220,7 +240,6 @@ function createToggleButtons(item, posY2)
 		})
 		lblYes:setFillColor( 1 )
 		scrPerfile:insert(lblYes)
-		
 		local lblNo = display.newText({
 			text = "No", 
 			x = 450, y = posY2 + 25,
@@ -243,7 +262,6 @@ function createToggleButtons(item, posY2)
 			posXTB = 303
 		end
 		-- transporte
-		
 		if i == 2 and item.vehiculo ~= nil and item.vehiculo == 'Sí' then
 			
 			onOff = "Sí"
@@ -262,6 +280,7 @@ function createToggleButtons(item, posY2)
 		end
 		local num = #toggleButtons + 1
 		
+		--button
 		toggleButtons[num] = display.newRect( posXTB, posY2 + 3, 97, 44 )
 		toggleButtons[num].anchorY = 0
 		toggleButtons[num].anchorX = 0
@@ -270,27 +289,32 @@ function createToggleButtons(item, posY2)
 		scrPerfile:insert(toggleButtons[num])
 		toggleButtons[num]:addEventListener( 'tap', moveToggleButtons )
 		
+		--nueva posicion
 		posY2 = posY2 + 75
 		
 	end
 
 end
 
---añade los elementos selecionados
+-------------------------------------------------
+-- Añade los elementos de las preferencias
+-- @param name Nombre del elemento selecionado
+-------------------------------------------------
 function addElements(name)
 
+	--posicion siguiente
 	local num = #container + 1
+	--container
 	container[num] = display.newContainer( 600, 80 )
 	scrElements:insert(container[num])
 	container[num].anchorY = 0
 	container[num]:translate( 300, posYE )
-
 	local bg0OptionCombo = display.newRect( 0, 0, 600, 80 )
 	bg0OptionCombo:setFillColor( 1 )
 	bg0OptionCombo.name = name
 	container[num]:insert( bg0OptionCombo )
 	bg0OptionCombo:addEventListener( 'tap', noAction )
-		
+	--label nombre
 	local lblNameOption = display.newText({
 		text = name, 
 		x = 0, y = 0,
@@ -300,7 +324,7 @@ function addElements(name)
 	})
 	lblNameOption:setFillColor( 0 )
 	container[num]:insert(lblNameOption)
-			
+	--image para eliminar el elemento
 	local deleteElements = display.newImage("img/delete.png")
 	deleteElements:translate(260, 0)
 	deleteElements.height = 50
@@ -308,18 +332,20 @@ function addElements(name)
 	deleteElements.id = num
 	container[num]:insert(deleteElements)
 	deleteElements:addEventListener( 'tap', deleteElement )
-		
 	posYE = posYE + 83
 
 end 
 
---elimina un elemento de la lista
+----------------------------------------------------
+--elimina un elemento de la lista de preferencias
+----------------------------------------------------
 function deleteElement( event )
 	local t = event.target.id
 	container[t]:removeSelf()
 	table.remove( container, t )
 	table.remove( myElements, t )
 	posYE = 0
+	--reacomoda la lista
 	for i=1,#container, 1 do
 		container[i].y = posYE
 		posYE = posYE + 83
@@ -328,13 +354,16 @@ function deleteElement( event )
 	return true
 end
 
---obtiene el resulado del combobox
+--------------------------------------
+-- Obtiene el resulado del combobox
+--------------------------------------
 function getOptionCombo( event )
 	local t = event.target
 	t.alpha = .5
 	timeMarker = timer.performWithDelay( 100, function()
 		t.alpha = 1
 		hideOptionsCombo("")
+		--asigna el nuevo elemento a la tabla y a la lista
 		myElements[#myElements + 1] = t.name
 		addElements(t.name)
 		
@@ -342,10 +371,13 @@ function getOptionCombo( event )
 	return true
 end
 
---muestra las opciones del combobox
+--------------------------------------------------
+-- Despliega la lista de opciones de las tablas
+--------------------------------------------------
 function showOptionsCombo( event )
 	local t2 = event.target
 	local setElements = {}
+	--define que tabla se ocupara
 	if t2.name == "hobbies" then
 		setElements = hobbies
 	else
@@ -353,21 +385,19 @@ function showOptionsCombo( event )
 	end
 	
 	if not grpOptionsCombo then
-	
+		--grupo
 		grpOptionsCombo = display.newGroup()
 		grpOptionsLabel:insert(grpOptionsCombo)
-	
+		--bg Component
 		local bg0OptionCombo = display.newRoundedRect( midW, h + 186, 606, 606, 10 )
 		bg0OptionCombo:setFillColor( 129/255, 61/255, 153/255 )
 		bg0OptionCombo.anchorY = 0
 		grpOptionsCombo:insert( bg0OptionCombo )
 		bg0OptionCombo:addEventListener( 'tap', noAction)
-	
 		local bg0OptionCombo = display.newRect( midW, h + 178, 606, 20 )
 		bg0OptionCombo:setFillColor( 129/255, 61/255, 153/255 )
 		bg0OptionCombo.anchorY = 0
 		grpOptionsCombo:insert( bg0OptionCombo )
-	
 		--scrollview
 		local scrOptionCombo = widget.newScrollView({
 			top = h + 185,
@@ -378,7 +408,7 @@ function showOptionsCombo( event )
 			backgroundColor = { .8 },
 		})
 		grpOptionsCombo:insert(scrOptionCombo)
-		
+		--muestra la lista de opciones
 		local posYTemp = 0
 		for i = 1, #setElements, 1 do
 			local isTrue = false
@@ -410,11 +440,15 @@ function showOptionsCombo( event )
 			end
 		end
 	else
+		--esconde la lista de opciones
 		hideOptionsCombo( event )
 	end
 	return true
 end
 
+------------------------------------------------
+-- Destruye la lista de opciones del combobox
+------------------------------------------------
 function hideOptionsCombo( event )
 	if grpOptionsCombo then
 		grpOptionsCombo:removeSelf()
@@ -423,7 +457,9 @@ function hideOptionsCombo( event )
 	return true
 end
 
---crea las opciones de las etiquetas
+----------------------------------------
+-- Crea las opciones de las etiquetas
+----------------------------------------
 function showOptionsLabels( event )
 	--hobbies
 	local t = event.target
@@ -442,25 +478,23 @@ function showOptionsLabels( event )
 		bg0.type = "destroy"
 		grpOptionsLabel:insert( bg0 )
 		bg0:addEventListener( 'tap', showOptionsLabels )
-		
 		local bg1 = display.newRoundedRect( midW, midH + h, 660, intH - 100, 10 )
 		bg1:setFillColor( 1 )
 		grpOptionsLabel:insert( bg1 )
 		bg1:addEventListener( 'tap', hideOptionsCombo )
-		
 		local bg0ComboBox = display.newRoundedRect( midW, h + 100, 606, 86, 10 )
 		bg0ComboBox:setFillColor( 129/255, 61/255, 153/255 )
 		bg0ComboBox.anchorY = 0
 		grpOptionsLabel:insert( bg0ComboBox )
 		bg0ComboBox:addEventListener( 'tap', noAction )
-		
+		--bg que despliega las opciones
 		local bg1ComboBox = display.newRoundedRect( midW, h + 103, 600, 80, 10 )
 		bg1ComboBox:setFillColor( 1 )
 		bg1ComboBox.anchorY = 0
 		bg1ComboBox.name = t.name
 		grpOptionsLabel:insert( bg1ComboBox )
 		bg1ComboBox:addEventListener( 'tap', showOptionsCombo )
-		
+		--label title
 		local lblTitleCombo = display.newText({
 			text = t.label, 
 			x = midW, y = h + 160,
@@ -470,13 +504,10 @@ function showOptionsLabels( event )
 		})
 		lblTitleCombo:setFillColor( 0 )
 		grpOptionsLabel:insert(lblTitleCombo)
-		
 		local triangle = display.newImage("img/triangleDown.png")
 		triangle:translate(650, h + 145)
 		grpOptionsLabel:insert(triangle)
-		
 		--elementos selecionados
-		
 		local bg0Elemets = display.newRoundedRect( midW, h + 230, 606, intH/2 + 6, 10 )
 		bg0Elemets:setFillColor( 129/255, 61/255, 153/255 )
 		bg0Elemets.anchorY = 0
@@ -492,7 +523,7 @@ function showOptionsLabels( event )
 			backgroundColor = { .8 },
 		})
 		grpOptionsLabel:insert(scrElements)
-		
+		--titulo del combobox
 		posYE = 0
 		if t.name == "hobbies" then
 			myElements = myHobbies
@@ -537,7 +568,9 @@ function showOptionsLabels( event )
 	return true
 end
 
----pinta los datos de otros usuarios
+----------------------------------------
+--- Pinta los datos de otros usuarios
+----------------------------------------
 function otherProfile( item )
 
 	-- informacion personal
@@ -697,6 +730,10 @@ function otherProfile( item )
 
 end
 
+------------------------------------
+-- Pinta la info del usuario
+-- permite editar su informacion
+------------------------------------
 function MyProfile( item )
 
 	grpTextProfile = display.newGroup()
@@ -1030,19 +1067,23 @@ function scene:create( event )
 	scrPerfile:setScrollHeight(5000)
     
 end	
+--------------------------------------------------------
 -- Called immediately after scene has moved onscreen:
+--------------------------------------------------------
 function scene:show( event )
 end
-
+----------------
 -- Hide scene
+----------------
 function scene:hide( event )
 	if grpTextProfile then
 		grpTextProfile:removeSelf()
 		grpTextProfile = nil
 	end
 end
-
+---------------------
 -- Destroy scene
+---------------------
 function scene:destroy( event )
 end
 

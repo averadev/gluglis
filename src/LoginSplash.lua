@@ -34,26 +34,35 @@ local labelTitle, labelSubTitle
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
---llama a la pantalla de login o registro normal
+----------------------------------------------------
+-- Llama a la pantalla de login o registro normal
+----------------------------------------------------
 function toLoginUserName(event)
     composer.removeScene( "src.LoginUserName" )
 	composer.gotoScene( "src.LoginUserName", { time = 400, effect = "crossFade" })
 end
 
+-------------------------------------------
+-- Muestra la aplicacion sin loquearse
+-------------------------------------------
 function toLoginFree( event )
 	isReadOnly = true
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
 end
 
+----------------------------------------------------------
 --llama a la pantalla de home(si el logueo fue exitoso)
+----------------------------------------------------------
 function gotoHome()
 	isReadOnly = false
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
 end
 
+----------------------------------------------------------------
 --evento que se dispara cuando se inicia el loqueo por face
+----------------------------------------------------------------
 function facebookListener( event )
 	--pide los datos del usuario
     if ( "session" == event.type ) then
@@ -90,13 +99,16 @@ function facebookListener( event )
     end
 end
 
+--------------------------------
 --login por medio de facebook
+--------------------------------
 function loginFB(event)
 	--se inicia el login y pide los perrmisos
     facebook.login( facebookListener, {"public_profile","email","user_birthday","user_location"} )
 end
-
+----------------------------------------------
 -- Le da movimiento a las pantallas del cel
+----------------------------------------------
 function touchScreen(event)
     if event.phase == "began" then
         direction = 0
@@ -154,8 +166,9 @@ function touchScreen(event)
         end
     end
 end
-
---mueve el encabezado y los circulos
+----------------------------------------
+-- Mueve el encabezado y los circulos
+----------------------------------------
 function newScr(idx)
     idxScr = idx
     direction = 0

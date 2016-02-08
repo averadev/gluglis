@@ -25,9 +25,9 @@ local RestManager = {}
     end
 	
 	---------------------------------- Pantalla Login ----------------------------------
-	-------------------------------------
+	---------------------------------------------
     -- da de alta un nuevo usuario por facebook
-    -------------------------------------
+    ---------------------------------------------
 	RestManager.createUser = function(email, password, name, gender, birthday, location, facebookId, playerId)
 	
         -- Set url
@@ -118,6 +118,9 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	--------------------------
+	-- valida el logueo
+	-------------------------
 	RestManager.validateUser = function( email, password, playerId )
 		-- Set url
 		password = crypto.digest(crypto.md5, password)
@@ -367,7 +370,10 @@ local RestManager = {}
 		end
     end
 	
-	--obtiene el avatar de messajes, en caso de no existir en fichero interno
+	--------------------------------------------------------------------
+    -- Obtiene el avatar de messajes, en caso de no existir en fichero interno
+    -- @param item informacion
+    --------------------------------------------------------------------
 	RestManager.getImagePerfilMessage = function( item )
         loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
     end
@@ -397,9 +403,9 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
-    -------------------------------------
+    ---------------------------------------
     -- Obtiene los usuarios por ubicacion
-    -------------------------------------
+    ---------------------------------------
     RestManager.getUsersByCity = function()
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
@@ -416,6 +422,9 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	---------------------------------------
+    -- Obtiene los usuarios filtrados
+    ---------------------------------------
 	RestManager.getUsersByFilter = function()
 		settings = DBManager.getSettings()
 		local settFilter = DBManager.getSettingFilter()
