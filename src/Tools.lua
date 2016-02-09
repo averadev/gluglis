@@ -191,7 +191,7 @@ function Tools:new()
             composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
         else
             composer.removeScene( "src."..t.screen )
-			if t.screen == "Profile" then
+			if t.screen == "MyProfile" then
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
 			else
 				if t.screen == "LoginSplash" then

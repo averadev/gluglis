@@ -22,7 +22,6 @@ local newH = 0
 local h = display.topStatusBarContentHeight
 local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS
 
-
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------

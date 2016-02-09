@@ -36,7 +36,7 @@ function Menu:new()
         selfMenu:insert(background)
         
         -- Options
-        local opt = {{'Filter', 'icoFilter', 'Buscar'}, {'Profile', 'icoProfile', 'Mi Perfil'}}
+        local opt = {{'Filter', 'icoFilter', 'Buscar'}, {'MyProfile', 'icoProfile', 'Mi Perfil'}}
         for i=1,2 do
             -- Opt
             local posc = (i * 110) - 55

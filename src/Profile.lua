@@ -18,111 +18,15 @@ RestManager = require('src.resources.RestManager')
 local screen
 local scene = composer.newScene()
 local scrPerfile, scrElements
-local grpTextProfile, grpOptionsLabel, grpOptionsCombo
 
 -- Variables
 local posY = 350
-local textUserName, textUserResidence
-local toggleButtons = {}
-local hobbies = {}
-local myHobbies = {}
-local languages = {}
-local myLanguages = {}
-local posYE = 0
-local myElements = {}
-local container = {}
-local lblInts, lblLang
-local btnSaveProfile
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 function method()
     
-end
-
---------------------------------
--- Guarda la lista de hobbies
---------------------------------
-function setList(hobbie, language)
-	hobbies = hobbie
-	languages = language
-end
-
---------------------------------
--- Guarda los datos del perfil
---------------------------------
-function saveProfile()
-	btnSaveProfile:removeEventListener( 'tap', saveProfile )
-	tools:setLoading(true,scrPerfile)
-	for i=1, #myHobbies, 1 do
-		myHobbies[i] = string.gsub( myHobbies[i], "/", '...' )
-	end
-	for i=1, #myLanguages, 1 do
-		myLanguages[i] = string.gsub( myLanguages[i], "/", '...' )
-	end
-	RestManager.saveProfile(textUserName.text, textUserResidence.text, toggleButtons[1].onOff, toggleButtons[2].onOff,toggleButtons[3].onOff,myHobbies, myLanguages)
-end
-
--------------------------------------------------------------
--- Muestra una alerta con los resulado de guardar un perfil 
--------------------------------------------------------------
-function resultSaveProfile( isTrue, message)
-	grpTextProfile.x = intW
-	NewAlert(true, message)
-	timeMarker = timer.performWithDelay( 1000, function()
-		NewAlert(false, message)
-		grpTextProfile.x = 0
-		tools:setLoading(false,scrPerfile)
-		btnSaveProfile:addEventListener( 'tap', saveProfile )
-	end, 1 )
-	
-end
-
-------------------------------------------------------------
--- Actualiza los tablas con las preferencias selecionadas
--- tabla hobbie e idioma
-------------------------------------------------------------
-function savePreferences( event )
-	t = event.target
-	local labelPreferences
-	--genera el nuevo texto a mostrar en perfil
-	if #myElements > 0 then
-        local max = 4
-        if #myElements < max then 
-            max = #myElements 
-        end
-        for i=1, max do
-            if i == 1 then
-                labelPreferences = myElements[i]
-            else
-                labelPreferences = labelPreferences..', '..myElements[i]
-            end
-        end
-        if #myElements > max then 
-            labelPreferences = labelPreferences .. '...'
-        end
-    else
-		if t.name == "hobbies" then
-			labelPreferences = 'Editar pasatiempos'
-		end
-    end
-	--guarda las opciones en sus tablas
-	if t.name == "hobbies" then
-		myHobbies = myElements
-		lblInts.text = labelPreferences
-	else
-		myLanguages = myElements
-		lblLang.text = labelPreferences
-	end
-	if grpOptionsLabel then
-		grpOptionsLabel:removeSelf()
-		grpOptionsLabel = nil
-	end
-	grpTextProfile.x = 0
-	container = nil
-	container = {}
-	return true
 end
 
 --------------------------------
@@ -165,413 +69,10 @@ function setImagePerfil( item )
 	scrPerfile:insert(avatar)
 end
 
------------------------------------
--- Obtiene la ciudad selecionada
------------------------------------
-function getCityProfile(city)
-	textUserResidence.text = city
-end
-
--------------------------------------------------------------------
--- event focus de los textField
--- @param event name residence: realiza la buqueda de ciudades
--------------------------------------------------------------------
-function userInputProfile( event )
-	local t = event.target
-	if ( event.phase == "began" ) then
-		if t.name == "residence" then
-			textUserName.y = 100
-		end
-    elseif ( event.phase == "ended" or event.phase == "submitted" ) then
-		native.setKeyboardFocus(nil)
-		if t.name == "residence" then
-			textUserName.y = 130
-		end
-    elseif ( event.phase == "editing" ) then
-		if t.name == "residence" then
-			RestManager.getCity(t.text, "residence", scrPerfile)
-		end
-    end
-	
-	return true
-end
-
-----------------------------
---mueve el toggleButton
----------------------------
-function moveToggleButtons( event )
-	local t = event.target
-	if t.onOff == "Sí" then
-		t.onOff = "No"
-		transition.to( t, { x = 303, time = 200})
-	else
-		t.onOff = "Sí"
-		transition.to( t, { x = 403, time = 200})
-	end
-end
-
--------------------------------------------------
--- Creacion de los togle buttons
--- @param item valor inicia de los elementos
--- @param posY2 coordenada y del elemento
--------------------------------------------------
-function createToggleButtons(item, posY2)
-
-	for i=1, 3, 1 do
-		-- BG Component
-		local bg0CheckAcco = display.newRect( 300, posY2, 200, 50 )
-		bg0CheckAcco.anchorY = 0
-		bg0CheckAcco.anchorX = 0
-		bg0CheckAcco:setFillColor( 89/255, 31/255, 103/255 )
-		scrPerfile:insert(bg0CheckAcco)
-		local bg0CheckAcco = display.newRect( 303, posY2 + 3, 194, 44 )
-		bg0CheckAcco.anchorY = 0
-		bg0CheckAcco.anchorX = 0
-		bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
-		scrPerfile:insert(bg0CheckAcco)
-		
-		--label si/no
-		local lblYes = display.newText({
-			text = "Si", 
-			x = 350, y = posY2 + 25,
-			width = 100,
-			font = native.systemFont, 
-			fontSize = 35, align = "center"
-		})
-		lblYes:setFillColor( 1 )
-		scrPerfile:insert(lblYes)
-		local lblNo = display.newText({
-			text = "No", 
-			x = 450, y = posY2 + 25,
-			width = 100,
-			font = native.systemFont, 
-			fontSize = 35, align = "center"
-		})
-		lblNo:setFillColor( 1 )
-		lblNo.alpha = .8
-		scrPerfile:insert(lblNo)
-		
-		local posXTB = 303 + 100
-		local onOff
-		--alojamiento
-		if i == 1 and item.alojamiento ~= nil and item.alojamiento == 'Sí' then
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 1 then
-			onOff = "No"
-			posXTB = 303
-		end
-		-- transporte
-		if i == 2 and item.vehiculo ~= nil and item.vehiculo == 'Sí' then
-			
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 2 then
-			onOff = "No"
-			posXTB = 303
-		end
-		--disponibilidad
-		if i == 3 and item.diponibilidad ~= nil and item.diponibilidad == 'Siempre' then
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 3 then
-			onOff = "No"
-			posXTB = 303
-		end
-		local num = #toggleButtons + 1
-		
-		--button
-		toggleButtons[num] = display.newRect( posXTB, posY2 + 3, 97, 44 )
-		toggleButtons[num].anchorY = 0
-		toggleButtons[num].anchorX = 0
-		toggleButtons[num].onOff = onOff
-		toggleButtons[num]:setFillColor( 89/255, 31/255, 103/255 )
-		scrPerfile:insert(toggleButtons[num])
-		toggleButtons[num]:addEventListener( 'tap', moveToggleButtons )
-		
-		--nueva posicion
-		posY2 = posY2 + 75
-		
-	end
-
-end
-
--------------------------------------------------
--- Añade los elementos de las preferencias
--- @param name Nombre del elemento selecionado
--------------------------------------------------
-function addElements(name)
-
-	--posicion siguiente
-	local num = #container + 1
-	--container
-	container[num] = display.newContainer( 600, 80 )
-	scrElements:insert(container[num])
-	container[num].anchorY = 0
-	container[num]:translate( 300, posYE )
-	local bg0OptionCombo = display.newRect( 0, 0, 600, 80 )
-	bg0OptionCombo:setFillColor( 1 )
-	bg0OptionCombo.name = name
-	container[num]:insert( bg0OptionCombo )
-	bg0OptionCombo:addEventListener( 'tap', noAction )
-	--label nombre
-	local lblNameOption = display.newText({
-		text = name, 
-		x = 0, y = 0,
-		width = 500,
-		font = native.systemFont, 
-		fontSize = 30, align = "left"
-	})
-	lblNameOption:setFillColor( 0 )
-	container[num]:insert(lblNameOption)
-	--image para eliminar el elemento
-	local deleteElements = display.newImage("img/delete.png")
-	deleteElements:translate(260, 0)
-	deleteElements.height = 50
-	deleteElements.width = 50
-	deleteElements.id = num
-	container[num]:insert(deleteElements)
-	deleteElements:addEventListener( 'tap', deleteElement )
-	posYE = posYE + 83
-
-end 
-
-----------------------------------------------------
---elimina un elemento de la lista de preferencias
-----------------------------------------------------
-function deleteElement( event )
-	local t = event.target.id
-	container[t]:removeSelf()
-	table.remove( container, t )
-	table.remove( myElements, t )
-	posYE = 0
-	--reacomoda la lista
-	for i=1,#container, 1 do
-		container[i].y = posYE
-		posYE = posYE + 83
-		container[i][3].id = i
-	end
-	return true
-end
-
---------------------------------------
--- Obtiene el resulado del combobox
---------------------------------------
-function getOptionCombo( event )
-	local t = event.target
-	t.alpha = .5
-	timeMarker = timer.performWithDelay( 100, function()
-		t.alpha = 1
-		hideOptionsCombo("")
-		--asigna el nuevo elemento a la tabla y a la lista
-		myElements[#myElements + 1] = t.name
-		addElements(t.name)
-		
-	end, 1 )
-	return true
-end
-
---------------------------------------------------
--- Despliega la lista de opciones de las tablas
---------------------------------------------------
-function showOptionsCombo( event )
-	local t2 = event.target
-	local setElements = {}
-	--define que tabla se ocupara
-	if t2.name == "hobbies" then
-		setElements = hobbies
-	else
-		setElements = languages
-	end
-	
-	if not grpOptionsCombo then
-		--grupo
-		grpOptionsCombo = display.newGroup()
-		grpOptionsLabel:insert(grpOptionsCombo)
-		--bg Component
-		local bg0OptionCombo = display.newRoundedRect( midW, h + 186, 606, 606, 10 )
-		bg0OptionCombo:setFillColor( 129/255, 61/255, 153/255 )
-		bg0OptionCombo.anchorY = 0
-		grpOptionsCombo:insert( bg0OptionCombo )
-		bg0OptionCombo:addEventListener( 'tap', noAction)
-		local bg0OptionCombo = display.newRect( midW, h + 178, 606, 20 )
-		bg0OptionCombo:setFillColor( 129/255, 61/255, 153/255 )
-		bg0OptionCombo.anchorY = 0
-		grpOptionsCombo:insert( bg0OptionCombo )
-		--scrollview
-		local scrOptionCombo = widget.newScrollView({
-			top = h + 185,
-			left = 84,
-			width = 600,
-			height = 600,
-			horizontalScrollDisabled = true,
-			backgroundColor = { .8 },
-		})
-		grpOptionsCombo:insert(scrOptionCombo)
-		--muestra la lista de opciones
-		local posYTemp = 0
-		for i = 1, #setElements, 1 do
-			local isTrue = false
-			for j = 1, #myElements, 1 do
-				if setElements[i].name == myElements[j] then
-					isTrue = true
-				end
-			end
-			if not isTrue then
-				local bg0OptionCombo = display.newRect( 300, posYTemp, 600, 80 )
-				bg0OptionCombo:setFillColor( 1 )
-				bg0OptionCombo.anchorY = 0
-				bg0OptionCombo.name = setElements[i].name
-				bg0OptionCombo.id = setElements[i].id
-				scrOptionCombo:insert( bg0OptionCombo )
-				bg0OptionCombo:addEventListener( 'tap', getOptionCombo )
-		
-				local lblNameOption = display.newText({
-					text = setElements[i].name, 
-					x = 300, y = posYTemp + 40,
-					width = 500,
-					font = native.systemFont, 
-					fontSize = 30, align = "left"
-				})
-				lblNameOption:setFillColor( 0 )
-				scrOptionCombo:insert(lblNameOption)
-		
-				posYTemp = posYTemp + 83
-			end
-		end
-	else
-		--esconde la lista de opciones
-		hideOptionsCombo( event )
-	end
-	return true
-end
-
-------------------------------------------------
--- Destruye la lista de opciones del combobox
-------------------------------------------------
-function hideOptionsCombo( event )
-	if grpOptionsCombo then
-		grpOptionsCombo:removeSelf()
-		grpOptionsCombo = nil
-	end
-	return true
-end
-
-----------------------------------------
--- Crea las opciones de las etiquetas
-----------------------------------------
-function showOptionsLabels( event )
-	--hobbies
-	local t = event.target
-	if t.type == "create" then
-		if grpOptionsLabel then
-			grpOptionsLabel:removeSelf()
-			grpOptionsLabel = nil
-		end
-		grpTextProfile.x = intW
-		grpOptionsLabel = display.newGroup()
-	
-		--combobox
-		local bg0 = display.newRect( midW, midH + h, intW, intH )
-		bg0:setFillColor( 0 )
-		bg0.alpha = .8
-		bg0.type = "destroy"
-		grpOptionsLabel:insert( bg0 )
-		bg0:addEventListener( 'tap', showOptionsLabels )
-		local bg1 = display.newRoundedRect( midW, midH + h, 660, intH - 100, 10 )
-		bg1:setFillColor( 1 )
-		grpOptionsLabel:insert( bg1 )
-		bg1:addEventListener( 'tap', hideOptionsCombo )
-		local bg0ComboBox = display.newRoundedRect( midW, h + 100, 606, 86, 10 )
-		bg0ComboBox:setFillColor( 129/255, 61/255, 153/255 )
-		bg0ComboBox.anchorY = 0
-		grpOptionsLabel:insert( bg0ComboBox )
-		bg0ComboBox:addEventListener( 'tap', noAction )
-		--bg que despliega las opciones
-		local bg1ComboBox = display.newRoundedRect( midW, h + 103, 600, 80, 10 )
-		bg1ComboBox:setFillColor( 1 )
-		bg1ComboBox.anchorY = 0
-		bg1ComboBox.name = t.name
-		grpOptionsLabel:insert( bg1ComboBox )
-		bg1ComboBox:addEventListener( 'tap', showOptionsCombo )
-		--label title
-		local lblTitleCombo = display.newText({
-			text = t.label, 
-			x = midW, y = h + 160,
-			width = 550, height = 80,
-			font = native.systemFont, 
-			fontSize = 36, align = "left"
-		})
-		lblTitleCombo:setFillColor( 0 )
-		grpOptionsLabel:insert(lblTitleCombo)
-		local triangle = display.newImage("img/triangleDown.png")
-		triangle:translate(650, h + 145)
-		grpOptionsLabel:insert(triangle)
-		--elementos selecionados
-		local bg0Elemets = display.newRoundedRect( midW, h + 230, 606, intH/2 + 6, 10 )
-		bg0Elemets:setFillColor( 129/255, 61/255, 153/255 )
-		bg0Elemets.anchorY = 0
-		grpOptionsLabel:insert( bg0Elemets )
-		
-		--scrollview
-		scrElements = widget.newScrollView({
-			top = h + 233,
-			left = 84,
-			width = 600,
-			height = intH/2,
-			horizontalScrollDisabled = true,
-			backgroundColor = { .8 },
-		})
-		grpOptionsLabel:insert(scrElements)
-		--titulo del combobox
-		posYE = 0
-		if t.name == "hobbies" then
-			myElements = myHobbies
-		else
-			myElements = myLanguages
-		end
-		
-		for i = 1, #myElements, 1 do
-			addElements(myElements[i])
-		end
-		
-		--button
-		local btnAceptOption = display.newRoundedRect( midW, intH - 100, 600, 80, 10 )
-		btnAceptOption:setFillColor( {
-			type = 'gradient',
-			color1 = { 129/255, 61/255, 153/255 }, 
-			color2 = { 89/255, 31/255, 103/255 },
-			direction = "bottom"
-		} )
-		grpOptionsLabel:insert(btnAceptOption)
-		btnAceptOption.name = t.name
-		btnAceptOption:addEventListener( 'tap', savePreferences )
-		local lblStartChat = display.newText({
-			text = "Aceptar", 
-			x = midW, y = intH - 100,
-			font = native.systemFontBold,   
-			fontSize = 30, align = "center"
-		})
-		lblStartChat:setFillColor( 1 )
-		grpOptionsLabel:insert(lblStartChat)
-		
-	elseif t.type == "destroy" then
-		if grpOptionsLabel then
-			grpOptionsLabel:removeSelf()
-			grpOptionsLabel = nil
-		end
-		grpTextProfile.x = 0
-		container = nil
-		container = {}
-	end
-		
-	return true
-end
-
 ----------------------------------------
 --- Pinta los datos de otros usuarios
 ----------------------------------------
-function otherProfile( item )
+function infoProfile( item )
 
 	-- informacion personal
     local lblName = display.newText({
@@ -621,7 +122,7 @@ function otherProfile( item )
     else
         lblInts.text = ''
     end
-    
+    -------Generales-----------
     -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
     bgComp1.anchorY = 0
@@ -631,7 +132,6 @@ function otherProfile( item )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
     scrPerfile:insert(bgComp2)
-    
     -- Title
     local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
     bgTitle.anchorY = 0
@@ -642,7 +142,7 @@ function otherProfile( item )
     bgTitleX:setFillColor( .93 )
     scrPerfile:insert(bgTitleX)
     local lblTitle = display.newText({
-        text = "DETALLE:", 
+        text = "Generales:", 
         x = 310, y = posY+35,
         width = 400,
         font = native.systemFontBold,   
@@ -650,75 +150,72 @@ function otherProfile( item )
     })
     lblTitle:setFillColor( 0 )
     scrPerfile:insert(lblTitle)
-	--disponibilidad
-	local availability, iconAvailability, leng
 	local iconOpcion = {}
 	local infoOpcion = {}
+	local num = #infoOpcion + 1
+	--nombre y apellido
+	if item.nombre then
+		infoOpcion[num] = item.nombre
+		if item.apellidos then
+			infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
+		end
+		iconOpcion[num] = 'icoFilterCity'
+		num = #infoOpcion + 1
+	end
+	--genero
+	if item.genero then
+		infoOpcion[num] = item.genero 
+		iconOpcion[num] = 'icoFilterM'
+		if item.genero == "Hombre" then
+			iconOpcion[num] = 'icoFilterH'
+		end
+		num = #infoOpcion + 1
+	end
+	--pais de origen
+	if item.paisOrigen then
+		infoOpcion[num] = "Es de " .. item.paisOrigen 
+		iconOpcion[num] = 'icoFilterCity'
+		num = #infoOpcion + 1
+	end
 	--residencia
 	if not item.residencia then 
-		infoOpcion[1] = ""
+		infoOpcion[num] = "Ciudad no disponible"
 	else
-		infoOpcion[1] = item.residencia
+		infoOpcion[num] = "Vive en " .. item.residencia
 	end
-	iconOpcion[1] = 'icoFilterCity'
-	--idioma
-	if item.idiomas then
-        for i=1, #item.idiomas do
-            if i == 1 then
-                infoOpcion[2] = item.idiomas[i]
-            else
-                infoOpcion[2] = infoOpcion[2] ..', '.. item.idiomas[i]
-            end
-        end
-    else
-        infoOpcion[2] = ''
-    end
-	iconOpcion[2] = 'icoFilterLanguage'
-	--alojamiento
-	if item.alojamiento and item.alojamiento == 'Sí' then
-		infoOpcion[3] = 'Disponible'
-		iconOpcion[3] = "icoFilterCheck"
-    else 
-		infoOpcion[3] = 'No disponible'
-		iconOpcion[3] = "icoFilterUnCheck"
-    end
-	-- transporte
-    if item.vehiculo and item.vehiculo == 'Sí' then
-        infoOpcion[4] = 'Cuenta con vehiculo propio'
-		iconOpcion[4] = "icoFilterCheck"
-    else 
-        infoOpcion[4] = 'No cuenta con vehiculo propio'
-		iconOpcion[4] = "icoFilterUnCheck"
-    end 
-	--disponibilidad
-    if item.diponibilidad and item.diponibilidad == 'Siempre' then
-        infoOpcion[5] = 'Disponible'
-		iconOpcion[5] = "icoFilterCheckAvailble"
-    else 
-         infoOpcion[5] = 'No disponible'
-		 iconOpcion[5] = "icoFilterUnCheck"
-    end
+	iconOpcion[num] = 'icoFilterCity'
+	num = #infoOpcion + 1
+	--tiempo de residencia
+	if item.residencia then
+		if item.tiempoResidencia then
+			infoOpcion[num] = "Desde hace " .. item.tiempoResidencia 
+			iconOpcion[num] = 'icoFilterCity'
+			num = #infoOpcion + 1
+		end
+	end
+	if item.emailContacto then
+		infoOpcion[num] = item.emailContacto 
+		iconOpcion[num] = 'icoFilterCity'
+		num = #infoOpcion + 1
+	end
     
     -- Options
     posY = posY + 45
-    local opt = {
-        {icon = iconOpcion[1], label= infoOpcion[1]}, 
-        {icon = iconOpcion[2], label= infoOpcion[2]}, 
-        {icon = iconOpcion[3], label= infoOpcion[3]}, 
-        {icon = iconOpcion[4], label= infoOpcion[4]}, 
-        {icon = iconOpcion[5], label= infoOpcion[5]}} 
-    for i=1, #opt do
+	
+	bgComp1.height = (#infoOpcion * 80) + 70
+	bgComp2.height = (#infoOpcion * 80) + 66
+	
+    for i=1, #infoOpcion do
         posY = posY + 75
         
         local ico
-        if opt[i].icon ~= '' then
-           -- print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( "img/"..opt[i].icon..".png" )
+        if iconOpcion[i] ~= '' then
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
             ico:translate( 115, posY - 3 )
 			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
-            text = opt[i].label, 
+            text = infoOpcion[i], 
             x = 350, y = posY,
             width = 400,
             font = native.systemFont,   
@@ -727,187 +224,87 @@ function otherProfile( item )
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
     end
-
-end
-
-------------------------------------
--- Pinta la info del usuario
--- permite editar su informacion
-------------------------------------
-function MyProfile( item )
-
-	grpTextProfile = display.newGroup()
-	scrPerfile:insert(grpTextProfile)
-	
-	--textField user name
-	textUserName = native.newTextField( 550, 100, 400, 50 )
-	textUserName.text = item.userName
-	textUserName.hasBackground = false
-	textUserName.size = 35
-	textUserName:resizeHeightToFitFont()
-	textUserName:addEventListener( "userInput", userInputProfile )
-	grpTextProfile:insert(textUserName)
-	
-	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
-    local lblAge= display.newText({
-        text = item.edad, 
-        x = 550, y = 180,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 35, align = "left"
-    })
-    lblAge:setFillColor( 0 )
-    scrPerfile:insert(lblAge)
-	-- BG Component
-    local bgInts = display.newRect( 550, 210, 410, 80 )
-    bgInts.anchorY = 0
-    bgInts:setFillColor( 1 )
-	bgInts.alpha = .02
-	bgInts.name = "hobbies"
-	bgInts.label = "Tus hobbies"
-	bgInts.type = "create"
-    scrPerfile:insert(bgInts)
-	bgInts:addEventListener( 'tap', showOptionsLabels )
-	--label hobbies
-    lblInts = display.newText({
-        text = "", 
-        x = 550, y = 250,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 25, align = "left"
-    })
-    lblInts:setFillColor( 0 )
-    scrPerfile:insert(lblInts)
-	myHobbies = item.hobbies
-	if item.hobbies then
-        local max = 4
-        if #item.hobbies < max then 
-            max = #item.hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = item.hobbies[i]
-            else
-                lblInts.text = lblInts.text..', '..item.hobbies[i]
-            end
-        end
-        if #item.hobbies > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = 'Editar pasatiempos'
-    end
-	
-	 -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    scrPerfile:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    scrPerfile:insert(bgComp2)
-    
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    scrPerfile:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    scrPerfile:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "DETALLE:", 
-        x = 310, y = posY+35,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    scrPerfile:insert(lblTitle)
-	local iconOpcion = { 'icoFilterCity', 'icoFilterLanguage', 'icoFilterCheckAvailble', 'icoFilterCheckAvailble', 'icoFilterCheckAvailble' }
-	local infoOpcion = { 'Residencia', 'Idioma', 'Alojamiento', 'Vehiculo', 'Disponibilidad'}
-	
-	local tempPosY = posY
-	posY = posY + 125
-	
-	--textField residence
-	textUserResidence = native.newTextField( 500, posY, 400, 50 )
-	textUserResidence.text = item.residencia
-	textUserResidence.hasBackground = false
-	textUserResidence.size = 25
-	textUserResidence:resizeHeightToFitFont()
-	textUserResidence:addEventListener( "userInput", userInputProfile )
-	textUserResidence.name = "residence"
-	grpTextProfile:insert(textUserResidence)
 	
 	posY = posY + 75
 	
+	------- guia turistica -----------
 	-- BG Component
-    local bgLangs = display.newRect( 500, posY, 400, 80 )
-   -- bgLangs.anchorY = 0
-    bgLangs:setFillColor( 0 )
-	bgLangs.alpha = .02
-	bgLangs.name = "languages"
-	bgLangs.label = "Tus Idiomas"
-	bgLangs.type = "create"
-    scrPerfile:insert(bgLangs)
-	bgLangs:addEventListener( 'tap', showOptionsLabels )
-	--label language
-    lblLang = display.newText({
-        text = "", 
-		x = 500, y = posY,
+	local bgComp1 = display.newRoundedRect( midW, posY, 650, 382, 10 )
+	bgComp1.anchorY = 0
+	bgComp1:setFillColor( .88 )
+	scrPerfile:insert(bgComp1)
+	local bgComp2 = display.newRoundedRect( midW, posY, 646, 378, 10 )
+	bgComp2.anchorY = 0
+	bgComp2:setFillColor( 1 )
+	scrPerfile:insert(bgComp2)
+	-- Title
+	local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
+	bgTitle.anchorY = 0
+	bgTitle:setFillColor( .93 )
+	scrPerfile:insert(bgTitle)
+	local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
+	bgTitleX.anchorY = 0
+	bgTitleX:setFillColor( .93 )
+	scrPerfile:insert(bgTitleX)
+	local lblTitle = display.newText({
+		text = "Guia turistica:", 
+		x = 310, y = posY+35,
 		width = 400,
-		font = native.systemFont,   
-		fontSize = 22, align = "left"
-    })
-    lblLang:setFillColor( 0 )
-    scrPerfile:insert(lblLang)
+		font = native.systemFontBold,   
+		fontSize = 25, align = "left"
+	})
+	lblTitle:setFillColor( 0 )
+	scrPerfile:insert(lblTitle)
 	
-	--idioma
-	myLanguages = item.idiomas
-	if item.idiomas then
-        for i=1, #item.idiomas do
-            if i == 1 then
-                lblLang.text = item.idiomas[i]
-            else
-                lblLang.text = lblLang.text..', '.. item.idiomas[i]
-            end
-        end
-    else
-		lblLang.text= 'Editar tus idiomas'
+	local iconOpcion = {}
+	local infoOpcion = {}
+	--disponibilidad
+    if item.diponibilidad and item.diponibilidad == 'Siempre' then
+        infoOpcion[1] = 'Disponible'
+		iconOpcion[1] = "icoFilterCheckAvailble"
+    else 
+         infoOpcion[1] = 'No disponible'
+		 iconOpcion[1] = "icoFilterUnCheck"
+    end
+	--alojamiento
+	if item.alojamiento and item.alojamiento == 'Sí' then
+		infoOpcion[2] = 'Ofrece alojamiento'
+		iconOpcion[2] = "icoFilterCheck"
+    else 
+		infoOpcion[2] = 'No ofrece alojamiento'
+		iconOpcion[2] = "icoFilterUnCheck"
+    end
+	-- transporte
+    if item.vehiculo and item.vehiculo == 'Sí' then
+        infoOpcion[3] = 'Cuenta con vehiculo propio'
+		iconOpcion[3] = "icoFilterCheck"
+    else 
+        infoOpcion[3] = 'No cuenta con vehiculo propio'
+		iconOpcion[3] = "icoFilterUnCheck"
+    end
+	--comida
+    if item.comida and item.comida == 'Sí' then
+        infoOpcion[4] = 'Ofrece comida'
+		iconOpcion[4] = "icoFilterCheckAvailble"
+    else 
+         infoOpcion[4] = 'No ofrece comida'
+		 iconOpcion[4] = "icoFilterUnCheck"
     end
 	
 	posY = posY + 45
-
-	-- Create the widget
-	-- Image sheet options and declaration
-	createToggleButtons(item, posY)
-	----
 	
-	posY = posY + 95
-	
-    -- Options
-	posY = tempPosY + 45
-    local opt = {
-        {icon = iconOpcion[1], label= infoOpcion[1]}, 
-        {icon = iconOpcion[2], label= infoOpcion[2]}, 
-        {icon = iconOpcion[3], label= infoOpcion[3]}, 
-        {icon = iconOpcion[4], label= infoOpcion[4]}, 
-        {icon = iconOpcion[5], label= infoOpcion[5]}} 
-    for i=1, #opt do
+	for i=1, #infoOpcion do
         posY = posY + 75
         
         local ico
-        if opt[i].icon ~= '' then
+        if iconOpcion[i] ~= '' then
            -- print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( "img/"..opt[i].icon..".png" )
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
             ico:translate( 115, posY - 3 )
 			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
-            text = opt[i].label, 
+            text = infoOpcion[i], 
             x = 350, y = posY,
             width = 400,
             font = native.systemFont,   
@@ -917,6 +314,154 @@ function MyProfile( item )
         scrPerfile:insert(lbl)
     end
 	
+	posY = posY + 75
+	
+	------- gustos y preferencias -----------
+	-- BG Component
+	local bgComp1 = display.newRoundedRect( midW, posY, 650, 382, 10 )
+	bgComp1.anchorY = 0
+	bgComp1:setFillColor( .88 )
+	scrPerfile:insert(bgComp1)
+	local bgComp2 = display.newRoundedRect( midW, posY, 646, 378, 10 )
+	bgComp2.anchorY = 0
+	bgComp2:setFillColor( 1 )
+	scrPerfile:insert(bgComp2)
+	-- Title
+	local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
+	bgTitle.anchorY = 0
+	bgTitle:setFillColor( .93 )
+	scrPerfile:insert(bgTitle)
+	local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
+	bgTitleX.anchorY = 0
+	bgTitleX:setFillColor( .93 )
+	scrPerfile:insert(bgTitleX)
+	local lblTitle = display.newText({
+		text = "Gustos y preferencias:", 
+		x = 310, y = posY+35,
+		width = 400,
+		font = native.systemFontBold,   
+		fontSize = 25, align = "left"
+	})
+	lblTitle:setFillColor( 0 )
+	scrPerfile:insert(lblTitle)
+	
+	local iconOpcion = {}
+	local infoOpcion = {}
+	local num = #infoOpcion + 1
+	--idioma
+	if item.idiomas then
+        for i=1, #item.idiomas do
+            if i == 1 then
+                infoOpcion[num] = item.idiomas[i]
+            else
+                infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
+            end
+        end
+    else
+        infoOpcion[num] = 'No cuenta con ningun idioma'
+    end
+	iconOpcion[num] = 'icoFilterLanguage'
+	--nivel de estudio
+	if item.nivelEstudio then
+		infoOpcion[num] = "Nivel de estudio: " .. item.nivelEstudio
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--formacion profesional
+	if item.formacionProfesional then
+		infoOpcion[num] = "Formacion profesional: " .. item.formacionProfesional 
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--area laboral
+	if item.areaLaboral then
+		infoOpcion[num] = "Area laboral: " .. item.areaLaboral 
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--cuenta propia
+	if item.cuentaPropia then
+		infoOpcion[num] = item.cuentaPropia 
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--mascota
+	if item.mascota then
+		if item.mascota == "Sí" then
+			infoOpcion[num] = "Tiene mascota" 
+			if item.tipoMascota then
+				infoOpcion[num] = "Tiene " .. item.tipoMascota
+			end
+		else
+			infoOpcion[num] = "No tiene mascota" 
+		end
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--deporte
+	if item.deporte then
+		if item.deporte == "Sí" then
+			infoOpcion[num] = "Practica deporte" 
+			if item.tipoDeporte then
+				infoOpcion[num] = "Practica "
+				for i=1, #item.idiomas do
+					if i == 1 then
+						infoOpcion[num] = infoOpcion[num] .. item.idiomas[i]
+					else
+						infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
+					end
+				end
+			end
+		else
+			infoOpcion[num] = "No practica ningun deporte" 
+		end
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--fumas
+	if item.fumas then
+		infoOpcion[num] = "Fumas: " .. item.fumas
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--bebes
+	if item.bebes then
+		infoOpcion[num] = "Bebes: " .. item.bebes
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	--psicotroficos
+	if item.psicotropicos then
+		infoOpcion[num] = "Psicotropicos: " .. item.psicotropicos
+		iconOpcion[num] = 'icoFilterCheck'
+		num = #infoOpcion + 1
+	end
+	
+	 -- Options
+    posY = posY + 45
+	bgComp1.height = (#infoOpcion * 78) + 70
+	bgComp2.height = (#infoOpcion * 78) + 66
+	for i=1, #infoOpcion do
+        posY = posY + 75
+        
+        local ico
+        if iconOpcion[i] ~= '' then
+           -- print("img/"..opt[i].icon..".png" )
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
+            ico:translate( 115, posY - 3 )
+			scrPerfile:insert(ico)
+        end
+        local lbl = display.newText({
+            text = infoOpcion[i], 
+            x = 425, y = posY,
+            width = 550,
+            font = native.systemFont,   
+            fontSize = 22, align = "left"
+        })
+        lbl:setFillColor( 0 )
+        scrPerfile:insert(lbl)
+    end
+
 end
 
 ---------------------------------------------------------------------------------
@@ -948,8 +493,6 @@ function scene:create( event )
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)
-	
-	RestManager.getHobbies()
 
 	--scrollview
 	scrPerfile = widget.newScrollView({
@@ -986,85 +529,58 @@ function scene:create( event )
 		RestManager.getImagePerfile(items)
 	end
 	
-	if item.isMe == false then
 	
-		otherProfile( item )
+	infoProfile( item )
 	
-		if isReadOnly then
-			posY = posY + 120
-			local lblReadOnly = display.newText( {
+	if isReadOnly then
+		posY = posY + 120
+		local lblReadOnly = display.newText( {
 			text = "¿QUIERES CONVERSAR CON " .. item.userName .. "?",     
 			x = midW, y = posY, width = 600,
 			font = "Lato-Regular", fontSize = 26, align = "center"
-			})
-			lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
-			scrPerfile:insert(lblReadOnly)
+		})
+		lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
+		scrPerfile:insert(lblReadOnly)
 			
-			posY = posY + 100
+		posY = posY + 100
         
-			local rctFree = display.newRoundedRect( midW, posY, 350, 80, 5 )
-			rctFree:setFillColor( .2, .6 ,0 )
-			rctFree.screen = "LoginSplash"
-			rctFree:addEventListener( 'tap', toScreen)
-			scrPerfile:insert(rctFree)
+		local rctFree = display.newRoundedRect( midW, posY, 350, 80, 5 )
+		rctFree:setFillColor( .2, .6 ,0 )
+		rctFree.screen = "LoginSplash"
+		rctFree:addEventListener( 'tap', toScreen)
+		scrPerfile:insert(rctFree)
         
-			local lblSign = display.newText( {
-				text = "¡Registrate ahora!",     
-				x = midW, y = posY, width = 600,
-				fontSize = 32, align = "center"
-			})
-			lblSign:setFillColor( 1 )
-			scrPerfile:insert(lblSign)
-		
-		else
-			-- Btn Iniciar conversación
-			posY = posY + 120
-			local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
-			btnStartChat.id = item.id
-			btnStartChat:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			scrPerfile:insert(btnStartChat)
-			btnStartChat:addEventListener( 'tap', startConversation)
-			local lblStartChat = display.newText({
-				text = "INICIAR CONVERSACIÓN", 
-				x = midW, y = posY,
-				font = native.systemFontBold,   
-				fontSize = 25, align = "center"
-			})
-			lblStartChat:setFillColor( 1 )
-			scrPerfile:insert(lblStartChat)
-		end
+		local lblSign = display.newText( {
+			text = "¡Registrate ahora!",     
+			x = midW, y = posY, width = 600,
+			fontSize = 32, align = "center"
+		})
+		lblSign:setFillColor( 1 )
+		scrPerfile:insert(lblSign)
 	else
-	
-		MyProfile( item )
-	
 		-- Btn Iniciar conversación
-			posY = posY + 120
-			btnSaveProfile = display.newRoundedRect( midW, posY, 650, 80, 10 )
-			btnSaveProfile.id = item.id
-			btnSaveProfile:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			scrPerfile:insert(btnSaveProfile)
-			btnSaveProfile:addEventListener( 'tap', saveProfile )
-			local lblSaveProfile = display.newText({
-				text = "Editar Perfil", 
-				x = midW, y = posY,
-				font = native.systemFontBold,   
-				fontSize = 25, align = "center"
-			})
-			lblSaveProfile:setFillColor( 1 )
-			scrPerfile:insert(lblSaveProfile)
+		posY = posY + 120
+		local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
+		btnStartChat.id = item.id
+		btnStartChat:setFillColor( {
+			type = 'gradient',
+			color1 = { 129/255, 61/255, 153/255 }, 
+			color2 = { 89/255, 31/255, 103/255 },
+			direction = "bottom"
+		} )
+		scrPerfile:insert(btnStartChat)
+		btnStartChat:addEventListener( 'tap', startConversation)
+		local lblStartChat = display.newText({
+			text = "INICIAR CONVERSACIÓN", 
+			x = midW, y = posY,
+			font = native.systemFontBold,   
+			fontSize = 25, align = "center"
+		})
+		lblStartChat:setFillColor( 1 )
+		scrPerfile:insert(lblStartChat)
 	end
 	
-	scrPerfile:setScrollHeight(5000)
+	scrPerfile:setScrollHeight(posY + 100)
     
 end	
 --------------------------------------------------------
@@ -1076,10 +592,6 @@ end
 -- Hide scene
 ----------------
 function scene:hide( event )
-	if grpTextProfile then
-		grpTextProfile:removeSelf()
-		grpTextProfile = nil
-	end
 end
 ---------------------
 -- Destroy scene
