@@ -159,7 +159,7 @@ function infoProfile( item )
 		if item.apellidos then
 			infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
 		end
-		iconOpcion[num] = 'icoFilterCity'
+		iconOpcion[num] = 'iconName'
 		num = #infoOpcion + 1
 	end
 	--genero
@@ -195,7 +195,7 @@ function infoProfile( item )
 	end
 	if item.emailContacto then
 		infoOpcion[num] = item.emailContacto 
-		iconOpcion[num] = 'icoFilterCity'
+		iconOpcion[num] = 'iconEmailContacto'
 		num = #infoOpcion + 1
 	end
     
@@ -361,22 +361,23 @@ function infoProfile( item )
         infoOpcion[num] = 'No cuenta con ningun idioma'
     end
 	iconOpcion[num] = 'icoFilterLanguage'
+	num = #infoOpcion + 1
 	--nivel de estudio
 	if item.nivelEstudio then
 		infoOpcion[num] = "Nivel de estudio: " .. item.nivelEstudio
-		iconOpcion[num] = 'icoFilterCheck'
+		iconOpcion[num] = 'iconSchool'
 		num = #infoOpcion + 1
 	end
 	--formacion profesional
 	if item.formacionProfesional then
 		infoOpcion[num] = "Formacion profesional: " .. item.formacionProfesional 
-		iconOpcion[num] = 'icoFilterCheck'
+		iconOpcion[num] = 'iconSchool'
 		num = #infoOpcion + 1
 	end
 	--area laboral
 	if item.areaLaboral then
 		infoOpcion[num] = "Area laboral: " .. item.areaLaboral 
-		iconOpcion[num] = 'icoFilterCheck'
+		iconOpcion[num] = 'iconJob'
 		num = #infoOpcion + 1
 	end
 	--cuenta propia
@@ -395,7 +396,7 @@ function infoProfile( item )
 		else
 			infoOpcion[num] = "No tiene mascota" 
 		end
-		iconOpcion[num] = 'icoFilterCheck'
+		iconOpcion[num] = 'iconPet'
 		num = #infoOpcion + 1
 	end
 	--deporte
@@ -404,18 +405,18 @@ function infoProfile( item )
 			infoOpcion[num] = "Practica deporte" 
 			if item.tipoDeporte then
 				infoOpcion[num] = "Practica "
-				for i=1, #item.idiomas do
+				for i=1, #item.tipoDeporte do
 					if i == 1 then
-						infoOpcion[num] = infoOpcion[num] .. item.idiomas[i]
+						infoOpcion[num] = infoOpcion[num] .. item.tipoDeporte[i]
 					else
-						infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
+						infoOpcion[num] = infoOpcion[num] ..', '.. item.tipoDeporte[i]
 					end
 				end
 			end
 		else
 			infoOpcion[num] = "No practica ningun deporte" 
 		end
-		iconOpcion[num] = 'icoFilterCheck'
+		iconOpcion[num] = 'iconSport'
 		num = #infoOpcion + 1
 	end
 	--fumas

@@ -22,7 +22,7 @@ local grpTextProfile, grpOptionsLabel, grpOptionsCombo
 
 -- Variables
 local posY = 350
-local textUserName, textUserResidence
+local textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 local toggleButtons = {}
 local hobbies = {}
 local myHobbies = {}
@@ -132,25 +132,6 @@ function closeAll( event )
 	native.setKeyboardFocus(nil)
 	deleteGrpScrCity()
 	return true
-end
-
-----------------------------------
--- inicia una nueva conversacion
-----------------------------------
-function startConversation( event )
-	RestManager.startConversation(event.target.id)
-	return true
-end
-
--------------------------------------------------------
--- crea la informacion e inicia la conversacion(chats)
--- @param item informacion del perfil
--------------------------------------------------------
-function showNewConversation(item)
-	local tmpList = {id = 0, photo = item.image, name = item.display_name, subject = "", channelId = item.channel_id,
-			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier}
-	composer.removeScene( "src.Message" )
-    composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
 
 ------------------------------------------------------------------------------
@@ -530,11 +511,12 @@ function showOptionsLabels( event )
 		else
 			myElements = myLanguages
 		end
-		
+		if not myElements then
+			myElements = {}
+		end	
 		for i = 1, #myElements, 1 do
 			addElements(myElements[i])
 		end
-		
 		--button
 		local btnAceptOption = display.newRoundedRect( midW, intH - 100, 600, 80, 10 )
 		btnAceptOption:setFillColor( {
@@ -568,60 +550,29 @@ function showOptionsLabels( event )
 	return true
 end
 
-----------------------------------------
---- Pinta los datos de otros usuarios
-----------------------------------------
-function otherProfile( item )
-
-	-- informacion personal
-    local lblName = display.newText({
-        text = item.userName, 
-        x = 550, y = 150,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 35, align = "left"
-    })
-    lblName:setFillColor( 0 )
-    scrPerfile:insert(lblName)
-	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
-    local lblAge= display.newText({
-        text = item.edad, 
-        x = 550, y = 200,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 35, align = "left"
-    })
-    lblAge:setFillColor( 0 )
-    scrPerfile:insert(lblAge)
-    local lblInts = display.newText({
-        text = "", 
-        x = 550, y = 250,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 25, align = "left"
-    })
-    lblInts:setFillColor( 0 )
-    scrPerfile:insert(lblInts)
+------------------------------------
+-- Creamos los textField
+------------------------------------
+function createTextField( item, name, coordY )
+	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
+	if name == "name" then
+		--textField user name
+		textName = native.newTextField( 550, 100, coordY, 50 )
+		textName.text = item.name
+		textName.hasBackground = false
+		textName.size = 35
+		textName:resizeHeightToFitFont()
+		textName:addEventListener( "userInput", userInputProfile )
+		grpTextProfile:insert(textName)
+	end
 	
-	if item.hobbies then
-        local max = 4
-        if #item.hobbies < max then 
-            max = #item.hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = item.hobbies[i]
-            else
-                lblInts.text = lblInts.text..', '..item.hobbies[i]
-            end
-        end
-        if #item.hobbies > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = ''
-    end
-    
+end
+
+------------------------------------
+-- Pinta la info general del usuario
+------------------------------------
+function createGeneralItems( item )
+	-------Generales-----------
     -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
     bgComp1.anchorY = 0
@@ -631,7 +582,6 @@ function otherProfile( item )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
     scrPerfile:insert(bgComp2)
-    
     -- Title
     local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
     bgTitle.anchorY = 0
@@ -642,7 +592,7 @@ function otherProfile( item )
     bgTitleX:setFillColor( .93 )
     scrPerfile:insert(bgTitleX)
     local lblTitle = display.newText({
-        text = "DETALLE:", 
+        text = "Generales:", 
         x = 310, y = posY+35,
         width = 400,
         font = native.systemFontBold,   
@@ -650,75 +600,92 @@ function otherProfile( item )
     })
     lblTitle:setFillColor( 0 )
     scrPerfile:insert(lblTitle)
-	--disponibilidad
-	local availability, iconAvailability, leng
 	local iconOpcion = {}
 	local infoOpcion = {}
-	--residencia
-	if not item.residencia then 
-		infoOpcion[1] = ""
-	else
-		infoOpcion[1] = item.residencia
+	local typeOpcion = {}
+	local nameOption = {}
+	local num = #infoOpcion + 1
+	--nombre
+	infoOpcion[num] = "Nombre: "
+	iconOpcion[num] = 'iconName'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "name"
+	num = #infoOpcion + 1
+	if not item.nombre then
+		item.nombre = ""
 	end
-	iconOpcion[1] = 'icoFilterCity'
-	--idioma
-	if item.idiomas then
-        for i=1, #item.idiomas do
-            if i == 1 then
-                infoOpcion[2] = item.idiomas[i]
-            else
-                infoOpcion[2] = infoOpcion[2] ..', '.. item.idiomas[i]
-            end
-        end
-    else
-        infoOpcion[2] = ''
-    end
-	iconOpcion[2] = 'icoFilterLanguage'
-	--alojamiento
-	if item.alojamiento and item.alojamiento == 'Sí' then
-		infoOpcion[3] = 'Disponible'
-		iconOpcion[3] = "icoFilterCheck"
-    else 
-		infoOpcion[3] = 'No disponible'
-		iconOpcion[3] = "icoFilterUnCheck"
-    end
-	-- transporte
-    if item.vehiculo and item.vehiculo == 'Sí' then
-        infoOpcion[4] = 'Cuenta con vehiculo propio'
-		iconOpcion[4] = "icoFilterCheck"
-    else 
-        infoOpcion[4] = 'No cuenta con vehiculo propio'
-		iconOpcion[4] = "icoFilterUnCheck"
-    end 
-	--disponibilidad
-    if item.diponibilidad and item.diponibilidad == 'Siempre' then
-        infoOpcion[5] = 'Disponible'
-		iconOpcion[5] = "icoFilterCheckAvailble"
-    else 
-         infoOpcion[5] = 'No disponible'
-		 iconOpcion[5] = "icoFilterUnCheck"
-    end
+	--apellidos
+	infoOpcion[num] = "Apellidos: "
+	iconOpcion[num] = 'iconName'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "lastName"
+	num = #infoOpcion + 1
+	if not item.apellidos then
+		item.apellidos = ""
+	end
+	--genero
+	infoOpcion[num] = "Genero"
+	iconOpcion[num] = 'icoFilterM'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "gender"
+	num = #infoOpcion + 1
+	if item.genero then
+		item.genero = "Hombre"
+	end
+	--pais de origen
+	infoOpcion[num] = "Pais de origen: "
+	iconOpcion[num] = 'icoFilterCity'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "originCountry"
+	num = #infoOpcion + 1
+	if not item.paisOrigen then
+		item.paisOrigen = ""
+	end
+	--residencia
+	infoOpcion[num] = "Residencia: "
+	iconOpcion[num] = 'icoFilterCity'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "Residencia"
+	num = #infoOpcion + 1
+	if not item.residencia then
+		item.residencia = ""
+	end
+	--tiempo de residencia
+	infoOpcion[num] = "Tiempo de residencia: "
+	iconOpcion[num] = 'icoFilterCity'
+	typeOpcion[num] = "ComboBox"
+	nameOption[num] = "residenceTime"
+	num = #infoOpcion + 1
+	if not item.tiempoResidencia then
+		item.tiempoResidencia = ""
+	end
+	--email contacto
+	infoOpcion[num] = "Email de contacto: "
+	iconOpcion[num] = 'iconEmailContacto'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "EmailContact"
+	num = #infoOpcion + 1
+	if not item.emailContacto then
+		item.emailContacto = ""
+	end
     
     -- Options
     posY = posY + 45
-    local opt = {
-        {icon = iconOpcion[1], label= infoOpcion[1]}, 
-        {icon = iconOpcion[2], label= infoOpcion[2]}, 
-        {icon = iconOpcion[3], label= infoOpcion[3]}, 
-        {icon = iconOpcion[4], label= infoOpcion[4]}, 
-        {icon = iconOpcion[5], label= infoOpcion[5]}} 
-    for i=1, #opt do
+	
+	bgComp1.height = (#infoOpcion * 80) + 70
+	bgComp2.height = (#infoOpcion * 80) + 66
+	
+    for i=1, #infoOpcion do
         posY = posY + 75
         
         local ico
-        if opt[i].icon ~= '' then
-           -- print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( "img/"..opt[i].icon..".png" )
+        if iconOpcion[i] ~= '' then
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
             ico:translate( 115, posY - 3 )
 			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
-            text = opt[i].label, 
+            text = infoOpcion[i], 
             x = 350, y = posY,
             width = 400,
             font = native.systemFont,   
@@ -726,7 +693,13 @@ function otherProfile( item )
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
+		
+		if typeOpcion[i] == "textField" then
+			createTextField(item, nameOption[i], posY)
+		end
     end
+	
+	posY = posY + 75
 
 end
 
@@ -778,8 +751,8 @@ function MyProfile( item )
     })
     lblInts:setFillColor( 0 )
     scrPerfile:insert(lblInts)
-	myHobbies = item.hobbies
 	if item.hobbies then
+		myHobbies = item.hobbies
         local max = 4
         if #item.hobbies < max then 
             max = #item.hobbies 
@@ -795,9 +768,14 @@ function MyProfile( item )
             lblInts.text = lblInts.text..'...'
         end
     else
+		myHobbies = {}
         lblInts.text = 'Editar pasatiempos'
     end
 	
+	--creamos los componentes generales
+	createGeneralItems( item )
+	
+	--[[
 	 -- BG Component
     local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
     bgComp1.anchorY = 0
@@ -866,8 +844,9 @@ function MyProfile( item )
     scrPerfile:insert(lblLang)
 	
 	--idioma
-	myLanguages = item.idiomas
+	
 	if item.idiomas then
+		myLanguages = item.idiomas
         for i=1, #item.idiomas do
             if i == 1 then
                 lblLang.text = item.idiomas[i]
@@ -876,6 +855,7 @@ function MyProfile( item )
             end
         end
     else
+		myLanguages = {}
 		lblLang.text= 'Editar tus idiomas'
     end
 	
@@ -915,7 +895,7 @@ function MyProfile( item )
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
-    end
+    end]]
 	
 end
 
