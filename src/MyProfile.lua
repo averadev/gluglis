@@ -64,7 +64,7 @@ end
 --------------------------------
 function saveProfile()
 	btnSaveProfile:removeEventListener( 'tap', saveProfile )
-	tools:setLoading(true,scrPerfile)
+	tools:setLoading(true,screen)
 	for i=1, #myHobbies, 1 do
 		myHobbies[i] = string.gsub( myHobbies[i], "/", '...' )
 	end
@@ -237,10 +237,10 @@ function moveToggleButtons( event )
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
-		transition.to( t, { x = t.x - 100, time = 200})
+		transition.to( toggleButtons[t.num], { x = toggleButtons[t.num].x - 100, time = 200})
 	else
 		t.onOff = "Sí"
-		transition.to( t, { x = t.x + 100, time = 200})
+		transition.to( toggleButtons[t.num], { x = toggleButtons[t.num].x + 100, time = 200})
 	end
 	--gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
 	if t.name == "gender" then
@@ -434,6 +434,7 @@ end
 -- @param posY2 coordenada y del elemento
 -------------------------------------------------
 function createToggleButtons(item, name, coordY, coordX )
+	local num = #toggleButtons + 1
 	coordY = coordY - 25
 	-- BG Component
 	local bg0CheckAcco = display.newRect( coordX, coordY, 200, 50 )
@@ -444,8 +445,11 @@ function createToggleButtons(item, name, coordY, coordX )
 	local bg0CheckAcco = display.newRect( coordX + 3, coordY + 3, 194, 44 )
 	bg0CheckAcco.anchorY = 0
 	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco.name = name
 	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
+	bg0CheckAcco:addEventListener( 'tap', moveToggleButtons )
 	scrPerfile:insert(bg0CheckAcco)
+	bg0CheckAcco.num = num
 		
 	--label si/no
 	local lblYes = display.newText({
@@ -538,15 +542,14 @@ function createToggleButtons(item, name, coordY, coordX )
 			posXTB = coordX + 103
 		end
 	end
+	bg0CheckAcco.onOff = onOff
 		--button
-	local toggleButtons = display.newRect( posXTB, coordY + 3, 97, 44 )
-	toggleButtons.anchorY = 0
-	toggleButtons.anchorX = 0
-	toggleButtons.onOff = onOff
-	toggleButtons:setFillColor( 89/255, 31/255, 103/255 )
-	scrPerfile:insert(toggleButtons)
-	toggleButtons.name = name
-	toggleButtons:addEventListener( 'tap', moveToggleButtons )
+	toggleButtons[num] = display.newRect( posXTB, coordY + 3, 97, 44 )
+	toggleButtons[num].anchorY = 0
+	toggleButtons[num].anchorX = 0
+	toggleButtons[num]:setFillColor( 89/255, 31/255, 103/255 )
+	scrPerfile:insert(toggleButtons[num])
+	
 
 end
 
@@ -833,7 +836,11 @@ end
 function createTextField( item, name, coordY )
 	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 	if name == "name" then
+		local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		--textField user name
+		--485
 		textName = native.newTextField( 485, coordY, 400 , 50 )
 		textName.text = item.nombre
 		textName.hasBackground = false
@@ -844,6 +851,9 @@ function createTextField( item, name, coordY )
 		grpTextProfile:insert(textName)
 	elseif name == "lastName" then
 		--textField apellido
+		local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		textLastName = native.newTextField( 485, coordY, 400, 50 )
 		textLastName.text = item.apellidos
 		textLastName.hasBackground = false
@@ -854,6 +864,9 @@ function createTextField( item, name, coordY )
 		grpTextProfile:insert(textLastName)
 	elseif name == "originCountry" then
 		--textField pais de origen
+		local bgTextField = display.newRect( 500, coordY + 18, 350, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		textOriginCountry = native.newTextField( 500, coordY, 350, 50 )
 		textOriginCountry.text = item.paisOrigen
 		textOriginCountry.hasBackground = false
@@ -863,6 +876,9 @@ function createTextField( item, name, coordY )
 		textOriginCountry.name = "originCountry"
 		grpTextProfile:insert(textOriginCountry)
 	elseif name == "residence" then
+		local bgTextField = display.newRect( 500, coordY + 18, 400, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		--textField residence
 		textUserResidence = native.newTextField( 500, coordY, 400, 50 )
 		textUserResidence.text = item.residencia
@@ -873,6 +889,9 @@ function createTextField( item, name, coordY )
 		textUserResidence.name = "residence"
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
+		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		--textField pais de origen
 		textEmailContact = native.newTextField( 515, coordY, 350, 50 )
 		textEmailContact.text = item.emailContacto
@@ -883,6 +902,9 @@ function createTextField( item, name, coordY )
 		textEmailContact.name = "emailContact"
 		grpTextProfile:insert(textEmailContact)
 	elseif name == "pet" then
+		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
+		bgTextField:setFillColor( .6 )
+		scrPerfile:insert(bgTextField)
 		--textField pais de origen
 		textPet = native.newTextField( 515, coordY, 350, 50 )
 		textPet.text = item.tipoMascota
@@ -1388,6 +1410,9 @@ function MyProfile( item )
 	grpTextProfile = display.newGroup()
 	scrPerfile:insert(grpTextProfile)
 	
+	local bgTextField = display.newRect( 550, 100 + 22, 400, 2 )
+	bgTextField:setFillColor( .6 )
+	scrPerfile:insert(bgTextField)
 	--textField user name
 	textUserName = native.newTextField( 550, 100, 400, 50 )
 	textUserName.text = item.userName
@@ -1520,86 +1545,31 @@ function scene:create( event )
 		RestManager.getImagePerfile(items)
 	end
 	
-	if item.isMe == false then
-	
-		otherProfile( item )
-	
-		if isReadOnly then
-			posY = posY + 120
-			local lblReadOnly = display.newText( {
-			text = "¿QUIERES CONVERSAR CON " .. item.userName .. "?",     
-			x = midW, y = posY, width = 600,
-			font = "Lato-Regular", fontSize = 26, align = "center"
-			})
-			lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
-			scrPerfile:insert(lblReadOnly)
-			
-			posY = posY + 100
-        
-			local rctFree = display.newRoundedRect( midW, posY, 350, 80, 5 )
-			rctFree:setFillColor( .2, .6 ,0 )
-			rctFree.screen = "LoginSplash"
-			rctFree:addEventListener( 'tap', toScreen)
-			scrPerfile:insert(rctFree)
-        
-			local lblSign = display.newText( {
-				text = "¡Registrate ahora!",     
-				x = midW, y = posY, width = 600,
-				fontSize = 32, align = "center"
-			})
-			lblSign:setFillColor( 1 )
-			scrPerfile:insert(lblSign)
-		
-		else
-			-- Btn Iniciar conversación
-			posY = posY + 120
-			local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
-			btnStartChat.id = item.id
-			btnStartChat:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			scrPerfile:insert(btnStartChat)
-			btnStartChat:addEventListener( 'tap', startConversation)
-			local lblStartChat = display.newText({
-				text = "INICIAR CONVERSACIÓN", 
-				x = midW, y = posY,
-				font = native.systemFontBold,   
-				fontSize = 25, align = "center"
-			})
-			lblStartChat:setFillColor( 1 )
-			scrPerfile:insert(lblStartChat)
-		end
-	else
-	
+	if not isReadOnly then
 		MyProfile( item )
-	
 		-- Btn Iniciar conversación
-			posY = posY + 120
-			btnSaveProfile = display.newRoundedRect( midW, posY, 650, 80, 10 )
-			btnSaveProfile.id = item.id
-			btnSaveProfile:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			scrPerfile:insert(btnSaveProfile)
-			btnSaveProfile:addEventListener( 'tap', saveProfile )
-			local lblSaveProfile = display.newText({
-				text = "Editar Perfil", 
-				x = midW, y = posY,
-				font = native.systemFontBold,   
-				fontSize = 25, align = "center"
-			})
-			lblSaveProfile:setFillColor( 1 )
-			scrPerfile:insert(lblSaveProfile)
-	end
+		posY = posY + 120
+		btnSaveProfile = display.newRoundedRect( midW, posY, 650, 80, 10 )
+		btnSaveProfile.id = item.id
+		btnSaveProfile:setFillColor( {
+			type = 'gradient',
+			color1 = { 129/255, 61/255, 153/255 }, 
+			color2 = { 89/255, 31/255, 103/255 },
+			direction = "bottom"
+		} )
+		scrPerfile:insert(btnSaveProfile)
+		btnSaveProfile:addEventListener( 'tap', saveProfile )
+		local lblSaveProfile = display.newText({
+			text = "Guardar Cambios", 
+			x = midW, y = posY,
+			font = native.systemFontBold,   
+			fontSize = 25, align = "center"
+		})
+		lblSaveProfile:setFillColor( 1 )
+		scrPerfile:insert(lblSaveProfile)
+    end
 	
-	scrPerfile:setScrollHeight(5000)
-    
+	scrPerfile:setScrollHeight(posY + 100)
 end	
 --------------------------------------------------------
 -- Called immediately after scene has moved onscreen:

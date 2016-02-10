@@ -253,12 +253,11 @@ function Tools:new()
 				text = text, 
 				x = midW, y = midH + h,
 				width = 500,
-				font = native.systemFontBold,   
+				font = 	native.systemFont,   
 				fontSize = 38, align = "center"
 			})
-			lbl0:setFillColor( .5 )
+			lbl0:setFillColor( 0 )
 			grpNewAlert:insert(lbl0)
-			
 		else
 			if grpNewAlert then
 				grpNewAlert:removeSelf()

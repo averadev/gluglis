@@ -490,7 +490,28 @@ function showInfoButton()
 	bgTitle.flag = 0
     grpBtnDetail:insert(bgTitle)
 	bgTitle:addEventListener( 'tap', showDetail )
-    local Circle1 = display.newCircle( 320, 70, 12 )
+	local bgTitle0 = display.newRoundedRect( 644, 35, 85, 70, 10 )
+    bgTitle0.anchorY = 0
+    bgTitle0:setFillColor( 0 )
+	bgTitle0.alpha = .5
+    grpBtnDetail:insert(bgTitle0)
+	local bgTitle1 = display.newRect( 600, 35, 20, 70 )
+    bgTitle1.anchorY = 0
+    bgTitle1:setFillColor( 68/255, 14/255, 98/255 )
+    grpBtnDetail:insert(bgTitle1)
+	 local lblTitle = display.newText({
+        text = "MÁS INFORMACIÓN", 
+        x = midW, y = 70,
+        width = 400,
+        font = native.systemFontBold,   
+        fontSize = 25, align = "center"
+    })
+    lblTitle:setFillColor( 1 )
+    grpBtnDetail:insert(lblTitle)
+	iconMoreDetail = display.newImage( "img/GG_Icono_MoreInfo.png" )
+	iconMoreDetail:translate( 650, 72 )
+	grpBtnDetail:insert(iconMoreDetail)
+    --[[local Circle1 = display.newCircle( 320, 70, 12 )
 	Circle1:setFillColor( 1 )
 	grpBtnDetail:insert(Circle1)
 	local Circle2 = display.newCircle( 384, 70, 12 )
@@ -498,7 +519,7 @@ function showInfoButton()
 	grpBtnDetail:insert(Circle2)
 	local Circle3 = display.newCircle( 448, 70, 12 )
 	Circle3:setFillColor( 1 )
-	grpBtnDetail:insert(Circle3)
+	grpBtnDetail:insert(Circle3)]]
 
 	-------
 

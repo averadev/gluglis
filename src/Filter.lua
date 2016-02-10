@@ -351,6 +351,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 	if typeF == "textField" then
 		--crea un textField si es la opcion de ciudad
 		if name == "location" then
+		
 			txtLocation = native.newTextField( coordX, coordY, wField, 50 )
 			txtLocation.anchorX = 1
 			txtLocation.inputType = "default"
