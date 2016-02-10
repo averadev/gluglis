@@ -14,3 +14,4 @@ h = display.topStatusBarContentHeight
 playerId = 0
 itemProfile = nil
 isReadOnly = false
+bgCompCity = nil

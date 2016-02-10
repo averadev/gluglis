@@ -17,22 +17,28 @@ RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local scrPerfile, scrElements
-local grpTextProfile, grpOptionsLabel, grpOptionsCombo
+local scrPerfile, scrElements, scrCombo
+local grpTextProfile, grpOptionsLabel, grpOptionsCombo, grpComboBox
 
 -- Variables
 local posY = 350
-local textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
+local textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact, textPet
 local toggleButtons = {}
 local hobbies = {}
 local myHobbies = {}
 local languages = {}
 local myLanguages = {}
+local sports = {}
+local mySports = {}
+local residenceTimes = {}
+local races = {}
+local workAreas = {}
 local posYE = 0
 local myElements = {}
 local container = {}
-local lblInts, lblLang
+local lblInts, lblLang, lblSport, lblResidenceTime, lblRace, lblWorkArea
 local btnSaveProfile
+local gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -44,9 +50,13 @@ end
 --------------------------------
 -- Guarda la lista de hobbies
 --------------------------------
-function setList(hobbie, language)
+function setList(hobbie, language, sport, residenceTime, race, workArea)
 	hobbies = hobbie
 	languages = language
+	sports = sport
+	residenceTimes = residenceTime
+	races = race
+	workAreas = workArea
 end
 
 --------------------------------
@@ -61,7 +71,41 @@ function saveProfile()
 	for i=1, #myLanguages, 1 do
 		myLanguages[i] = string.gsub( myLanguages[i], "/", '...' )
 	end
-	RestManager.saveProfile(textUserName.text, textUserResidence.text, toggleButtons[1].onOff, toggleButtons[2].onOff,toggleButtons[3].onOff,myHobbies, myLanguages)
+	for i=1, #mySports, 1 do
+		mySports[i] = string.gsub( mySports[i], "/", '...' )
+	end
+	
+	textUserName.text = string.gsub(textUserName.text , "%s", "")
+	textName.text = string.gsub(textName.text , "%s", "")
+	textLastName.text = string.gsub(textLastName.text , "%s", "")
+	textOriginCountry.text = string.gsub(textOriginCountry.text , "%s", "")
+	textUserResidence.text = string.gsub(textUserResidence.text , "%s", "")
+	textEmailContact.text = string.gsub(textEmailContact.text , "%s", "")
+	textPet.text = string.gsub(textPet.text , "%s", "")
+	RestManager.saveProfile(
+		textUserName.text, 
+		myHobbies,
+		textName.text,
+		textLastName.text,
+		gender,
+		textOriginCountry.text,
+		textUserResidence.text,
+		lblResidenceTime.text, 
+		textEmailContact.text,
+		availability,
+		accommodation,
+		vehicle,
+		food,
+		myLanguages,
+		lblRace.text,
+		lblWorkArea.text,
+		ownAccount,
+		textPet.text,
+		mySports,
+		smoke,
+		drink,
+		psychrotrophic
+	)
 end
 
 -------------------------------------------------------------
@@ -111,9 +155,12 @@ function savePreferences( event )
 	if t.name == "hobbies" then
 		myHobbies = myElements
 		lblInts.text = labelPreferences
-	else
+	elseif t.name == "languages" then
 		myLanguages = myElements
 		lblLang.text = labelPreferences
+	else
+		mySports = myElements
+		lblSport.text = labelPreferences
 	end
 	if grpOptionsLabel then
 		grpOptionsLabel:removeSelf()
@@ -161,15 +208,21 @@ function userInputProfile( event )
 	local t = event.target
 	if ( event.phase == "began" ) then
 		if t.name == "residence" then
-			textUserName.y = 100
+		
 		end
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		native.setKeyboardFocus(nil)
 		if t.name == "residence" then
-			textUserName.y = 130
+			textName.x = 485
+			textLastName.x = 485
+			textOriginCountry.x = 500
 		end
+		native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
 		if t.name == "residence" then
+			textName.x = intH
+			textLastName.x = intH
+			textOriginCountry.x = intH
 			RestManager.getCity(t.text, "residence", scrPerfile)
 		end
     end
@@ -184,11 +237,135 @@ function moveToggleButtons( event )
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
-		transition.to( t, { x = 303, time = 200})
+		transition.to( t, { x = t.x - 100, time = 200})
 	else
 		t.onOff = "Sí"
-		transition.to( t, { x = 403, time = 200})
+		transition.to( t, { x = t.x + 100, time = 200})
 	end
+	--gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
+	if t.name == "gender" then
+		if t.onOff == "Sí" then
+			gender = "Hombre"
+		else
+			gender = "Mujer"
+		end
+		
+	elseif t.name == "availability" then
+		if t.onOff == "Sí" then
+			availability = "Siempre" 
+		else
+			availability = "Consultarme" 
+		end
+	elseif t.name == "accommodation" then
+		accommodation = t.onOff 
+	elseif t.name == "vehicle" then
+		vehicle = t.onOff 
+	elseif t.name == "food" then
+		food = t.onOff 
+	elseif t.name == "ownAccount" then
+		if t.onOff == "Sí" then
+			ownAccount = "Por cuenta propia" 
+		else
+			ownAccount = "Por cuenta ajena" 
+		end
+	elseif t.name == "smoke" then
+		smoke = t.onOff 
+	elseif t.name == "drink" then
+		drink = t.onOff 
+	elseif t.name == "psychrotrophic" then
+		psychrotrophic = t.onOff 
+	end
+end
+
+function showComboBox( event )
+	local t = event.target
+	if grpComboBox then
+		grpComboBox:removeSelf()
+		grpComboBox = nil
+	end
+	grpTextProfile.x = intW
+	grpComboBox = display.newGroup()
+	
+		--combobox
+	local bg0 = display.newRect( midW, midH + h, intW, intH )
+	bg0:setFillColor( 0 )
+	bg0.alpha = .8
+	grpComboBox:insert( bg0 )
+	bg0:addEventListener( 'tap', hideComboBox )
+	local bg1 = display.newRoundedRect( midW, midH + h, 606, midH, 10 )
+	bg1:setFillColor( 1 )
+	grpComboBox:insert( bg1 )
+	--bg1:addEventListener( 'tap', hideOptionsCombo )
+	--scrollview
+	scrCombo = widget.newScrollView({
+		top = h + 346,
+		left = 84,
+		width = 600,
+		height = midH - 10,
+		horizontalScrollDisabled = true,
+		backgroundColor = { .8 },
+	})
+	grpComboBox:insert(scrCombo)
+	local setElements = {}
+	if t.name == "residenceTime" then
+		setElements = residenceTimes
+	elseif t.name == "race" then
+		setElements = races
+	elseif t.name == "workArea" then
+		setElements = workAreas
+	end
+	local posY = 0
+	for i = 1, #setElements, 1 do
+		local container2 = display.newContainer( 600, 80 )
+		scrCombo:insert(container2)
+		container2.anchorY = 0
+		container2:translate( 300, posY )
+		--container2:addEventListener( 'tap', selectOptionCombo )
+		local bg0OptionCombo = display.newRect( 0, 0, 600, 80 )
+		bg0OptionCombo:setFillColor( 1 )
+		bg0OptionCombo.name = t.name
+		bg0OptionCombo.option = setElements[i].name
+		container2:insert( bg0OptionCombo )
+		--bg0OptionCombo:addEventListener( 'tap', noAction )
+		bg0OptionCombo:addEventListener( 'tap', selectOptionCombo )
+		
+		--label nombre
+		local lblNameOption = display.newText({
+			text = setElements[i].name, 
+			x = 0, y = 0,
+			width = 500,
+			font = native.systemFont, 
+			fontSize = 30, align = "left"
+		})
+		lblNameOption:setFillColor( 0 )
+		container2:insert(lblNameOption)
+		posY = posY + 84
+	end
+	
+end
+
+function selectOptionCombo( event )
+	local t = event.target
+	if t.name == "residenceTime" then
+		lblResidenceTime.text = t.option
+	elseif t.name == "race" then
+		lblRace.text = t.option
+	elseif t.name == "workArea" then
+		lblWorkArea.text = t.option
+	end
+	hideComboBox( "" )
+	return true
+	
+end
+
+function hideComboBox( event )
+	local t = event.target
+	if grpComboBox then
+		grpComboBox:removeSelf()
+		grpComboBox = nil
+	end
+	grpTextProfile.x = 0
+	return true
 end
 
 -------------------------------------------------
@@ -196,84 +373,180 @@ end
 -- @param item valor inicia de los elementos
 -- @param posY2 coordenada y del elemento
 -------------------------------------------------
-function createToggleButtons(item, posY2)
+function createComboBox(item, name, coordY, coordX )
 
-	for i=1, 3, 1 do
-		-- BG Component
-		local bg0CheckAcco = display.newRect( 300, posY2, 200, 50 )
-		bg0CheckAcco.anchorY = 0
-		bg0CheckAcco.anchorX = 0
-		bg0CheckAcco:setFillColor( 89/255, 31/255, 103/255 )
-		scrPerfile:insert(bg0CheckAcco)
-		local bg0CheckAcco = display.newRect( 303, posY2 + 3, 194, 44 )
-		bg0CheckAcco.anchorY = 0
-		bg0CheckAcco.anchorX = 0
-		bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
-		scrPerfile:insert(bg0CheckAcco)
-		
-		--label si/no
-		local lblYes = display.newText({
-			text = "Si", 
-			x = 350, y = posY2 + 25,
-			width = 100,
-			font = native.systemFont, 
-			fontSize = 35, align = "center"
+	coordY = coordY - 25
+	-- BG Component
+	local bg0CheckAcco = display.newRect( coordX, coordY, 300, 56 )
+	bg0CheckAcco.anchorY = 0
+	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
+	scrPerfile:insert(bg0CheckAcco)
+	local bg0CheckAcco = display.newRect( coordX + 3, coordY + 3, 294, 50 )
+	bg0CheckAcco.anchorY = 0
+	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco:setFillColor( 1 )
+	bg0CheckAcco.name = name
+	scrPerfile:insert(bg0CheckAcco)
+	bg0CheckAcco:addEventListener( 'tap', showComboBox )
+	local triangle = display.newImage("img/triangleDown.png")
+	triangle:translate(coordX + 270, coordY + 30)
+	triangle.height = 20
+	triangle.widget = 20
+	scrPerfile:insert(triangle)
+	if name == "residenceTime" then
+		lblResidenceTime = display.newText({
+			text = item.tiempoResidencia, 
+			x = coordX + 160, y = coordY + 30,
+			width = 280, height = 30,
+			font = native.systemFont,   
+			fontSize = 22, align = "left"
 		})
-		lblYes:setFillColor( 1 )
-		scrPerfile:insert(lblYes)
-		local lblNo = display.newText({
-			text = "No", 
-			x = 450, y = posY2 + 25,
-			width = 100,
-			font = native.systemFont, 
-			fontSize = 35, align = "center"
+		lblResidenceTime:setFillColor( 0 )
+		scrPerfile:insert(lblResidenceTime)
+	elseif name == "race" then
+		lblRace = display.newText({
+			text = item.nivelEstudio, 
+			x = coordX + 160, y = coordY + 30,
+			width = 280, height = 30,
+			font = native.systemFont,   
+			fontSize = 22, align = "left"
 		})
-		lblNo:setFillColor( 1 )
-		lblNo.alpha = .8
-		scrPerfile:insert(lblNo)
-		
-		local posXTB = 303 + 100
-		local onOff
-		--alojamiento
-		if i == 1 and item.alojamiento ~= nil and item.alojamiento == 'Sí' then
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 1 then
-			onOff = "No"
-			posXTB = 303
-		end
-		-- transporte
-		if i == 2 and item.vehiculo ~= nil and item.vehiculo == 'Sí' then
-			
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 2 then
-			onOff = "No"
-			posXTB = 303
-		end
-		--disponibilidad
-		if i == 3 and item.diponibilidad ~= nil and item.diponibilidad == 'Siempre' then
-			onOff = "Sí"
-			posXTB = 303 + 100
-		elseif i == 3 then
-			onOff = "No"
-			posXTB = 303
-		end
-		local num = #toggleButtons + 1
-		
-		--button
-		toggleButtons[num] = display.newRect( posXTB, posY2 + 3, 97, 44 )
-		toggleButtons[num].anchorY = 0
-		toggleButtons[num].anchorX = 0
-		toggleButtons[num].onOff = onOff
-		toggleButtons[num]:setFillColor( 89/255, 31/255, 103/255 )
-		scrPerfile:insert(toggleButtons[num])
-		toggleButtons[num]:addEventListener( 'tap', moveToggleButtons )
-		
-		--nueva posicion
-		posY2 = posY2 + 75
-		
+		lblRace:setFillColor( 0 )
+		scrPerfile:insert(lblRace)
+	elseif name == "workArea" then
+		lblWorkArea = display.newText({
+			text = item.areaLaboral, 
+			x = coordX + 160, y = coordY + 30,
+			width = 280, height = 30,
+			font = native.systemFont,   
+			fontSize = 22, align = "left"
+		})
+		lblWorkArea:setFillColor( 0 )
+		scrPerfile:insert(lblWorkArea)
 	end
+
+end
+
+-------------------------------------------------
+-- Creacion de los togle buttons
+-- @param item valor inicia de los elementos
+-- @param posY2 coordenada y del elemento
+-------------------------------------------------
+function createToggleButtons(item, name, coordY, coordX )
+	coordY = coordY - 25
+	-- BG Component
+	local bg0CheckAcco = display.newRect( coordX, coordY, 200, 50 )
+	bg0CheckAcco.anchorY = 0
+	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco:setFillColor( 89/255, 31/255, 103/255 )
+	scrPerfile:insert(bg0CheckAcco)
+	local bg0CheckAcco = display.newRect( coordX + 3, coordY + 3, 194, 44 )
+	bg0CheckAcco.anchorY = 0
+	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
+	scrPerfile:insert(bg0CheckAcco)
+		
+	--label si/no
+	local lblYes = display.newText({
+		text = "Si", 
+		x = coordX + 50, y = coordY + 25,
+		width = 100,
+		font = native.systemFont, 
+		fontSize = 35, align = "center"
+	})
+	lblYes:setFillColor( 1 )
+	scrPerfile:insert(lblYes)
+	local lblNo = display.newText({
+		text = "No", 
+		x = coordX + 150, y = coordY + 25,
+		width = 100,
+		font = native.systemFont, 
+		fontSize = 35, align = "center"
+	})
+	lblNo:setFillColor( 1 )
+	scrPerfile:insert(lblNo)
+	if name == "gender" then
+		lblYes.text = "Hombre"
+		lblYes.size = 24
+		lblNo.text = "Mujer"
+		lblNo.size = 24
+	end
+		
+	local posXTB = coordX + 3
+	local onOff = "No"
+	--alojamiento
+	if name == "gender" then
+		if item.genero ~= nil and item.genero == 'Hombre' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	if name == "accommodation" then
+		if item.alojamiento ~= nil and item.alojamiento == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--availability, accommodation, vehicle, food
+	-- transporte
+	if name == "vehicle" then
+		if item.vehiculo ~= nil and item.vehiculo == 'Sí' then	
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--disponibilidad
+	if name == "availability" then
+		if item.diponibilidad ~= nil and item.diponibilidad == 'Siempre' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--comida
+	if name == "food" then
+		if item.comida ~= nil and item.comida == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--cuenta propia
+	if name == "ownAccount" then
+		if item.cuentaPropia ~= nil and item.cuentaPropia == 'Por cuenta propia' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--fumas
+	if name == "smoke" then
+		if item.fumas ~= nil and item.fumas == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--bebes
+	if name == "drink" then
+		if item.bebes ~= nil and item.bebes == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+	--psychrotrophic
+	if name == "psychrotrophic" then
+		if item.psicotropicos ~= nil and item.psicotropicos == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
+		--button
+	local toggleButtons = display.newRect( posXTB, coordY + 3, 97, 44 )
+	toggleButtons.anchorY = 0
+	toggleButtons.anchorX = 0
+	toggleButtons.onOff = onOff
+	toggleButtons:setFillColor( 89/255, 31/255, 103/255 )
+	scrPerfile:insert(toggleButtons)
+	toggleButtons.name = name
+	toggleButtons:addEventListener( 'tap', moveToggleButtons )
 
 end
 
@@ -361,8 +634,10 @@ function showOptionsCombo( event )
 	--define que tabla se ocupara
 	if t2.name == "hobbies" then
 		setElements = hobbies
-	else
+	elseif t2.name == "languages" then
 		setElements = languages
+	else
+		setElements = sports
 	end
 	
 	if not grpOptionsCombo then
@@ -508,8 +783,10 @@ function showOptionsLabels( event )
 		posYE = 0
 		if t.name == "hobbies" then
 			myElements = myHobbies
-		else
+		elseif t.name == "languages" then
 			myElements = myLanguages
+		else
+			myElements = mySports
 		end
 		if not myElements then
 			myElements = {}
@@ -557,15 +834,406 @@ function createTextField( item, name, coordY )
 	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 	if name == "name" then
 		--textField user name
-		textName = native.newTextField( 550, 100, coordY, 50 )
-		textName.text = item.name
+		textName = native.newTextField( 485, coordY, 400 , 50 )
+		textName.text = item.nombre
 		textName.hasBackground = false
-		textName.size = 35
+		textName.size = 25
 		textName:resizeHeightToFitFont()
 		textName:addEventListener( "userInput", userInputProfile )
+		textName.name = "name"
 		grpTextProfile:insert(textName)
+	elseif name == "lastName" then
+		--textField apellido
+		textLastName = native.newTextField( 485, coordY, 400, 50 )
+		textLastName.text = item.apellidos
+		textLastName.hasBackground = false
+		textLastName.size = 25
+		textLastName:resizeHeightToFitFont()
+		textLastName:addEventListener( "userInput", userInputProfile )
+		textLastName.name = "lastName"
+		grpTextProfile:insert(textLastName)
+	elseif name == "originCountry" then
+		--textField pais de origen
+		textOriginCountry = native.newTextField( 500, coordY, 350, 50 )
+		textOriginCountry.text = item.paisOrigen
+		textOriginCountry.hasBackground = false
+		textOriginCountry.size = 25
+		textOriginCountry:resizeHeightToFitFont()
+		textOriginCountry:addEventListener( "userInput", userInputProfile )
+		textOriginCountry.name = "originCountry"
+		grpTextProfile:insert(textOriginCountry)
+	elseif name == "residence" then
+		--textField residence
+		textUserResidence = native.newTextField( 500, coordY, 400, 50 )
+		textUserResidence.text = item.residencia
+		textUserResidence.hasBackground = false
+		textUserResidence.size = 25
+		textUserResidence:resizeHeightToFitFont()
+		textUserResidence:addEventListener( "userInput", userInputProfile )
+		textUserResidence.name = "residence"
+		grpTextProfile:insert(textUserResidence)
+	elseif name == "emailContact" then
+		--textField pais de origen
+		textEmailContact = native.newTextField( 515, coordY, 350, 50 )
+		textEmailContact.text = item.emailContacto
+		textEmailContact.hasBackground = false
+		textEmailContact.size = 25
+		textEmailContact:resizeHeightToFitFont()
+		textEmailContact:addEventListener( "userInput", userInputProfile )
+		textEmailContact.name = "emailContact"
+		grpTextProfile:insert(textEmailContact)
+	elseif name == "pet" then
+		--textField pais de origen
+		textPet = native.newTextField( 515, coordY, 350, 50 )
+		textPet.text = item.tipoMascota
+		textPet.hasBackground = false
+		textPet.size = 25
+		textPet:resizeHeightToFitFont()
+		textPet:addEventListener( "userInput", userInputProfile )
+		textPet.name = "pet"
+		grpTextProfile:insert(textPet)
 	end
 	
+end
+
+function createPreferencesItems( item )
+	
+	local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
+    bgComp1.anchorY = 0
+    bgComp1:setFillColor( .88 )
+    scrPerfile:insert(bgComp1)
+    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
+    bgComp2.anchorY = 0
+    bgComp2:setFillColor( 1 )
+    scrPerfile:insert(bgComp2)
+    -- Title
+    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
+    bgTitle.anchorY = 0
+    bgTitle:setFillColor( .93 )
+    scrPerfile:insert(bgTitle)
+    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
+    bgTitleX.anchorY = 0
+    bgTitleX:setFillColor( .93 )
+    scrPerfile:insert(bgTitleX)
+    local lblTitle = display.newText({
+        text = "Gustos y preferencias:", 
+        x = 310, y = posY+35,
+        width = 400,
+        font = native.systemFontBold,   
+        fontSize = 25, align = "left"
+    })
+    lblTitle:setFillColor( 0 )
+    scrPerfile:insert(lblTitle)
+	local iconOpcion = {}
+	local infoOpcion = {}
+	local typeOpcion = {}
+	local nameOption = {}
+	local num = #infoOpcion + 1
+	--idiomas
+	infoOpcion[num] = "Idiomas: "
+	iconOpcion[num] = 'icoFilterLanguage'
+	typeOpcion[num] = "multiComboBox"
+	nameOption[num] = "language"
+	if item.idiomas then
+		myLanguages = item.idiomas
+        for i=1, #item.idiomas do
+            if i == 1 then
+                infoOpcion[num] = item.idiomas[i]
+            else
+                infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
+            end
+        end
+    else
+		myLanguages = {}
+        infoOpcion[num] = 'No cuenta con ningun idioma'
+    end
+	num = #infoOpcion + 1
+	--nivel de estudio
+	infoOpcion[num] = "Nivel de estudio: "
+	iconOpcion[num] = 'iconSchool'
+	typeOpcion[num] = "comboBox"
+	nameOption[num] = "race"
+	num = #infoOpcion + 1
+	if not item.nivelEstudio then
+		item.nivelEstudio = "Ninguna"
+	end
+	--area laboral
+	infoOpcion[num] = "Area laboral: "
+	iconOpcion[num] = 'iconJob'
+	typeOpcion[num] = "comboBox"
+	nameOption[num] = "workArea"
+	num = #infoOpcion + 1
+	if not item.areaLaboral then
+		item.areaLaboral = "Ninguna"
+	end
+	--cuenta propia
+	infoOpcion[num] = "Cuenta propia: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "ownAccount"
+	num = #infoOpcion + 1
+	if not item.cuentaPropia then
+		item.cuentaPropia = "Por cuenta ajena"
+	end
+	ownAccount = item.cuentaPropia
+	--mascota
+	infoOpcion[num] = "¿mascota?: "
+	iconOpcion[num] = 'iconPet'
+	typeOpcion[num] = "textField"
+	nameOption[num] = "pet"
+	num = #infoOpcion + 1
+	if not item.mascota then
+		item.mascota = "No"
+	end
+	if not item.tipoMascota then
+		item.tipoMascota = ""
+	end
+	--deporte
+	infoOpcion[num] = "¿Practica deportes?: "
+	iconOpcion[num] = 'iconSport'
+	typeOpcion[num] = "multiComboBox"
+	nameOption[num] = "sport"
+	
+	if not item.deporte then
+		item.deporte = "No"
+	end
+	if item.deportes then
+		mySports = item.deportes
+		for i=1, #item.deportes do
+            if i == 1 then
+                infoOpcion[num] = item.deportes[i]
+            else
+                infoOpcion[num] = infoOpcion[num] ..', '.. item.deportes[i]
+            end
+        end
+    else
+		mySports = {}
+        infoOpcion[num] = 'No cuenta con ningun deporte'
+    end
+	num = #infoOpcion + 1
+	--fumas
+	infoOpcion[num] = "¿Fumas?: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "smoke"
+	num = #infoOpcion + 1
+	if not item.fumas then
+		item.fumas = "No"
+	end
+	 smoke = item.fumas
+	--bebes
+	infoOpcion[num] = "¿Bebes?: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "drink"
+	num = #infoOpcion + 1
+	if not item.bebes then
+		item.bebes = "No"
+	end
+	drink = item.bebes
+	--psicotroficos
+	infoOpcion[num] = "¿Psicotroficos?: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "psychrotrophic"
+	num = #infoOpcion + 1
+	if not item.psicotroficos then
+		item.psicotroficos = "No"
+	end
+	psychrotrophic = item.psicotroficos
+	-- Options
+    posY = posY + 45
+	
+	bgComp1.height = (#infoOpcion * 80) + 70
+	bgComp2.height = (#infoOpcion * 80) + 66
+	
+    for i=1, #infoOpcion do
+        posY = posY + 75
+        
+        local ico
+        if iconOpcion[i] ~= '' then
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
+            ico:translate( 115, posY - 3 )
+			scrPerfile:insert(ico)
+        end
+		
+		if nameOption[i] == "language" then
+			local bgLangs = display.newRect( 420, posY, 550, 80 )
+			-- bgLangs.anchorY = 0
+			bgLangs:setFillColor( 1 )
+			bgLangs.alpha = .02
+			bgLangs.name = "languages"
+			bgLangs.label = "Tus Idiomas"
+			bgLangs.type = "create"
+			scrPerfile:insert(bgLangs)
+			bgLangs:addEventListener( 'tap', showOptionsLabels )
+			
+			lblLang = display.newText({
+				text = infoOpcion[i], 
+				x = 350, y = posY,
+				width = 400,
+				font = native.systemFont,   
+				fontSize = 22, align = "left"
+			})
+			lblLang:setFillColor( 0 )
+			scrPerfile:insert(lblLang)
+		elseif nameOption[i] == "sport" then
+			local bgSport= display.newRect( 420, posY, 550, 80 )
+			-- bgLangs.anchorY = 0
+			bgSport:setFillColor( 1 )
+			bgSport.alpha = .02
+			bgSport.name = "sport"
+			bgSport.label = "Deportes que practicas"
+			bgSport.type = "create"
+			scrPerfile:insert(bgSport)
+			bgSport:addEventListener( 'tap', showOptionsLabels )
+			
+			lblSport = display.newText({
+				text = infoOpcion[i], 
+				x = 350, y = posY,
+				width = 400,
+				font = native.systemFont,   
+				fontSize = 22, align = "left"
+			})
+			lblSport:setFillColor( 0 )
+			scrPerfile:insert(lblSport)
+		else
+			local lbl = display.newText({
+				text = infoOpcion[i], 
+				x = 350, y = posY,
+				width = 400,
+				font = native.systemFont,   
+				fontSize = 22, align = "left"
+			})
+			lbl:setFillColor( 0 )
+			scrPerfile:insert(lbl)
+		
+		end
+		
+		if typeOpcion[i] == "textField" then
+			createTextField(item, nameOption[i], posY)
+		elseif typeOpcion[i] == "toggleButton" then
+			createToggleButtons(item, nameOption[i], posY, 350)
+		elseif typeOpcion[i] == "comboBox" then
+			createComboBox(item, nameOption[i], posY, 350)
+		end
+    end
+	
+	posY = posY + 100
+	
+end
+
+------------------------------------
+function createTouristGuideItems( item )
+	-------Generales-----------
+    -- BG Component
+    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
+    bgComp1.anchorY = 0
+    bgComp1:setFillColor( .88 )
+    scrPerfile:insert(bgComp1)
+    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
+    bgComp2.anchorY = 0
+    bgComp2:setFillColor( 1 )
+    scrPerfile:insert(bgComp2)
+    -- Title
+    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
+    bgTitle.anchorY = 0
+    bgTitle:setFillColor( .93 )
+    scrPerfile:insert(bgTitle)
+    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
+    bgTitleX.anchorY = 0
+    bgTitleX:setFillColor( .93 )
+    scrPerfile:insert(bgTitleX)
+    local lblTitle = display.newText({
+        text = "Guia turistica:", 
+        x = 310, y = posY+35,
+        width = 400,
+        font = native.systemFontBold,   
+        fontSize = 25, align = "left"
+    })
+    lblTitle:setFillColor( 0 )
+    scrPerfile:insert(lblTitle)
+	local iconOpcion = {}
+	local infoOpcion = {}
+	local typeOpcion = {}
+	local nameOption = {}
+	local num = #infoOpcion + 1
+	--disponibilidad
+	infoOpcion[num] = "Disponibilidad: "
+	iconOpcion[num] = 'icoFilterCheckAvailble'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "availability"
+	num = #infoOpcion + 1
+	if not item.diponibilidad then
+		item.diponibilidad = "Consultarme"
+    end
+	availability = item.diponibilidad
+	--alojamiento
+	infoOpcion[num] = "Alojamiento: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "accommodation"
+	num = #infoOpcion + 1
+	if not item.alojamiento then
+		item.alojamiento = "No"
+    end
+	accommodation = item.alojamiento
+	--vehiculo
+	infoOpcion[num] = "Vehiculo: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "vehicle"
+	num = #infoOpcion + 1
+	if not item.vehiculo then
+		item.vehiculo = "No"
+    end
+	vehicle = item.vehiculo
+	--comida
+	infoOpcion[num] = "Comida: "
+	iconOpcion[num] = 'icoFilterCheck'
+	typeOpcion[num] = "toggleButton"
+	nameOption[num] = "food"
+	num = #infoOpcion + 1
+	if not item.comida then
+		item.comida = "No"
+    end
+    food = item.comida
+    -- Options
+    posY = posY + 45
+	
+	bgComp1.height = (#infoOpcion * 80) + 70
+	bgComp2.height = (#infoOpcion * 80) + 66
+	
+    for i=1, #infoOpcion do
+        posY = posY + 75
+        
+        local ico
+        if iconOpcion[i] ~= '' then
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
+            ico:translate( 115, posY - 3 )
+			scrPerfile:insert(ico)
+        end
+		
+        local lbl = display.newText({
+            text = infoOpcion[i], 
+            x = 350, y = posY,
+            width = 400,
+            font = native.systemFont,   
+            fontSize = 22, align = "left"
+        })
+        lbl:setFillColor( 0 )
+        scrPerfile:insert(lbl)
+		
+		if typeOpcion[i] == "textField" then
+			createTextField(item, nameOption[i], posY)
+		elseif typeOpcion[i] == "toggleButton" then
+			createToggleButtons(item, nameOption[i], posY, 350)
+		end
+    end
+	
+	posY = posY + 100
+	--creamos los componentes de preferencias
+	createPreferencesItems( item )
 end
 
 ------------------------------------
@@ -629,9 +1297,11 @@ function createGeneralItems( item )
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "gender"
 	num = #infoOpcion + 1
-	if item.genero then
+	if not item.genero then
 		item.genero = "Hombre"
 	end
+	gender = item.genero
+	
 	--pais de origen
 	infoOpcion[num] = "Pais de origen: "
 	iconOpcion[num] = 'icoFilterCity'
@@ -645,7 +1315,7 @@ function createGeneralItems( item )
 	infoOpcion[num] = "Residencia: "
 	iconOpcion[num] = 'icoFilterCity'
 	typeOpcion[num] = "textField"
-	nameOption[num] = "Residencia"
+	nameOption[num] = "residence"
 	num = #infoOpcion + 1
 	if not item.residencia then
 		item.residencia = ""
@@ -653,17 +1323,17 @@ function createGeneralItems( item )
 	--tiempo de residencia
 	infoOpcion[num] = "Tiempo de residencia: "
 	iconOpcion[num] = 'icoFilterCity'
-	typeOpcion[num] = "ComboBox"
+	typeOpcion[num] = "comboBox"
 	nameOption[num] = "residenceTime"
 	num = #infoOpcion + 1
 	if not item.tiempoResidencia then
-		item.tiempoResidencia = ""
+		item.tiempoResidencia = "Seleccionar"
 	end
 	--email contacto
 	infoOpcion[num] = "Email de contacto: "
 	iconOpcion[num] = 'iconEmailContacto'
 	typeOpcion[num] = "textField"
-	nameOption[num] = "EmailContact"
+	nameOption[num] = "emailContact"
 	num = #infoOpcion + 1
 	if not item.emailContacto then
 		item.emailContacto = ""
@@ -696,10 +1366,16 @@ function createGeneralItems( item )
 		
 		if typeOpcion[i] == "textField" then
 			createTextField(item, nameOption[i], posY)
+		elseif typeOpcion[i] == "toggleButton" then
+			createToggleButtons(item, nameOption[i], posY, 300)
+		elseif typeOpcion[i] == "comboBox" then
+			createComboBox(item, nameOption[i], posY, 380)
 		end
     end
 	
-	posY = posY + 75
+	posY = posY + 100
+	
+	createTouristGuideItems( item )
 
 end
 
@@ -774,128 +1450,6 @@ function MyProfile( item )
 	
 	--creamos los componentes generales
 	createGeneralItems( item )
-	
-	--[[
-	 -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    scrPerfile:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    scrPerfile:insert(bgComp2)
-    
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    scrPerfile:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    scrPerfile:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "DETALLE:", 
-        x = 310, y = posY+35,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    scrPerfile:insert(lblTitle)
-	local iconOpcion = { 'icoFilterCity', 'icoFilterLanguage', 'icoFilterCheckAvailble', 'icoFilterCheckAvailble', 'icoFilterCheckAvailble' }
-	local infoOpcion = { 'Residencia', 'Idioma', 'Alojamiento', 'Vehiculo', 'Disponibilidad'}
-	
-	local tempPosY = posY
-	posY = posY + 125
-	
-	--textField residence
-	textUserResidence = native.newTextField( 500, posY, 400, 50 )
-	textUserResidence.text = item.residencia
-	textUserResidence.hasBackground = false
-	textUserResidence.size = 25
-	textUserResidence:resizeHeightToFitFont()
-	textUserResidence:addEventListener( "userInput", userInputProfile )
-	textUserResidence.name = "residence"
-	grpTextProfile:insert(textUserResidence)
-	
-	posY = posY + 75
-	
-	-- BG Component
-    local bgLangs = display.newRect( 500, posY, 400, 80 )
-   -- bgLangs.anchorY = 0
-    bgLangs:setFillColor( 0 )
-	bgLangs.alpha = .02
-	bgLangs.name = "languages"
-	bgLangs.label = "Tus Idiomas"
-	bgLangs.type = "create"
-    scrPerfile:insert(bgLangs)
-	bgLangs:addEventListener( 'tap', showOptionsLabels )
-	--label language
-    lblLang = display.newText({
-        text = "", 
-		x = 500, y = posY,
-		width = 400,
-		font = native.systemFont,   
-		fontSize = 22, align = "left"
-    })
-    lblLang:setFillColor( 0 )
-    scrPerfile:insert(lblLang)
-	
-	--idioma
-	
-	if item.idiomas then
-		myLanguages = item.idiomas
-        for i=1, #item.idiomas do
-            if i == 1 then
-                lblLang.text = item.idiomas[i]
-            else
-                lblLang.text = lblLang.text..', '.. item.idiomas[i]
-            end
-        end
-    else
-		myLanguages = {}
-		lblLang.text= 'Editar tus idiomas'
-    end
-	
-	posY = posY + 45
-
-	-- Create the widget
-	-- Image sheet options and declaration
-	createToggleButtons(item, posY)
-	----
-	
-	posY = posY + 95
-	
-    -- Options
-	posY = tempPosY + 45
-    local opt = {
-        {icon = iconOpcion[1], label= infoOpcion[1]}, 
-        {icon = iconOpcion[2], label= infoOpcion[2]}, 
-        {icon = iconOpcion[3], label= infoOpcion[3]}, 
-        {icon = iconOpcion[4], label= infoOpcion[4]}, 
-        {icon = iconOpcion[5], label= infoOpcion[5]}} 
-    for i=1, #opt do
-        posY = posY + 75
-        
-        local ico
-        if opt[i].icon ~= '' then
-           -- print("img/"..opt[i].icon..".png" )
-            ico = display.newImage( "img/"..opt[i].icon..".png" )
-            ico:translate( 115, posY - 3 )
-			scrPerfile:insert(ico)
-        end
-        local lbl = display.newText({
-            text = opt[i].label, 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 22, align = "left"
-        })
-        lbl:setFillColor( 0 )
-        scrPerfile:insert(lbl)
-    end]]
 	
 end
 
@@ -1056,6 +1610,7 @@ end
 -- Hide scene
 ----------------
 function scene:hide( event )
+	native.setKeyboardFocus( nil )
 	if grpTextProfile then
 		grpTextProfile:removeSelf()
 		grpTextProfile = nil

@@ -500,23 +500,51 @@ local RestManager = {}
     -- Actualiza los datos del usuario
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
-    RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-		
+    --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
+	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, emailContact, availability, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic )
+		print(gender)
 		local hobbies2 = json.encode(hobbies)
 		local language2 = json.encode(language)
+		local sport2 = json.encode(sport)
         local url = site.."api/saveProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
+		if UserName ~= 'UserName' then
+			url = url.."/UserName/" .. urlencode(UserName)
+		end
 		if name ~= '' then
 			url = url.."/name/" .. urlencode(name)
+		end
+		if lastName ~= '' then
+			url = url.."/lastName/" .. urlencode(lastName)
+		end
+		url = url.."/gender/" .. urlencode(gender)
+		if originCountry ~= '' then
+			url = url.."/originCountry/" .. urlencode(originCountry)
 		end
 		if residence ~= '' then
 			url = url.."/residence/" .. urlencode(residence)
 		end
-		url = url.."/accommodation/" .. accommodation
-		url = url.."/vehicle/" .. vehicle
-		url = url.."/available/" .. available
+		url = url.."/residenceTime/" .. urlencode(residenceTime)
+		if emailContact ~= '' then
+			url = url.."/emailContact/" .. urlencode(emailContact)
+		end
+		url = url.."/availability/" .. urlencode(availability)
+		url = url.."/accommodation/" .. urlencode(accommodation)
+		url = url.."/vehicle/" .. urlencode(vehicle)
+		url = url.."/food/" .. urlencode(food)
+		url = url.."/race/" .. urlencode(race)
+		url = url.."/workArea/" .. urlencode(workArea)
+		url = url.."/ownAccount/" .. urlencode(ownAccount)
+		url = url.."/workArea/" .. urlencode(workArea)
+		if pet ~= '' then
+			url = url.."/pet/" .. urlencode(pet)
+		end
+		url = url.."/smoke/" .. urlencode(smoke)
+		url = url.."/drink/" .. urlencode(drink)
+		url = url.."/psychrotrophic/" .. urlencode(psychrotrophic) 
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
+		url = url.."/sport/" .. urlencode(sport2)
 		
         local function callback(event)
             if ( event.isError ) then
@@ -553,7 +581,7 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
-						setList(data.hobbies, data.language)
+						setList(data.hobbies, data.language, data.sport, data.residenceTime, data.race, data.workArea)
 					else
 						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
 					end

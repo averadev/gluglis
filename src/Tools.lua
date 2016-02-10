@@ -8,6 +8,7 @@
 -- Encabezao general
 ---------------------------------------------------------------------------------
 require('src.Menu')
+require('src.resources.Globals')
 local composer = require( "composer" )
 local facebook = require("plugin.facebook.v4")
 local Sprites = require('src.resources.Sprites')
@@ -343,6 +344,7 @@ function Tools:new()
 	-- Selecciona la ciudad
 	--------------------------
 	function selectCity( event )
+		native.setKeyboardFocus( nil )
 		event.target.alpha = .5
 		timeMarker = timer.performWithDelay( 100, function()
 			event.target.alpha = 1
@@ -374,16 +376,16 @@ function Tools:new()
 		grpScrCity = display.newGroup()
 		parent:insert( grpScrCity )
 
-		local bgComp1 = display.newRect( 453, 320, 410, 340 )
-		bgComp1.anchorY = 0
-		bgComp1:setFillColor( .88 )
-		grpScrCity:insert(bgComp1)
-		bgComp1:addEventListener( 'tap', noAction )
+		bgCompCity = display.newRect( 453, 320, 410, 340 )
+		bgCompCity.anchorY = 0
+		bgCompCity:setFillColor( .88 )
+		grpScrCity:insert(bgCompCity)
+		bgCompCity:addEventListener( 'tap', noAction )
 		
 		if name == "residence" then
-			bgComp1.y = 450
-			bgComp1.x = 500
-			bgComp1.anchorY = 1
+			bgCompCity.y = 750
+			bgCompCity.x = 500
+			bgCompCity.anchorY = 1
 		end
 		
 		--pinta la lista de las ciudades
@@ -391,7 +393,7 @@ function Tools:new()
 			local posY = 321
 			local posX = 453
 			if name == "residence" then
-				posY = 388
+				posY = 688
 				posX = 500
 			end
 			for i = 1, #item do
@@ -420,7 +422,7 @@ function Tools:new()
 				end
 				
 			end
-			bgComp1.height = 63 * #item + 2
+			bgCompCity.height = 63 * #item + 2
 			
 		else
 	
