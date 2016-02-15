@@ -291,6 +291,42 @@ local RestManager = {}
 		end
     end
 	
+	RestManager.getMessagesByChannel = function(channelId)
+		local settings = DBManager.getSettings()
+        -- Set url
+        local url = settings.url
+        url = url.."api/getMessagesByChannel/format/json"
+        url = url.."/idApp/" .. settings.idApp
+		url = url.."/channelId/" .. channelId
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						local items = data.items
+						local lastRead = data.lastRead
+						showNewMessages( items, lastRead )
+					else
+						noConnectionMessage('Error con el servidor')
+					end
+				else
+					noConnectionMessage('Error con el servidor')
+				end
+            end
+            return true
+        end
+        -- Do request
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			noConnectionMessage('No se detecto conexion a internet')
+		end
+	end
+	
+	
 	--------------------------------------------------------------------
     -- Bloquea o desbloquea el chat selecionado
     -- @param channelId identificador del canal de los mensajes
@@ -461,6 +497,45 @@ local RestManager = {}
             end
             return true
         end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	--------------------------------------------------
+    -- Limpia los datos del usuario(playerId y local)
+    --------------------------------------------------
+    RestManager.clearUser = function()
+        local url = site.."api/clearUser/format/json"
+		url = url.."/idApp/" .. settings.idApp
+	
+        local function callback(event)
+            if ( event.isError ) then
+				resultCleanUser( false, data.message)
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						resultCleanUser( true, data.message )
+					else
+						resultCleanUser( false, "Error al cerrar sesión")
+					end
+				else
+					resultCleanUser( false, "Error al cerrar sesión")
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	--------------------------------------------------
+    -- actualiza el playerId
+    --------------------------------------------------
+    RestManager.updatePlayerId = function()
+        local url = site.."api/updatePlayerId/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		url = url.."/playerId/"..urlencode(playerId)
         -- Do request
 		network.request( url, "GET", callback )
     end

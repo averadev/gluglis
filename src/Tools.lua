@@ -13,6 +13,7 @@ local composer = require( "composer" )
 local facebook = require("plugin.facebook.v4")
 local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
+local RestManager = require('src.resources.RestManager')
 
 local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity
 
@@ -194,11 +195,12 @@ function Tools:new()
             composer.removeScene( "src."..t.screen )
 			if t.screen == "MyProfile" then
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
+			elseif t.screen == "LoginSplash" then
+				RestManager.clearUser()
+				--RestManager
+				--DBManager.clearUser()
+				--facebook.logout()
 			else
-				if t.screen == "LoginSplash" then
-					DBManager.clearUser()
-					facebook.logout()
-				end
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
 			end
             
@@ -206,6 +208,18 @@ function Tools:new()
         return true
     end
     
+	function resultCleanUser(isTrue, message)
+		NewAlert(true,message )
+		timeMarker = timer.performWithDelay( 1000, function()
+			if isTrue == true then
+				DBManager.clearUser()
+				facebook.logout()
+				composer.gotoScene("src.LoginSplash", { time = 400, effect = "fade" } )
+			end
+			NewAlert(false, message)
+		end, 1 )
+	end
+	
 	----------------------------------
     -- Cerramos o mostramos shadow
 	----------------------------------

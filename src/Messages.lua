@@ -200,6 +200,7 @@ function buildListMsg(posc, item )
 			ListChats[poscC]:insert(txtNoBubble)
 		end
     end
+	scrMs:setScrollHeight(posY + 100)
 end
 
 ---------------------------------------------------------------------------------

@@ -700,6 +700,14 @@ function scene:create( event )
 	tools:setLoading(true,grpLoad)
 	RestManager.getUsersById()
     RestManager.getUsersByFilter()
+	if isReadOnly == false then
+		timeMarker = timer.performWithDelay( 1000, function( event )
+			if playerId ~= 0 then
+				timer.cancel( event.source ) 
+				RestManager.updatePlayerId()
+			end
+		end, -1)
+	end
 end	
 
 -------------------------------------

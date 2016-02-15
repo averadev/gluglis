@@ -33,6 +33,10 @@ local tmpList = {}
 local lblDateTemp = {}
 local itemsConfig = {}
 local NoMessage
+local contTemp = -1
+local flagMSGS = 0
+local timer1
+local checkBlue = {}
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -103,6 +107,18 @@ function sentMessage()
 	return true
 end
 
+function showNewMessages( items, last )
+	for i = 1, #items, 1 do
+		if #items > 0 then
+			displaysInList(items[i], false )
+		end
+	end
+	if last ~= '0' then
+		checkMessages(last)
+	end
+	local resumeTime = timer.resume( timer1 )
+end
+
 --------------------------------------------------
 -- Prepara los datos para pintarlo en el scroll
 -- @param itemTemp informacion del mensaje
@@ -111,7 +127,7 @@ end
 function displaysInList(itemTemp, isMe)
 	tmpList = nil
 	tmpList = {}
-	tmpList[1] = {isMe = isMe, message = itemTemp.message , time = itemTemp.hora}
+	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message}
 	--verifica la fecha en que se mando
 	if lastDate ~= itemTemp.fechaFormat then
 		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
@@ -146,9 +162,32 @@ end
 ---------------------------------------------------
 function changeDateOfMSG(item, poscD)
 	lblDateTemp[poscD].text = item.hora
+	for i=1, #checkBlue, 1 do
+		if checkBlue[i].poscD == poscD then
+			checkBlue[i].id = item.idMessage
+		end
+	end
 	local titleScene = composer.getScene( "src.Messages" )
 	if titleScene then
 		movedChat(item, item.message, 0)
+	end
+end
+
+---------------------------------------------------
+-- Marca los mensajes leidos
+-- @param last id del ultimo mensaje leido
+---------------------------------------------------
+function checkMessages(last)
+	local numCheck = 0
+	for i=1, #checkBlue, 1 do
+		if checkBlue[i].id == last then
+			numCheck = i
+			break
+		end
+	end
+	for i=numCheck, 1, -1 do
+		checkBlue[i].alpha = 1
+		table.remove( checkBlue, i )
 	end
 end
 
@@ -290,6 +329,7 @@ end
 ----------------------------------------------------
 function buildChat(poscD)
     for z = 1, #tmpList do
+	
         local i = tmpList[z]
 		-- muestra la fecha
         if i.date then
@@ -354,15 +394,14 @@ function buildChat(poscD)
                 if i.isMe then
                     lblM.x = 270
                 end
-                
-                bgM.height = lblM.contentHeight + 30
-                bgM0.height = lblM.contentHeight + 31
+                bgM.height = lblM.contentHeight + 41
+                bgM0.height = lblM.contentHeight + 42
             else
                 bgM.width = lblM.contentWidth + 40
                 bgM0.width = lblM.contentWidth + 42
 				if lblM.contentWidth < 60 then
-					 bgM.width = 120
-					 bgM0.width = 122
+					 bgM.width = 140
+					 bgM0.width = 142
 				end
                 lblM.anchorX = 0
                 if i.isMe then
@@ -370,7 +409,9 @@ function buildChat(poscD)
                     lblM.x = intW - 40
                 end
             end
-            --muestra un cargando mientra se confirma el mensaje
+			
+            --muestra un cargando mientra se confirma el mensaje v9
+			
 			if poscD ~= 0 then
 				lblDateTemp[poscD] = display.newText({
 					text = "Cargando",
@@ -399,6 +440,25 @@ function buildChat(poscD)
 				if lblM.anchorX == 1 then
 					lblTime.anchorX = 0
 					lblTime.x = intW - bgM.width
+				end
+			end
+			if i.isMe == true then
+				if i.isRead == '1' or i.isRead == 1 then
+					local iconCheckBlue = display.newImage("img/icoFilterCheck.png")
+					iconCheckBlue:translate(728, posY + lblM.contentHeight + 20)
+					grpChat:insert( iconCheckBlue )
+				else
+					local num = #checkBlue + 1
+					checkBlue[num] = display.newImage("img/icoFilterCheck.png")
+					checkBlue[num]:translate(728, posY + lblM.contentHeight + 20)
+					grpChat:insert( checkBlue[num] )
+					checkBlue[num].alpha = 0
+					if i.id then
+						checkBlue[num].id = i.id
+					else
+						checkBlue[num].id = 0
+						checkBlue[num].poscD = poscD
+					end
 				end
 			end
             
@@ -553,10 +613,11 @@ function scene:create( event )
     bgField:setFillColor( 1 )
     grpTextField:insert(bgField)
 	--textField enviar
-	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 50 )
+	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 60 )
     txtMessage.inputType = "default"
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
+	txtMessage:resizeFontToFitHeight()
 	grpTextField:insert( txtMessage )
 	posY = 30
 	scrChatY = scrChat.y
@@ -564,6 +625,13 @@ function scene:create( event )
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
 	RestManager.getChatMessages(item.channelId)
 	grpTextField:toFront()
+	timer1 = timer.performWithDelay( 300, function()
+		if flagMSGS == 0 then
+			local result = timer.pause( timer1 )
+			RestManager.getMessagesByChannel(item.channelId)
+		end
+	end, -1  )
+	--scrChat:setScrollHeight( posY + 300 )
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
