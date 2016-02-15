@@ -119,7 +119,8 @@ function buildCard(item)
     local idx = #avaL + 1
 	local imgS = nil
 	if imgWidth < 550 or imgHeight < 550 then 
-		imgS = graphics.newImageSheet( "img/avatar2.png", { width = 275, height = 550, numFrames = 2 })
+		imgWidth = math.round( imgWidth/2 ) - 1
+		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
 	else
 		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 275, height = 550, numFrames = 2 })
 	end
