@@ -29,6 +29,7 @@ local idxA, countA
 local lblName, lblAge, lblInts
 local loadUsers
 local btnViewProfile
+local lblTitle
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -166,12 +167,14 @@ function showDetail( event )
 		grpBtnDetail.y = midH - 100 + h
 		bottomCmp.alpha = 1
 		event.target.flag = 1
+		lblTitle.text = "MENOS INFORMACIÓN"
 		screen:removeEventListener( "touch", touchScreen )
 	else
 		bottomCmp.alpha = 0
 		topCmp.y =  -500
 		grpBtnDetail.y = 800 + h
 		event.target.flag = 0
+		lblTitle.text = "MÁS INFORMACIÓN"
 		screen:addEventListener( "touch", touchScreen )
 	end
 end
@@ -499,7 +502,7 @@ function showInfoButton()
     bgTitle1.anchorY = 0
     bgTitle1:setFillColor( 68/255, 14/255, 98/255 )
     grpBtnDetail:insert(bgTitle1)
-	 local lblTitle = display.newText({
+	lblTitle = display.newText({
         text = "MÁS INFORMACIÓN", 
         x = midW, y = 70,
         width = 400,
