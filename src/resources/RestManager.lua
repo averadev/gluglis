@@ -754,7 +754,7 @@ local RestManager = {}
                 -- Descargamos de la nube
 				local url
 				if obj.items[obj.idx].identifier then
-					local sizeAvatar = 'width=550&height=550'
+					local sizeAvatar = 'width=115&height=550'
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 				else
 					url = site..obj.path..img
