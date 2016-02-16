@@ -649,6 +649,7 @@ end
 -- Hide scene
 function scene:hide( event )
 	native.setKeyboardFocus( nil )
+	timer.cancel( timer1 ) 
 end
 
 -- Destroy scene
