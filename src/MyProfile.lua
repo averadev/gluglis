@@ -278,6 +278,7 @@ function moveToggleButtons( event )
 end
 
 function showComboBox( event )
+	
 	local t = event.target
 	if grpComboBox then
 		grpComboBox:removeSelf()
@@ -285,7 +286,7 @@ function showComboBox( event )
 	end
 	grpTextProfile.x = intW
 	grpComboBox = display.newGroup()
-	
+	componentActive = "comboBox"
 		--combobox
 	local bg0 = display.newRect( midW, midH + h, intW, intH )
 	bg0:setFillColor( 0 )
@@ -341,7 +342,7 @@ function showComboBox( event )
 		container2:insert(lblNameOption)
 		posY = posY + 84
 	end
-	
+	bbb:toFront()
 end
 
 function selectOptionCombo( event )
@@ -355,11 +356,10 @@ function selectOptionCombo( event )
 	end
 	hideComboBox( "" )
 	return true
-	
 end
 
 function hideComboBox( event )
-	local t = event.target
+	componentActive = false
 	if grpComboBox then
 		grpComboBox:removeSelf()
 		grpComboBox = nil
@@ -374,7 +374,6 @@ end
 -- @param posY2 coordenada y del elemento
 -------------------------------------------------
 function createComboBox(item, name, coordY, coordX )
-
 	coordY = coordY - 25
 	-- BG Component
 	local bg0CheckAcco = display.newRect( coordX, coordY, 300, 56 )
@@ -723,6 +722,7 @@ function showOptionsLabels( event )
 	--hobbies
 	local t = event.target
 	if t.type == "create" then
+		componentActive = "multiComboBox"
 		if grpOptionsLabel then
 			grpOptionsLabel:removeSelf()
 			grpOptionsLabel = nil
@@ -818,6 +818,7 @@ function showOptionsLabels( event )
 		grpOptionsLabel:insert(lblStartChat)
 		
 	elseif t.type == "destroy" then
+		componentActive = false
 		if grpOptionsLabel then
 			grpOptionsLabel:removeSelf()
 			grpOptionsLabel = nil
@@ -826,8 +827,18 @@ function showOptionsLabels( event )
 		container = nil
 		container = {}
 	end
-		
 	return true
+end
+
+function hideOptionsLabels()
+	componentActive = false
+	if grpOptionsLabel then
+		grpOptionsLabel:removeSelf()
+		grpOptionsLabel = nil
+	end
+	grpTextProfile.x = 0
+	container = nil
+	container = {}
 end
 
 ------------------------------------

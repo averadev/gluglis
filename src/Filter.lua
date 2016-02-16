@@ -236,7 +236,7 @@ end
 -- Crea el componente de DatePicker
 --------------------------------------------
 function createDatePicker( event )
-	
+	componentActive = "datePicker"
 	if grpDatePicker then
 		grpDatePicker:removeSelf()
 		grpDatePicker = nil
@@ -330,6 +330,7 @@ function destroyDatePicker( event )
 			lblEndDate.date = dateS2
 		end
 	end
+	componentActive = false
 	--destruye el widget
 	if grpDatePicker then
 		grpDatePicker:removeSelf()
@@ -337,6 +338,16 @@ function destroyDatePicker( event )
 	end
 	grpTextField.x = 0
 	return true
+end
+
+function destroyDatePicker2( )
+	componentActive = false
+	--destruye el widget
+	if grpDatePicker then
+		grpDatePicker:removeSelf()
+		grpDatePicker = nil
+	end
+	grpTextField.x = 0
 end
 
 -----------------------------------------------

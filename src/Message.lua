@@ -80,8 +80,10 @@ end
 -- Envia el mensaje
 -----------------------
 function sentMessage()
+	componentActive = "blockChat"
 	--verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
+		componentActive = false
 		if txtMessage.text ~= "" then
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
@@ -203,6 +205,7 @@ end
 -- Muestra un aviso si se desea bloquear o desbloquear el chat
 ------------------------------------------------------------------
 function blockedChat( event )
+	componentActive = "blockChat"
 	if itemsConfig.blockMe == "closed" then
 		blockedChatMsg('¿desea desbloquear a ' .. itemsConfig.display_name .. '? para enviarle mensajes', true, true)
 	else
@@ -265,8 +268,11 @@ function blockedChatMsg(message, isShow, isBlock)
 		end
 		
 	else
-		grpBlocked:removeSelf()
-		grpBlocked = nil
+		componentActive = false
+		if grpBlocked then
+			grpBlocked:removeSelf()
+			grpBlocked = nil
+		end
 	end
 end
 
@@ -517,6 +523,8 @@ function scene:create( event )
     local item = event.params.item
 	poscList = item.posc
 	screen = self.view
+	--toolbar
+    tools = Tools:new()
     --screen.y = h
     grpTextField = display.newGroup()
 	screen:insert( grpTextField )
@@ -609,15 +617,16 @@ function scene:create( event )
     })
     lblSend:setFillColor( 1 )
     grpTextField:insert(lblSend)
-    local bgField = display.newRoundedRect(  midW - 75, intH - 45, intW - 190, 60, 20 )
-    bgField:setFillColor( 1 )
-    grpTextField:insert(bgField)
+    --local bgField = display.newRoundedRect(  midW - 75, intH - 45, intW - 190, 60, 20 )
+    --bgField:setFillColor( 1 )
+    --grpTextField:insert(bgField)
 	--textField enviar
 	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 60 )
     txtMessage.inputType = "default"
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "send" )
-	txtMessage:resizeFontToFitHeight()
+	txtMessage.size = 30
+	txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
 	posY = 30
 	scrChatY = scrChat.y

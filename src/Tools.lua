@@ -16,6 +16,7 @@ local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
 local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity
+local btnBackFunction = false
 
 Tools = {}
 function Tools:new()
@@ -208,6 +209,19 @@ function Tools:new()
         return true
     end
     
+	---------------------------------------------------------------
+	-- Regresa a la scena anterior con el boton atras de android
+	---------------------------------------------------------------
+	function returnScene()
+		local currentScene = composer.getSceneName( "current" )
+		if currentScene == "src.Message" then
+			composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" })
+		else
+			composer.gotoScene( "src.Home", { time = 400, effect = "slideRight" })
+		end
+		return true
+	end
+	
 	function resultCleanUser(isTrue, message)
 		NewAlert(true,message )
 		timeMarker = timer.performWithDelay( 1000, function()
@@ -225,11 +239,13 @@ function Tools:new()
 	----------------------------------
     function showMenu(event)
         if bgShadow.alpha == 0 then
+			componentActive = "menu"
             self:toFront()
             --bgShadow:addEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = .3, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = 0, time = 400, transition = easing.outExpo } )
         else
+			componentActive = false
             --bgShadow:removeEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = 0, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = -500, time = 400, transition = easing.outExpo })
@@ -348,6 +364,7 @@ function Tools:new()
 	-------------------------
 	function deleteGrpScrCity()
 		if grpScrCity then
+			componentActive = false
 			grpScrCity:removeSelf()
 			grpScrCity = nil
 		end
@@ -379,7 +396,7 @@ function Tools:new()
 	-- @param item nombre de la ciudad y su pais
 	---------------------------------------------------
 	function showCities(item, name, parent)
-
+		componentActive = "cities"
 		--elimina los componentes para crear otros
 		if grpScrCity then
 			grpScrCity:removeSelf()
@@ -445,7 +462,52 @@ function Tools:new()
     return self
 end
 
+function keuEve()
+	print(componentActive)
+	return true
+end
 
+
+-- Return button Android Devices
+local function onKeyEventBack( event )
+	local phase = event.phase
+	local keyName = event.keyName
+	local platformName = system.getInfo( "platformName" )
+	
+	if( "back" == keyName and phase == "up" ) then
+		if ( platformName == "Android" ) then
+			if composer.getSceneName( "current" ) == "src.Home" then
+				if componentActive == "menu" then
+					showMenu()
+				else
+				return false
+				--return true
+				end
+			else
+				if componentActive == "multiComboBox" then
+					hideOptionsLabels()
+				elseif componentActive == "comboBox" then
+					hideComboBox( "" )
+				elseif componentActive == "cities" then
+					deleteGrpScrCity()
+				elseif componentActive == "datePicker" then
+					destroyDatePicker2( "" )
+				elseif componentActive == "blockChat" then
+					blockedChatMsg( "", false, false )
+				else
+					returnScene()
+				end
+			end
+			return true
+		end
+	end
+	return false
+end
+
+if btnBackFunction == false then
+	btnBackFunction = true
+	Runtime:addEventListener( "key", onKeyEventBack )
+end
 
 
 
