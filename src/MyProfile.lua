@@ -299,8 +299,8 @@ function showComboBox( event )
 	--bg1:addEventListener( 'tap', hideOptionsCombo )
 	--scrollview
 	scrCombo = widget.newScrollView({
-		top = h + 346,
-		left = 84,
+		y = midH + h,
+		x = midW,
 		width = 600,
 		height = midH - 10,
 		horizontalScrollDisabled = true,
@@ -342,7 +342,6 @@ function showComboBox( event )
 		container2:insert(lblNameOption)
 		posY = posY + 84
 	end
-	bbb:toFront()
 end
 
 function selectOptionCombo( event )

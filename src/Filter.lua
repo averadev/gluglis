@@ -208,8 +208,8 @@ function DatePicker()
 	
 	-- Create the widget
 	pickerWheel2 = widget.newPickerWheel({
-		top = midH - 550,
-		left = -100,
+		y = 250,
+		x = 285,
 		columns = columnData,
         sheet = pickerWheelSheet,
         overlayFrame = 1,
@@ -340,6 +340,10 @@ function destroyDatePicker( event )
 	return true
 end
 
+---------------------------
+-- Destruye el datePicker
+-- Obtiene la fecha selecionada
+---------------------------
 function destroyDatePicker2( )
 	componentActive = false
 	--destruye el widget
