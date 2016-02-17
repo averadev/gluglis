@@ -72,11 +72,11 @@ local dbManager = {}
 	--limpia la tabla de config y filtro
     dbManager.clearUser = function()
         openConnection( )
-        query = "UPDATE config SET idApp = 0, user_email = '', display_name = '';"
+        local query = "UPDATE config SET idApp = 0, user_email = '', display_name = '';"
         db:exec( query )
-		query = "delete from filter;"
+		local query = "delete from filter;"
         db:exec( query )
-		query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99);"
+		local query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí');"
 		db:exec( query )
 		closeConnection( )
     end
