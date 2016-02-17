@@ -63,6 +63,11 @@ end
 -- Guarda los datos del perfil
 --------------------------------
 function saveProfile()
+	
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+
 	btnSaveProfile:removeEventListener( 'tap', saveProfile )
 	tools:setLoading(true,screen)
 	for i=1, #myHobbies, 1 do
@@ -74,14 +79,13 @@ function saveProfile()
 	for i=1, #mySports, 1 do
 		mySports[i] = string.gsub( mySports[i], "/", '...' )
 	end
-	
-	textUserName.text = string.gsub(textUserName.text , "%s", "")
-	textName.text = string.gsub(textName.text , "%s", "")
-	textLastName.text = string.gsub(textLastName.text , "%s", "")
-	textOriginCountry.text = string.gsub(textOriginCountry.text , "%s", "")
-	textUserResidence.text = string.gsub(textUserResidence.text , "%s", "")
-	textEmailContact.text = string.gsub(textEmailContact.text , "%s", "")
-	textPet.text = string.gsub(textPet.text , "%s", "")
+	textUserName.text = trimString(textUserName.text)
+	textName.text = trimString(textName.text)
+	textLastName.text = trimString(textLastName.text)
+	textOriginCountry.text = trimString(textOriginCountry.text)
+	textUserResidence.text = trimString(textUserResidence.text)
+	textEmailContact.text = trimString(textEmailContact.text)
+	textPet.text = trimString(textPet.text)
 	RestManager.saveProfile(
 		textUserName.text, 
 		myHobbies,
