@@ -34,9 +34,11 @@ local lblDateTemp = {}
 local itemsConfig = {}
 local NoMessage
 local contTemp = -1
-local flagMSGS = 0
 local timer1
 local checkBlue = {}
+local chanelId = 0
+
+
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -57,6 +59,41 @@ function setItemsMessages( items )
 		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = item.message, time = item.hora, isRead = item.status_message} 
 	end
 	buildChat(0)
+end
+
+function utf8_decode(utf8)
+ 
+   local unicode = ""
+   local mod = math.mod
+ 
+   local pos = 1
+   while pos < string.len(utf8)+1 do
+ 
+      local v = 1
+      local c = string.byte(utf8,pos)
+      local n = 0
+ 
+      if c < 128 then v = c
+      elseif c < 192 then v = c
+      elseif c < 224 then v = mod(c, 32) n = 2
+      elseif c < 240 then v = mod(c, 16) n = 3
+      elseif c < 248 then v = mod(c,  8) n = 4
+      elseif c < 252 then v = mod(c,  4) n = 5
+      elseif c < 254 then v = mod(c,  2) n = 6
+      else v = c end
+      
+      for i = 2, n do
+         pos = pos + 1
+         c = string.byte(utf8,pos)
+         v = v * 64 + mod(c, 64)
+      end
+ 
+      pos = pos + 1
+      if v < 255 then unicode = unicode..string.char(v) end
+ 
+   end
+ 
+   return unicode
 end
 
 ------------------------------------------------------
@@ -80,11 +117,17 @@ end
 -- Envia el mensaje
 -----------------------
 function sentMessage()
+
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+
 	componentActive = "blockChat"
 	--verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
 		componentActive = false
-		if txtMessage.text ~= "" then
+		
+		if trimString(txtMessage.text) ~= "" then
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
 			--displaysInList("quivole carnal", poscD, dateM[2])
@@ -95,8 +138,11 @@ function sentMessage()
 			end
 			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
 			displaysInList(itemTemp, true)
-			RestManager.sendChat( itemsConfig.channelId, txtMessage.text, poscD )
-			--RestManager.sendChat(itemsConfig.channelId, "quivole carnal", poscD)
+			local newMessageText = trimString(txtMessage.text)
+			newMessageText = string.gsub( newMessageText, "/", '&#47;' )
+			newMessageText = string.gsub( newMessageText, "\\", '&#92;' )
+			newMessageText = string.gsub( newMessageText, "%%", '&#37;' )
+			RestManager.sendChat( itemsConfig.channelId, newMessageText, poscD )
 			txtMessage.text = ""
 			native.setKeyboardFocus( nil )
 		end
@@ -309,6 +355,7 @@ function deleteNotBubble()
 	if titleScene then
 		createNotBubble( poscList, 0 )
 	end
+	messagesInRealTime()
 end
 
 -----------------------------------
@@ -499,6 +546,8 @@ function buildChat(poscD)
 	end
 	if lastStatus ~= 0 then
 		RestManager.changeStatusMessages(itemsConfig.channelId, lastStatus)
+	else
+		messagesInRealTime()
 	end
 end
 
@@ -515,12 +564,20 @@ function setImagePerfilMessage(item)
 	avatar:setMask( maskCircle80 )
 end
 
+function messagesInRealTime()
+	timer1 = timer.performWithDelay( 300, function()
+		local result = timer.pause( timer1 )
+		RestManager.getMessagesByChannel(chanelId)
+	end, -1  )
+end
+
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
 
 function scene:create( event )
     local item = event.params.item
+	chanelId = item.channelId
 	poscList = item.posc
 	screen = self.view
 	--toolbar
@@ -628,18 +685,13 @@ function scene:create( event )
 	txtMessage.size = 30
 	txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
+	txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
 	posY = 30
 	scrChatY = scrChat.y
 	scrChatH = scrChat.height
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
 	RestManager.getChatMessages(item.channelId)
 	grpTextField:toFront()
-	timer1 = timer.performWithDelay( 300, function()
-		if flagMSGS == 0 then
-			local result = timer.pause( timer1 )
-			RestManager.getMessagesByChannel(item.channelId)
-		end
-	end, -1  )
 	--scrChat:setScrollHeight( posY + 300 )
 end	
 -- Called immediately after scene has moved onscreen:

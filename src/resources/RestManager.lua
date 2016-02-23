@@ -4,8 +4,11 @@ local RestManager = {}
 	local mime = require("mime")
 	local json = require("json")
 	local crypto = require("crypto")
+	local openssl = require("plugin.openssl")
+	local cipher = openssl.get_cipher("aes-256-cbc")
+	local Globals = require('src.resources.Globals')
 	local DBManager = require('src.resources.DBManager')
-    local Globals = require('src.resources.Globals')
+  
 	
 	local settings = DBManager.getSettings()
 	local site = settings.url
@@ -29,9 +32,14 @@ local RestManager = {}
     -- da de alta un nuevo usuario por facebook
     ---------------------------------------------
 	RestManager.createUser = function(email, password, name, gender, birthday, location, facebookId, playerId)
-	
+		
+		password = encryptedPass(password)
+		password = string.gsub( password, "/", '&#47;' )
+		password = string.gsub( password, "\\", '&#92;' )
+		password = string.gsub( password, "%%", '&#37;' )
+		
         -- Set url
-		password = crypto.digest(crypto.md5, password)
+		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -76,15 +84,25 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	function encryptedPass(pass)
+		local encryptedData = cipher:encrypt ( pass, "key" )
+		local mime = require ( "mime" )
+		local encryptedData = mime.b64 ( cipher:encrypt ( pass, "key" ) )
+		return encryptedData
+	end
 	
 	---------------------------------- Pantalla Login ----------------------------------
 	-------------------------------------
     -- da de alta un nuevo usuario
     -------------------------------------
 	RestManager.createUserNormal = function(email, password, playerId)
-	
+		
+		password = encryptedPass(password)
+		password = string.gsub( password, "/", '&#47;' )
+		password = string.gsub( password, "\\", '&#92;' )
+		password = string.gsub( password, "%%", '&#37;' )
         -- Set url
-		password = crypto.digest(crypto.md5, password)
+		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -122,8 +140,14 @@ local RestManager = {}
 	-- valida el logueo
 	-------------------------
 	RestManager.validateUser = function( email, password, playerId )
+	
+		password = encryptedPass(password)
+		
+		password = string.gsub( password, "/", '&#47;' )
+		password = string.gsub( password, "\\", '&#92;' )
+		password = string.gsub( password, "%%", '&#37;' )
 		-- Set url
-		password = crypto.digest(crypto.md5, password)
+		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/validateUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -136,6 +160,7 @@ local RestManager = {}
 				gotoHomeUN( "Error intentelo mas tarde", "login", false )
             else
                 local data = json.decode(event.response)
+				print(event.response)
 				if data then
 					if data.success then
 						local item = data.item[1]
@@ -260,6 +285,7 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
+		print(url)
 	
         local function callback(event)
             if ( event.isError ) then

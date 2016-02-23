@@ -83,11 +83,16 @@ end
 -- Realiza el login normal
 -----------------------------
 function toLogIn( event )
+
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+
 	if flag == 0 then
 		flag = 1
 		--trim
-		local textEmail = string.gsub(txtEmailS.text , "%s", "")
-		local textPass = string.gsub(txtPassS.text , "%s", "")
+		local textEmail = trimString(txtEmailS.text)
+		local textPass = txtPassS.text
 		if textEmail ~= "" and textPass ~= "" then
 			tools:setLoading(true,grpLoad)
 			RestManager.validateUser( textEmail, textPass, 11 )
@@ -106,12 +111,17 @@ end
 -- Realiza el registo de un nuevo usuario
 --------------------------------------------
 function doCreate( event )
+
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+
 	if flag == 0 then
 		flag = 1
 		-- trim  de los campos
-		local textEmail = string.gsub(txtEmail.text , "%s", "")
-		local textPass = string.gsub(txtPass.text , "%s", "")
-		local textRePass = string.gsub(txtRePass.text , "%s", "")
+		local textEmail = trimString(txtEmail.text)
+		local textPass = txtPass.text
+		local textRePass = txtRePass.text
 		if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
 			tools:setLoading(true,grpLoad)
 			if textPass == textRePass then
@@ -245,6 +255,7 @@ function scene:create( event )
     txtPass = native.newTextField( midR + 100, midH + 150, 400, 70 )
     txtPass.inputType = "password"
     txtPass.hasBackground = false
+	txtPass.isSecure = true
     txtPass:addEventListener( "userInput", onTxtFocus )
 	grpNew:insert(txtPass)
     -- Set text re-password
@@ -260,6 +271,7 @@ function scene:create( event )
     txtRePass = native.newTextField( midR + 100, midH + 250, 400, 70 )
     txtRePass.inputType = "password"
     txtRePass.hasBackground = false
+	txtRePass.isSecure = true
     txtRePass:addEventListener( "userInput", onTxtFocus )
 	grpNew:insert(txtRePass)
     -- Button
