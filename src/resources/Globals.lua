@@ -21,3 +21,9 @@ isReadOnly = false
 bgCompCity = nil
 --indica si algun componente esta activo en la scena
 componentActive = false
+timeZone = ""
+if ( system.getInfo( "environment" ) == "simulator" ) then
+    timeZone = "-0500"
+else
+	timeZone = os.date( "%z" )
+end

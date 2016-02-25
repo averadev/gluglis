@@ -194,6 +194,7 @@ local RestManager = {}
         local url = site
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
+		url = url.."/timeZone/" .. urlencode(timeZone)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -239,7 +240,7 @@ local RestManager = {}
         url = url.."api/getChatMessages/format/json"
         url = url.."/idApp/"..settings.idApp
 		url = url.."/channelId/".. channelId
-	
+		url = url.."/timeZone/" .. urlencode(timeZone)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -285,7 +286,7 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
-		print(url)
+		url = url.."/timeZone/" .. urlencode(timeZone)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -324,6 +325,7 @@ local RestManager = {}
         url = url.."api/getMessagesByChannel/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
+		url = url.."/timeZone/" .. urlencode(timeZone)
 	
         local function callback(event)
             if ( event.isError ) then
