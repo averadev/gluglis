@@ -21,7 +21,7 @@ local scene = composer.newScene()
 
 -- Variables
 local newH = 0
-local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS
+local txtEmail, txtPass, txtRePass, txtEmailS, txtPassS, txtUser
 local btnNew, btnSignIn
 local flag = 0
 
@@ -119,13 +119,14 @@ function doCreate( event )
 	if flag == 0 then
 		flag = 1
 		-- trim  de los campos
+		local textUser = trimString(txtUser.text)
 		local textEmail = trimString(txtEmail.text)
 		local textPass = txtPass.text
 		local textRePass = txtRePass.text
-		if textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
+		if textUser ~= "" and textEmail ~= "" and textPass ~= "" and textRePass ~= "" then
 			tools:setLoading(true,grpLoad)
 			if textPass == textRePass then
-				RestManager.createUserNormal(textEmail, textPass, "", "", "", playerId)
+				RestManager.createUserNormal(textUser, textEmail, textPass, "", "", "", playerId)
 			else
 				alertLogin(true,"Contraseñas distintas",2)
 				timeMarker = timer.performWithDelay( 2000, function()
@@ -223,13 +224,30 @@ function scene:create( event )
     btnBack:addEventListener( 'tap', moveBack)
     -- Set Lines
     getLine(grpNew, midR, midH)
-    getLine(grpNew, midR, midH + 100)
-    getLine(grpNew, midR, midH + 200)
-    getLine(grpNew, midR, midH + 300)
+    getLine(grpNew, midR, midH + 95)
+    getLine(grpNew, midR, midH + 190)
+    getLine(grpNew, midR, midH + 285)
+	getLine(grpNew, midR, midH + 380)
+	-- Set text email
+    local lblUser = display.newText({
+        text = "Usuario:",     
+        x = midR - 190, y = midH + 50,
+        width = 240,
+        font = native.systemFont,   
+        align = "left",
+        fontSize = 30
+    })
+	lblUser:setFillColor( .52 )
+    grpNew:insert(lblUser)
+	txtUser = native.newTextField( midR + 110, midH + 50, 400, 70 )
+    txtUser.inputType = "default"
+    txtUser.hasBackground = false
+    txtUser:addEventListener( "userInput", onTxtFocus )
+	grpNew:insert(txtUser)
     -- Set text email
     local lblEmail = display.newText({
         text = "E-mail:",     
-        x = midR - 190, y = midH + 50,
+        x = midR - 190, y = midH + 145,
         width = 240,
         font = native.systemFont,   
         align = "left",
@@ -237,7 +255,7 @@ function scene:create( event )
     })
     lblEmail:setFillColor( .52 )
     grpNew:insert(lblEmail)
-    txtEmail = native.newTextField( midR + 100, midH + 50, 400, 70 )
+    txtEmail = native.newTextField( midR + 110, midH + 145, 400, 70 )
     txtEmail.inputType = "email"
     txtEmail.hasBackground = false
     txtEmail:addEventListener( "userInput", onTxtFocus )
@@ -245,14 +263,14 @@ function scene:create( event )
     -- Set text password
     local lblPass = display.newText({
         text = "Contraseña:",     
-        x = midR - 190, y = midH + 150,
+        x = midR - 190, y = midH + 240,
         width = 240,
         font = native.systemFont,   
         fontSize = 30, align = "left"
     })
     lblPass:setFillColor( .52 )
     grpNew:insert(lblPass)
-    txtPass = native.newTextField( midR + 100, midH + 150, 400, 70 )
+    txtPass = native.newTextField( midR + 110, midH + 240, 400, 70 )
     txtPass.inputType = "password"
     txtPass.hasBackground = false
 	txtPass.isSecure = true
@@ -261,14 +279,14 @@ function scene:create( event )
     -- Set text re-password
     local lblRePass = display.newText({
         text = "Re-Contraseña:",     
-        x = midR - 190, y = midH + 250,
+        x = midR - 190, y = midH + 335,
         width = 240,
         font = native.systemFont,   
         fontSize = 30, align = "left"
     })
     lblRePass:setFillColor( .52 )
     grpNew:insert(lblRePass)
-    txtRePass = native.newTextField( midR + 100, midH + 250, 400, 70 )
+    txtRePass = native.newTextField( midR + 110, midH + 335, 400, 70 )
     txtRePass.inputType = "password"
     txtRePass.hasBackground = false
 	txtRePass.isSecure = true
@@ -366,8 +384,8 @@ function scene:create( event )
     grpLogIn:insert(lblRegister)
     local icoLogIn = display.newImage( grpLogIn, "img/icoRegistrar.png" )
     icoLogIn:translate( midR - 80, midH + 400 )
-	
-end	
+
+end
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
 end

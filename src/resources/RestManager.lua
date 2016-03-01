@@ -31,7 +31,7 @@ local RestManager = {}
 	---------------------------------------------
     -- da de alta un nuevo usuario por facebook
     ---------------------------------------------
-	RestManager.createUser = function(email, password, name, gender, birthday, location, facebookId, playerId)
+	RestManager.createUser = function(userLogin, email, password, name, gender, birthday, location, facebookId, playerId)
 		
 		password = encryptedPass(password)
 		password = string.gsub( password, "/", '&#47;' )
@@ -43,6 +43,7 @@ local RestManager = {}
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
+		url = url.."/userLogin/"..urlencode(userLogin)
 		url = url.."/email/"..urlencode(email)
 		url = url.."/pass/"..urlencode(password)
 		if name ~= "" then
@@ -95,7 +96,7 @@ local RestManager = {}
 	-------------------------------------
     -- da de alta un nuevo usuario
     -------------------------------------
-	RestManager.createUserNormal = function(email, password, playerId)
+	RestManager.createUserNormal = function(userLogin, email, password, playerId)
 		
 		password = encryptedPass(password)
 		password = string.gsub( password, "/", '&#47;' )
@@ -106,6 +107,7 @@ local RestManager = {}
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
+		url = url.."/userLogin/"..urlencode(userLogin)
 		url = url.."/email/"..urlencode(email)
 		url = url.."/pass/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
@@ -489,7 +491,7 @@ local RestManager = {}
 	---------------------------------------
     -- Obtiene los usuarios filtrados
     ---------------------------------------
-	RestManager.getUsersByFilter = function()
+	RestManager.getUsersByFilter = function(limit)
 		settings = DBManager.getSettings()
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByFilter/format/json"
@@ -501,7 +503,8 @@ local RestManager = {}
 		url = url.."/genM/" 	.. settFilter.genM
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
-		url = url.."/accommodation/" 	.. urlencode(settFilter.accommodation)
+		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
+		url = url.."/limit/" .. urlencode(limit)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -738,7 +741,7 @@ local RestManager = {}
 		elseif  obj.name == "MessagesAvatars" then
 			setItemsListMessages(obj.items)
 		elseif  obj.name == "MessageAvatars" then
-			setImagePerfilMessage(obj.items)
+			setImagePerfilMessage(obj.items[1])
         elseif  obj.name == "ProfileAvatars" then
 			setImagePerfil(obj.items)
         end

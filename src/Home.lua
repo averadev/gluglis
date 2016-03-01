@@ -27,9 +27,10 @@ local detail = {}
 local borders = {}
 local idxA, countA
 local lblName, lblAge, lblInts
-local loadUsers
+local loadUsers = {}
 local btnViewProfile
 local lblTitle
+local limitCard = 10
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -47,23 +48,32 @@ end
 ------------------------------------
 function getFirstCards(items)
 	tools:setLoading(false,grpLoad)
-    loadUsers = items
+	for i = 1, #items, 1 do
+		table.insert( loadUsers, items[i] )
+	end
+	
+   -- loadUsers = items
 	if #loadUsers > 0 then
-		idxA = 1
-		countA = #loadUsers
+		if #avaL == 0 then
+			idxA = 1
+		end
+		--print(idxA)
+		countA = #items
     
 		for i = 1, countA, 1 do
-			buildCard(loadUsers[i])
+			buildCard(items[i])
 		end
-    
-		setInfo(1)
-		avaL[1].alpha = 1
-		avaR[1].alpha = 1
-		borders[4].alpha = 1
-		borders[5].alpha = 1
-		borders[6].alpha = 1
+		--print(idxA)
+		if idxA == 1 then
+			setInfo(1)
+			avaL[1].alpha = 1
+			avaR[1].alpha = 1
+			borders[4].alpha = 1
+			borders[5].alpha = 1
+			borders[6].alpha = 1
+			btnViewProfile:addEventListener( 'tap', showProfiles )
+		end
 		screen:addEventListener( "touch", touchScreen )
-		btnViewProfile:addEventListener( 'tap', showProfiles )
 	else
 		HomeError( "No se encontro usuarios")
 	end
@@ -140,6 +150,7 @@ function buildCard(item)
 	avaR[idx].id = item.id
     avaR[idx].fill = { type = "image", sheet = imgS, frame = 2 }
     profiles:insert(avaR[idx])
+	--print(#avaL)
     
 end
 
@@ -281,14 +292,15 @@ end
 ------------------------------------
 function touchScreen(event)
     if event.phase == "began" then
+		--RestManager.getUsersByFilter(5)
         if event.yStart > 140 and event.yStart < 820 then
             isCard = true
             direction = 0
         end
     elseif event.phase == "moved" and (isCard) then
+		
         local x = (event.x - event.xStart)
         local xM = (x * 1.5)
-        
         if direction == 0 then
             if x < -10 and idxA < #loadUsers then
                 direction = 1
@@ -351,6 +363,11 @@ function touchScreen(event)
                 avaR[idxA+1].alpha = 0
             end})
         elseif direction == 1 and xM < -550 then
+			--print(idxA)
+			if (idxA + 1) == limitCard then
+				--print("buscando....")
+				getProfile()
+			end
             avaR[idxA].alpha = 0
             avaL[idxA+1].alpha = 1
             setInfo(idxA+1)
@@ -363,6 +380,7 @@ function touchScreen(event)
         end
         -- To Left
         if direction == -1 and xM <= 550 then
+			--
             avaL[idxA].alpha = 1
             avaR[idxA-1].alpha = 0
             transition.to( avaL[idxA], { width = 275, time = 200, onComplete=function()
@@ -383,6 +401,14 @@ function touchScreen(event)
         isCard = false
         direction = 0
     end
+end
+
+function getProfile()
+	screen:removeEventListener( "touch", touchScreen )
+	tools:setLoading(true,grpLoad)
+	RestManager.getUsersByFilter(limitCard)
+	limitCard = limitCard + 10
+	
 end
 
 
@@ -703,7 +729,8 @@ function scene:create( event )
 	grpLoad.y = 650 + h
 	tools:setLoading(true,grpLoad)
 	RestManager.getUsersById()
-    RestManager.getUsersByFilter()
+    RestManager.getUsersByFilter(0)
+	limitCard = 10
 	if isReadOnly == false then
 		timeMarker = timer.performWithDelay( 1000, function( event )
 			if playerId ~= 0 then
@@ -719,7 +746,34 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
+
+	--[[local date = os.date( "*t" )    -- Returns table of date & time values
+	print( date.year, date.month )  -- Print year and month
+	print( date.hour, date.min )    -- Print hour and minutes]]
+	--print(zoneTime)
+	--makeTimeStamp(os.date( "2016/02/25 13:58:22" ))
+	
 end
+
+function makeTimeStamp( dateString )
+   local pattern = "(%d+)%-(%d+)%-(%d+)%a(%d+)%:(%d+)%:([%d%.]+)([Z%p])(%d%d)%:?(%d%d)"
+   local year, month, day, hour, minute, seconds, tzoffset, offsethour, offsetmin = dateString:match(pattern)
+   local timestamp = os.time(
+      { year=year, month=month, day=day, hour=hour, min=minute, sec=seconds }
+   )
+   local offset = 0
+   if ( tzoffset ) then
+      if ( tzoffset == "+" or tzoffset == "-" ) then  -- We have a timezone
+         offset = offsethour * 60 + offsetmin
+         if ( tzoffset == "-" ) then
+            offset = offset * -1
+         end
+         timestamp = timestamp + offset
+      end
+   end
+   return timestamp
+end
+ 
 
 -------------------------------------
 -- Se llama al cambiar la escena

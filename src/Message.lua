@@ -61,47 +61,13 @@ function setItemsMessages( items )
 	buildChat(0)
 end
 
-function utf8_decode(utf8)
- 
-   local unicode = ""
-   local mod = math.mod
- 
-   local pos = 1
-   while pos < string.len(utf8)+1 do
- 
-      local v = 1
-      local c = string.byte(utf8,pos)
-      local n = 0
- 
-      if c < 128 then v = c
-      elseif c < 192 then v = c
-      elseif c < 224 then v = mod(c, 32) n = 2
-      elseif c < 240 then v = mod(c, 16) n = 3
-      elseif c < 248 then v = mod(c,  8) n = 4
-      elseif c < 252 then v = mod(c,  4) n = 5
-      elseif c < 254 then v = mod(c,  2) n = 6
-      else v = c end
-      
-      for i = 2, n do
-         pos = pos + 1
-         c = string.byte(utf8,pos)
-         v = v * 64 + mod(c, 64)
-      end
- 
-      pos = pos + 1
-      if v < 255 then unicode = unicode..string.char(v) end
- 
-   end
- 
-   return unicode
-end
-
 ------------------------------------------------------
 -- Muestra un mensaje cuando no se encuentren chats
 ------------------------------------------------------
 function notChatsMessages()
 	tools:setLoading( false,screen )
 	NoMessage = tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
+	messagesInRealTime()
 end
 
 ------------------------------------------------------------
@@ -110,7 +76,8 @@ end
 ------------------------------------------------------------
 function noConnectionMessage(message)
 	tools:noConnection( true, screen, message )
-	tools:setLoading( false,screen )	
+	tools:setLoading( false,screen )
+	messagesInRealTime()
 end
 
 -----------------------
@@ -226,16 +193,20 @@ end
 -- @param last id del ultimo mensaje leido
 ---------------------------------------------------
 function checkMessages(last)
-	local numCheck = 0
-	for i=1, #checkBlue, 1 do
-		if checkBlue[i].id == last then
-			numCheck = i
-			break
+	if last ~= 0 then
+		local numCheck = 0
+		for i=1, #checkBlue, 1 do
+			if checkBlue[i].id == last then
+				numCheck = i
+				break
+			end
 		end
-	end
-	for i=numCheck, 1, -1 do
-		checkBlue[i].alpha = 1
-		table.remove( checkBlue, i )
+		if numCheck ~= 0 then
+			for j=numCheck, 1, -1 do
+				checkBlue[j].alpha = 1
+				table.remove( checkBlue, j )
+			end
+		end
 	end
 end
 
@@ -555,7 +526,7 @@ end
 -- Muestra la imagen del usuario
 -----------------------------------
 function setImagePerfilMessage(item)
-	local avatar = display.newImage(item.photo, system.TemporaryDirectory)
+	local avatar = display.newImage(item.image, system.TemporaryDirectory)
 	avatar:translate(150, 50 + h)
 	avatar.width = 80
 	avatar.height = 80
@@ -565,10 +536,12 @@ function setImagePerfilMessage(item)
 end
 
 function messagesInRealTime()
-	timer1 = timer.performWithDelay( 300, function()
-		local result = timer.pause( timer1 )
-		RestManager.getMessagesByChannel(chanelId)
-	end, -1  )
+	if not timer1 then
+		timer1 = timer.performWithDelay( 300, function()
+			local result = timer.pause( timer1 )
+			RestManager.getMessagesByChannel(chanelId)
+		end, -1  )
+	end
 end
 
 ---------------------------------------------------------------------------------
@@ -685,7 +658,7 @@ function scene:create( event )
 	txtMessage.size = 30
 	txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
-	txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
+	--txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
 	posY = 30
 	scrChatY = scrChat.y
 	scrChatH = scrChat.height
@@ -701,7 +674,9 @@ end
 -- Hide scene
 function scene:hide( event )
 	native.setKeyboardFocus( nil )
-	timer.cancel( timer1 ) 
+	if timer1 then
+		timer.cancel( timer1 ) 
+	end
 end
 
 -- Destroy scene

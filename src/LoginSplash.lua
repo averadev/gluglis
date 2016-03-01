@@ -91,7 +91,9 @@ function facebookListener( event )
                 if not (response.location == nil) then
 					location = response.location.name
                 end
-                RestManager.createUser(response.email, '', response.name, response.gender, birthday, location, response.id, playerId)
+				local userLogin = response.first_name .. response.last_name
+				userLogin = string.gsub(userLogin , "%s", "")
+                RestManager.createUser(userLogin, response.email, '', response.name, response.gender, birthday, location, response.id, playerId)
             end
         else
 			-- printTable( event.response, "Post Failed Response", 3 )
