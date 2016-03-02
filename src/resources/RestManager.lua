@@ -162,7 +162,6 @@ local RestManager = {}
 				gotoHomeUN( "Error intentelo mas tarde", "login", false )
             else
                 local data = json.decode(event.response)
-				print(event.response)
 				if data then
 					if data.success then
 						local item = data.item[1]
@@ -514,6 +513,13 @@ local RestManager = {}
 				if data then
 					if data.success then
 						local data = json.decode(event.response)
+						for i = 1, #data.items, 1 do
+							--print(data.items[i].id)
+							--print(data.items[i].image)
+							--print(data.items[i].image2)
+							--print("")
+							
+						end
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then
@@ -608,7 +614,7 @@ local RestManager = {}
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
 	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, emailContact, availability, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic )
-		print(gender)
+		
 		local hobbies2 = json.encode(hobbies)
 		local language2 = json.encode(language)
 		local sport2 = json.encode(sport)
@@ -758,7 +764,9 @@ local RestManager = {}
             -- actualizamos index
             obj.idx = obj.idx + 1
             -- Determinamos si la imagen existe
-            local img = obj.items[obj.idx].image
+           -- local img = obj.items[obj.idx].image
+			local img2 = obj.items[obj.idx].image2
+			local img = obj.items[obj.idx].image
             local path = system.pathForFile( img, system.TemporaryDirectory )
             local fhd = io.open( path )
             if fhd then
@@ -788,7 +796,13 @@ local RestManager = {}
 					local sizeAvatar = 'width=550&height=550'
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 				else
-					url = site..obj.path..img
+					--url = site..obj.path..img
+					--print(img2)
+					if obj.items[obj.idx].image == "avatar.png" then
+						url = site..obj.path..img
+					else
+						url = "http://www.gluglis.travel/"..img2
+					end
 				end
                 display.loadRemoteImage( url ,"GET", imageListener, img, system.TemporaryDirectory ) 
             end

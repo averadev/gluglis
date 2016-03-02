@@ -463,7 +463,17 @@ function Tools:new()
 end
 
 function keuEve()
-	print(componentActive)
+
+	local openssl = require("plugin.openssl")
+	local cipher = openssl.get_cipher("aes-256-cbc")
+	
+	local encryptedData = cipher:encrypt ( "text", "key" )
+	print(encryptedData)
+	
+	local mime = require ( "mime" )
+	local encryptedData = mime.b64 ( cipher:encrypt ( "text", "key" ) )
+	print(encryptedData)
+
 	return true
 end
 
