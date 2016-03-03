@@ -117,6 +117,18 @@ function randomCities( event )
 end
 
 -------------------------------------
+-- Limpia los campos de fecha
+-------------------------------------
+function cleanDateField( event )
+	--lblIniDate.date
+	lblIniDate.text = ""
+	lblEndDate.text = ""
+	lblIniDate.date = "0000-00-00"
+	lblEndDate.date = "0000-00-00"
+end
+
+
+-------------------------------------
 -- Mueve el toggleButton
 -- @param event datos del toggleButton
 -------------------------------------
@@ -152,8 +164,26 @@ end
 -------------------------------------------
 -- crea el el widget de  fecha
 -------------------------------------------
-function DatePicker()
+function DatePicker(name)
 	
+	local dates = {}
+	local currentDate
+	if name == "iniDate" then
+		currentDate = lblIniDate.date
+	elseif name == "endDate" then
+		currentDate = lblEndDate.date
+	end
+	if currentDate ~= "0000-00-00" then
+		local t = {}
+		dates[1] = 0
+		dates[2] = 0
+		for Ye, Mi, Da in string.gmatch( currentDate, "(%w+)-(%w+)-(%w+)" ) do
+			local datesArray = {day = Da,month = Mi,year = Ye}
+			dates[3] = datesArray
+		end
+	else
+		dates = RestManager.getDate()
+	end
 	-- Create two tables to hold data for days and years      
 	local days = {}
 	local years = {}
@@ -165,7 +195,7 @@ function DatePicker()
 
 	-- Populate the "years" table
 	for y = 1, 15 do
-		years[y] = 2015 + y
+		years[y] = tonumber(dates[3].year) - 1 + y
 	end
 
 	-- Configure the picker wheel columns
@@ -174,21 +204,21 @@ function DatePicker()
 		{
 			align = "left",
 			width = 120,
-			startIndex = 22,
+			startIndex = tonumber(dates[3].day),
 			labels = days
 		},
 		-- Months
 		{ 
 			align = "center",
 			width = 200,
-			startIndex = 1,
+			startIndex = tonumber(dates[3].month),
 			labels = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre" }
 		},
 		-- Years
 		{
 			align = "right",
 			width = 200,
-			startIndex = 10,
+			startIndex = 1,
 			labels = years
 		}
 	}
@@ -287,7 +317,7 @@ function createDatePicker( event )
 	grpDatePicker:insert(labelAcceptDate)
 	
 	--crea el datePicker
-	DatePicker()
+	DatePicker(event.target.name)
 	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })
 	
@@ -317,7 +347,7 @@ function destroyDatePicker( event )
 		end
 	
 		--hace la conversion
-		if tonumber(month) < 10 then month = "0" .. month2 end
+		if tonumber(month) < 10 then month = "0" .. month end
 		if tonumber(day) < 10 then day = "0" .. day end
 		local dateS = day .. "/" .. month .. "/" .. year
 		local dateS2 = year .. "-" .. month .. "-" .. day
@@ -366,7 +396,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 	if typeF == "textField" then
 		--crea un textField si es la opcion de ciudad
 		if name == "location" then
-		
 			txtLocation = native.newTextField( coordX, coordY, wField, 50 )
 			txtLocation.anchorX = 1
 			txtLocation.inputType = "default"
@@ -374,7 +403,9 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			txtLocation:addEventListener( "userInput", onTxtFocusFilter )
 			txtLocation:setReturnKey( "next" )
 			grpTextField:insert( txtLocation )
-			grpTextField.text = settFilter.city
+			if settFilter.city ~= '0' then
+				txtLocation.text = settFilter.city
+			end
 			
 			local imgDado = display.newImage( screen, "img/1454731709.png" )
 			imgDado:translate( coordX + 50, coordY )
@@ -399,8 +430,8 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			t[3] = Da
 		end
 		--convierte la fehca a un formato dd/mm/yyyy
-		local dateC = t[3] .. "-" .. t[2] .. "-" .. t[1]
-		if dateC == "00-00-0000" then
+		local dateC = t[3] .. "/" .. t[2] .. "/" .. t[1]
+		if dateC == "00/00/0000" then
 			dateC = ""
 		end
 		--crea el componente de fecha de ida
@@ -416,9 +447,10 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			lblIniDate.date = settFilter.iniDate
 			screen:insert(lblIniDate)
 		--crea el componente de fecha de vuelta
+		
 		elseif name == "endDate" then
 			lblEndDate = display.newText({
-				text = dateC, 
+				text = dateC,
 				x = coordX - 70, y = coordY,
 				width = 140,
 				font = native.systemFont,   
@@ -427,6 +459,14 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			lblEndDate:setFillColor( 0 )
 			lblEndDate.date = settFilter.endDate
 			screen:insert(lblEndDate)
+			
+			local imgCleanDate = display.newImage( screen, "img/iconClean.png" )
+			imgCleanDate:translate( coordX + 40, coordY )
+			imgCleanDate.height = 50
+			imgCleanDate.width = 60
+			screen:insert(imgCleanDate)
+			imgCleanDate:addEventListener( 'tap', cleanDateField )
+			
 		end
 	--crea el componente toggleButton
 	elseif typeF == "toggleButton" then
@@ -573,9 +613,7 @@ function listenerSlider( event )
 		poscCircle1 = circleSlider1.x
 		poscCircle2 = circleSlider2.x
 		isCircle = false
-		
 	end
-	
 	return true
 end
 
@@ -631,6 +669,10 @@ function newSlider()
 	poscCircle2 = circleSlider2.x
 	circleSlider2.front = 0
 	circleSlider2:addEventListener( 'touch', inFront )
+	local poscC1 = (settFilter.iniAge - 18)*3.69
+	local poscC2 = ( 99 - settFilter.endAge )*3.69
+	circleSlider1.x = circleSlider1.x + tonumber(poscC1)
+	circleSlider2.x = circleSlider2.x - tonumber(poscC2)
 end
 
 ---------------------------------------------------------------------------------
@@ -645,7 +687,6 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
 	grpTextField = display.newGroup()
-	
 	--se crea y se deshace la imagen del fondo
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
@@ -706,7 +747,7 @@ function scene:create( event )
     for i=1, #opt do
         posY = posY + 90
         if opt[i].fixM then posY = posY - 85 end
-        
+		
         local ico
         if opt[i].icon then
             ico = display.newImage( screen, "img/"..opt[i].icon..".png" )
@@ -724,7 +765,7 @@ function scene:create( event )
         
         if opt[i].wField then
 			local disX = 0
-			if opt[i].nameField == "location" then disX = 60 end
+			if opt[i].nameField == "location" then disX = 60 else disX = 40  end
             local bg1 = display.newRoundedRect( 660 - disX, posY, opt[i].wField, 50, 5 )
             bg1.anchorX = 1
             bg1:setFillColor( .93 )
@@ -738,10 +779,8 @@ function scene:create( event )
 				bg2:addEventListener( 'tap', createDatePicker )
 			end
 			createTextField(opt[i].nameField, opt[i].wField, 658 - disX, posY,  opt[i].type)
-			-- - 60
-			
+			-- - 60	
         end
-        
         -- Fix Mujer
         if opt[i].fixM then 
             ico.x = 350 
@@ -751,8 +790,8 @@ function scene:create( event )
 	posY = 565
     -- Campos
     xFields = {
-        {label = "vuelta", x = 460, y = -180},
-        {w = 160, x = 380, y = -180, nameField = "iniDate", type = "datePicker"},
+        {label = "vuelta", x = 435, y = -180},
+        {w = 160, x = 370, y = -180, nameField = "iniDate", type = "datePicker"},
 		{label = "HOMBRE", x = 430, y = -90, w = 170, isGen = "H"},
         {label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
 		{label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,

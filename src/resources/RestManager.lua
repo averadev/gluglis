@@ -838,7 +838,9 @@ local RestManager = {}
 		local months = {'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'}
 		date2 = day .. " de " .. months[month2] .. " del " .. year
 		
-		return {date1,date2}
+		local datesArray = {day = day,month = month,year = year}
+		
+		return {date1,date2,datesArray}
 	end
 	
 	--------------------------------------------
