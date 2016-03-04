@@ -51,7 +51,7 @@ end
 -- @param item informacion del perfil
 -------------------------------------------------------
 function showNewConversation(item)
-	local tmpList = {id = 0, photo = item.image, name = item.display_name, subject = "", channelId = item.channel_id,
+	local tmpList = {id = 0, image = item.image, image2 = item.image2, name = item.display_name, subject = "", channelId = item.channel_id,
 			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier}
 	composer.removeScene( "src.Message" )
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )

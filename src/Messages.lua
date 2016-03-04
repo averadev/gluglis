@@ -33,7 +33,7 @@ local ListChats = {}
 ------------------------------
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
-		tmpList[i] = {id = items[i].idMessage, photo = items[i].image, name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
+		tmpList[i] = {id = items[i].idMessage, image = items[i].image, image2 = items[i].image2, name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
 			blockMe = items[i].blockMe, blockYour = items[i].blockYour, NoRead = items[i].NoRead, identifier = items[i].identifier }
 	end
 	buildListMsg(100,tmpList)
@@ -89,7 +89,7 @@ function movedChat( item, message, numChat )
 	end
 	if thereChannel == false then
 		local tempList = {}
-		tempList[1] = {id = item.idMessage, photo = item.image, name = item.display_name, subject = item.message, channelId = item.channel_id,
+		tempList[1] = {id = item.idMessage, image = item.image, image2 = item.image2, name = item.display_name, subject = item.message, channelId = item.channel_id,
 			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = item.NoRead, identifier = item.identifier}
 		buildListMsg(100,tempList)
 	end
@@ -154,7 +154,7 @@ function buildListMsg(posc, item )
         bg:addEventListener( 'tap', tapMessage)
         ListChats[poscC]:insert(bg)
         -- Image
-        local avatar = display.newImage( item[i].photo, system.TemporaryDirectory )
+        local avatar = display.newImage( item[i].image, system.TemporaryDirectory )
         avatar:translate(-294, 0)
         avatar.width = 130
         avatar.height = 130

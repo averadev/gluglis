@@ -39,6 +39,7 @@ local container = {}
 local lblInts, lblLang, lblSport, lblResidenceTime, lblRace, lblWorkArea
 local btnSaveProfile
 local gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
+local lblAge
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -1408,11 +1409,15 @@ function createGeneralItems( item )
 			createComboBox(item, nameOption[i], posY, 380)
 		end
     end
-	
 	posY = posY + 100
-	
 	createTouristGuideItems( item )
+end
 
+-------------
+-- 
+-------------
+function birthdate( event )
+	print('hola')
 end
 
 ------------------------------------
@@ -1436,8 +1441,8 @@ function MyProfile( item )
 	textUserName:addEventListener( "userInput", userInputProfile )
 	grpTextProfile:insert(textUserName)
 	
-	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
-    local lblAge= display.newText({
+	if not item.edad then item.edad = "Seleccione una fecha de nacimiento" else item.edad = item.edad .. " Años" end
+    lblAge= display.newText({
         text = item.edad, 
         x = 550, y = 180,
         width = 400,
@@ -1446,6 +1451,7 @@ function MyProfile( item )
     })
     lblAge:setFillColor( 0 )
     scrPerfile:insert(lblAge)
+	--lblAge:addElements( 'tap', birthdate )
 	-- BG Component
     local bgInts = display.newRect( 550, 210, 410, 80 )
     bgInts.anchorY = 0

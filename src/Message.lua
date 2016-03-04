@@ -88,12 +88,10 @@ function sentMessage()
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
-
 	componentActive = "blockChat"
 	--verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
 		componentActive = false
-		
 		if trimString(txtMessage.text) ~= "" then
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
@@ -584,10 +582,10 @@ function scene:create( event )
     btnBack:addEventListener( 'tap', toBack)
     screen:insert( btnBack )
     -- Image
-	local path = system.pathForFile( item.photo, system.TemporaryDirectory )
+	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	if fhd then
-		local avatar = display.newImage(item.photo, system.TemporaryDirectory)
+		local avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate(150, 50 + h)
 		avatar.width = 80
 		avatar.height = 80
@@ -595,7 +593,7 @@ function scene:create( event )
 		local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
 		avatar:setMask( maskCircle80 )
 	else
-		item.image = item.photo
+		item.image = item.image
 		local items = {}
 		items[1] = item
 		RestManager.getImagePerfilMessage(items)
