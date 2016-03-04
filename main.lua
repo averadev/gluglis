@@ -56,7 +56,7 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				local RestManager = require('src.resources.RestManager')
 				local item = json.decode(additionalData.item)
 				local tmpListMain = {}
-				tmpListMain[1] = {id = item[1].id, photo = "mariana.jpeg", name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe }
+				tmpListMain[1] = {id = item[1].id, image = item[1].image, image2 = item[1].image2, name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe }
 				composer.removeScene( "src.Message" )
 				composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpListMain[1] } } )
 			end
