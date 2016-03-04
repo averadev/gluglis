@@ -110,6 +110,8 @@ function sentMessage()
 			RestManager.sendChat( itemsConfig.channelId, newMessageText, poscD )
 			txtMessage.text = ""
 			native.setKeyboardFocus( nil )
+		else
+			native.setKeyboardFocus( nil )
 		end
 	--si lo esta muenstra un mensaje de aviso
 	elseif itemsConfig.blockMe == "closed" then
@@ -215,6 +217,16 @@ function toBack()
     audio.play(fxTap)
     composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
 end
+
+----------------------------------
+-- esconde el teclado cuando se le da click a un area vacia
+----------------------------------
+function hideKeyboard()
+	native.setKeyboardFocus( nil )
+	return true
+end
+
+
 
 ------------------------------------------------------------------
 -- Muestra un aviso si se desea bloquear o desbloquear el chat
@@ -341,7 +353,7 @@ function onTxtFocus( event )
 		-- Envia el mensaje 
 		sentMessage()
     elseif ( event.phase == "editing" ) then
-		
+		print('hola')
     end
 end
 
@@ -569,6 +581,7 @@ function scene:create( event )
     screen:insert(o)
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
+	o:addEventListener( 'tap', hideKeyboard )
 	--bg component
     local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
     bgH:setFillColor( 1 )
