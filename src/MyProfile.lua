@@ -22,8 +22,9 @@ local grpTextProfile, grpOptionsLabel, grpOptionsCombo, grpComboBox
 
 -- Variables
 local posY = 350
-local textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact, textPet
+local textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 local toggleButtons = {}
+local toggleBg = {}
 local hobbies = {}
 local myHobbies = {}
 local languages = {}
@@ -86,7 +87,6 @@ function saveProfile()
 	textOriginCountry.text = trimString(textOriginCountry.text)
 	textUserResidence.text = trimString(textUserResidence.text)
 	textEmailContact.text = trimString(textEmailContact.text)
-	textPet.text = trimString(textPet.text)
 	RestManager.saveProfile(
 		textUserName.text, 
 		myHobbies,
@@ -105,7 +105,7 @@ function saveProfile()
 		lblRace.text,
 		lblWorkArea.text,
 		ownAccount,
-		textPet.text,
+		pet,
 		mySports,
 		smoke,
 		drink,
@@ -242,9 +242,15 @@ function moveToggleButtons( event )
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
+        t:setFillColor( .9 )
+        toggleBg[t.num]:setFillColor( .7 )
+        toggleButtons[t.num]:setFillColor( .7 )
 		transition.to( toggleButtons[t.num], { x = toggleButtons[t.num].x - 100, time = 200})
 	else
 		t.onOff = "Sí"
+        t:setFillColor( 129/255, 61/255, 153/255 )
+        toggleBg[t.num]:setFillColor( 89/255, 31/255, 103/255 )
+        toggleButtons[t.num]:setFillColor( 89/255, 31/255, 103/255 )
 		transition.to( toggleButtons[t.num], { x = toggleButtons[t.num].x + 100, time = 200})
 	end
 	--gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
@@ -273,6 +279,8 @@ function moveToggleButtons( event )
 		else
 			ownAccount = "Por cuenta ajena" 
 		end
+	elseif t.name == "pet" then
+		pet = t.onOff 
 	elseif t.name == "smoke" then
 		smoke = t.onOff 
 	elseif t.name == "drink" then
@@ -440,11 +448,11 @@ function createToggleButtons(item, name, coordY, coordX )
 	local num = #toggleButtons + 1
 	coordY = coordY - 25
 	-- BG Component
-	local bg0CheckAcco = display.newRect( coordX, coordY, 200, 50 )
-	bg0CheckAcco.anchorY = 0
-	bg0CheckAcco.anchorX = 0
-	bg0CheckAcco:setFillColor( 89/255, 31/255, 103/255 )
-	scrPerfile:insert(bg0CheckAcco)
+	toggleBg[num] = display.newRect( coordX, coordY, 200, 50 )
+	toggleBg[num].anchorY = 0
+	toggleBg[num].anchorX = 0
+	toggleBg[num]:setFillColor( 89/255, 31/255, 103/255 )
+	scrPerfile:insert(toggleBg[num])
 	local bg0CheckAcco = display.newRect( coordX + 3, coordY + 3, 194, 44 )
 	bg0CheckAcco.anchorY = 0
 	bg0CheckAcco.anchorX = 0
@@ -465,7 +473,7 @@ function createToggleButtons(item, name, coordY, coordX )
 	lblYes:setFillColor( 1 )
 	scrPerfile:insert(lblYes)
 	local lblNo = display.newText({
-		text = "No", 
+		text = " ", 
 		x = coordX + 150, y = coordY + 25,
 		width = 100,
 		font = native.systemFont, 
@@ -524,6 +532,13 @@ function createToggleButtons(item, name, coordY, coordX )
 			posXTB = coordX + 103
 		end
 	end
+	-- mascota
+	if name == "pet" then
+		if item.mascota ~= nil and item.mascota == 'Sí' then
+			onOff = "Sí"
+			posXTB = coordX + 103
+		end
+	end
 	--fumas
 	if name == "smoke" then
 		if item.fumas ~= nil and item.fumas == 'Sí' then
@@ -552,7 +567,11 @@ function createToggleButtons(item, name, coordY, coordX )
 	toggleButtons[num].anchorX = 0
 	toggleButtons[num]:setFillColor( 89/255, 31/255, 103/255 )
 	scrPerfile:insert(toggleButtons[num])
-	
+	if onOff == "No" then
+        bg0CheckAcco:setFillColor( .9 )
+        toggleBg[num]:setFillColor( .7 )
+        toggleButtons[num]:setFillColor( .7 )
+    end
 
 end
 
@@ -741,50 +760,47 @@ function showOptionsLabels( event )
 		bg0.type = "destroy"
 		grpOptionsLabel:insert( bg0 )
 		bg0:addEventListener( 'tap', showOptionsLabels )
-		local bg1 = display.newRoundedRect( midW, midH + h, 660, intH - 100, 10 )
+		local bg1 = display.newRoundedRect( midW, midH + 10, 650, (intH/2) + 260, 10 )
 		bg1:setFillColor( 1 )
 		grpOptionsLabel:insert( bg1 )
 		bg1:addEventListener( 'tap', hideOptionsCombo )
-		local bg0ComboBox = display.newRoundedRect( midW, h + 100, 606, 86, 10 )
+		local bg0ComboBox = display.newRoundedRect( midW, midH - (midH/2) - 60, 606, 86, 10 )
 		bg0ComboBox:setFillColor( 129/255, 61/255, 153/255 )
-		bg0ComboBox.anchorY = 0
 		grpOptionsLabel:insert( bg0ComboBox )
 		bg0ComboBox:addEventListener( 'tap', noAction )
 		--bg que despliega las opciones
-		local bg1ComboBox = display.newRoundedRect( midW, h + 103, 600, 80, 10 )
+		local bg1ComboBox = display.newRoundedRect( midW, midH - (midH/2) - 60, 600, 80, 10 )
 		bg1ComboBox:setFillColor( 1 )
-		bg1ComboBox.anchorY = 0
 		bg1ComboBox.name = t.name
 		grpOptionsLabel:insert( bg1ComboBox )
 		bg1ComboBox:addEventListener( 'tap', showOptionsCombo )
 		--label title
 		local lblTitleCombo = display.newText({
 			text = t.label, 
-			x = midW, y = h + 160,
-			width = 550, height = 80,
+			x = midW, y = midH - (midH/2) - 60,
+			width = 550,
 			font = native.systemFont, 
 			fontSize = 36, align = "left"
 		})
 		lblTitleCombo:setFillColor( 0 )
 		grpOptionsLabel:insert(lblTitleCombo)
 		local triangle = display.newImage("img/triangleDown.png")
-		triangle:translate(650, h + 145)
+		triangle:translate(650, midH - (midH/2) - 60)
 		grpOptionsLabel:insert(triangle)
 		--elementos selecionados
-		local bg0Elemets = display.newRoundedRect( midW, h + 230, 606, intH/2 + 6, 10 )
+		local bg0Elemets = display.newRoundedRect( midW, midH, 606, midH + 6, 10 )
 		bg0Elemets:setFillColor( 129/255, 61/255, 153/255 )
-		bg0Elemets.anchorY = 0
 		grpOptionsLabel:insert( bg0Elemets )
 		
 		--scrollview
 		scrElements = widget.newScrollView({
-			top = h + 233,
 			left = 84,
 			width = 600,
-			height = intH/2,
+			height = midH,
 			horizontalScrollDisabled = true,
 			backgroundColor = { .8 },
 		})
+        scrElements.y = midH
 		grpOptionsLabel:insert(scrElements)
 		--titulo del combobox
 		posYE = 0
@@ -802,7 +818,7 @@ function showOptionsLabels( event )
 			addElements(myElements[i])
 		end
 		--button
-		local btnAceptOption = display.newRoundedRect( midW, intH - 100, 600, 80, 10 )
+		local btnAceptOption = display.newRoundedRect( midW, midH + (midH/2) + 75, 600, 80, 10 )
 		btnAceptOption:setFillColor( {
 			type = 'gradient',
 			color1 = { 129/255, 61/255, 153/255 }, 
@@ -814,7 +830,7 @@ function showOptionsLabels( event )
 		btnAceptOption:addEventListener( 'tap', savePreferences )
 		local lblStartChat = display.newText({
 			text = "Aceptar", 
-			x = midW, y = intH - 100,
+			x = midW, y = midH + (midH/2) + 75,
 			font = native.systemFontBold,   
 			fontSize = 30, align = "center"
 		})
@@ -916,19 +932,6 @@ function createTextField( item, name, coordY )
 		textEmailContact:addEventListener( "userInput", userInputProfile )
 		textEmailContact.name = "emailContact"
 		grpTextProfile:insert(textEmailContact)
-	elseif name == "pet" then
-		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
-		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)
-		--textField pais de origen
-		textPet = native.newTextField( 515, coordY, 350, 50 )
-		textPet.text = item.tipoMascota
-		textPet.hasBackground = false
-		textPet.size = 25
-		textPet:resizeHeightToFitFont()
-		textPet:addEventListener( "userInput", userInputProfile )
-		textPet.name = "pet"
-		grpTextProfile:insert(textPet)
 	end
 	
 end
@@ -1016,15 +1019,13 @@ function createPreferencesItems( item )
 	--mascota
 	infoOpcion[num] = "¿mascota?: "
 	iconOpcion[num] = 'iconPet'
-	typeOpcion[num] = "textField"
+	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "pet"
 	num = #infoOpcion + 1
 	if not item.mascota then
 		item.mascota = "No"
 	end
-	if not item.tipoMascota then
-		item.tipoMascota = ""
-	end
+	pet = item.mascota
 	--deporte
 	infoOpcion[num] = "¿Practica deportes?: "
 	iconOpcion[num] = 'iconSport'

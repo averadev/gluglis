@@ -648,7 +648,7 @@ local RestManager = {}
 		url = url.."/workArea/" .. urlencode(workArea)
 		url = url.."/ownAccount/" .. urlencode(ownAccount)
 		url = url.."/workArea/" .. urlencode(workArea)
-		if pet ~= '' then
+        if pet ~= 'No' then
 			url = url.."/pet/" .. urlencode(pet)
 		end
 		url = url.."/smoke/" .. urlencode(smoke)
@@ -657,7 +657,7 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
-		
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)

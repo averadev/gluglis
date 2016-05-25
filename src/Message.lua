@@ -215,7 +215,7 @@ end
 ----------------------------------
 function toBack()
     audio.play(fxTap)
-    composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" } )
+    composer.gotoScene( "src.Home", { time = 400, effect = "slideRight" } )
 end
 
 ----------------------------------

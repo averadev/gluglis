@@ -61,6 +61,7 @@ function Tools:new()
 				scrMenu:builScreen()
 			end
         else
+            print("icoBack ---------------")
             local icoBack = display.newImage("img/icoBack.png")
             icoBack:translate(45, 45)
             icoBack.screen = 'Home'
@@ -191,7 +192,7 @@ function Tools:new()
         timer.performWithDelay(200, function() t.alpha = 1 end, 1)
         -- Change Screen
         if t.isReturn then
-            composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
+            composer.gotoScene("src.Home", { time = 400, effect = "slideRight" } )
         else
             composer.removeScene( "src."..t.screen )
 			if t.screen == "MyProfile" then
@@ -213,12 +214,7 @@ function Tools:new()
 	-- Regresa a la scena anterior con el boton atras de android
 	---------------------------------------------------------------
 	function returnScene()
-		local currentScene = composer.getSceneName( "current" )
-		if currentScene == "src.Message" then
-			composer.gotoScene( "src.Messages", { time = 400, effect = "slideRight" })
-		else
-			composer.gotoScene( "src.Home", { time = 400, effect = "slideRight" })
-		end
+        composer.gotoScene( "src.Home", { time = 400, effect = "slideRight" })
 		return true
 	end
 	
