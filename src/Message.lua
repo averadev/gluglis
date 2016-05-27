@@ -221,11 +221,31 @@ end
 ----------------------------------
 -- esconde el teclado cuando se le da click a un area vacia
 ----------------------------------
-function hideKeyboard()
+function hideKeyboard( event )
 	native.setKeyboardFocus( nil )
 	return true
 end
 
+--[[function hideKeyboardSlider( event )
+	if ( event.phase == "ended" ) then
+		print('hola')
+		print(event.yStart)
+		print(event.y)
+    end
+	return true
+end]]
+
+function scrollListener( event )
+	if ( event.phase == "ended" ) then
+		--print('hola')
+		--print(event.yStart)
+		--print(event.y)
+		print(event.y - event.yStart)
+		if event.yStart < event.y and event.y - event.yStart >= 80 then
+			native.setKeyboardFocus( nil )
+		end
+    end
+end
 
 
 ------------------------------------------------------------------
@@ -351,9 +371,9 @@ function onTxtFocus( event )
 		native.setKeyboardFocus( nil )
 	elseif (event.phase == "submitted" ) then
 		-- Envia el mensaje 
-		sentMessage()
+		--sentMessage()
+		native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
-		print('hola')
     end
 end
 
@@ -581,7 +601,8 @@ function scene:create( event )
     screen:insert(o)
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
-	o:addEventListener( 'tap', hideKeyboard )
+	--o:addEventListener( 'tap', hideKeyboard )
+	--o:addEventListener( 'touch', hideKeyboardSlider )
 	--bg component
     local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
     bgH:setFillColor( 1 )
@@ -636,11 +657,13 @@ function scene:create( event )
         height = intH - 220 - h,
         scrollWidth = 600,
         scrollHeight = 800,
-        hideBackground = true
+        hideBackground = true,
+		listener = scrollListener
     }
     screen:insert(scrChat)  
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
+	--scrChat:addEventListener( 'tap', hideKeyboard )
 	--bg enviar
     local bgSendField = display.newRect( midW, intH - 45, intW, 90 )
     bgSendField:setFillColor( .84 )
@@ -665,7 +688,7 @@ function scene:create( event )
 	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 60 )
     txtMessage.inputType = "default"
     txtMessage:addEventListener( "userInput", onTxtFocus )
-	txtMessage:setReturnKey( "send" )
+	txtMessage:setReturnKey( "default" )
 	txtMessage.size = 30
 	txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )

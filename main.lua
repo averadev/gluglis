@@ -4,6 +4,28 @@
 -- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
+---------------------------
+--------- aundio ----------
+---------------------------
+-- Set the audio mix mode to allow sounds from the app to mix with other sounds from the device
+if audio.supportsSessionProperty == true then
+    print("supportsSessionProperty is true")
+	audio.setSessionProperty(audio.MixMode, audio.AmbientMixMode)
+end
+	 
+-- Store whether other audio is playing.  It's important to do this once and store the result now,
+-- as referring to audio.OtherAudioIsPlaying later gives misleading results, since at that point
+-- the app itself may be playing audio
+isOtherAudioPlaying = false
+	 
+if audio.supportsSessionProperty == true then
+	print("supportsSessionProperty is true")
+	if not(audio.getSessionProperty(audio.OtherAudioIsPlaying) == 0) then
+		print("I think there is other Audio Playing")
+		isOtherAudioPlaying = true
+	end
+end
+
 display.setStatusBar( display.TranslucentStatusBar )
 local json = require("json")
 require('src.resources.Globals')
@@ -13,8 +35,8 @@ display.setDefault( "background", 0 )
 
 local isUser = DBManager.setupSquema()
 if isUser then
-	composer.gotoScene("src.Home")
-	--composer.gotoScene("src.Filter")
+	--composer.gotoScene("src.Home")
+	composer.gotoScene("src.Filter")
 else
 	composer.gotoScene("src.LoginSplash")
 	--composer.gotoScene("src.LoginUserName")

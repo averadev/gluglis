@@ -204,8 +204,45 @@ function setInfo(idx)
     if loadUsers[idx].edad then 
         lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
     end
+	-- Idiomas
+   if loadUsers[idx].idiomas then
+		local max = 5
+		if #loadUsers[idx].idiomas < max then 
+            max = #loadUsers[idx].idiomas 
+        end
+        for i=1, max do
+            if i == 1 then
+                lblInts.text = '#' .. loadUsers[idx].idiomas[i]
+            else
+                lblInts.text = lblInts.text..', #'..loadUsers[idx].idiomas[i]
+            end
+        end
+		if #loadUsers[idx].idiomas > max then 
+            lblInts.text = lblInts.text..'...'
+        end
+    else
+        lblInts.text = ''
+    end
+	if loadUsers[idx].hobbies then
+        local max = 3
+        if #loadUsers[idx].hobbies < max then 
+            max = #loadUsers[idx].hobbies 
+        end
+        for i=1, max do
+            if i == 1 then
+                detail[2].lbl.text = loadUsers[idx].hobbies[i]
+            else
+                detail[2].lbl.text = detail[2].lbl.text..', '..loadUsers[idx].hobbies[i]
+            end
+        end
+        if #loadUsers[idx].hobbies > max then 
+            detail[2].lbl.text = detail[2].lbl.text..'...'
+        end
+    else
+        detail[2].lbl.text = ''
+    end
     -- Hobbies
-    if loadUsers[idx].hobbies then
+    --[[if loadUsers[idx].hobbies then
         local max = 4
         if #loadUsers[idx].hobbies < max then 
             max = #loadUsers[idx].hobbies 
@@ -222,9 +259,9 @@ function setInfo(idx)
         end
     else
         lblInts.text = ''
-    end
+    end]]
     -- Idiomas
-    if loadUsers[idx].idiomas then
+    --[[if loadUsers[idx].idiomas then
         for i=1, #loadUsers[idx].idiomas do
             if i == 1 then
                 detail[2].lbl.text = loadUsers[idx].idiomas[i]
@@ -234,7 +271,7 @@ function setInfo(idx)
         end
     else
         detail[2].lbl.text = ''
-    end
+    end]]
     -- Alojamiento
     if loadUsers[idx].alojamiento and loadUsers[idx].alojamiento == 'Sí' then
         detail[3].icon.alpha = 1
@@ -597,6 +634,23 @@ function showInfoButton()
 	
 end
 
+-- Limpiamos imagenes con 7 dias de descarga
+function clearTempDir()
+    local lfs = require "lfs"
+    local doc_path = system.pathForFile( "", system.TemporaryDirectory )
+    local destDir = system.TemporaryDirectory  -- where the file is stored
+    local lastTwoWeeks = os.time() - 1209600
+	
+    for file in lfs.dir(doc_path) do
+        -- file is the current file or directory name
+        local file_attr = lfs.attributes( system.pathForFile( file, destDir  ) )
+        -- Elimina despues de 2 semanas
+        if file_attr.modification < lastTwoWeeks then
+           os.remove( system.pathForFile( file, destDir  ) ) 
+        end
+    end
+end
+
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
 
 -------------------------------------
@@ -686,6 +740,7 @@ function scene:create( event )
 	screen:insert(grpLoad)
 	grpLoad.y = 650 + h
 	tools:setLoading(true,grpLoad)
+	clearTempDir()
 	RestManager.getUsersById()
     RestManager.getUsersByFilter(0)
 	limitCard = 10
@@ -693,7 +748,7 @@ function scene:create( event )
 		timeMarker = timer.performWithDelay( 1000, function( event )
 			if playerId ~= 0 then
 				timer.cancel( event.source ) 
-				RestManager.updatePlayerId()
+				--RestManager.updatePlayerId()
 			end
 		end, -1)
 	end
@@ -704,6 +759,11 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
+
+	local prevScene = composer.getSceneName( "previous" )
+	if prevScene == "src.MyProfile" then
+		RestManager.getUsersById()
+	end
 
 	--[[local date = os.date( "*t" )    -- Returns table of date & time values
 	print( date.year, date.month )  -- Print year and month

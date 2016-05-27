@@ -195,7 +195,8 @@ local RestManager = {}
         local url = site
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
-		url = url.."/timeZone/" .. urlencode(timeZone)
+		--url = url.."/timeZone/" .. urlencode(timeZone)
+		url = url.."/timeZone/" .. urlencode("-5")
 	
         local function callback(event)
             if ( event.isError ) then
@@ -505,6 +506,8 @@ local RestManager = {}
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
 	
+		print(url)
+	
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -758,6 +761,7 @@ local RestManager = {}
     -- @param obj registros de la consulta con la propiedad image
     ------------------------------------- 
     function loadImage(obj)
+		
         -- Next Image
         if obj.idx < #obj.items then
 			
@@ -792,18 +796,24 @@ local RestManager = {}
                 end
                 -- Descargamos de la nube
 				local url
+				
 				if obj.items[obj.idx].identifier then
 					local sizeAvatar = 'width=550&height=550'
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
+					
 				else
 					--url = site..obj.path..img
 					--print(img2)
-					if obj.items[obj.idx].image == "avatar.png" then
+					
+					--[[if obj.items[obj.idx].image == "avatar.png" then
 						url = site..obj.path..img
 					else
-						url = "http://www.gluglis.travel/"..img2
-					end
+						--url = "http://www.gluglis.travel/"..img2
+						url = img2
+					end]]
+					url = img2
 				end
+				print(url)
                 display.loadRemoteImage( url ,"GET", imageListener, img, system.TemporaryDirectory ) 
             end
         else

@@ -122,7 +122,7 @@ local dbManager = {}
             end
 		end
 		query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api/');"
-		--query = "INSERT INTO config VALUES (0, 0, '', '', 'http://geekbucket.com.mx/gluglis/');"
+		--query = "INSERT INTO config VALUES (0, 0, '', '', 'http://geekbucket.com.mx/gluglis_api/');"
 		--query = "INSERT INTO config VALUES (1, 0, '', '', 'http://localhost:8080/gluglis_api/');"
 		db:exec( query )
 

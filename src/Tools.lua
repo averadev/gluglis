@@ -95,14 +95,14 @@ function Tools:new()
             grpLoading:insert(loading)
             loading:setSequence("play")
             loading:play()
-            local titleLoading = display.newText({
+            --[[local titleLoading = display.newText({
                 text = "Loading...",     
                 x = (display.contentWidth / 2) + 5, y = (parent.height / 2) + 60,
                 font = native.systemFontBold,   
                 fontSize = 18, align = "center"
             })
             titleLoading:setFillColor( .3, .3, .3 )
-            grpLoading:insert(titleLoading)
+            grpLoading:insert(titleLoading)]]
         else
             if grpLoading then
                 grpLoading:removeSelf()
@@ -402,7 +402,7 @@ function Tools:new()
 		grpScrCity = display.newGroup()
 		parent:insert( grpScrCity )
 
-		bgCompCity = display.newRect( 453, 320, 410, 340 )
+		bgCompCity = display.newRect( 453, 324, 410, 340 )
 		bgCompCity.anchorY = 0
 		bgCompCity:setFillColor( .88 )
 		grpScrCity:insert(bgCompCity)
@@ -416,7 +416,7 @@ function Tools:new()
 		
 		--pinta la lista de las ciudades
 		if item ~= 0 then
-			local posY = 321
+			local posY = 325
 			local posX = 453
 			if name == "residence" then
 				posY = 688

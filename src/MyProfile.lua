@@ -117,7 +117,7 @@ end
 -- Muestra una alerta con los resulado de guardar un perfil 
 -------------------------------------------------------------
 function resultSaveProfile( isTrue, message)
-	grpTextProfile.x = intW
+	--[[grpTextProfile.x = intW
 	NewAlert(true, message)
 	timeMarker = timer.performWithDelay( 1000, function()
 		NewAlert(false, message)
@@ -125,7 +125,8 @@ function resultSaveProfile( isTrue, message)
 		tools:setLoading(false,scrPerfile)
 		btnSaveProfile:addEventListener( 'tap', saveProfile )
 	end, 1 )
-	
+	]]
+	composer.gotoScene( "src.Home" )
 end
 
 ------------------------------------------------------------
@@ -222,7 +223,7 @@ function userInputProfile( event )
 			textLastName.x = 485
 			textOriginCountry.x = 500
 		end
-		native.setKeyboardFocus( nil )
+		--native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
 		if t.name == "residence" then
 			textName.x = intH
@@ -231,6 +232,9 @@ function userInputProfile( event )
 			RestManager.getCity(t.text, "residence", scrPerfile)
 		end
     end
+	if ( event.phase == "submitted" ) then
+		native.setKeyboardFocus( nil )
+	end
 	
 	return true
 end
