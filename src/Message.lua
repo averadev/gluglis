@@ -241,7 +241,7 @@ function scrollListener( event )
 		--print(event.yStart)
 		--print(event.y)
 		print(event.y - event.yStart)
-		if event.yStart < event.y and event.y - event.yStart >= 80 then
+		if event.y - event.yStart == 0 then
 			native.setKeyboardFocus( nil )
 		end
     end

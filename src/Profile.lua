@@ -12,6 +12,7 @@ require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
+local json = require("json")
 RestManager = require('src.resources.RestManager')
 
 -- Grupos y Contenedores
@@ -375,17 +376,38 @@ function infoProfile( item )
 		num = #infoOpcion + 1
 	end
 	--area laboral
+	
 	if item.areaLaboral then
 		infoOpcion[num] = "Area laboral: " .. item.areaLaboral 
 		iconOpcion[num] = 'iconJob'
 		num = #infoOpcion + 1
 	end
 	--cuenta propia
+	--[[print(item.cuentaPropia )
 	if item.cuentaPropia then
 		infoOpcion[num] = item.cuentaPropia 
 		iconOpcion[num] = 'icoFilterCheck'
 		num = #infoOpcion + 1
-	end
+	end]]
+	
+	--print(item.cuentaPropia)
+	--item.cuentaPropia = json.encode(item.cuentaPropia)
+	iconOpcion[num] = 'icoFilterCheck'
+	print(item.cuentaPropia)
+	if item.cuentaPropia then
+        for i=1, #item.cuentaPropia do
+            if i == 1 then
+                infoOpcion[num] = item.cuentaPropia[i]
+            else
+                infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
+            end
+        end
+		num = #infoOpcion + 1
+    else
+        infoOpcion[num] = 'Por cuenta ajena'
+		num = #infoOpcion + 1
+    end
+	
 	--mascota
 	if item.mascota then
 		if item.mascota == "Sí" then

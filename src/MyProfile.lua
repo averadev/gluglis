@@ -217,7 +217,7 @@ function userInputProfile( event )
 		
 		end
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
-		native.setKeyboardFocus(nil)
+		--native.setKeyboardFocus(nil)
 		if t.name == "residence" then
 			textName.x = 485
 			textLastName.x = 485

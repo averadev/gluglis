@@ -200,21 +200,40 @@ function setInfo(idx)
     end
     -- Set info
     lblName.text = loadUsers[idx].userName 
-    detail[1].lbl.text = loadUsers[idx].residencia
+    --detail[1].lbl.text = loadUsers[idx].residencia
     if loadUsers[idx].edad then 
         lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
     end
+	-- Hobbies
+    if loadUsers[idx].hobbies then
+        local max = 3
+        if #loadUsers[idx].hobbies < max then 
+            max = #loadUsers[idx].hobbies 
+        end
+        for i=1, max do
+            if i == 1 then
+                lblInts.text = loadUsers[idx].hobbies[i]
+            else
+                lblInts.text = lblInts.text..', '..loadUsers[idx].hobbies[i]
+            end
+        end
+        if #loadUsers[idx].hobbies > max then 
+            lblInts.text = lblInts.text..'...'
+        end
+    else
+        lblInts.text = ''
+    end
 	-- Idiomas
-   if loadUsers[idx].idiomas then
-		local max = 5
+	if loadUsers[idx].idiomas then
+		local max = 3
 		if #loadUsers[idx].idiomas < max then 
             max = #loadUsers[idx].idiomas 
         end
         for i=1, max do
             if i == 1 then
-                lblInts.text = '#' .. loadUsers[idx].idiomas[i]
+                lblInts.text = lblInts.text .. ' #' .. loadUsers[idx].idiomas[i]
             else
-                lblInts.text = lblInts.text..', #'..loadUsers[idx].idiomas[i]
+                lblInts.text = lblInts.text..', '..loadUsers[idx].idiomas[i]
             end
         end
 		if #loadUsers[idx].idiomas > max then 
@@ -223,7 +242,7 @@ function setInfo(idx)
     else
         lblInts.text = ''
     end
-	if loadUsers[idx].hobbies then
+	--[[if loadUsers[idx].hobbies then
         local max = 3
         if #loadUsers[idx].hobbies < max then 
             max = #loadUsers[idx].hobbies 
@@ -240,25 +259,6 @@ function setInfo(idx)
         end
     else
         detail[2].lbl.text = ''
-    end
-    -- Hobbies
-    --[[if loadUsers[idx].hobbies then
-        local max = 4
-        if #loadUsers[idx].hobbies < max then 
-            max = #loadUsers[idx].hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = loadUsers[idx].hobbies[i]
-            else
-                lblInts.text = lblInts.text..', '..loadUsers[idx].hobbies[i]
-            end
-        end
-        if #loadUsers[idx].hobbies > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = ''
     end]]
     -- Idiomas
     --[[if loadUsers[idx].idiomas then
@@ -273,7 +273,7 @@ function setInfo(idx)
         detail[2].lbl.text = ''
     end]]
     -- Alojamiento
-    if loadUsers[idx].alojamiento and loadUsers[idx].alojamiento == 'Sí' then
+    --[[if loadUsers[idx].alojamiento and loadUsers[idx].alojamiento == 'Sí' then
         detail[3].icon.alpha = 1
         detail[3].lbl.text = 'Ofrece alojamiento'
     else 
@@ -287,7 +287,7 @@ function setInfo(idx)
     else 
         detail[4].icon2.alpha = 1
         detail[4].lbl.text = 'No disponible'
-    end 
+    end ]]
 	
 	btnViewProfile.item = loadUsers[idx]
     --
@@ -448,7 +448,7 @@ function showInfoDisplay()
     screen:insert(bgTitleX)
     
     -- Options
-    posY = posY + 55
+   --[[ posY = posY + 55
     local opt = {
         {icon = 'icoFilterCity'},
         {icon = 'icoFilterLanguage'}, 
@@ -480,7 +480,7 @@ function showInfoDisplay()
         screen:insert(detail[i].lbl)
     end
 	
-	posY = posY + 50
+	posY = posY + 50]]
 	
 	--btn perfil
 	btnViewProfile = display.newRoundedRect( midW, posY, 720, 70, 10 )
@@ -597,7 +597,7 @@ function showInfoButton()
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
         {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
     for i=1, 4 do
-        detail[i] = {}
+       --[[]] detail[i] = {}
         detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
         detail[i].icon:translate( -100, 0 )
         bottomCmp:insert(detail[i].icon)
@@ -729,13 +729,16 @@ function scene:create( event )
     topCmp:insert(lblInts)
     
     -- Mediante alto de la pantalla determinamos recuadro del detalle
-    if isH then
+    --[[if isH then
         showInfoDisplay()
     else
         bottomCmp = display.newGroup()
         screen:insert(bottomCmp)
         showInfoButton()
-    end
+    end]]
+	bottomCmp = display.newGroup()
+	screen:insert(bottomCmp)
+	showInfoButton()
 	grpLoad = display.newGroup()
 	screen:insert(grpLoad)
 	grpLoad.y = 650 + h
