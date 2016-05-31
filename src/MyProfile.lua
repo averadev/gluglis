@@ -229,7 +229,8 @@ function userInputProfile( event )
 			textName.x = intH
 			textLastName.x = intH
 			textOriginCountry.x = intH
-			RestManager.getCity(t.text, "residence", scrPerfile)
+			local itemOption = {posY = 745, posX = 500, height = 340, width = 410}
+			RestManager.getCity(t.text, "residence", scrPerfile, itemOption)
 		end
     end
 	if ( event.phase == "submitted" ) then
@@ -264,7 +265,6 @@ function moveToggleButtons( event )
 		else
 			gender = "Mujer"
 		end
-		
 	elseif t.name == "availability" then
 		if t.onOff == "Sí" then
 			availability = "Siempre" 
@@ -576,6 +576,7 @@ function createToggleButtons(item, name, coordY, coordX )
         toggleBg[num]:setFillColor( .7 )
         toggleButtons[num]:setFillColor( .7 )
     end
+	
 
 end
 
@@ -1012,7 +1013,7 @@ function createPreferencesItems( item )
 	end
 	--cuenta propia
 	infoOpcion[num] = "Cuenta propia: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "ownAccount"
 	num = #infoOpcion + 1
@@ -1055,7 +1056,7 @@ function createPreferencesItems( item )
 	num = #infoOpcion + 1
 	--fumas
 	infoOpcion[num] = "¿Fumas?: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "smoke"
 	num = #infoOpcion + 1
@@ -1065,7 +1066,7 @@ function createPreferencesItems( item )
 	 smoke = item.fumas
 	--bebes
 	infoOpcion[num] = "¿Bebes?: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "drink"
 	num = #infoOpcion + 1
@@ -1075,7 +1076,7 @@ function createPreferencesItems( item )
 	drink = item.bebes
 	--psicotroficos
 	infoOpcion[num] = "¿Psicotroficos?: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "psychrotrophic"
 	num = #infoOpcion + 1
@@ -1202,7 +1203,7 @@ function createTouristGuideItems( item )
 	local num = #infoOpcion + 1
 	--disponibilidad
 	infoOpcion[num] = "Disponibilidad: "
-	iconOpcion[num] = 'icoFilterCheckAvailble'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "availability"
 	num = #infoOpcion + 1
@@ -1212,7 +1213,7 @@ function createTouristGuideItems( item )
 	availability = item.diponibilidad
 	--alojamiento
 	infoOpcion[num] = "Alojamiento: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "accommodation"
 	num = #infoOpcion + 1
@@ -1222,7 +1223,7 @@ function createTouristGuideItems( item )
 	accommodation = item.alojamiento
 	--vehiculo
 	infoOpcion[num] = "Vehiculo: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "vehicle"
 	num = #infoOpcion + 1
@@ -1232,7 +1233,7 @@ function createTouristGuideItems( item )
 	vehicle = item.vehiculo
 	--comida
 	infoOpcion[num] = "Comida: "
-	iconOpcion[num] = 'icoFilterCheck'
+	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "food"
 	num = #infoOpcion + 1

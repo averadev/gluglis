@@ -42,6 +42,9 @@ local newPoscCircle = nil
 local isCircle = false
 local blockTouch = false
 local accommodation
+local bgToogle1 = nil
+local toogle1 = nil
+local toggleButton = nil
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -76,10 +79,14 @@ end
 --------------------------------------------
 function filterUser( event )
 	closeAll( 0 )
-	local textLocation = txtLocation.text
-	if txtLocation.text == "" or txtLocation.text == " " or txtLocation.text == "  "then
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+	local textLocation = trimString(txtLocation.text)
+	if txtLocation.text == "" or txtLocation.text == " " or txtLocation.text == "  " then
 		textLocation = 0
 	end
+	typeSearch = "filter"
 	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, accommodation )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
@@ -103,7 +110,8 @@ function onTxtFocusFilter( event )
 		native.setKeyboardFocus(nil)
     elseif ( event.phase == "editing" ) then
 		--hace la busqueda de la ciudad
-		RestManager.getCity(txtLocation.text, "location", screen )
+		local itemOption = {posY = 324, posX = 453, height = 340, width = 410}
+		RestManager.getCity(txtLocation.text, "location", screen, itemOption )
     end
 end
 
@@ -136,12 +144,18 @@ function moveToggleButton( event )
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
-		transition.to( t, { x = t.x - 100, time = 200})
+		transition.to( toggleButton, { x = toggleButton.x - 100, time = 200})
 		accommodation = "No"
+		toggleButton:setFillColor( .7 )
+		bgToogle1:setFillColor( .7 )
+		toogle1:setFillColor( .9 )
 	else
 		t.onOff = "Sí"
-		transition.to( t, { x = t.x + 100, time = 200})
+		transition.to( toggleButton, { x = toggleButton.x + 100, time = 200})
 		accommodation = "Sí"
+		toggleButton:setFillColor( 89/255, 31/255, 103/255 )
+		bgToogle1:setFillColor( 89/255, 31/255, 103/255 )
+		toogle1:setFillColor( 129/255, 61/255, 153/255 )
 	end
 end
 
@@ -480,17 +494,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 		lblYes:setFillColor( 1 )
 		screen:insert(lblYes)
 		
-		local lblNo = display.newText({
-			text = "No", 
-			x = coordX - 50, y = coordY,
-			width = 100,
-			font = native.systemFont, 
-			fontSize = 35, align = "center"
-		})
-		lblNo:setFillColor( 1 )
-		lblNo.alpha = .8
-		screen:insert(lblNo)
-		
 		local posXTB = 303 + 100
 		local onOff = "Sí"
 		accommodation = "Sí"
@@ -500,14 +503,20 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			accommodation = "No"
 		end
 		--boton del toggleButton
-		local toggleButton = display.newRect( posXTB, coordY - 22, 97, 44 )
+		toggleButton = display.newRect( posXTB, coordY - 22, 97, 44 )
 		toggleButton.anchorY = 0
 		toggleButton.anchorX = 0
-		toggleButton.onOff = onOff
 		toggleButton:setFillColor( 89/255, 31/255, 103/255 )
+		
 		screen:insert(toggleButton)
+		if onOff == "No" then
+			toggleButton:setFillColor( .7 )
+			bgToogle1:setFillColor( .7 )
+			toogle1:setFillColor( .9 )
+		end
 		toggleButton.name = name
-		toggleButton:addEventListener( 'tap', moveToggleButton )
+		bgToogle1.onOff = onOff
+		bgToogle1:addEventListener( 'tap', moveToggleButton )
 	end
 end
 
@@ -834,14 +843,14 @@ function scene:create( event )
 			
 		elseif  xFields[i].type == "toggleButton" then 
 			-- BG Component
-			local bg1 = display.newRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50 )
-			bg1.anchorX = 1
-			bg1:setFillColor( 89/255, 31/255, 103/255 )
-			screen:insert(bg1)
-			local bg2 = display.newRect( xFields[i].x - 3, posY + xFields[i].y, xFields[i].w - 6, 44 )
-			bg2.anchorX = 1
-			bg2:setFillColor( 129/255, 61/255, 153/255 )
-			screen:insert(bg2)
+			bgToogle1 = display.newRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50 )
+			bgToogle1.anchorX = 1
+			bgToogle1:setFillColor( 89/255, 31/255, 103/255 )
+			screen:insert(bgToogle1)
+			toogle1 = display.newRect( xFields[i].x - 3, posY + xFields[i].y, xFields[i].w - 6, 44 )
+			toogle1.anchorX = 1
+			toogle1:setFillColor( 129/255, 61/255, 153/255 )
+			screen:insert(toogle1)
 			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
         else
             local bg1 = display.newRoundedRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50, 5 )

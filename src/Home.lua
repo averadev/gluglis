@@ -47,7 +47,10 @@ end
 -- Creamos primera tanda de tarjetas
 ------------------------------------
 function getFirstCards(items)
+	tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
+	bottomCmp.alpha = 1
+	container.alpha = 1
 	for i = 1, #items, 1 do
 		table.insert( loadUsers, items[i] )
 	end
@@ -57,13 +60,11 @@ function getFirstCards(items)
 		if #avaL == 0 then
 			idxA = 1
 		end
-		--print(idxA)
 		countA = #items
     
 		for i = 1, countA, 1 do
 			buildCard(items[i])
 		end
-		--print(idxA)
 		if idxA == 1 then
 			setInfo(1)
 			avaL[1].alpha = 1
@@ -81,8 +82,8 @@ end
 -- @param message mensaje que se muestra 
 ----------------------------------------------------------
 function HomeError( message )
+	tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
-
 	local bgavatarDefault = display.newRect( midW, 172, 580, 558 )
 	bgavatarDefault.anchorY = 0
 	bgavatarDefault:setFillColor( 1 )
@@ -91,7 +92,8 @@ function HomeError( message )
 	local avatarDefault = display.newImage( "img/avatar.png" )
 	avatarDefault:translate( midW, 450 )
 	topCmp:insert(avatarDefault)
-	
+	bottomCmp.alpha = 1
+	container.alpha = 1
 	lblName.text = message
 end
 
@@ -147,7 +149,6 @@ function buildCard(item)
 	avaR[idx].id = item.id
     avaR[idx].fill = { type = "image", sheet = imgS, frame = 2 }
     profiles:insert(avaR[idx])
-	--print(#avaL)
     
 end
 
@@ -242,52 +243,6 @@ function setInfo(idx)
     else
         lblInts.text = ''
     end
-	--[[if loadUsers[idx].hobbies then
-        local max = 3
-        if #loadUsers[idx].hobbies < max then 
-            max = #loadUsers[idx].hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                detail[2].lbl.text = loadUsers[idx].hobbies[i]
-            else
-                detail[2].lbl.text = detail[2].lbl.text..', '..loadUsers[idx].hobbies[i]
-            end
-        end
-        if #loadUsers[idx].hobbies > max then 
-            detail[2].lbl.text = detail[2].lbl.text..'...'
-        end
-    else
-        detail[2].lbl.text = ''
-    end]]
-    -- Idiomas
-    --[[if loadUsers[idx].idiomas then
-        for i=1, #loadUsers[idx].idiomas do
-            if i == 1 then
-                detail[2].lbl.text = loadUsers[idx].idiomas[i]
-            else
-                detail[2].lbl.text = detail[2].lbl.text..', '..loadUsers[idx].idiomas[i]
-            end
-        end
-    else
-        detail[2].lbl.text = ''
-    end]]
-    -- Alojamiento
-    --[[if loadUsers[idx].alojamiento and loadUsers[idx].alojamiento == 'Sí' then
-        detail[3].icon.alpha = 1
-        detail[3].lbl.text = 'Ofrece alojamiento'
-    else 
-        detail[3].icon2.alpha = 1
-        detail[3].lbl.text = 'No ofrece alojamiento'
-    end 
-    -- Disponibilidad
-    if loadUsers[idx].diponibilidad and loadUsers[idx].diponibilidad == 'Siempre' then
-        detail[4].icon.alpha = 1
-        detail[4].lbl.text = 'Disponible'
-    else 
-        detail[4].icon2.alpha = 1
-        detail[4].lbl.text = 'No disponible'
-    end ]]
 	
 	btnViewProfile.item = loadUsers[idx]
     --
@@ -373,9 +328,7 @@ function touchScreen(event)
                 avaR[idxA+1].alpha = 0
             end})
         elseif direction == 1 and xM < -700 then
-			--print(idxA)
 			if (idxA + 1) == limitCard then
-				--print("buscando....")
 				getProfile()
 			end
             avaR[idxA].alpha = 0
@@ -414,7 +367,12 @@ end
 function getProfile()
 	screen:removeEventListener( "touch", touchScreen )
 	tools:setLoading(true,grpLoad)
-	RestManager.getUsersByFilter(limitCard)
+	--RestManager.getUsersByFilter(limitCard)
+	if typeSearch == "welcome" then
+		RestManager.getUsersByCity(limitCard)
+	else
+		RestManager.getUsersByFilter(limitCard)
+	end
 	limitCard = limitCard + 10
 	
 end
@@ -651,6 +609,10 @@ function clearTempDir()
     end
 end
 
+function buildHome()
+	
+end
+
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
 
 -------------------------------------
@@ -682,6 +644,8 @@ function scene:create( event )
 	container:translate( midW , 90 + h)
 	container.anchorY = 0
     screen:insert(container)
+	
+	container.alpha = 0
 	
     topCmp = display.newGroup()
     container:insert(topCmp)
@@ -728,24 +692,22 @@ function scene:create( event )
     lblInts:setFillColor( 1 )
     topCmp:insert(lblInts)
     
-    -- Mediante alto de la pantalla determinamos recuadro del detalle
-    --[[if isH then
-        showInfoDisplay()
-    else
-        bottomCmp = display.newGroup()
-        screen:insert(bottomCmp)
-        showInfoButton()
-    end]]
 	bottomCmp = display.newGroup()
 	screen:insert(bottomCmp)
+	bottomCmp.alpha = 0
 	showInfoButton()
 	grpLoad = display.newGroup()
 	screen:insert(grpLoad)
 	grpLoad.y = 650 + h
-	tools:setLoading(true,grpLoad)
+	tools:setLoadingPerson(true,grpLoad)
 	clearTempDir()
 	RestManager.getUsersById()
-    RestManager.getUsersByFilter(0)
+	if typeSearch == "welcome" then
+		RestManager.getUsersByCity(0)
+	else
+		RestManager.getUsersByFilter(0)
+	end
+    --
 	limitCard = 10
 	if isReadOnly == false then
 		timeMarker = timer.performWithDelay( 1000, function( event )
@@ -767,12 +729,6 @@ function scene:show( event )
 	if prevScene == "src.MyProfile" then
 		RestManager.getUsersById()
 	end
-
-	--[[local date = os.date( "*t" )    -- Returns table of date & time values
-	print( date.year, date.month )  -- Print year and month
-	print( date.hour, date.min )    -- Print hour and minutes]]
-	--print(zoneTime)
-	--makeTimeStamp(os.date( "2016/02/25 13:58:22" ))
 	
 end
 

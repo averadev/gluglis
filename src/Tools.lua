@@ -22,7 +22,7 @@ Tools = {}
 function Tools:new()
     -- Variables
     local self = display.newGroup()
-    local filtroGdacs, headLogo, bottomCheck, grpLoading, grpConnection, grpNoMessages
+    local filtroGdacs, headLogo, bottomCheck, grpLoading, grpLoadingPerson, grpConnection, grpNoMessages
     local h = display.topStatusBarContentHeight
     local fxTap = audio.loadSound( "fx/click.wav")
     self.y = h
@@ -95,18 +95,42 @@ function Tools:new()
             grpLoading:insert(loading)
             loading:setSequence("play")
             loading:play()
-            --[[local titleLoading = display.newText({
-                text = "Loading...",     
-                x = (display.contentWidth / 2) + 5, y = (parent.height / 2) + 60,
-                font = native.systemFontBold,   
-                fontSize = 18, align = "center"
-            })
-            titleLoading:setFillColor( .3, .3, .3 )
-            grpLoading:insert(titleLoading)]]
         else
             if grpLoading then
                 grpLoading:removeSelf()
                 grpLoading = nil
+            end
+        end
+    end
+	
+	-------------------------------
+    -- Creamos loading person
+	-------------------------------
+	function self:setLoadingPerson(isLoading, parent)
+        if isLoading then
+            if grpLoadingPerson then
+                grpLoadingPerson:removeSelf()
+                grpLoadingPerson = nil
+            end
+            grpLoadingPerson = display.newGroup()
+            parent:insert(grpLoadingPerson)
+            
+            local bg = display.newRect( (display.contentWidth / 2), (parent.height / 2), 
+                display.contentWidth, parent.height )
+            bg:setFillColor( .95 )
+            bg.alpha = .3
+            grpLoadingPerson:insert(bg)
+            local sheet = graphics.newImageSheet(Sprites.person.source, Sprites.person.frames)
+            local loading = display.newSprite(sheet, Sprites.person.sequences)
+            loading.x = display.contentWidth / 2
+            loading.y = (parent.height / 2) - 128
+            grpLoadingPerson:insert(loading)
+            loading:setSequence("play")
+            loading:play()
+        else
+            if grpLoadingPerson then
+                grpLoadingPerson:removeSelf()
+                grpLoadingPerson = nil
             end
         end
     end
@@ -382,6 +406,8 @@ function Tools:new()
 				getCityProfile(event.target.city)
 			elseif event.target.name == "location" then
 				getCityFilter(event.target.city)
+			elseif event.target.name == "welcome" then
+				getCityWelcome(event.target.city)
 			end
 		end, 1 )
 		return true
@@ -391,7 +417,7 @@ function Tools:new()
 	-- Muestra una lista de las ciudades por el nombre
 	-- @param item nombre de la ciudad y su pais
 	---------------------------------------------------
-	function showCities(item, name, parent)
+	function showCities(item, name, parent, itemOption)
 		componentActive = "cities"
 		--elimina los componentes para crear otros
 		if grpScrCity then
@@ -401,29 +427,51 @@ function Tools:new()
 		--grp ciudad
 		grpScrCity = display.newGroup()
 		parent:insert( grpScrCity )
+		
+		local
 
-		bgCompCity = display.newRect( 453, 324, 410, 340 )
+		--bgCompCity = display.newRect( 453, 324, 410, 340 )
+		bgCompCity = display.newRect( itemOption.posX, itemOption.posY, itemOption.width, itemOption.height )
 		bgCompCity.anchorY = 0
 		bgCompCity:setFillColor( .88 )
 		grpScrCity:insert(bgCompCity)
 		bgCompCity:addEventListener( 'tap', noAction )
 		
 		if name == "residence" then
-			bgCompCity.y = 750
-			bgCompCity.x = 500
+			--bgCompCity.y = 750
+			--bgCompCity.x = 500
 			bgCompCity.anchorY = 1
 		end
+		--[[elseif name == "welcome" then
+			bgCompCity.y = 580
+			bgCompCity.x = 280
+			bgCompCity.height = 600
+		end]]
 		
 		--pinta la lista de las ciudades
 		if item ~= 0 then
-			local posY = 325
+			local posY = itemOption.posY + 2
+			local posX = itemOption.posX
+			if name == "residence" then
+				posY = itemOption.posY - 63
+			end
+			--[[local posY = 325
 			local posX = 453
 			if name == "residence" then
 				posY = 688
 				posX = 500
+			elseif name == "welcome" then
+				posY = 688
+				posX = 500
+			end]]
+			local heightItem = 60
+			local fontsize = 20
+			if name == "welcome" then
+				heightItem = 80
+				fontsize = 25
 			end
 			for i = 1, #item do
-				local bg0 = display.newRect( posX, posY, 406, 60 )
+				local bg0 = display.newRect( posX, posY, itemOption.width, heightItem )
 				bg0.anchorY = 0
 				bg0.city = item[i].description
 				bg0:setFillColor( 1 )
@@ -433,22 +481,22 @@ function Tools:new()
 			
 				local lbl0 = display.newText({
 					text = item[i].description, 
-					x = posX, y = posY + 50,
-					width = 390, height = 60,
+					x = posX, y = posY + (heightItem - (heightItem/2)),
+					width = itemOption.width - 50,
 					font = native.systemFont,   
-					fontSize = 20, align = "left"
+					fontSize = fontsize, align = "left"
 				})
 				lbl0:setFillColor( 0 )
 				grpScrCity:insert(lbl0)
 			
 				if name == "residence" then
-					posY = posY - 63
+					posY = posY - (heightItem + 3)
 				else
-					posY = posY + 63
+					posY = posY + (heightItem + 3)
 				end
 				
 			end
-			bgCompCity.height = 63 * #item + 2
+			bgCompCity.height = (heightItem + 3) * #item + 2
 			
 		else
 	

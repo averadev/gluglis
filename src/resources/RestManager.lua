@@ -473,14 +473,33 @@ local RestManager = {}
     -- Obtiene los usuarios por ubicacion
     ---------------------------------------
     RestManager.getUsersByCity = function()
+		settings = DBManager.getSettings()
+		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
+		url = url.."/city/" 	.. urlencode(settFilter.city)
 	
         local function callback(event)
             if ( event.isError ) then
+				HomeError( "Error con el servidor" )
             else
                 local data = json.decode(event.response)
-				loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+				if data then
+					if data.success then
+						local data = json.decode(event.response)
+						for i = 1, #data.items, 1 do
+						end
+						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+					else
+						if data.error then
+							HomeError( "Error con el servidor" )
+						else
+							HomeError(data.message)
+						end
+					end
+				else
+					HomeError( "Error con el servidor" )
+				end
             end
             return true
         end
@@ -506,8 +525,6 @@ local RestManager = {}
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
 	
-		print(url)
-	
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -517,11 +534,6 @@ local RestManager = {}
 					if data.success then
 						local data = json.decode(event.response)
 						for i = 1, #data.items, 1 do
-							--print(data.items[i].id)
-							--print(data.items[i].image)
-							--print(data.items[i].image2)
-							--print("")
-							
 						end
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
@@ -660,7 +672,6 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)
@@ -714,7 +725,7 @@ local RestManager = {}
     -------------------------------------
     -- Obtiene los usuarios por ubicacion
     -------------------------------------
-    RestManager.getCity = function(city,name,parent)
+    RestManager.getCity = function(city,name,parent, itemOption)
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
@@ -724,7 +735,8 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.status == "OK" then
-						showCities(data.predictions, name, parent)
+						print("entro")
+						showCities(data.predictions, name, parent, itemOption)
 					elseif data.status == "ZERO_RESULTS" then
 						showCities(0, name, parent)
 					end
@@ -802,18 +814,8 @@ local RestManager = {}
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 					
 				else
-					--url = site..obj.path..img
-					--print(img2)
-					
-					--[[if obj.items[obj.idx].image == "avatar.png" then
-						url = site..obj.path..img
-					else
-						--url = "http://www.gluglis.travel/"..img2
-						url = img2
-					end]]
 					url = img2
 				end
-				print(url)
                 display.loadRemoteImage( url ,"GET", imageListener, img, system.TemporaryDirectory ) 
             end
         else

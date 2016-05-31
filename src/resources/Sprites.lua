@@ -24,4 +24,13 @@ Sprites.loadingMini = {
   }
 }
 
+Sprites.person = {
+  source = "img/sprPerson.png",
+  frames = {width=110, height=128, numFrames=2},
+  sequences = {
+      { name = "stop", loopCount = 1, start = 1, count=1},
+      { name = "play", time=500, start = 1, count=2}
+  }
+}
+
 return Sprites

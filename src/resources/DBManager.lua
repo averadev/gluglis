@@ -69,6 +69,14 @@ local dbManager = {}
 		closeConnection( )
 	end
 	
+	--actualiza la configuracion de los filtros
+	dbManager.updateCity = function( city )
+		openConnection( )
+        local query = "UPDATE filter SET city = '"..city.."';"
+        db:exec( query )
+		closeConnection( )
+	end
+	
 	--limpia la tabla de config y filtro
     dbManager.clearUser = function()
         openConnection( )

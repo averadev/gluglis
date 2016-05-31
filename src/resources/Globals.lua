@@ -22,6 +22,7 @@ bgCompCity = nil
 --indica si algun componente esta activo en la scena
 componentActive = false
 timeZone = ""
+typeSearch = "welcome"
 if ( system.getInfo( "environment" ) == "simulator" ) then
     timeZone = "-0500"
 else

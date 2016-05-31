@@ -85,9 +85,10 @@ function infoProfile( item )
     })
     lblName:setFillColor( 0 )
     scrPerfile:insert(lblName)
-	if not item.edad then item.edad = "" else item.edad = item.edad .. " Años" end
+	local edad = ""
+	if not item.edad then edad = "" else edad = item.edad .. " Años" end
     local lblAge= display.newText({
-        text = item.edad, 
+        text = edad, 
         x = 550, y = 200,
         width = 400,
         font = native.systemFont, 
