@@ -548,6 +548,8 @@ local function onKeyEventBack( event )
 					destroyDatePicker2( "" )
 				elseif componentActive == "blockChat" then
 					blockedChatMsg( "", false, false )
+				elseif composer.getSceneName( "current" ) == "src.Welcome" then
+					return false
 				else
 					returnScene()
 				end

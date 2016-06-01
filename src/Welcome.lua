@@ -72,6 +72,7 @@ end
 -- Manda a la pantalla d home con la ciudad selecionada
 -------------------------------------
 function goToHome( event )
+	closeAllWelcome( 0 )
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
@@ -88,7 +89,17 @@ end
 -- Manda a la pantalla de filtros
 -------------------------------------
 function goFilter( event )
+	closeAllWelcome( 0 )
 	composer.gotoScene( "src.Filter", { time = 400, effect = "fade" } )
+end
+
+--------------------------------
+-- cierra todo los componentes
+-------------------------------
+function closeAllWelcome( event )
+	native.setKeyboardFocus(nil)
+	deleteGrpScrCity()
+	return true
 end
 
 ---------------------------------------------------------------------------------
@@ -116,6 +127,7 @@ function scene:create( event )
     o.fill.scaleX = .2
     o.fill.scaleY = .2
     screen:insert(o)
+	o:addEventListener( 'tap', closeAllWelcome )
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
 	
@@ -152,29 +164,20 @@ function scene:create( event )
 	
 	lastY = (intH/2 + h) - 100
 	
-	--label si/no
-	local lblLocation = display.newText({
-		text = "Ciudad", 
-		x = 140, y = lastY - 130,
-		font = native.systemFont, 
-		fontSize = 40, align = "center"
-	})
-	lblLocation:setFillColor( 0 )
-	grpWelcome:insert(lblLocation)
-	
-	local bgText = display.newRoundedRect( midW - 60, lastY + 5, 540, 100, 5 )
+	local bgText = display.newRoundedRect( midW - 50, lastY + 5, 540, 100, 5 )
 	bgText.anchorY = 1
 	bgText:setFillColor( 1 )
 	grpWelcome:insert(bgText)
 	
-	txtLocationW = native.newTextField( midW - 50, lastY, 540, 100 )
+	txtLocationW = native.newTextField( midW - 55, lastY, 540, 100 )
 	txtLocationW.anchorY = 1
 	txtLocationW.inputType = "default"
 	txtLocationW.hasBackground = false
 	txtLocationW:addEventListener( "userInput", onTxtFocusWelcome )
 	txtLocationW:setReturnKey( "default" )
-	txtLocationW.size = 45
+	txtLocationW.size = 40
 	txtLocationW.placeholder = "Ingresa una ciudad"
+	txtLocationW:setTextColor( .5 )
 	grpWelcome:insert( txtLocationW )
 		
 	local imgDado = display.newImage( screen, "img/1454731709.png" )
