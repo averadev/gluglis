@@ -43,18 +43,18 @@ function Tools:new()
         local iconLogo = display.newImage("img/iconLogo.png")
         iconLogo:translate(display.contentWidth/2, 45)
         self:insert( iconLogo )
-        
-        if composer.getSceneName( "current" ) == "src.Home" then
+        local currentScene = composer.getSceneName( "current" )
+        if currentScene == "src.Home" or currentScene == "src.Welcome" then
             -- Iconos Home
             local iconMenu = display.newImage("img/iconMenu.png")
             iconMenu:translate(45, 45)
             iconMenu:addEventListener( 'tap', showMenu)
             self:insert( iconMenu )
-            local iconChat = display.newImage("img/iconChat.png")
-            iconChat:translate(display.contentWidth-45, 45)
-            iconChat.screen = 'Messages'
-            iconChat:addEventListener( 'tap', toScreen)
-            self:insert( iconChat )
+			local iconChat = display.newImage("img/iconChat.png")
+			iconChat:translate(display.contentWidth-45, 45)
+			iconChat.screen = 'Messages'
+			iconChat:addEventListener( 'tap', toScreen)
+			self:insert( iconChat )
             -- Get Menu
 			if not scrMenu then
 				scrMenu = Menu:new()
@@ -258,14 +258,23 @@ function Tools:new()
     -- Cerramos o mostramos shadow
 	----------------------------------
     function showMenu(event)
+		local currentScene = composer.getSceneName( "current" )
         if bgShadow.alpha == 0 then
 			componentActive = "menu"
             self:toFront()
+			if currentScene == "src.Welcome" then
+				moveTextFieldWelcome(1152)
+			elseif currentScene == "src.Home" then
+				showOptionHome()
+			end
             --bgShadow:addEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = .3, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = 0, time = 400, transition = easing.outExpo } )
         else
 			componentActive = false
+			if currentScene == "src.Welcome" then
+				moveTextFieldWelcome(midW - 55)
+			end
             --bgShadow:removeEventListener( 'tap', showMenu)
             transition.to( bgShadow, { alpha = 0, time = 400, transition = easing.outExpo })
             transition.to( scrMenu, { x = -500, time = 400, transition = easing.outExpo })

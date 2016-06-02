@@ -18,7 +18,8 @@ RestManager = require('src.resources.RestManager')
 local screen
 local scene = composer.newScene()
 local scrPerfile, scrElements, scrCombo
-local grpTextProfile, grpOptionsLabel, grpOptionsCombo, grpComboBox
+local grpOptionsLabel, grpOptionsCombo, grpComboBox
+local grpTextProfile = nil
 
 -- Variables
 local posY = 350
@@ -41,12 +42,24 @@ local lblInts, lblLang, lblSport, lblResidenceTime, lblRace, lblWorkArea
 local btnSaveProfile
 local gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
 local lblAge
+local grpLoadMyProfile
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
-function method()
-    
+
+------------------------------------
+-- carga los datos del usuario
+------------------------------------
+function getUserPerfil( item, after )
+	--[[itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
+	vehiculo = item.vehiculo, residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}]]
+	itemProfile = item
+	if after == "show" then
+		createProfileAvatar()
+	else
+		composer.gotoScene( "src.Home" )
+	end
 end
 
 --------------------------------
@@ -126,7 +139,7 @@ function resultSaveProfile( isTrue, message)
 		btnSaveProfile:addEventListener( 'tap', saveProfile )
 	end, 1 )
 	]]
-	composer.gotoScene( "src.Home" )
+	RestManager.getUsersById("save")
 end
 
 ------------------------------------------------------------
@@ -1431,7 +1444,7 @@ end
 -- permite editar su informacion
 ------------------------------------
 function MyProfile( item )
-
+	
 	grpTextProfile = display.newGroup()
 	scrPerfile:insert(grpTextProfile)
 	
@@ -1504,50 +1517,11 @@ function MyProfile( item )
 	
 end
 
----------------------------------------------------------------------------------
--- DEFAULT METHODS
----------------------------------------------------------------------------------
-
----------------------------------------------
--- Se crea la scena con los datos del perfil
----------------------------------------------
-function scene:create( event )
-	local item = event.params.item
-	screen = self.view
-    --screen.y = h
+function createProfileAvatar()
+	tools:setLoading(false,grpLoadMyProfile)
 	
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-	
-    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
-    screen:insert(o)
-	o:addEventListener( 'tap', closeAll )
-	
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
-	
-	--tools
-    tools = Tools:new()
-    tools:buildHeader()
-    screen:insert(tools)
-	
-	RestManager.getHobbies()
-
-	--scrollview
-	scrPerfile = widget.newScrollView({
-        top = 100 + h,
-        left = 0,
-        width = intW,
-        height = intH-(100+h),
-        hideBackground = true,
-		horizontalScrollDisabled = true,
-    })
-	screen:insert(scrPerfile)
-    
-    -- Avatar
+	item = itemProfile
+	-- Avatar
     local bgA1 = display.newRoundedRect( midW - 190, 170, 250, 250, 10 )
     bgA1:setFillColor( 11/225, 163/225, 212/225 )
     scrPerfile:insert(bgA1)
@@ -1555,7 +1529,6 @@ function scene:create( event )
     local bgA2 = display.newRect( midW - 190, 170, 235, 235 )
     bgA2:setFillColor( 0, 193/225, 1 )
     scrPerfile:insert(bgA2)
-    
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
@@ -1596,6 +1569,64 @@ function scene:create( event )
     end
 	
 	scrPerfile:setScrollHeight(posY + 100)
+
+end
+
+---------------------------------------------------------------------------------
+-- DEFAULT METHODS
+---------------------------------------------------------------------------------
+
+---------------------------------------------
+-- Se crea la scena con los datos del perfil
+---------------------------------------------
+function scene:create( event )
+	--local item = event.params.item
+	screen = self.view
+    --screen.y = h
+	
+	display.setDefault( "textureWrapX", "repeat" )
+	display.setDefault( "textureWrapY", "repeat" )
+	
+    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    o.fill = { type="image", filename="img/fillPattern.png" }
+    o.fill.scaleX = .2
+    o.fill.scaleY = .2
+    screen:insert(o)
+	o:addEventListener( 'tap', closeAll )
+	
+	display.setDefault( "textureWrapX", "clampToEdge" )
+	display.setDefault( "textureWrapY", "clampToEdge" )
+	
+	--tools
+    tools = Tools:new()
+    tools:buildHeader()
+    screen:insert(tools)
+	
+	RestManager.getHobbies()
+
+	--scrollview
+	scrPerfile = widget.newScrollView({
+		top = 100 + h,
+        left = 0,
+        width = intW,
+        height = intH-(100+h),
+        hideBackground = true,
+		horizontalScrollDisabled = true,
+    })
+	screen:insert(scrPerfile)
+	
+	
+	
+	grpLoadMyProfile = display.newGroup()
+	screen:insert(grpLoadMyProfile)
+	grpLoadMyProfile.y = 650 + h
+	tools:setLoading(true,grpLoadMyProfile)
+	if not itemProfile then
+		RestManager.getUsersById("show")
+	else
+		createProfileAvatar()
+	end
+	
 end	
 --------------------------------------------------------
 -- Called immediately after scene has moved onscreen:
@@ -1607,10 +1638,15 @@ end
 ----------------
 function scene:hide( event )
 	native.setKeyboardFocus( nil )
-	if grpTextProfile then
-		grpTextProfile:removeSelf()
-		grpTextProfile = nil
+	local phase = event.phase
+	if phase == "will" then
+		if grpTextProfile then
+			grpTextProfile:removeSelf()
+			grpTextProfile = nil
+		end
+		
 	end
+	
 end
 ---------------------
 -- Destroy scene

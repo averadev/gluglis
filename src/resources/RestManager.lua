@@ -449,7 +449,7 @@ local RestManager = {}
 	-------------------------------------
     -- Obtiene los datos del usuario por id
     -------------------------------------
-    RestManager.getUsersById = function()
+    RestManager.getUsersById = function(after)
 		settings = DBManager.getSettings()
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
@@ -460,7 +460,7 @@ local RestManager = {}
             else
                 local data = json.decode(event.response)
 				if #data.items > 0 then
-					loadImage({idx = 0, name = "UserAvatars", path = "assets/img/avatar/", items = data.items})
+					loadImage({idx = 0, name = "UserAvatars", path = "assets/img/avatar/", items = data.items, after = after})
 				end
             end
             return true
@@ -758,7 +758,7 @@ local RestManager = {}
         if obj.name == "HomeAvatars" then
             getFirstCards(obj.items)
 		elseif  obj.name == "UserAvatars" then
-			getUserPerfil(obj.items[1])
+			getUserPerfil(obj.items[1], obj.after)
 		elseif  obj.name == "MessagesAvatars" then
 			setItemsListMessages(obj.items)
 		elseif  obj.name == "MessageAvatars" then

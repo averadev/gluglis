@@ -34,15 +34,6 @@ local limitCard = 10
 
 ---------------------------------- FUNCIONES ----------------------------------
 
-------------------------------------
--- carga los datos del usuario
-------------------------------------
-function getUserPerfil(item)
-	--[[itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
-	vehiculo = item.vehiculo, residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}]]
-	itemProfile = item
-end
-
 -------------------------------------
 -- Creamos primera tanda de tarjetas
 ------------------------------------
@@ -701,7 +692,7 @@ function scene:create( event )
 	grpLoad.y = 650 + h
 	tools:setLoadingPerson(true,grpLoad)
 	clearTempDir()
-	RestManager.getUsersById()
+	--RestManager.getUsersById()
 	if typeSearch == "welcome" then
 		RestManager.getUsersByCity(0)
 	else
@@ -725,10 +716,10 @@ end
 ------------------------------------
 function scene:show( event )
 
-	local prevScene = composer.getSceneName( "previous" )
+	--[[local prevScene = composer.getSceneName( "previous" )
 	if prevScene == "src.MyProfile" then
-		RestManager.getUsersById()
-	end
+		--RestManager.getUsersById()
+	end]]
 	
 end
 

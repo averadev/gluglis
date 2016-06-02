@@ -16,7 +16,8 @@ function Menu:new()
     local selfMenu = display.newGroup()
     local fxTap = audio.loadSound( "fx/click.wav")
     local Menu
-    
+    local option = {}
+	
     -- Bloquea cierre de menu
     function blockTap()
         return true;
@@ -34,32 +35,37 @@ function Menu:new()
         background:setFillColor( 37/255, 41/255, 49/255 )
         background:addEventListener( 'tap', blockTap)
         selfMenu:insert(background)
-        
+		
         -- Options
-        local opt = {{'Filter', 'icoFilter', 'Buscar'}, {'MyProfile', 'icoProfile', 'Mi Perfil'}}
-        for i=1,2 do
+        local opt = {{'Filter', 'icoFilter', 'Buscar'}, {'MyProfile', 'icoProfile', 'Mi Perfil'}, {'Home', 'icoHome', 'Home'}}
+        for i=1,#opt do
             -- Opt
-            local posc = (i * 110) - 55
-            local bgOpt1 = display.newRect(250, posc, 500, 110 )
+			local posc = (i * 110) - 55
+			local num = #option + 1
+			option[num] = display.newContainer( 500, 110 )
+			option[num]:translate( 250, posc )
+            selfMenu:insert(option[num])
+			
+            local bgOpt1 = display.newRect(0, 0, 500, 110 )
             bgOpt1:setFillColor( 37/255, 41/255, 49/255 )
             bgOpt1.screen = opt[i][1]
             bgOpt1:addEventListener( 'tap', toScreen)
-            selfMenu:insert(bgOpt1)
-            local imgOpt1 = display.newImage( selfMenu, "img/"..opt[i][2]..".png" )
-            imgOpt1:translate( 60, posc )
-            local lblOpt1 = display.newText({
+            option[num]:insert(bgOpt1)
+            local imgOpt1 = display.newImage( option[num], "img/"..opt[i][2]..".png" )
+            imgOpt1:translate( -200, 0 )
+			local lblOpt1 = display.newText({
                 text = opt[i][3],     
-                x = 310, y = posc,
+                x = 60, y = 0,
                 width = 400,
                 font = native.systemFont,   
                 fontSize = 30, align = "left"
             })
             lblOpt1:setFillColor( .9 )
-            selfMenu:insert(lblOpt1)
-            local bgSeparate = display.newRect(250, posc+52, 500, 4 )
+            option[num]:insert(lblOpt1)
+            local bgSeparate = display.newRect(0, 52, 500, 4 )
             bgSeparate:setFillColor( .26 )
-            selfMenu:insert(bgSeparate)
-			if i == 2 then
+            option[num]:insert(bgSeparate)
+			if i == 2 or i == 3 then
 				if isReadOnly then
 					bgOpt1:removeEventListener( 'tap', toScreen)
 					bgOpt1:setFillColor( 35/255, 41/255, 54/255 )
@@ -98,6 +104,10 @@ function Menu:new()
         borderRight:setFillColor( 0, 0, 0 ) 
         selfMenu:insert(borderRight)
     end
+	
+	function showOptionHome()
+		option[3].alpha = 0
+	end
 
     return selfMenu
 end
