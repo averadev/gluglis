@@ -472,12 +472,13 @@ local RestManager = {}
     ---------------------------------------
     -- Obtiene los usuarios por ubicacion
     ---------------------------------------
-    RestManager.getUsersByCity = function()
+    RestManager.getUsersByCity = function(limit)
 		settings = DBManager.getSettings()
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
+		url = url.."/limit/" .. urlencode(limit)
 	
         local function callback(event)
             if ( event.isError ) then
