@@ -30,9 +30,20 @@ local lblName, lblInts
 local loadUsers = {}
 local btnViewProfile
 local lblTitle
-local limitCard = 10
+local limitCard = 5
+local totalCard = 0
+local isReady = true
+local counter = 0
+local isFirstI = true
 
 ---------------------------------- FUNCIONES ----------------------------------
+
+-------------------------------------
+-- Asignamos total de tarjetas
+------------------------------------
+function setTotalCard(total)
+    totalCard = tonumber(total)
+end 
 
 -------------------------------------
 -- Creamos primera tanda de tarjetas
@@ -56,13 +67,19 @@ function getFirstCards(items)
 		for i = 1, countA, 1 do
 			buildCard(items[i])
 		end
-		if idxA == 1 then
+		if isFirstI then
+            isFirstI = false
 			setInfo(1)
 			avaL[1].alpha = 1
 			avaR[1].alpha = 1
 			btnViewProfile:addEventListener( 'tap', showProfiles )
 		end
-		screen:addEventListener( "touch", touchScreen )
+        
+        if #loadUsers == 5 and #loadUsers < totalCard then
+            print("JUST ONE")
+            getProfile()
+            screen:addEventListener( "touch", touchScreen )
+        end
 	else
 		HomeError( "No se encontro usuarios")
 	end
@@ -169,14 +186,14 @@ function showDetail( event )
 		bottomCmp.alpha = 1
 		event.target.flag = 1
 		lblTitle.text = "MENOS INFORMACIÓN"
-		screen:removeEventListener( "touch", touchScreen )
+		--screen:removeEventListener( "touch", touchScreen )
 	else
 		bottomCmp.alpha = 0
 		topCmp.y =  -500
 		grpBtnDetail.y = 800 + h
 		event.target.flag = 0
 		lblTitle.text = "MÁS INFORMACIÓN"
-		screen:addEventListener( "touch", touchScreen )
+		--screen:addEventListener( "touch", touchScreen )
 	end
 end
 
@@ -223,7 +240,7 @@ function setInfo(idx)
         end
         for i=1, max do
             if i == 1 then
-                lblInts.text = lblInts.text .. ' #' .. loadUsers[idx].idiomas[i]
+                lblInts.text = lblInts.text .. ' # ' .. loadUsers[idx].idiomas[i]
             else
                 lblInts.text = lblInts.text..', '..loadUsers[idx].idiomas[i]
             end
@@ -248,8 +265,8 @@ end
 ------------------------------------
 function touchScreen(event)
     if event.phase == "began" then
-		--RestManager.getUsersByFilter(5)
-        if event.yStart > 140 and event.yStart < 820 then
+        if event.yStart > 140 and event.yStart < 820 and isReady then
+            isReady = false
             isCard = true
             direction = 0
         end
@@ -317,27 +334,28 @@ function touchScreen(event)
             avaL[idxA+1].alpha = 0
             transition.to( avaR[idxA], { width = 350, time = 200, onComplete=function()
                 avaR[idxA+1].alpha = 0
+                isReady = true
             end})
         elseif direction == 1 and xM < -700 then
-			if (idxA + 1) == limitCard then
-				getProfile()
-			end
-            avaR[idxA].alpha = 0
+            if idxA % 5 == 0 and #loadUsers < totalCard then
+                getProfile()
+            end
+			avaR[idxA].alpha = 0
             avaL[idxA+1].alpha = 1
             setInfo(idxA+1)
             transition.to( avaL[idxA+1], { width = 350, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA + 1
+                isReady = true
             end})
-        end
         -- To Left
-        if direction == -1 and xM <= 700 then
-			--
+        elseif direction == -1 and xM <= 700 then
             avaL[idxA].alpha = 1
             avaR[idxA-1].alpha = 0
             transition.to( avaL[idxA], { width = 350, time = 200, onComplete=function()
                 avaR[idxA-1].alpha = 0
+                isReady = true
             end})
         elseif direction == -1 and xM > 700 then
             avaL[idxA].alpha = 0
@@ -347,7 +365,10 @@ function touchScreen(event)
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA - 1
+                isReady = true
             end})
+        else
+            isReady = true
         end
         
         isCard = false
@@ -356,15 +377,16 @@ function touchScreen(event)
 end
 
 function getProfile()
-	screen:removeEventListener( "touch", touchScreen )
+    print("Load Images "..#loadUsers)
+	--screen:removeEventListener( "touch", touchScreen )
 	tools:setLoading(true,grpLoad)
 	--RestManager.getUsersByFilter(limitCard)
 	if typeSearch == "welcome" then
-		RestManager.getUsersByCity(limitCard)
+        RestManager.getUsersByCity(limitCard)
 	else
 		RestManager.getUsersByFilter(limitCard)
 	end
-	limitCard = limitCard + 10
+	limitCard = limitCard + 5
 	
 end
 
@@ -396,41 +418,6 @@ function showInfoDisplay()
     bgTitleX:setFillColor( 68/255, 14/255, 98/255 )
     screen:insert(bgTitleX)
     
-    -- Options
-   --[[ posY = posY + 55
-    local opt = {
-        {icon = 'icoFilterCity'},
-        {icon = 'icoFilterLanguage'}, 
-        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        --{icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
-    
-    for i=1, 4 do
-        detail[i] = {}
-        posY = posY + 60
-        
-        detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
-        detail[i].icon:translate( 115, posY )
-        screen:insert(detail[i].icon)
-        if opt[i].icon2 then
-            detail[i].icon2 = display.newImage( "img/"..opt[i].icon2..".png" )
-            detail[i].icon2:translate( 115, posY )
-            screen:insert(detail[i].icon2)
-        end
-        
-        detail[i].lbl = display.newText({
-            text = "", 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 25, align = "left"
-        })
-        detail[i].lbl:setFillColor( 0 )
-        screen:insert(detail[i].lbl)
-    end
-	
-	posY = posY + 50]]
-	
 	--btn perfil
 	btnViewProfile = display.newRoundedRect( midW, posY, 720, 70, 10 )
     btnViewProfile.anchorY = 0
@@ -455,91 +442,7 @@ end
 function showInfoButton()
 
 	local posY = 920 + h
-	--[[
-	grpBtnDetail = display.newGroup()
-	grpBtnDetail.anchorY = 0
-	grpBtnDetail.y = posY
-    screen:insert( grpBtnDetail )
-	
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, 35, intW - 160, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( 68/255, 14/255, 98/255 )
-	bgTitle.flag = 0
-    grpBtnDetail:insert(bgTitle)
-	bgTitle:addEventListener( 'tap', showDetail )
-	local bgTitle0 = display.newRoundedRect( 644, 35, 85, 70, 10 )
-    bgTitle0.anchorY = 0
-    bgTitle0:setFillColor( 0 )
-	bgTitle0.alpha = .5
-    grpBtnDetail:insert(bgTitle0)
-	local bgTitle1 = display.newRect( 600, 35, 20, 70 )
-    bgTitle1.anchorY = 0
-    bgTitle1:setFillColor( 68/255, 14/255, 98/255 )
-    grpBtnDetail:insert(bgTitle1)
-	lblTitle = display.newText({
-        text = "MÁS INFORMACIÓN", 
-        x = midW, y = 70,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "center"
-    })
-    lblTitle:setFillColor( 1 )
-    grpBtnDetail:insert(lblTitle)
-	iconMoreDetail = display.newImage( "img/GG_Icono_MoreInfo.png" )
-	iconMoreDetail:translate( 650, 72 )
-	grpBtnDetail:insert(iconMoreDetail)
-    
-
-    local posY = midH + h - 50
-	
-	-- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY + 10, intW - 160, 390, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    bottomCmp:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY + 10, intW - 164, 386, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    bottomCmp:insert(bgComp2)
-    
-    -- Options
-    posY = posY + 55
-    local opt = {
-        {icon = 'icoFilterCity'}, 
-        {icon = 'icoFilterLanguage'}, 
-        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-       -- {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
-    
-    for i=1, 4 do
-        detail[i] = {}
-        posY = posY + 60
-        
-        detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
-        detail[i].icon:translate( 115, posY )
-        bottomCmp:insert(detail[i].icon)
-        if opt[i].icon2 then
-            detail[i].icon2 = display.newImage( "img/"..opt[i].icon2..".png" )
-            detail[i].icon2:translate( 115, posY )
-            bottomCmp:insert(detail[i].icon2)
-        end
-        
-        detail[i].lbl = display.newText({
-            text = "", 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 25, align = "left"
-        })
-        detail[i].lbl:setFillColor( 0 )
-        bottomCmp:insert(detail[i].lbl)
-    end
-    bottomCmp.alpha = 0
-	
-	posY = posY + 75
-	]]--
-    ---  FIX FULL  ---
+	---  FIX FULL  ---
     local opt = {
         {icon = 'icoFilterCity'}, 
         {icon = 'icoFilterLanguage'}, 
@@ -588,7 +491,7 @@ function clearTempDir()
     local lfs = require "lfs"
     local doc_path = system.pathForFile( "", system.TemporaryDirectory )
     local destDir = system.TemporaryDirectory  -- where the file is stored
-    local lastTwoWeeks = os.time() - 1209600
+    local lastTwoWeeks = os.time() -- 1209600
 	
     for file in lfs.dir(doc_path) do
         -- file is the current file or directory name
@@ -699,7 +602,7 @@ function scene:create( event )
 		RestManager.getUsersByFilter(0)
 	end
     --
-	limitCard = 10
+	limitCard = 5
 	if isReadOnly == false then
 		timeMarker = timer.performWithDelay( 1000, function( event )
 			if playerId ~= 0 then

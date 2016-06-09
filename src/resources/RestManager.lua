@@ -479,7 +479,7 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/limit/" .. urlencode(limit)
-	
+	   
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -488,8 +488,7 @@ local RestManager = {}
 				if data then
 					if data.success then
 						local data = json.decode(event.response)
-						for i = 1, #data.items, 1 do
-						end
+						setTotalCard(data.total)
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then
@@ -525,7 +524,7 @@ local RestManager = {}
 		url = url.."/endAge/" 	.. settFilter.endAge
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
-	
+	   
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -534,8 +533,7 @@ local RestManager = {}
 				if data then
 					if data.success then
 						local data = json.decode(event.response)
-						for i = 1, #data.items, 1 do
-						end
+						setTotalCard(data.total)
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then

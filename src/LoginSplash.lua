@@ -56,8 +56,8 @@ end
 ----------------------------------------------------------
 function gotoHome()
 	isReadOnly = false
-	composer.removeScene( "src.Home" )
-    composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
+	composer.removeScene( "src.Welcome" )
+    composer.gotoScene( "src.Welcome", { time = 400, effect = "crossFade" })
 end
 
 ----------------------------------------------------------------
