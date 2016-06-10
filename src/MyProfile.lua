@@ -334,7 +334,7 @@ function showComboBox( event )
 		width = 600,
 		height = midH - 10,
 		horizontalScrollDisabled = true,
-		backgroundColor = { .8 },
+		backgroundColor = { .96 },
 	})
 	grpComboBox:insert(scrCombo)
 	local setElements = {}
@@ -352,7 +352,7 @@ function showComboBox( event )
 		container2.anchorY = 0
 		container2:translate( 300, posY )
 		--container2:addEventListener( 'tap', selectOptionCombo )
-		local bg0OptionCombo = display.newRect( 0, 0, 600, 80 )
+		local bg0OptionCombo = display.newRoundedRect( 0, 0, 580, 80, 5 )
 		bg0OptionCombo:setFillColor( 1 )
 		bg0OptionCombo.name = t.name
 		bg0OptionCombo.option = setElements[i].name
@@ -370,7 +370,7 @@ function showComboBox( event )
 		})
 		lblNameOption:setFillColor( 0 )
 		container2:insert(lblNameOption)
-		posY = posY + 84
+		posY = posY + 90
 	end
 end
 
@@ -419,8 +419,6 @@ function createComboBox(item, name, coordY, coordX )
 	bg0CheckAcco:addEventListener( 'tap', showComboBox )
 	local triangle = display.newImage("img/triangleDown.png")
 	triangle:translate(coordX + 270, coordY + 30)
-	triangle.height = 20
-	triangle.widget = 20
 	scrPerfile:insert(triangle)
 	if name == "residenceTime" then
 		lblResidenceTime = display.newText({
@@ -606,7 +604,7 @@ function addElements(name)
 	scrElements:insert(container[num])
 	container[num].anchorY = 0
 	container[num]:translate( 300, posYE )
-	local bg0OptionCombo = display.newRect( 0, 0, 600, 80 )
+	local bg0OptionCombo = display.newRoundedRect( 0, 0, 600, 80, 5 )
 	bg0OptionCombo:setFillColor( 1 )
 	bg0OptionCombo.name = name
 	container[num]:insert( bg0OptionCombo )
@@ -624,12 +622,10 @@ function addElements(name)
 	--image para eliminar el elemento
 	local deleteElements = display.newImage("img/delete.png")
 	deleteElements:translate(260, 0)
-	deleteElements.height = 50
-	deleteElements.width = 50
 	deleteElements.id = num
 	container[num]:insert(deleteElements)
 	deleteElements:addEventListener( 'tap', deleteElement )
-	posYE = posYE + 83
+	posYE = posYE + 90
 
 end 
 
@@ -704,7 +700,7 @@ function showOptionsCombo( event )
 			width = 600,
 			height = 600,
 			horizontalScrollDisabled = true,
-			backgroundColor = { .8 },
+			backgroundColor = { .96 },
 		})
 		grpOptionsCombo:insert(scrOptionCombo)
 		--muestra la lista de opciones
@@ -717,7 +713,7 @@ function showOptionsCombo( event )
 				end
 			end
 			if not isTrue then
-				local bg0OptionCombo = display.newRect( 300, posYTemp, 600, 80 )
+				local bg0OptionCombo = display.newRoundedRect( 300, posYTemp, 580, 80, 5 )
 				bg0OptionCombo:setFillColor( 1 )
 				bg0OptionCombo.anchorY = 0
 				bg0OptionCombo.name = setElements[i].name
@@ -735,7 +731,7 @@ function showOptionsCombo( event )
 				lblNameOption:setFillColor( 0 )
 				scrOptionCombo:insert(lblNameOption)
 		
-				posYTemp = posYTemp + 83
+				posYTemp = posYTemp + 90
 			end
 		end
 	else
@@ -779,11 +775,11 @@ function showOptionsLabels( event )
 		grpOptionsLabel:insert( bg0 )
 		bg0:addEventListener( 'tap', showOptionsLabels )
 		local bg1 = display.newRoundedRect( midW, midH + 10, 650, (intH/2) + 260, 10 )
-		bg1:setFillColor( 1 )
+		bg1:setFillColor( .96 )
 		grpOptionsLabel:insert( bg1 )
 		bg1:addEventListener( 'tap', hideOptionsCombo )
 		local bg0ComboBox = display.newRoundedRect( midW, midH - (midH/2) - 60, 606, 86, 10 )
-		bg0ComboBox:setFillColor( 129/255, 61/255, 153/255 )
+		bg0ComboBox:setFillColor( .96 )
 		grpOptionsLabel:insert( bg0ComboBox )
 		bg0ComboBox:addEventListener( 'tap', noAction )
 		--bg que despliega las opciones
@@ -798,7 +794,7 @@ function showOptionsLabels( event )
 			x = midW, y = midH - (midH/2) - 60,
 			width = 550,
 			font = native.systemFont, 
-			fontSize = 36, align = "left"
+			fontSize = 32, align = "left"
 		})
 		lblTitleCombo:setFillColor( 0 )
 		grpOptionsLabel:insert(lblTitleCombo)
@@ -807,7 +803,7 @@ function showOptionsLabels( event )
 		grpOptionsLabel:insert(triangle)
 		--elementos selecionados
 		local bg0Elemets = display.newRoundedRect( midW, midH, 606, midH + 6, 10 )
-		bg0Elemets:setFillColor( 129/255, 61/255, 153/255 )
+		bg0Elemets:setFillColor( .96 )
 		grpOptionsLabel:insert( bg0Elemets )
 		
 		--scrollview
@@ -816,7 +812,7 @@ function showOptionsLabels( event )
 			width = 600,
 			height = midH,
 			horizontalScrollDisabled = true,
-			backgroundColor = { .8 },
+			backgroundColor = { .96 },
 		})
         scrElements.y = midH
 		grpOptionsLabel:insert(scrElements)

@@ -15,7 +15,7 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local topCmp, bottomCmp, profiles, grpBtnDetail, grpLoad
+local topCmp, bottomCmp, profiles, grpBtnDetail, grpLoad, grpLoad2
 local container
 
 -- Variables
@@ -50,14 +50,14 @@ end
 ------------------------------------
 function getFirstCards(items)
 	tools:setLoadingPerson(false,grpLoad)
-	tools:setLoading(false,grpLoad)
+	tools:setLoading(false,grpLoad2)
 	bottomCmp.alpha = 1
 	container.alpha = 1
 	for i = 1, #items, 1 do
 		table.insert( loadUsers, items[i] )
 	end
 	
-   -- loadUsers = items
+    -- loadUsers = items
 	if #loadUsers > 0 then
 		if #avaL == 0 then
 			idxA = 1
@@ -73,12 +73,11 @@ function getFirstCards(items)
 			avaL[1].alpha = 1
 			avaR[1].alpha = 1
 			btnViewProfile:addEventListener( 'tap', showProfiles )
+            screen:addEventListener( "touch", touchScreen )
 		end
         
         if #loadUsers == 5 and #loadUsers < totalCard then
-            print("JUST ONE")
             getProfile()
-            screen:addEventListener( "touch", touchScreen )
         end
 	else
 		HomeError( "No se encontro usuarios")
@@ -379,7 +378,7 @@ end
 function getProfile()
     print("Load Images "..#loadUsers)
 	--screen:removeEventListener( "touch", touchScreen )
-	tools:setLoading(true,grpLoad)
+	tools:setLoading(true,grpLoad2)
 	--RestManager.getUsersByFilter(limitCard)
 	if typeSearch == "welcome" then
         RestManager.getUsersByCity(limitCard)
@@ -491,7 +490,7 @@ function clearTempDir()
     local lfs = require "lfs"
     local doc_path = system.pathForFile( "", system.TemporaryDirectory )
     local destDir = system.TemporaryDirectory  -- where the file is stored
-    local lastTwoWeeks = os.time() -- 1209600
+    local lastTwoWeeks = os.time() - 1209600
 	
     for file in lfs.dir(doc_path) do
         -- file is the current file or directory name
@@ -595,6 +594,12 @@ function scene:create( event )
 	grpLoad.y = 650 + h
 	tools:setLoadingPerson(true,grpLoad)
 	clearTempDir()
+    
+	grpLoad2 = display.newGroup()
+	screen:insert(grpLoad2)
+	grpLoad2.y = 840 + h
+	grpLoad2.x = midW - 80
+    
 	--RestManager.getUsersById()
 	if typeSearch == "welcome" then
 		RestManager.getUsersByCity(0)

@@ -476,8 +476,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			
 			local imgCleanDate = display.newImage( screen, "img/iconClean.png" )
 			imgCleanDate:translate( coordX + 40, coordY )
-			imgCleanDate.height = 50
-			imgCleanDate.width = 60
 			screen:insert(imgCleanDate)
 			imgCleanDate:addEventListener( 'tap', cleanDateField )
 			
