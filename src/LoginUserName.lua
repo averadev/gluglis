@@ -174,7 +174,7 @@ function scene:create( event )
 	
 	tools = Tools:new()
 	
-    local o = display.newRect( midW, midH + h, intW, intH )
+    local o = display.newRect( midW, midH + h, intW+8, intH )
     o:setFillColor( 232/255 )   
     screen:insert(o)
 	

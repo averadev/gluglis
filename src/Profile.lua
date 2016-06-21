@@ -503,7 +503,7 @@ function scene:create( event )
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
 	
-    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2

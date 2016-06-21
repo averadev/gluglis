@@ -215,7 +215,7 @@ end
 function scene:create( event )
 	screen = self.view
     --bg
-    local o = display.newRect( midW, midH + h, intW, intH )
+    local o = display.newRect( midW, midH + h, intW+8, intH )
     o:setFillColor( 1 )   
     screen:insert(o)
 	local posYBg = intH - 200

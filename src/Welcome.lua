@@ -129,7 +129,7 @@ function scene:create( event )
 	--se crea y se deshace la imagen del fondo
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRoundedRect( midW, midH + h, intW, intH, 20 )
+    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
     o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
     o.fill.scaleY = .2

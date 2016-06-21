@@ -84,7 +84,7 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
     
-    local o = display.newRect( midW, midH + 30, intW, intH )
+    local o = display.newRect( midW, midH + 30, intW+8, intH )
     o:setFillColor( 232/255 )   
     screen:insert(o)
     
