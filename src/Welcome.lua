@@ -229,6 +229,7 @@ function scene:create( event )
 	grpWelcome:insert(lblSearch)
 	
 	
+    RestManager.getUserAvatar()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )

@@ -15,7 +15,7 @@ local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
-local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity
+local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity, avatar, loopAvatar
 local btnBackFunction = false
 
 Tools = {}
@@ -61,13 +61,18 @@ function Tools:new()
 				scrMenu:builScreen()
 			end
         else
-            print("icoBack ---------------")
             local icoBack = display.newImage("img/icoBack.png")
             icoBack:translate(45, 45)
             icoBack.screen = 'Home'
 			icoBack.isReturn = 1
             icoBack:addEventListener( 'tap', toScreen)
             self:insert( icoBack )
+            
+            local iconHome = display.newImage("img/iconHome.png")
+            iconHome:translate(intW - 45, 45)
+            iconHome.screen = 'Welcome'
+            iconHome:addEventListener( 'tap', toScreen)
+            self:insert( iconHome )
         end
     end
     
@@ -88,8 +93,16 @@ function Tools:new()
             bg:setFillColor( .95 )
             bg.alpha = .3
             grpLoading:insert(bg)
-            local sheet = graphics.newImageSheet(Sprites.loading.source, Sprites.loading.frames)
-            local loading = display.newSprite(sheet, Sprites.loading.sequences)
+            
+            local sheet, loading
+            if parent.cards then
+                sheet = graphics.newImageSheet(Sprites.loadingMini.source, Sprites.loadingMini.frames)
+                loading = display.newSprite(sheet, Sprites.loadingMini.sequences)
+               
+            else
+                sheet = graphics.newImageSheet(Sprites.loading.source, Sprites.loading.frames)
+                loading = display.newSprite(sheet, Sprites.loading.sequences)
+            end
             loading.x = display.contentWidth / 2
             loading.y = parent.height / 2 
             grpLoading:insert(loading)
@@ -100,6 +113,20 @@ function Tools:new()
                 grpLoading:removeSelf()
                 grpLoading = nil
             end
+        end
+    end
+	
+	-------------------------------
+    -- Efecto avatar
+	-------------------------------
+	function avatarBreath()
+        if avatar.status == 1 then
+            avatar.status = 0
+            transition.to( avatar, {time = 900, alpha = .2} )
+        else
+            avatar.status = 1
+            transition.to( avatar, {time = 900, alpha = 1} )
+            
         end
     end
 	
@@ -120,14 +147,27 @@ function Tools:new()
             bg:setFillColor( .95 )
             bg.alpha = .3
             grpLoadingPerson:insert(bg)
-            local sheet = graphics.newImageSheet(Sprites.person.source, Sprites.person.frames)
-            local loading = display.newSprite(sheet, Sprites.person.sequences)
-            loading.x = display.contentWidth / 2
-            loading.y = (parent.height / 2) - 128
-            grpLoadingPerson:insert(loading)
-            loading:setSequence("play")
-            loading:play()
+            
+            local config = DBManager.getSettings()
+            if config.idAvatar then
+                if not(config.idAvatar == '') then
+                    local mask = graphics.newMask( "img/mask.png" )
+                    avatar = display.newImage(config.idAvatar, system.TemporaryDirectory)
+                    avatar.status = 1
+                    avatar.x = display.contentWidth / 2
+                    avatar.y = (parent.height / 2) - 128
+                    avatar.width = 250
+                    avatar.height = 250
+                    avatar:setMask( mask )
+                    grpLoadingPerson:insert(avatar)
+                    
+                    loopAvatar = timer.performWithDelay( 1000, avatarBreath, 0)
+                    
+                end
+            end
+            
         else
+            timer.cancel( loopAvatar )
             if grpLoadingPerson then
                 grpLoadingPerson:removeSelf()
                 grpLoadingPerson = nil

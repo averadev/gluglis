@@ -89,9 +89,11 @@ end
 -- @param message mensaje que se muestra 
 ----------------------------------------------------------
 function HomeError( message )
+    btnViewProfile.alpha = 0
+    
 	tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
-	local bgavatarDefault = display.newRect( midW, 172, 580, 558 )
+	local bgavatarDefault = display.newRect( midW, 60, 700, 700 )
 	bgavatarDefault.anchorY = 0
 	bgavatarDefault:setFillColor( 1 )
 	topCmp:insert(bgavatarDefault)
@@ -596,6 +598,7 @@ function scene:create( event )
 	clearTempDir()
     
 	grpLoad2 = display.newGroup()
+    grpLoad2.cards = true
 	screen:insert(grpLoad2)
 	grpLoad2.y = 840 + h
 	grpLoad2.x = midW - 80

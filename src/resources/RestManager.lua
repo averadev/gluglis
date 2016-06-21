@@ -454,13 +454,37 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	
+	   
         local function callback(event)
             if ( event.isError ) then
             else
                 local data = json.decode(event.response)
 				if #data.items > 0 then
 					loadImage({idx = 0, name = "UserAvatars", path = "assets/img/avatar/", items = data.items, after = after})
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	-------------------------------------
+    -- Obtiene los datos del usuario por id
+    -------------------------------------
+    RestManager.getUserAvatar = function()
+		settings = DBManager.getSettings()
+		local site = settings.url
+        local url = site.."api/getUserAvatar/format/json"
+		url = url.."/idApp/" .. settings.idApp
+	   print(url)
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+                if #data.items > 0 then
+                    DBManager.updateAvatar(data.items[1].image)
+					loadImage({idx = 0, path = "assets/img/avatar/", items = data.items, after = after})
 				end
             end
             return true
@@ -479,7 +503,7 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/limit/" .. urlencode(limit)
-	   
+	   print(settings.idApp)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )

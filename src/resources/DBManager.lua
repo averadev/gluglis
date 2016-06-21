@@ -77,6 +77,14 @@ local dbManager = {}
 		closeConnection( )
 	end
 	
+	--actualiza la configuracion de los filtros
+	dbManager.updateAvatar = function( avatar )
+		openConnection( )
+        local query = "UPDATE config SET idAvatar = '"..avatar.."';"
+        db:exec( query )
+		closeConnection( )
+	end
+	
 	--limpia la tabla de config y filtro
     dbManager.clearUser = function()
         openConnection( )
@@ -89,6 +97,21 @@ local dbManager = {}
 		closeConnection( )
     end
 
+    -- Verificamos campo en tabla
+    local function updateTable(table, field, typeF)
+	    local oldVersion = true
+        for row in db:nrows("PRAGMA table_info("..table..");") do
+            if row.name == field then
+                oldVersion = false
+            end
+        end
+
+        if oldVersion then
+            local query = "ALTER TABLE "..table.." ADD COLUMN "..field.." "..typeF..";"
+            db:exec( query )
+        end   
+	end
+
 	--Setup squema if it doesn't exist
 	dbManager.setupSquema = function()
 		openConnection( )
@@ -98,6 +121,8 @@ local dbManager = {}
 		
 		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER, accommodation TEXT );"
 		db:exec( query )
+    
+        updateTable('config', 'idAvatar', 'TEXT')
 		
 		local countFilter = 0
 		for row in db:nrows("SELECT * FROM filter;") do
