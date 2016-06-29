@@ -116,48 +116,22 @@ local dbManager = {}
 	dbManager.setupSquema = function()
 		openConnection( )
 		
-		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_email TEXT, display_name TEXT, url TEXT);"
+		local query = "CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, idApp INTEGER, user_email TEXT, display_name TEXT, url TEXT, idAvatar TEXT);"
 		db:exec( query )
 		
 		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER, accommodation TEXT );"
 		db:exec( query )
     
-        updateTable('config', 'idAvatar', 'TEXT')
-		
-		local countFilter = 0
-		for row in db:nrows("SELECT * FROM filter;") do
-			countFilter = countFilter + 1
-		end
-		if countFilter == 0 then
-			query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí');"
-			db:exec( query )
-		end
-		
-		--[[local oldVersion = true
-		for row in db:nrows("PRAGMA table_info(config);") do
-			if row.name == 'facebookId' then
-				oldVersion = false
-            end
-		end
-		
-		if oldVersion then
-			local query = "ALTER TABLE config ADD COLUMN facebookId TEXT;"
-            db:exec( query )
-			oldVersion = true
-		end]]
-
-		for row in db:nrows("SELECT idApp FROM config;") do
+        for row in db:nrows("SELECT * FROM config;") do
             closeConnection( )
-            if row.idApp == 0 then
-                return false
-            else
-                return true
-            end
+			do return end
 		end
-		query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api/');"
-		--query = "INSERT INTO config VALUES (0, 0, '', '', 'http://geekbucket.com.mx/gluglis_api/');"
-		--query = "INSERT INTO config VALUES (1, 0, '', '', 'http://localhost:8080/gluglis_api/');"
+        
+        query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api/', '');"
 		db:exec( query )
+        query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí');"
+        db:exec( query )
+		
 
 		closeConnection( )
 
