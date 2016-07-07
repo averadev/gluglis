@@ -1456,9 +1456,14 @@ function MyProfile( item )
 	textUserName:addEventListener( "userInput", userInputProfile )
 	grpTextProfile:insert(textUserName)
 	
-	if not item.edad then item.edad = "Seleccione una fecha de nacimiento" else item.edad = item.edad .. " Años" end
+    local edad = ""
+	if not item.edad then 
+        edad = "Seleccione una fecha de nacimiento" 
+    else 
+        edad = item.edad .. " Años" 
+    end
     lblAge= display.newText({
-        text = item.edad, 
+        text = edad, 
         x = 550, y = 180,
         width = 400,
         font = native.systemFont, 

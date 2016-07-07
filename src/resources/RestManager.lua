@@ -503,7 +503,7 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/limit/" .. urlencode(limit)
-	   print(settings.idApp)
+	   print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )

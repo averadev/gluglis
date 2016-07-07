@@ -124,7 +124,11 @@ local dbManager = {}
     
         for row in db:nrows("SELECT * FROM config;") do
             closeConnection( )
-			do return end
+            if row.idApp == 0 then
+                return false
+            else
+                return true
+            end
 		end
         
         query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api/', '');"

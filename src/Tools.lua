@@ -15,7 +15,7 @@ local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
-local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity, avatar, loopAvatar
+local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity, avatar, loopAvatar, loadAvatar
 local btnBackFunction = false
 
 Tools = {}
@@ -122,10 +122,12 @@ function Tools:new()
 	function avatarBreath()
         if avatar.status == 1 then
             avatar.status = 0
-            transition.to( avatar, {time = 900, alpha = .2} )
+            transition.to( avatar, {time = 900, width = 150, height = 150} )
+            transition.to( loadAvatar, {time = 900, width = 150, height = 150} )
         else
             avatar.status = 1
-            transition.to( avatar, {time = 900, alpha = 1} )
+            transition.to( avatar, {time = 900, width = 250, height = 250} )
+            transition.to( loadAvatar, {time = 900, width = 260, height = 260} )
             
         end
     end
@@ -151,15 +153,22 @@ function Tools:new()
             local config = DBManager.getSettings()
             if config.idAvatar then
                 if not(config.idAvatar == '') then
-                    local mask = graphics.newMask( "img/mask.png" )
+                    local posY = (parent.height / 2) - 128
+                    
                     avatar = display.newImage(config.idAvatar, system.TemporaryDirectory)
                     avatar.status = 1
                     avatar.x = display.contentWidth / 2
-                    avatar.y = (parent.height / 2) - 128
+                    avatar.y = posY
                     avatar.width = 250
                     avatar.height = 250
-                    avatar:setMask( mask )
                     grpLoadingPerson:insert(avatar)
+                    
+                    loadAvatar = display.newImage("img/bgk/loadAvatar.png")
+                    loadAvatar.x = display.contentWidth / 2
+                    loadAvatar.y = posY
+                    loadAvatar.width = 260
+                    loadAvatar.height = 260
+                    grpLoadingPerson:insert(loadAvatar)
                     
                     loopAvatar = timer.performWithDelay( 1000, avatarBreath, 0)
                     
