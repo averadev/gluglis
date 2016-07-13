@@ -334,7 +334,7 @@ function showComboBox( event )
 		width = 600,
 		height = midH - 10,
 		horizontalScrollDisabled = true,
-		backgroundColor = { .96 },
+		backgroundColor = { .96 }
 	})
 	grpComboBox:insert(scrCombo)
 	local setElements = {}
@@ -1576,6 +1576,43 @@ end
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
+-- ScrollView listener
+function scrListen( event )
+    local x, y = scrPerfile:getContentPosition()
+    print(y)
+    if y < -80 and textUserName.x == 550 then
+        textUserName.x = 1000
+    elseif y >= -80 and textUserName.x == 1000 then
+        textUserName.x = 550
+    end
+    if y < -460 and textName.x == 485 then
+        textName.x = 1000
+    elseif y >= -460 and textName.x == 1000 then
+        textName.x = 485
+    end
+    if y < -540 and textLastName.x == 485 then
+        textLastName.x = 1000
+    elseif y >= -540 and textLastName.x == 1000 then
+        textLastName.x = 485
+    end
+    if y < -680 and textOriginCountry.x == 500 then
+        textOriginCountry.x = 1000
+    elseif y >= -680 and textOriginCountry.x == 1000 then
+        textOriginCountry.x = 500
+    end
+    if y < -750 and textUserResidence.x == 500 then
+        textUserResidence.x = 1000
+    elseif y >= -750 and textUserResidence.x == 1000 then
+        textUserResidence.x = 500
+    end
+    if y < -910 and textEmailContact.x == 515 then
+        textEmailContact.x = 1000
+    elseif y >= -910 and textEmailContact.x == 1000 then
+        textEmailContact.x = 515
+    end
+    
+    return true
+end
 
 ---------------------------------------------
 -- Se crea la scena con los datos del perfil
@@ -1613,9 +1650,9 @@ function scene:create( event )
         height = intH-(100+h),
         hideBackground = true,
 		horizontalScrollDisabled = true,
+        listener = scrListen
     })
 	screen:insert(scrPerfile)
-	
 	
 	
 	grpLoadMyProfile = display.newGroup()
