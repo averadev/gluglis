@@ -1084,7 +1084,7 @@ function createPreferencesItems( item )
 	end
 	drink = item.bebes
 	--psicotroficos
-	infoOpcion[num] = "¿Psicotroficos?: "
+	infoOpcion[num] = "¿Psicotropicos?: "
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "psychrotrophic"
