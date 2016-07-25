@@ -289,7 +289,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
-	
+	print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")

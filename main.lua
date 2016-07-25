@@ -74,7 +74,9 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 	--si no esta activa te manda al chat de la notificacion
 	else
 		if (additionalData) then
-			if additionalData.type == "1" then
+            local currScene = composer.getSceneName( "current" )
+            if currScene == "src.Message" then
+            elseif additionalData.type == "1" then
 				local RestManager = require('src.resources.RestManager')
 				local item = json.decode(additionalData.item)
 				local tmpListMain = {}
@@ -90,7 +92,7 @@ end
 -- inicializa el plugin de notificaciones
 ------------------------------------------------
 local OneSignal = require("plugin.OneSignal")
-OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "203224641778", DidReceiveRemoteNotification)
+OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "836420576135", DidReceiveRemoteNotification)
 
 ------------------------------------------------
 -- obtiene el token por telefono
