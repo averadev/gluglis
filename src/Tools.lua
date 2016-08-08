@@ -152,27 +152,30 @@ function Tools:new()
             
             local config = DBManager.getSettings()
             if config.idAvatar then
+                
+                local posY = (parent.height / 2) - 128
+                local avatar
                 if not(config.idAvatar == '') then
-                    local posY = (parent.height / 2) - 128
-                    
                     avatar = display.newImage(config.idAvatar, system.TemporaryDirectory)
-                    avatar.status = 1
-                    avatar.x = display.contentWidth / 2
-                    avatar.y = posY
-                    avatar.width = 250
-                    avatar.height = 250
-                    grpLoadingPerson:insert(avatar)
-                    
-                    loadAvatar = display.newImage("img/bgk/loadAvatar.png")
-                    loadAvatar.x = display.contentWidth / 2
-                    loadAvatar.y = posY
-                    loadAvatar.width = 260
-                    loadAvatar.height = 260
-                    grpLoadingPerson:insert(loadAvatar)
-                    
-                    loopAvatar = timer.performWithDelay( 1000, avatarBreath, 0)
-                    
+                else
+                    avatar = display.newImage("img/tmpPerson.jpg")
                 end
+
+                avatar.status = 1
+                avatar.x = display.contentWidth / 2
+                avatar.y = posY
+                avatar.width = 250
+                avatar.height = 250
+                grpLoadingPerson:insert(avatar)
+
+                loadAvatar = display.newImage("img/bgk/loadAvatar.png")
+                loadAvatar.x = display.contentWidth / 2
+                loadAvatar.y = posY
+                loadAvatar.width = 260
+                loadAvatar.height = 260
+                grpLoadingPerson:insert(loadAvatar)
+
+                loopAvatar = timer.performWithDelay( 1000, avatarBreath, 0)
             end
             
         else

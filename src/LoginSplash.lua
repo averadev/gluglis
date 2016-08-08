@@ -345,29 +345,8 @@ function scene:create( event )
 	lblBtn:setFillColor( 1 )
     screen:insert(lblBtn)
 	
-	-- User / Email
-    local bgBtnUserName = display.newRect( 240, posYBg + 198, 200, 100 )
-	bgBtnUserName:setFillColor( 0 )
-    bgBtnUserName.alpha = .02
-    bgBtnUserName:addEventListener( "tap", toLoginUserName )
-	screen:insert(bgBtnUserName)
-	
-	local lblBottom = display.newText( {
-        text = "INGRESA CON: USUARIO Ó CORREO",
-        x = 240, y = posYBg + 198,
-        font = native.systemFontBold,  
-        width = 200,
-        fontSize = 24, align = "right"
-    })
-    lblBottom:setFillColor( 1 )
-    screen:insert(lblBottom)
-	
-	local lineSep = display.newRect( midW, posYBg + 197, 8, 40 )
-	lineSep:setFillColor( .6 )
-	screen:insert(lineSep)
-	
 	-- free app
-    local bgBtnFree = display.newRect( 510, posYBg + 198, 200, 100 )
+    local bgBtnFree = display.newRect( midW, posYBg + 198, 320, 100 )
 	bgBtnFree:setFillColor( 0 )
     bgBtnFree.alpha = .02
     bgBtnFree:addEventListener( "tap", toLoginFree )
@@ -375,10 +354,10 @@ function scene:create( event )
 	
 	local lblFree = display.newText( {
         text = "CONOCE MÁS SOBRE LA APLICACIÓN",
-        x = 530, y = posYBg + 198,
+        x = midW, y = posYBg + 198,
         font = native.systemFontBold,  
-        width = 200,
-        fontSize = 24, align = "left"
+        width = 300,
+        fontSize = 24, align = "center"
     })
     lblFree:setFillColor( 1 )
     screen:insert(lblFree)
