@@ -154,7 +154,6 @@ function Tools:new()
             if config.idAvatar then
                 
                 local posY = (parent.height / 2) - 128
-                local avatar
                 if not(config.idAvatar == '') then
                     avatar = display.newImage(config.idAvatar, system.TemporaryDirectory)
                 else
