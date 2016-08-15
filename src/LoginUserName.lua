@@ -149,6 +149,14 @@ end
 -- event focus de los textField
 ----------------------------------
 function onTxtFocus(event)
+    if ( event.phase == "submitted" ) then
+		native.setKeyboardFocus( nil )
+        if event.target.action == 'new' then
+            doCreate()
+        else
+            toLogIn()
+        end
+    end
 end
 
 ---------------------------------
@@ -188,15 +196,16 @@ function scene:create( event )
     grpLoad.y = intH - 150
 	
     -- Logo on circle
-    local circle1 = display.newCircle( grpMain, midW, (midH*.45), 160 )
+    local circle1 = display.newCircle( grpMain, midW, (h+140), 120 )
     circle1:setFillColor( .84 )
-    local circle2 = display.newCircle( grpMain, midW, (midH*.45), 145 )
+    local circle2 = display.newCircle( grpMain, midW, (h+140), 110 )
     circle2:setFillColor( 1 )
     local logo = display.newImage( grpMain, "img/logo.png" )
-    logo:translate( midW, (midH*.45) )
+    logo:scale(.7, .7)
+    logo:translate( midW, (h+140) )
     
     -- Text Descrip
-    newH = circle1.y + (circle1.height / 2) + 50
+    newH = circle1.y + (circle1.height / 2) + 40
     local lblTitle = display.newText({
         text = "Gluglis",     
         x = midW, y = newH,
@@ -219,6 +228,8 @@ function scene:create( event )
     grpNew = display.newGroup()
     screen:insert(grpNew)
 	grpNew.x = intW
+    grpNew.y = -midH + 450
+    print( -midH + 250)
     local btnBack = display.newImage( grpNew, "img/btnBack.png" )
     btnBack:translate( midR - 335, midH - 45 )
     btnBack:addEventListener( 'tap', moveBack)
@@ -241,6 +252,7 @@ function scene:create( event )
     grpNew:insert(lblUser)
 	txtUser = native.newTextField( midR + 110, midH + 50, 400, 70 )
     txtUser.inputType = "default"
+    txtUser.action = "new"
     txtUser.hasBackground = false
     txtUser:addEventListener( "userInput", onTxtFocus )
 	grpNew:insert(txtUser)
@@ -257,6 +269,7 @@ function scene:create( event )
     grpNew:insert(lblEmail)
     txtEmail = native.newTextField( midR + 110, midH + 145, 400, 70 )
     txtEmail.inputType = "email"
+    txtEmail.action = "new"
     txtEmail.hasBackground = false
     txtEmail:addEventListener( "userInput", onTxtFocus )
 	grpNew:insert(txtEmail)
@@ -272,6 +285,7 @@ function scene:create( event )
     grpNew:insert(lblPass)
     txtPass = native.newTextField( midR + 110, midH + 240, 400, 70 )
     txtPass.inputType = "password"
+    txtPass.action = "new"
     txtPass.hasBackground = false
 	txtPass.isSecure = true
     txtPass:addEventListener( "userInput", onTxtFocus )
@@ -288,6 +302,7 @@ function scene:create( event )
     grpNew:insert(lblRePass)
     txtRePass = native.newTextField( midR + 110, midH + 335, 400, 70 )
     txtRePass.inputType = "password"
+    txtRePass.action = "new"
     txtRePass.hasBackground = false
 	txtRePass.isSecure = true
     txtRePass:addEventListener( "userInput", onTxtFocus )
@@ -312,6 +327,7 @@ function scene:create( event )
     midR = midW
     -- LogIn
     grpLogIn = display.newGroup()
+    grpLogIn.y = -midH + 450
     screen:insert(grpLogIn)
     local btnBack2 = display.newImage( grpLogIn, "img/btnBack.png" )
     btnBack2:translate( midR - 335, midH - 45 )
@@ -333,6 +349,7 @@ function scene:create( event )
     grpLogIn:insert(lblEmailS)
     txtEmailS = native.newTextField( midR + 100, midH + 50, 400, 70 )
     txtEmailS.inputType = "email"
+    txtRePass.action = "login"
     txtEmailS.hasBackground = false
     txtEmailS:addEventListener( "userInput", onTxtFocus )
 	grpLogIn:insert(txtEmailS)
@@ -348,6 +365,7 @@ function scene:create( event )
     grpLogIn:insert(lblPassS)
     txtPassS = native.newTextField( midR + 100, midH + 150, 400, 70 )
     txtPassS.inputType = "default"
+    txtRePass.action = "login"
 	txtPassS.isSecure = true
     txtPassS.hasBackground = false
     txtPassS:addEventListener( "userInput", onTxtFocus )
