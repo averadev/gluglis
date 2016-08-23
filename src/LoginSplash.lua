@@ -9,6 +9,7 @@
 ---------------------------------------------------------------------------------
 -- Includes
 local json = require("json")
+local widget = require( "widget" )
 require('src.resources.Globals')
 local composer = require( "composer" )
 local facebook = require("plugin.facebook.v4")
@@ -28,7 +29,7 @@ local wFixScr = 1.25
 local wScrPhone = 402
 local circles = {}
 local sshots = {}
-local labelTitle, labelSubTitle
+local labelTitle, labelSubTitle, grpTerms
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -58,6 +59,77 @@ function gotoHome()
 	isReadOnly = false
 	composer.removeScene( "src.Welcome" )
     composer.gotoScene( "src.Welcome", { time = 400, effect = "crossFade" })
+end
+
+----------------------------------------------------------
+-- llama a terminos y condiciones
+----------------------------------------------------------
+function tapTerms()
+	
+    if not(grpTerms) then
+        grpTerms = display.newGroup()
+        screen:insert(grpTerms)
+
+        function setDes(event)
+            return true
+        end
+        local bg = display.newRect( midW, midH, intW, intH )
+        bg:setFillColor( .85 )
+        bg:addEventListener( 'tap', setDes)
+        bg.alpha = .3
+        grpTerms:insert(bg)
+        
+        local bgContent = display.newRect( midW, midH, intW - 140, intH - 300 )
+        bgContent:setFillColor( 1 )
+        grpTerms:insert(bgContent)
+        
+        local sc = widget.newScrollView(
+        {
+            width = intW - 140,
+            height = intH - 360
+        })
+        sc.x = midW
+        sc.y = midH
+        grpTerms:insert(sc)
+        
+        local lblTTitle = display.newText( {
+            text = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+            x = midW - 70, y = 50,
+            font = native.systemFontBold,  
+            width = intW - 200, fontSize = 20, align = "center"
+        })
+        lblTTitle:setFillColor( .7 )
+        sc:insert(lblTTitle)
+        
+        local cY = 100
+        local lblC = {}
+        for i = 1, #conA do
+            lblC[i] = display.newText( {
+                text = conA[i],
+                x = midW - 70, y = 50,
+                font = native.systemFontBold,  
+                width = intW - 240, fontSize = 20
+            })
+            lblC[i].anchorY = 0
+            lblC[i].y = cY
+            lblC[i]:setFillColor( .7 )
+            sc:insert(lblC[i])
+            
+            cY = cY + lblC[i].contentHeight + 30
+        end
+        
+        local iconClose = display.newImage("img/iconClose.png", true) 
+        iconClose.x = intW - 100
+        iconClose.y = 180
+        iconClose:addEventListener( "tap", tapTerms )
+        grpTerms:insert(iconClose)
+        
+    else
+        if grpTerms then
+            grpTerms:removeSelf()
+            grpTerms = nil
+        end
+    end
 end
 
 ----------------------------------------------------------------
@@ -300,14 +372,9 @@ function scene:create( event )
 	
 	-- posicion de los circulos
 	for i = 1, 4 do
-        --[[circles[i] = display.newRoundedRect( 260 + (i * 50), posYBg - 100, 30, 30, 16 )
-        circles[i]:setFillColor( 182/255, 207/255, 229/255 )
-        screen:insert(circles[i])]]
-		
-		circles[i] = display.newCircle(  260 + (i * 50), posYBg - 90, 10 )
+		circles[i] = display.newCircle(  260 + (i * 50), posYBg - 100, 8 )
 		circles[i]:setFillColor( 182/255, 207/255, 229/255 )
 		screen:insert(circles[i])
-		
     end
     circles[1]:setFillColor( 75/255, 176/255, 217/255 )
 	
@@ -324,21 +391,21 @@ function scene:create( event )
     -- boton FB
     local btnShadow = display.newImage("img/bgShadow.png", true) 
     btnShadow.x = midW
-    btnShadow.y = posYBg + 115
+    btnShadow.y = posYBg + 100
     screen:insert(btnShadow)
 	
-	local bgBtn = display.newRoundedRect( midW, posYBg + 85, 600, 105, 10 )
+	local bgBtn = display.newRoundedRect( midW, posYBg + 70, 600, 105, 10 )
 	bgBtn:setFillColor( 0, 51/255, 86/255 )
 	screen:insert(bgBtn)
     
-    local btn = display.newRoundedRect( midW, posYBg + 80, 600, 95, 10 )
+    local btn = display.newRoundedRect( midW, posYBg + 65, 600, 95, 10 )
 	btn:setFillColor( 0, 109/255, 175/255 )
     btn:addEventListener( "tap", loginFB )
 	screen:insert(btn)
 	
 	local lblBtn = display.newText( {
         text = "CONECTATE CON FACEBOOK",
-        x = midW, y = posYBg + 82,
+        x = midW, y = posYBg + 67,
         font = native.systemFontBold,  
         fontSize = 32, align = "center"
     })
@@ -346,7 +413,7 @@ function scene:create( event )
     screen:insert(lblBtn)
 	
     -- User / Email
-    local bgBtnUserName = display.newRect( 240, posYBg + 198, 200, 100 )
+    local bgBtnUserName = display.newRect( 240, posYBg + 178, 200, 100 )
 	bgBtnUserName:setFillColor( 0 )
     bgBtnUserName.alpha = .02
     bgBtnUserName:addEventListener( "tap", toLoginUserName )
@@ -354,20 +421,20 @@ function scene:create( event )
 	
 	local lblBottom = display.newText( {
         text = "INGRESA CON: USUARIO Ó CORREO",
-        x = 240, y = posYBg + 198,
+        x = 220, y = posYBg + 178,
         font = native.systemFontBold,  
-        width = 200,
-        fontSize = 24, align = "right"
+        width = 250,
+        fontSize = 22, align = "right"
     })
     lblBottom:setFillColor( 1 )
     screen:insert(lblBottom)
 	
-	local lineSep = display.newRect( midW, posYBg + 197, 8, 40 )
+	local lineSep = display.newRect( midW, posYBg + 177, 8, 40 )
 	lineSep:setFillColor( .6 )
 	screen:insert(lineSep)
 	
 	-- free app
-    local bgBtnFree = display.newRect( 510, posYBg + 198, 200, 100 )
+    local bgBtnFree = display.newRect( 510, posYBg + 178, 200, 100 )
 	bgBtnFree:setFillColor( 0 )
     bgBtnFree.alpha = .02
     bgBtnFree:addEventListener( "tap", toLoginFree )
@@ -375,13 +442,42 @@ function scene:create( event )
 	
 	local lblFree = display.newText( {
         text = "CONOCE MÁS SOBRE LA APLICACIÓN",
-        x = 530, y = posYBg + 198,
+        x = 550, y = posYBg + 178,
         font = native.systemFontBold,  
-        width = 200,
-        fontSize = 24, align = "left"
+        width = 250,
+        fontSize = 22, align = "left"
     })
     lblFree:setFillColor( 1 )
     screen:insert(lblFree)
+    
+    -- Terms
+	chkOn = display.newImage("img/checkOn.png", true)
+	chkOn:translate(130, posYBg + 245)
+    screen:insert(chkOn)
+    local lblTerms1 = display.newText( {
+        text = "Al iniciar sesión usted está aceptando los",
+        x = midW+30, y = posYBg + 237,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms1:setFillColor( .8 )
+    screen:insert(lblTerms1)
+    local lblTerms2 = display.newText( {
+        text = "términos y condiciones.",
+        x = midW+30, y = posYBg + 255,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms2:setFillColor( .5,.5,1 )
+    screen:insert(lblTerms2)
+    
+    
+    local btnTerms = display.newRect( 360, posYBg + 245, 400, 50 )
+	btnTerms.alpha = .02
+    btnTerms:addEventListener( "tap", tapTerms )
+	screen:insert(btnTerms)
     
 	screen:addEventListener( "touch", touchScreen )
 	

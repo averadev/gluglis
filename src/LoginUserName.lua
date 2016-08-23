@@ -10,6 +10,7 @@
 -- Includes
 require('src.Tools')
 require('src.resources.Globals')
+local widget = require( "widget" )
 local composer = require( "composer" )
 local fxTap = audio.loadSound( "fx/click.wav")
 local DBManager = require('src.resources.DBManager')
@@ -173,6 +174,90 @@ function getLine(parent, x, y)
     parent:insert(line)
 end
 
+----------------------------------------------------------
+-- llama a terminos y condiciones
+----------------------------------------------------------
+function tapTerms()
+	
+    if not(grpTerms) then
+        grpTerms = display.newGroup()
+        screen:insert(grpTerms)
+
+        function setDes(event)
+            return true
+        end
+        local bg = display.newRect( midW, midH, intW, intH )
+        bg:setFillColor( .85 )
+        bg:addEventListener( 'tap', setDes)
+        bg.alpha = .3
+        grpTerms:insert(bg)
+        
+        local bgContent = display.newRect( midW, midH, intW - 140, intH - 300 )
+        bgContent:setFillColor( 1 )
+        grpTerms:insert(bgContent)
+        
+        local sc = widget.newScrollView(
+        {
+            width = intW - 140,
+            height = intH - 360
+        })
+        sc.x = midW
+        sc.y = midH
+        grpTerms:insert(sc)
+        
+        local lblTTitle = display.newText( {
+            text = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+            x = midW - 70, y = 50,
+            font = native.systemFontBold,  
+            width = intW - 200, fontSize = 20, align = "center"
+        })
+        lblTTitle:setFillColor( .7 )
+        sc:insert(lblTTitle)
+        
+        local cY = 100
+        local lblC = {}
+        for i = 1, #conA do
+            lblC[i] = display.newText( {
+                text = conA[i],
+                x = midW - 70, y = 50,
+                font = native.systemFontBold,  
+                width = intW - 240, fontSize = 20
+            })
+            lblC[i].anchorY = 0
+            lblC[i].y = cY
+            lblC[i]:setFillColor( .7 )
+            sc:insert(lblC[i])
+            
+            cY = cY + lblC[i].contentHeight + 30
+        end
+        
+        local iconClose = display.newImage("img/iconClose.png", true) 
+        iconClose.x = intW - 100
+        iconClose.y = 180
+        iconClose:addEventListener( "tap", tapTerms )
+        grpTerms:insert(iconClose)
+        
+        txtUser.x = intW + 500
+        txtEmail.x = intW + 500
+        txtPass.x = intW + 500
+        txtRePass.x = intW + 500
+        txtEmailS.x = -500
+        txtPassS.x = -500
+    else
+        
+        txtUser.x = midW + 110
+        txtEmail.x = midW + 110
+        txtPass.x = midW + 110
+        txtRePass.x = midW + 110
+        txtEmailS.x = midW + 100
+        txtPassS.x = midW + 100
+        
+        if grpTerms then
+            grpTerms:removeSelf()
+            grpTerms = nil
+        end
+    end
+end
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
@@ -324,6 +409,34 @@ function scene:create( event )
     local icoRegistrar = display.newImage( grpNew, "img/icoRegistrar.png" )
     icoRegistrar:translate( midR - 80, midH + 450 )
     
+    -- Terms
+	local chkOn = display.newImage("img/checkOn.png", true)
+	chkOn:translate(100, midH + 540)
+    grpNew:insert(chkOn)
+    local lblTerms1 = display.newText( {
+        text = "Al iniciar sesión usted está aceptando los",
+        x = midW, y = midH + 530,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms1:setFillColor( .5 )
+    grpNew:insert(lblTerms1)
+    local lblTerms2 = display.newText( {
+        text = "términos y condiciones.",
+        x = midW, y = midH + 550,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms2:setFillColor( .5,.5,1 )
+    grpNew:insert(lblTerms2)
+    
+    local btnTerms = display.newRect( 330, midH + 540, 400, 50 )
+	btnTerms.alpha = .02
+    btnTerms:addEventListener( "tap", tapTerms )
+	grpNew:insert(btnTerms)
+    
     midR = midW
     -- LogIn
     grpLogIn = display.newGroup()
@@ -349,7 +462,7 @@ function scene:create( event )
     grpLogIn:insert(lblEmailS)
     txtEmailS = native.newTextField( midR + 100, midH + 50, 400, 70 )
     txtEmailS.inputType = "email"
-    txtRePass.action = "login"
+    txtEmailS.action = "login"
     txtEmailS.hasBackground = false
     txtEmailS:addEventListener( "userInput", onTxtFocus )
 	grpLogIn:insert(txtEmailS)
@@ -402,6 +515,34 @@ function scene:create( event )
     grpLogIn:insert(lblRegister)
     local icoLogIn = display.newImage( grpLogIn, "img/icoRegistrar.png" )
     icoLogIn:translate( midR - 80, midH + 400 )
+    
+    -- Terms
+	local chkOn2 = display.newImage("img/checkOn.png", true)
+	chkOn2:translate(100, midH + 500)
+    grpLogIn:insert(chkOn2)
+    local lblTerms12 = display.newText( {
+        text = "Al iniciar sesión usted está aceptando los",
+        x = midW, y = midH + 490,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms12:setFillColor( .5 )
+    grpLogIn:insert(lblTerms12)
+    local lblTerms22 = display.newText( {
+        text = "términos y condiciones.",
+        x = midW, y = midH + 510,
+        font = native.systemFontBold,  
+        width = 500,
+        fontSize = 20, align = "left"
+    })
+    lblTerms22:setFillColor( .5,.5,1 )
+    grpLogIn:insert(lblTerms22)
+    
+    local btnTerms2 = display.newRect( 330, midH + 500, 400, 50 )
+	btnTerms2.alpha = .02
+    btnTerms2:addEventListener( "tap", tapTerms )
+	grpLogIn:insert(btnTerms2)
 
 end
 -- Called immediately after scene has moved onscreen:
