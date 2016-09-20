@@ -74,8 +74,13 @@ function gotoHomeUN( message, name, success )
 		alertLogin(false,"",success)
 		flag = 0
 		if result then 
-			composer.removeScene( "src.Home" )
-			composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+			if ( name == "login" ) then
+				composer.removeScene( "src.Home" )
+				composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
+			else
+				composer.removeScene( "src.Welcome" )
+				composer.gotoScene( "src.Welcome", { time = 400, effect = "fade", params = { type = "SignUp" }})
+			end
 		end
 	end, 1 )
 end

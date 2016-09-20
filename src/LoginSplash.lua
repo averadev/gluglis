@@ -55,10 +55,15 @@ end
 ----------------------------------------------------------
 --llama a la pantalla de home(si el logueo fue exitoso)
 ----------------------------------------------------------
-function gotoHome()
+function gotoHome(SignUp)
 	isReadOnly = false
-	composer.removeScene( "src.Welcome" )
-    composer.gotoScene( "src.Welcome", { time = 400, effect = "crossFade" })
+	if( SignUp ) then
+		composer.removeScene( "src.Welcome" )
+		composer.gotoScene( "src.Welcome", { time = 400, effect = "fade", params = { type = "SignUp" }})
+	else
+		composer.removeScene( "src.Welcome" )
+		composer.gotoScene( "src.Welcome", { time = 400, effect = "crossFade" })
+	end
 end
 
 ----------------------------------------------------------

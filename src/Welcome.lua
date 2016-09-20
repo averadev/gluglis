@@ -103,6 +103,39 @@ function goFilter( event )
 	composer.gotoScene( "src.Filter", { time = 400, effect = "fade" } )
 end
 
+-------------------------------------
+-- Manda a la pantalla de filtros
+-------------------------------------
+function validateCity( event )
+	RestManager.getValidateCity(txtLocationW.text )
+end
+
+function returnValidateCity(result)
+
+	if (result) then
+		RestManager.saveLocationProfile( txtLocationW.text )
+	else
+		local message = "Seleccione una ciudad validad.";
+		NewAlert(true, message)
+		timeMarker = timer.performWithDelay( 1000, function()
+			NewAlert(false, message)
+		end, 1 )
+	end
+end
+
+function returnLocationProfile( isTrue, message )
+	
+	if (isTrue) then
+		goToHome()
+	else
+		NewAlert(true, message)
+		timeMarker = timer.performWithDelay( 1000, function()
+			NewAlert(false, message)
+		end, 1 )
+	end
+	
+end
+
 --------------------------------
 -- cierra todo los componentes
 -------------------------------
@@ -120,6 +153,8 @@ function scene:create( event )
 
 	--obtiene la configuracion de los filtros
 	--settFilter = DBManager.getSettingFilter()
+
+	local typeScene = event.params.type
 
 	screen = self.view
     screen.y = h
@@ -172,18 +207,24 @@ function scene:create( event )
 	txtLocationW:addEventListener( "userInput", onTxtFocusWelcome )
 	txtLocationW:setReturnKey( "default" )
 	txtLocationW.size = 40
-	txtLocationW.placeholder = "Ingresa una ciudad"
+	if ( typeScene == "Welcome" ) then
+		txtLocationW.placeholder = "Ingresa una ciudad"
+	else
+		txtLocationW.placeholder = "Ingresa su ciudad"
+	end
 	txtLocationW:setTextColor( .5 )
 	grpWelcome:insert( txtLocationW )
 		
-	local imgDado = display.newImage( "img/1454731709.png" )
-	imgDado:translate( intW - 85, lastY - 50 )
-	imgDado.height = 100
-	imgDado.width = 100
-	grpWelcome:insert(imgDado)
-	imgDado:addEventListener( 'tap', randomCitiesWelcome )
-	
+	if ( typeScene == "Welcome" ) then
+		local imgDado = display.newImage( "img/1454731709.png" )
+		imgDado:translate( intW - 85, lastY - 50 )
+		imgDado.height = 100
+		imgDado.width = 100
+		grpWelcome:insert(imgDado)
+		imgDado:addEventListener( 'tap', randomCitiesWelcome )
+	end
 	lastY = lastY + 100
+	
 	
 	local btnSearch = display.newRoundedRect( midW, lastY, 650, 100, 10 )
     btnSearch:setFillColor( {
@@ -193,10 +234,17 @@ function scene:create( event )
         direction = "bottom"
     } )
     grpWelcome:insert(btnSearch)
-	btnSearch:addEventListener( 'tap', goToHome )
+	local textButtom = ""
+	if ( typeScene == "Welcome" ) then
+		btnSearch:addEventListener( 'tap', goToHome )
+		textButtom = "BUSCAR"
+	elseif ( typeScene == "SignUp" ) then
+	btnSearch:addEventListener( 'tap', validateCity )
+		textButtom = "ACEPTAR"
+	end
 	
 	local lblSearch = display.newText({
-        text = "BUSCAR", 
+        text = textButtom, 
         x = midW, y = lastY,
         font = native.systemFontBold,   
         fontSize = 30, align = "center"
@@ -204,29 +252,32 @@ function scene:create( event )
     lblSearch:setFillColor( 1 )
     grpWelcome:insert(lblSearch)
 	
+	
 	posY = 110 + h
 	
-	local bgSearch = display.newRect( 590 , intH - posY, 350, 100 )
-	bgSearch.anchorY = 0
-	bgSearch:setFillColor( 1 )
-	bgSearch.alpha = .1
-	grpWelcome:insert(bgSearch)
-	bgSearch:addEventListener( 'tap', goFilter )
+	if ( typeScene == "Welcome" ) then
+		local bgSearch = display.newRect( 590 , intH - posY, 350, 100 )
+		bgSearch.anchorY = 0
+		bgSearch:setFillColor( 1 )
+		bgSearch.alpha = .1
+		grpWelcome:insert(bgSearch)
+		bgSearch:addEventListener( 'tap', goFilter )
+		
+		local iconSearch = display.newImage( "img/iconSearch.png" )
+		iconSearch:translate( intW - 75, intH - posY/2 - 12 )
+		iconSearch.height = 80
+		iconSearch.width = 80
+		grpWelcome:insert(iconSearch)
 	
-	local iconSearch = display.newImage( "img/iconSearch.png" )
-	iconSearch:translate( intW - 75, intH - posY/2 - 12 )
-	iconSearch.height = 80
-	iconSearch.width = 80
-	grpWelcome:insert(iconSearch)
-	
-	local lblSearch = display.newText({
-		text = "Mas Filtros", 
-		x = 550, y = intH - posY/2 - 12,
-		font = native.systemFont, 
-		fontSize = 25, align = "center"
-	})
-	lblSearch:setFillColor( 0 )
-	grpWelcome:insert(lblSearch)
+		local lblSearch = display.newText({
+			text = "Mas Filtros", 
+			x = 550, y = intH - posY/2 - 12,
+			font = native.systemFont, 
+			fontSize = 25, align = "center"
+		})
+		lblSearch:setFillColor( 0 )
+		grpWelcome:insert(lblSearch)
+	end
 	
 	
     RestManager.getUserAvatar()

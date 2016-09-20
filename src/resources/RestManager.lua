@@ -56,7 +56,7 @@ local RestManager = {}
 			url = url.."/birthday/"..urlencode(birthday)
 		end
 		if location ~= "" then
-			url = url.."/location/"..urlencode(location)
+			--url = url.."/location/"..urlencode(location)
 		end
 		if facebookId ~= "" then
 			url = url.."/facebookId/"..urlencode(facebookId)
@@ -71,7 +71,7 @@ local RestManager = {}
 				if data then
 					if data.success then
 						DBManager.updateUser(data.idApp, email, name)
-						gotoHome()
+						gotoHome(data.SignUp)
 					else
 						
 					end
@@ -716,6 +716,39 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	------------------------------------
+    -- Actualiza los datos del usuario
+	--@param idUser usuario con que se iniciara el chat
+    -------------------------------------
+    --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
+	RestManager.saveLocationProfile = function( residence )
+		
+        local url = site.."api/saveLocationProfile/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		if residence ~= '' then
+			url = url.."/residence/" .. urlencode(residence)
+		end
+        local function callback(event)
+            if ( event.isError ) then
+				returnLocationProfile( false, event.error)
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						returnLocationProfile( true, data.message)
+					else
+						returnLocationProfile( false, "error al guardar los datos del perfil")
+					end
+				else
+					returnLocationProfile( false, "error al guardar los datos del perfil")
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
 	-------------------------------------
     -- Obtiene la lista de hobbies
     -------------------------------------
@@ -751,6 +784,7 @@ local RestManager = {}
     RestManager.getCity = function(city,name,parent, itemOption)
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
+		url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
         local function callback(event)
             if ( event.isError ) then
@@ -758,10 +792,41 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.status == "OK" then
-						print("entro")
 						showCities(data.predictions, name, parent, itemOption)
 					elseif data.status == "ZERO_RESULTS" then
 						showCities(0, name, parent)
+					end
+				else
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	---------------------------------- Pantalla WELCOME ----------------------------------
+    -------------------------------------
+    -- valida que la ciudad exista
+    -------------------------------------
+    RestManager.getValidateCity = function(city)
+        local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
+		url = url .. city
+		url = url.."&language=en"
+		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.status == "OK" then
+						if(#data.predictions == 1) then
+							returnValidateCity(true)
+						else
+							returnValidateCity(false)
+						end
+					elseif data.status == "ZERO_RESULTS" then
+						returnValidateCity(false)
 					end
 				else
 				end
