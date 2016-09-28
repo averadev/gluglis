@@ -502,6 +502,7 @@ local RestManager = {}
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. urlencode(settFilter.city)
+		url = url.."/cityId/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
 	   print(url)
         local function callback(event)
@@ -651,7 +652,7 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, emailContact, availability, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic )
+	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, emailContact, availability, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
 		
 		local hobbies2 = json.encode(hobbies)
 		local language2 = json.encode(language)
@@ -673,6 +674,9 @@ local RestManager = {}
 		end
 		if residence ~= '' then
 			url = url.."/residence/" .. urlencode(residence)
+		end
+		if idResidence ~= '' then
+			url = url.."/idResidence/" .. urlencode(idResidence)
 		end
 		url = url.."/residenceTime/" .. urlencode(residenceTime)
 		if emailContact ~= '' then
@@ -721,12 +725,13 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-	RestManager.saveLocationProfile = function( residence )
-		
+	RestManager.saveLocationProfile = function( residence, idResidence )
+		print("holaaaaaaaaaaaaaa")
         local url = site.."api/saveLocationProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
-		if residence ~= '' then
+		if idResidence ~= '' then
 			url = url.."/residence/" .. urlencode(residence)
+			url = url.."/idResidence/" .. urlencode(idResidence)
 		end
         local function callback(event)
             if ( event.isError ) then
@@ -784,7 +789,7 @@ local RestManager = {}
     RestManager.getCity = function(city,name,parent, itemOption)
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
-		url = url.."&language=en"
+		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
         local function callback(event)
             if ( event.isError ) then
@@ -792,7 +797,12 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.status == "OK" then
-						showCities(data.predictions, name, parent, itemOption)
+						if( name == "hometown" ) then
+							OptionLocationHt(data.predictions)
+						else
+							showCities(data.predictions, name, parent, itemOption)
+						end
+						
 					elseif data.status == "ZERO_RESULTS" then
 						showCities(0, name, parent)
 					end
@@ -812,7 +822,7 @@ local RestManager = {}
     RestManager.getValidateCity = function(city)
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
-		url = url.."&language=en"
+		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
         local function callback(event)
             if ( event.isError ) then

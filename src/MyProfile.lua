@@ -122,7 +122,8 @@ function saveProfile()
 		mySports,
 		smoke,
 		drink,
-		psychrotrophic
+		psychrotrophic,
+		textUserResidence.id
 	)
 end
 
@@ -215,8 +216,10 @@ end
 -----------------------------------
 -- Obtiene la ciudad selecionada
 -----------------------------------
-function getCityProfile(city)
+function getCityProfile(city, id)
 	textUserResidence.text = city
+	textUserResidence.city = city
+	textUserResidence.id = id
 end
 
 -------------------------------------------------------------------
@@ -243,6 +246,8 @@ function userInputProfile( event )
 			textLastName.x = intH
 			textOriginCountry.x = intH
 			local itemOption = {posY = 745, posX = 500, height = 340, width = 410}
+			textUserResidence.city = ""
+			textUserResidence.id = 0
 			RestManager.getCity(t.text, "residence", scrPerfile, itemOption)
 		end
     end
@@ -932,6 +937,8 @@ function createTextField( item, name, coordY )
 		textUserResidence:resizeHeightToFitFont()
 		textUserResidence:addEventListener( "userInput", userInputProfile )
 		textUserResidence.name = "residence"
+		textUserResidence.city = ""
+		textUserResidence.id = 0
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
 		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )

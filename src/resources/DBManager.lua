@@ -62,17 +62,18 @@ local dbManager = {}
 	end
 	
 	--actualiza la configuracion de los filtros
-	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge, accommodation )
+	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge, accommodation, cityId )
 		openConnection( )
-        local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."', accommodation = '"..accommodation.."';"
+        local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."', accommodation = '"..accommodation.."', cityId = '"..cityId.."';"
         db:exec( query )
 		closeConnection( )
 	end
 	
 	--actualiza la configuracion de los filtros
-	dbManager.updateCity = function( city )
+	dbManager.updateCity = function( city, cityId )
+		print(cityId)
 		openConnection( )
-        local query = "UPDATE filter SET city = '"..city.."';"
+        local query = "UPDATE filter SET city = '"..city.."', cityId = '"..cityId.."';"
         db:exec( query )
 		closeConnection( )
 	end
@@ -121,6 +122,20 @@ local dbManager = {}
 		
 		local query = "CREATE TABLE IF NOT EXISTS filter (id INTEGER PRIMARY KEY, city TEXT, iniDate TEXT, endDate TEXT, genH INTEGER, genM INTEGER, iniAge INTEGER, endAge INTEGER, accommodation TEXT );"
 		db:exec( query )
+		
+		local oldVersion = true
+		for row in db:nrows("PRAGMA table_info(filter);") do
+			if row.name == 'cityId' then
+				oldVersion = false
+            end
+		end
+		if oldVersion then
+			local query = "ALTER TABLE filter ADD COLUMN cityId TEXT;"
+            db:exec( query )
+			local query = "UPDATE filter SET cityId = '0';"
+			db:exec( query )
+			oldVersion = false
+		end
     
         for row in db:nrows("SELECT * FROM config;") do
             closeConnection( )

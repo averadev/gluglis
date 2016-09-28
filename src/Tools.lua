@@ -50,11 +50,19 @@ function Tools:new()
             iconMenu:translate(45, 45)
             iconMenu:addEventListener( 'tap', showMenu)
             self:insert( iconMenu )
+			if currentScene ~= "src.Welcome" then
+				local iconHome = display.newImage("img/iconHome.png")
+				iconHome:translate(intW - 135, 45)
+				iconHome.screen = 'Welcome'
+				iconHome:addEventListener( 'tap', toScreen)
+				self:insert( iconHome )
+			end
 			local iconChat = display.newImage("img/iconChat.png")
 			iconChat:translate(display.contentWidth-45, 45)
 			iconChat.screen = 'Messages'
 			iconChat:addEventListener( 'tap', toScreen)
 			self:insert( iconChat )
+			
             -- Get Menu
 			if not scrMenu then
 				scrMenu = Menu:new()
@@ -463,11 +471,11 @@ function Tools:new()
 				grpScrCity = nil
 			end
 			if event.target.name == "residence" then
-				getCityProfile(event.target.city)
+				getCityProfile(event.target.city, event.target.id)
 			elseif event.target.name == "location" then
-				getCityFilter(event.target.city)
+				getCityFilter(event.target.city, event.target.id)
 			elseif event.target.name == "welcome" then
-				getCityWelcome(event.target.city)
+				getCityWelcome(event.target.city, event.target.id)
 			end
 		end, 1 )
 		return true
@@ -534,6 +542,7 @@ function Tools:new()
 				local bg0 = display.newRect( posX, posY, itemOption.width, heightItem )
 				bg0.anchorY = 0
 				bg0.city = item[i].description
+				bg0.id = item[i].id
 				bg0:setFillColor( 1 )
 				grpScrCity:insert(bg0)
 				bg0.name = name

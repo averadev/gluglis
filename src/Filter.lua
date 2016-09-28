@@ -87,7 +87,7 @@ function filterUser( event )
 		textLocation = 0
 	end
 	typeSearch = "filter"
-	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, accommodation )
+	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, accommodation, txtLocation.id )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
 end
@@ -95,8 +95,10 @@ end
 -------------------------------------------
 -- asigna la ciudad selecionada
 -------------------------------------------
-function getCityFilter(city)
+function getCityFilter(city, id)
 	txtLocation.text = city
+	txtLocation.city = city
+	txtLocation.id = id
 end
 
 -------------------------------------
@@ -111,6 +113,8 @@ function onTxtFocusFilter( event )
     elseif ( event.phase == "editing" ) then
 		--hace la busqueda de la ciudad
 		local itemOption = {posY = 324, posX = 453, height = 340, width = 410}
+		txtLocation.city = ""
+		txtLocation.id = 0
 		RestManager.getCity(txtLocation.text, "location", screen, itemOption )
     end
 end
@@ -416,6 +420,8 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			txtLocation.hasBackground = false
 			txtLocation:addEventListener( "userInput", onTxtFocusFilter )
 			txtLocation:setReturnKey( "next" )
+			txtLocation.city = ""
+			txtLocation.id = 0
 			grpTextField:insert( txtLocation )
 			if settFilter.city ~= '0' then
 				txtLocation.text = settFilter.city
