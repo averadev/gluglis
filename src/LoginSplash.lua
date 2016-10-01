@@ -58,8 +58,8 @@ end
 function gotoHome(SignUp)
 	isReadOnly = false
 	if( SignUp ) then
-		composer.removeScene( "src.Welcome" )
-		composer.gotoScene( "src.Welcome", { time = 400, effect = "fade", params = { type = "SignUp" }})
+		composer.removeScene( "src.Hometown" )
+		composer.gotoScene( "src.Hometown", { time = 400, effect = "fade"})
 	else
 		composer.removeScene( "src.Welcome" )
 		composer.gotoScene( "src.Welcome", { time = 400, effect = "crossFade" })

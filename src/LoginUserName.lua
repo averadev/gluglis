@@ -78,8 +78,8 @@ function gotoHomeUN( message, name, success )
 				composer.removeScene( "src.Home" )
 				composer.gotoScene("src.Home", { time = 400, effect = "fade" } )
 			else
-				composer.removeScene( "src.Welcome" )
-				composer.gotoScene( "src.Welcome", { time = 400, effect = "fade", params = { type = "SignUp" }})
+				composer.removeScene( "src.Hometown" )
+				composer.gotoScene( "src.Hometown", { time = 400, effect = "fade"})
 			end
 		end
 	end, 1 )

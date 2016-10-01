@@ -289,7 +289,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
-	print(url)
+	
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -454,7 +454,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	   
+	   print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -477,7 +477,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUserAvatar/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	   print(url)
+	 
         local function callback(event)
             if ( event.isError ) then
             else
@@ -501,8 +501,9 @@ local RestManager = {}
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
-		url = url.."/city/" 	.. urlencode(settFilter.city)
-		url = url.."/cityId/" 	.. urlencode(settFilter.cityId)
+		url = url.."/version/v2"
+		--url = url.."/city/" 	.. urlencode(settFilter.city)
+		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
 	   print(url)
         local function callback(event)
@@ -540,7 +541,9 @@ local RestManager = {}
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByFilter/format/json"
 		url = url.."/idApp/" 	.. settings.idApp
-		url = url.."/city/" 	.. urlencode(settFilter.city)
+		--url = url.."/city/" 	.. urlencode(settFilter.city)
+		url = url.."/version/v2"
+		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/iniDate/" 	.. urlencode(settFilter.iniDate)
 		url = url.."/endDate/" 	.. urlencode(settFilter.endDate)
 		url = url.."/genH/" 	.. settFilter.genH
@@ -699,6 +702,7 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)
@@ -726,7 +730,7 @@ local RestManager = {}
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
 	RestManager.saveLocationProfile = function( residence, idResidence )
-		print("holaaaaaaaaaaaaaa")
+		
         local url = site.."api/saveLocationProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		if idResidence ~= '' then
@@ -791,6 +795,7 @@ local RestManager = {}
 		url = url .. city
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -846,6 +851,38 @@ local RestManager = {}
         -- Do request
 		network.request( url, "GET", callback )
     end
+	
+    -------------------------------------
+    -- valida que la ciudad exista
+    -------------------------------------
+    RestManager.getRandomCities = function(city)
+        local url = site.."api/getRandomCities/format/json"
+		url = url.."/idApp/" .. settings.idApp
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						
+					else
+						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					end
+				else
+					noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	function getCityById(cityId)
+		
+	end
 	
     ---------------------------------- Metodos Comunes ----------------------------------
     -------------------------------------

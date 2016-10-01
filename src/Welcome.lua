@@ -78,14 +78,16 @@ end
 -- @param event datos del boton
 -------------------------------------
 function randomCitiesWelcome( event )
-	local numCity = math.random(1, 100)
-	txtLocationW.text = majorCities[numCity]
+	RestManager.getRandomCities(  )
+	--local numCity = math.random(1, 100)
+	--txtLocationW.text = majorCities[numCity]
 end
 
 -------------------------------------
 -- Manda a la pantalla d home con la ciudad selecionada
 -------------------------------------
 function goToHome( event )
+	
 	closeAllWelcome( 0 )
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
@@ -270,7 +272,7 @@ function scene:create( event )
 	lblSearch:setFillColor( 0 )
 	grpWelcome:insert(lblSearch)
 	
-    RestManager.getUserAvatar()
+    --RestManager.getUserAvatar()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
