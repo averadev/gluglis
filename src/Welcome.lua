@@ -81,7 +81,19 @@ function randomCitiesWelcome( event )
 	RestManager.getRandomCities(  )
 	--local numCity = math.random(1, 100)
 	--txtLocationW.text = majorCities[numCity]
+	tools:setLoading(true,grpWelcome)
 end
+
+function printRandomCities( city, cityId)
+	if( city ~= false ) then
+		txtLocationW.text = city
+		txtLocationW.city = city
+		txtLocationW.id = cityId
+	end
+	tools:setLoading(false,grpWelcome)
+end
+
+
 
 -------------------------------------
 -- Manda a la pantalla d home con la ciudad selecionada

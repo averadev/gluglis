@@ -795,7 +795,7 @@ local RestManager = {}
 		url = url .. city
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		print(url)
+		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -829,6 +829,7 @@ local RestManager = {}
 		url = url .. city
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -856,6 +857,10 @@ local RestManager = {}
     -- valida que la ciudad exista
     -------------------------------------
     RestManager.getRandomCities = function(city)
+        RandomCities()
+    end
+	
+	function RandomCities()
         local url = site.."api/getRandomCities/format/json"
 		url = url.."/idApp/" .. settings.idApp
 	
@@ -866,7 +871,7 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
-						
+						getCityById( data.item.residenciaId)
 					else
 						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
 					end
@@ -881,7 +886,29 @@ local RestManager = {}
     end
 	
 	function getCityById(cityId)
+		local url = "https://maps.googleapis.com/maps/api/place/details/json?placeid="
+		url = url .. cityId
+		--url = url.."&language=en"
+		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
 		
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.status == "OK" then
+						printRandomCities(data.result.formatted_address, cityId);
+					elseif data.status == "INVALID_REQUEST" then
+						RandomCities()
+					end
+				else
+					printRandomCities(false, false);
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
 	end
 	
     ---------------------------------- Metodos Comunes ----------------------------------

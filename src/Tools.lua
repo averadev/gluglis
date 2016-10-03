@@ -542,7 +542,7 @@ function Tools:new()
 				local bg0 = display.newRect( posX, posY, itemOption.width, heightItem )
 				bg0.anchorY = 0
 				bg0.city = item[i].description
-				bg0.id = item[i].id
+				bg0.id = item[i].place_id
 				bg0:setFillColor( 1 )
 				grpScrCity:insert(bg0)
 				bg0.name = name
