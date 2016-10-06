@@ -333,10 +333,15 @@ function takePicture()
 		photo.width = 200
 		photo.x = 100
 		photo.y = intH/2.04
+		photo.alpha = 0
+		
+		showAvatar( "newPhoto" )
 		
 	end
 	
 	local namePhoto = avatar.name
+	
+	
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
@@ -361,8 +366,8 @@ function selectOptionAvatar( event )
 	if( event.target.type == "Editar Foto" ) then
 		
 		
-		--takePicture()
-		showAvatar( "newPhoto" )
+		takePicture()
+		--showAvatar( "newPhoto" )
 		
 	elseif( event.target.type == "Ver Foto" ) then
 		showAvatar( "myPhoto" )

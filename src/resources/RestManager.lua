@@ -156,7 +156,7 @@ local RestManager = {}
 		url = url.."/email/"..urlencode(email)
 		url = url.."/password/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
-	
+		
         local function callback(event)
             if ( event.isError ) then
 				gotoHomeUN( "Error intentelo mas tarde", "login", false )
@@ -454,7 +454,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	   print(url)
+	   
         local function callback(event)
             if ( event.isError ) then
             else
@@ -702,7 +702,7 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
-		print(url)
+		
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)
@@ -728,7 +728,7 @@ local RestManager = {}
 		uploadImage( name )
 	end
 	
-	function uploadImage(name)
+	function uploadImage(photophoto)
 	
 		local function uploadListener( event )
 		   if ( event.isError ) then
@@ -767,7 +767,7 @@ local RestManager = {}
 		
 		-- Specify what file to upload and where to upload it from.
 		-- Also, set the MIME type of the file so that the server knows what to expect.
-		local filename = "1181.jpg"
+		local filename =  "tempFotos/" .. photophoto .. ".jpg"
 		local baseDirectory = system.TemporaryDirectory
 		local contentType = "image/jpeg"  --another option is "text/plain"
 		 
