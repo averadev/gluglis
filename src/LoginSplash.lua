@@ -31,6 +31,9 @@ local circles = {}
 local sshots = {}
 local labelTitle, labelSubTitle, grpTerms
 
+local setting = DBManager.getSettings()
+--print(language.headerMap)
+
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
@@ -98,7 +101,7 @@ function tapTerms()
         grpTerms:insert(sc)
         
         local lblTTitle = display.newText( {
-            text = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+            text = language.LSTermsTitle,
             x = midW - 70, y = 50,
             font = native.systemFontBold,  
             width = intW - 200, fontSize = 20, align = "center"
@@ -261,7 +264,7 @@ function newScr(idx)
 	
 	if idx == 1 then 
 		labelTitle.y = 140
-		labelTitle.text = "ESTA POR COMENZAR,\nEL MEJOR VIAJE DE TU VIDA..." 
+		labelTitle.text = language.LSTitle 
 		labelSubTitle.alpha = 0
 		if (intH < 1300) then
 			labelTitle.y = 130
@@ -270,16 +273,16 @@ function newScr(idx)
 		labelTitle.y = 90
 		labelSubTitle.alpha = 1
 		if idx == 2 then 
-			labelTitle.text = "CONOCE A TUS ANFITRIONES..." 
-			labelSubTitle.text = "¿A dondé? ¿con que tipo de persona \nte gustaría conectarte?"
+			labelTitle.text = language.LSTitle2
+			labelSubTitle.text = language.LSSubTitle2
 		end
 		if idx == 3 then 
-			labelTitle.text = "CONOCE QUIEN SERÁ TU PRÓXIMO GUÍA  " 
-			labelSubTitle.text = "Navega entre las personas que cumplen con el perfil \nque Tu estas búscando y conoce más acerca de ellos."
+			labelTitle.text = language.LSTitle3 
+			labelSubTitle.text = language.LSSubTitle3
 		end
 		if idx == 4 then 
-			labelTitle.text = "CONVERSA CON ELLOS" 
-			labelSubTitle.text = "Abre una conversación privada con los usuarios \nque desees y conócelos más para definir \nquien te acompañara en tu próximo viaje."
+			labelTitle.text = language.LSTitle4
+			labelSubTitle.text = language.LSSubTitle4
 		end
 	end
     
@@ -351,7 +354,7 @@ function scene:create( event )
 	bgTextHeard.alpha = .3
 	
 	labelTitle = display.newText( {
-		text = "ESTA POR COMENZAR,\nEL MEJOR VIAJE DE TU VIDA...",
+		text = language.LSTitle,
 		x = midW, y = 140,
 		font = native.systemFontBold,  
 		width = intW,
@@ -409,7 +412,7 @@ function scene:create( event )
 	screen:insert(btn)
 	
 	local lblBtn = display.newText( {
-        text = "CONECTATE CON FACEBOOK",
+        text = language.LSBtnFace,
         x = midW, y = posYBg + 67,
         font = native.systemFontBold,  
         fontSize = 32, align = "center"
@@ -425,7 +428,7 @@ function scene:create( event )
 	screen:insert(bgBtnUserName)
 	
 	local lblBottom = display.newText( {
-        text = "INGRESA CON: USUARIO Ó CORREO",
+        text = language.LSBtnNormal,
         x = 220, y = posYBg + 178,
         font = native.systemFontBold,  
         width = 250,
@@ -446,7 +449,7 @@ function scene:create( event )
 	screen:insert(bgBtnFree)
 	
 	local lblFree = display.newText( {
-        text = "CONOCE MÁS SOBRE LA APLICACIÓN",
+        text = language.LSBtnFree,
         x = 550, y = posYBg + 178,
         font = native.systemFontBold,  
         width = 250,
@@ -460,7 +463,7 @@ function scene:create( event )
 	chkOn:translate(130, posYBg + 245)
     screen:insert(chkOn)
     local lblTerms1 = display.newText( {
-        text = "Al iniciar sesión usted está aceptando los",
+        text = language.LSTerms1,
         x = midW+30, y = posYBg + 237,
         font = native.systemFontBold,  
         width = 500,
@@ -469,7 +472,7 @@ function scene:create( event )
     lblTerms1:setFillColor( .8 )
     screen:insert(lblTerms1)
     local lblTerms2 = display.newText( {
-        text = "términos y condiciones.",
+        text = language.LSTerms2,
         x = midW+30, y = posYBg + 255,
         font = native.systemFontBold,  
         width = 500,

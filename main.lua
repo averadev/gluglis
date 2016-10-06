@@ -34,13 +34,18 @@ local DBManager = require('src.resources.DBManager')
 display.setDefault( "background", 0 )
 
 local isUser = DBManager.setupSquema()
+
+--local setting = DBManager.getSettings()
+--Globals.language = Globals.language.setting.language
+language = require('src.resources.Language')
+--if setting.language == "es" then language = language.es
+--elseif setting.language == "en" then language = language.en end
+language = language.es
+
 if isUser then
 	composer.gotoScene( "src.Welcome", { time = 400, effect = "fade"})
-	--SignUp
-	--composer.gotoScene("src.Filter")
 else
 	composer.gotoScene("src.LoginSplash")
-	--composer.gotoScene("src.LoginUserName")
 end
 
 ---------------------Notificaciones---------------------------

@@ -136,6 +136,23 @@ local dbManager = {}
 			db:exec( query )
 			oldVersion = false
 		end
+		
+		--[[oldVersion = true
+		for row in db:nrows("PRAGMA table_info(config);") do
+			if row.name == 'language' then
+				oldVersion = false
+            end
+		end
+		
+		if oldVersion then
+			local query = "ALTER TABLE config ADD COLUMN language TEXT;"
+            db:exec( query )
+			local leng = system.getPreference( "locale", "language" )
+			--leng = "es"
+			local query = "UPDATE config SET language = '" .. leng .. "';"
+			db:exec( query )
+			oldVersion = false
+		end]]
     
         for row in db:nrows("SELECT * FROM config;") do
             closeConnection( )
@@ -145,8 +162,10 @@ local dbManager = {}
                 return true
             end
 		end
+		
+		--local leng = system.getPreference( "locale", "language" )
         
-        query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api2/', '');"
+        query = "INSERT INTO config VALUES (0, 0, '', '', 'http://www.gluglis.travel/gluglis_api/', '');"
 		db:exec( query )
         query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí',0);"
         db:exec( query )

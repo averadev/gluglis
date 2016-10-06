@@ -331,7 +331,7 @@ function scene:create( event )
 	getLine(grpNew, midR, midH + 380)
 	-- Set text email
     local lblUser = display.newText({
-        text = "Usuario:",     
+        text = language.LUNUser,     
         x = midR - 190, y = midH + 50,
         width = 240,
         font = native.systemFont,   
@@ -348,7 +348,7 @@ function scene:create( event )
 	grpNew:insert(txtUser)
     -- Set text email
     local lblEmail = display.newText({
-        text = "E-mail:",     
+        text = language.LUNEmail,     
         x = midR - 190, y = midH + 145,
         width = 240,
         font = native.systemFont,   
@@ -365,7 +365,7 @@ function scene:create( event )
 	grpNew:insert(txtEmail)
     -- Set text password
     local lblPass = display.newText({
-        text = "Contraseña:",     
+        text = language.LUNPass,     
         x = midR - 190, y = midH + 240,
         width = 240,
         font = native.systemFont,   
@@ -382,7 +382,7 @@ function scene:create( event )
 	grpNew:insert(txtPass)
     -- Set text re-password
     local lblRePass = display.newText({
-        text = "Re-Contraseña:",     
+        text = language.LUNRePass,     
         x = midR - 190, y = midH + 335,
         width = 240,
         font = native.systemFont,   
@@ -403,7 +403,7 @@ function scene:create( event )
     btnNew:addEventListener( 'tap', doCreate )
     grpNew:insert(btnNew)
     local lblRegistrar = display.newText({
-        text = "Registrarme",     
+        text = language.LUNRegistrar,     
         x = midR + 70, y = midH + 450,
         width = 240,
         font = native.systemFont,   
@@ -419,7 +419,7 @@ function scene:create( event )
 	chkOn:translate(100, midH + 540)
     grpNew:insert(chkOn)
     local lblTerms1 = display.newText( {
-        text = "Al iniciar sesión usted está aceptando los",
+        text = language.LUNTerms1,
         x = midW, y = midH + 530,
         font = native.systemFontBold,  
         width = 500,
@@ -428,7 +428,7 @@ function scene:create( event )
     lblTerms1:setFillColor( .5 )
     grpNew:insert(lblTerms1)
     local lblTerms2 = display.newText( {
-        text = "términos y condiciones.",
+        text = language.LUNTerms2,
         x = midW, y = midH + 550,
         font = native.systemFontBold,  
         width = 500,
@@ -456,7 +456,7 @@ function scene:create( event )
     getLine(grpLogIn, midR, midH + 200)
     -- Set text email
     local lblEmailS = display.newText({
-        text = "E-mail:",     
+        text =  language.LUNEmail,     
         x = midR - 190, y = midH + 50,
         width = 240,
         font = native.systemFont,   
@@ -473,7 +473,7 @@ function scene:create( event )
 	grpLogIn:insert(txtEmailS)
     -- Set text password
     local lblPassS = display.newText({
-        text = "Contraseña:",     
+        text = language.LUNPass,     
         x = midR - 190, y = midH + 150,
         width = 240,
         font = native.systemFont,   
@@ -494,7 +494,7 @@ function scene:create( event )
     btnSignIn:addEventListener( 'tap', toLogIn )
     grpLogIn:insert(btnSignIn)
     local lblSignIn = display.newText({
-        text = "Acceder",     
+        text = language.LUNBtnSignIn,     
         x = midR + 70, y = midH + 290,
         width = 240,
         font = native.systemFont,   
@@ -510,7 +510,7 @@ function scene:create( event )
     btnRegister:addEventListener( 'tap', moveNew)
     grpLogIn:insert(btnRegister)
     local lblRegister = display.newText({
-        text = "Nuevo Usuario",     
+        text = language.LUNBtnRegister,     
         x = midR + 70, y = midH + 400,
         width = 240,
         font = native.systemFont,   
@@ -526,7 +526,7 @@ function scene:create( event )
 	chkOn2:translate(100, midH + 500)
     grpLogIn:insert(chkOn2)
     local lblTerms12 = display.newText( {
-        text = "Al iniciar sesión usted está aceptando los",
+        text = language.LUNTerms1,
         x = midW, y = midH + 490,
         font = native.systemFontBold,  
         width = 500,
@@ -535,7 +535,7 @@ function scene:create( event )
     lblTerms12:setFillColor( .5 )
     grpLogIn:insert(lblTerms12)
     local lblTerms22 = display.newText( {
-        text = "términos y condiciones.",
+        text = language.LUNTerms1,
         x = midW, y = midH + 510,
         font = native.systemFontBold,  
         width = 500,

@@ -552,7 +552,7 @@ local RestManager = {}
 		url = url.."/endAge/" 	.. settFilter.endAge
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
-	   
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
