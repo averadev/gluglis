@@ -283,10 +283,12 @@ function showAvatar( typeP )
 			avatarFull:translate(midW, midH - 100)
 			grpOptionAvatar:insert(avatarFull)
 			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
-			avatarFull.height = desiredHigh
+			--avatarFull.height = desiredHigh
+			avatarFull.height = 300
 			avatarFull.width = intW-100
 			
-			local posY = (desiredHigh + avatarFull.height) - 100
+			
+			local posY = (300 + avatarFull.height) - 100
 			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
 			btnSaveAvatar.id = nameImage
 			btnSaveAvatar:setFillColor( {
@@ -347,6 +349,8 @@ function takePicture()
 		namePhoto = k
 		--t[k] = v
 	end
+	
+	namePhoto = namePhoto .. ".jpg"
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
