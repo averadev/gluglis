@@ -328,20 +328,25 @@ end
 function takePicture()
 
 	local function onComplete( event )
-		local photo = event.target
-		photo.height = 150
+		--local photo = event.target
+		--[[photo.height = 150
 		photo.width = 200
 		photo.x = 100
 		photo.y = intH/2.04
-		photo.alpha = 0
+		photo.alpha = 0]]
+		--event.target.alpha = 0
 		
 		showAvatar( "newPhoto" )
 		
 	end
 	
-	local namePhoto = avatar.name
+	local namePhoto
 	
-	
+	local namePhoto
+	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
+		namePhoto = k
+		--t[k] = v
+	end
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
