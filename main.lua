@@ -35,7 +35,7 @@ display.setDefault( "background", 0 )
 
 local isUser = DBManager.setupSquema()
 if isUser then
-	composer.gotoScene( "src.Welcome", { time = 400, effect = "fade"})
+	composer.gotoScene( "src.MyProfile", { time = 400, effect = "fade"})
 	--SignUp
 	--composer.gotoScene("src.Filter")
 else

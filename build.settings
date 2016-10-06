@@ -125,6 +125,8 @@ settings =
 		usesPermissions =
 		{
 			"android.permission.INTERNET",
+			"android.permission.CAMERA",
+            "android.permission.WRITE_EXTERNAL_STORAGE",
 		},
 		facebookAppId = "573103709510531",
 		coronaWindowMovesWhenKeyboardAppears = true,

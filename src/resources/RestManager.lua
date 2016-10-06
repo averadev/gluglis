@@ -724,6 +724,127 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	RestManager.savePhoto = function( name )
+		uploadImage( name )
+	end
+	
+	function uploadImage(name)
+	
+		local function uploadListener( event )
+		   if ( event.isError ) then
+			  print( "Network Error." )
+		 
+			  -- This is likely a time out or server being down. In other words,
+			  -- It was unable to communicate with the web server. Now if the
+			  -- connection to the web server worked, but the request is bad, this
+			  -- will be false and you need to look at event.status and event.response
+			  -- to see why the web server failed to do what you want.
+		   else
+			  if ( event.phase == "began" ) then
+				 print( "Upload started" )
+			  elseif ( event.phase == "progress" ) then
+				 print( "Uploading... bytes transferred ", event.bytesTransferred )
+			  elseif ( event.phase == "ended" ) then
+				 print( "Upload ended..." )
+				 print( "Status:", event.status )
+				 print( "Response:", event.response )
+			  end
+		   end
+		end	
+	
+		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
+		-- Also define the method as "PUT".
+		local url = "http://192.168.1.77:8080/gluglis_api2/upload/uploadImage"
+		local method = "PUT"
+		 
+		-- Set some reasonable parameters for the upload process:
+		local params = {
+		   timeout = 60,
+		   progress = true,
+		   bodyType = "binary"
+		}
+		
+		
+		-- Specify what file to upload and where to upload it from.
+		-- Also, set the MIME type of the file so that the server knows what to expect.
+		local filename = "1181.jpg"
+		local baseDirectory = system.TemporaryDirectory
+		local contentType = "image/jpeg"  --another option is "text/plain"
+		 
+		-- There is no standard way of using HTTP PUT to tell the remote host what
+		-- to name the file. We'll make up our own header here so that our PHP script
+		-- expects to look for that and provides the name of the file. Your PHP script
+		-- needs to be "hardened" because this is a security risk. For example, someone
+		-- could pass in a path name that might try to write arbitrary files to your
+		-- server and overwrite critical system files with malicious code.
+		-- Don't assume "This won't happen to me!" because it very well could.
+		local headers = {}
+		headers.filename = filename
+		params.headers = headers
+		 
+		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
+	
+	
+		--[[local settings = DBManager.getSettings()
+	
+		local function networkListener( event )
+
+			if ( event.isError ) then
+				print( "Network Error." )
+				print( "Network error: ", event.response )
+			else
+				if ( event.phase == "began" ) then
+					--print( "Upload started" )
+				elseif ( event.phase == "progress" ) then
+					--print( "Uploading... bytes transferred ", event.bytesTransferred )
+				elseif ( event.phase == "ended" ) then
+					--print( "Upload ended..." )
+					--print( "Status:", event.status )
+					--print( "Response:", event.response )
+					
+					if event.status == 201 then
+						print("imagen subida")
+						
+						
+					else
+						print("imagen no subida")
+						
+					end
+					
+					
+				end
+			end
+			
+		end
+
+		local url = settings.url .. "upload/uploadImage"
+		
+		local params = {
+			timeout = 60,
+			progress = true,
+			bodyType = "text"
+		}
+		
+		local filename = "tempFotos/" .. name .. ".jpg"
+		
+		print(filename)
+		print(url)
+		
+		local baseDirectory = system.TemporaryDirectory
+		local contentType = "image/jpeg"
+		
+		local headers = {}
+
+		headers["Content-Type"] = "application/x-www-form-urlencoded"
+		headers["Accept-Language"] = "en-US"
+		headers.filename = filename
+		params.headers = headers
+
+		--network.request( "http://localhost:8080/booking/upload/uploadImage", "POST", networkListener, params )
+		network.upload( url , "PUT", networkListener, params, filename, baseDirectory, contentType )]]
+	
+	end
+	
 	------------------------------------
     -- Actualiza los datos del usuario
 	--@param idUser usuario con que se iniciara el chat

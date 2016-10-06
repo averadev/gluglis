@@ -18,7 +18,7 @@ RestManager = require('src.resources.RestManager')
 local screen
 local scene = composer.newScene()
 local scrPerfile, scrElements, scrCombo
-local grpOptionsLabel, grpOptionsCombo, grpComboBox
+local grpOptionsLabel, grpOptionsCombo, grpComboBox, grpOptionAvatar
 local grpTextProfile = nil
 
 -- Variables
@@ -43,6 +43,7 @@ local btnSaveProfile
 local gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
 local lblAge
 local grpLoadMyProfile
+local avatar
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -206,11 +207,239 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function setImagePerfil( item )
-	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
+	avatar = display.newImage(item[1].image, system.TemporaryDirectory)
 	avatar:translate(midW - 190, 170)
 	avatar.height = 230
 	avatar.width = 230
 	scrPerfile:insert(avatar)
+end
+
+function saveAvatar( event )
+
+	local nameImage
+	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
+		nameImage = k
+		--t[k] = v
+	end
+
+	RestManager.savePhoto(nameImage)
+	return true
+end
+
+function showAvatar( typeP )
+	
+	componentActive = true
+	if grpOptionAvatar then
+		grpOptionAvatar:removeSelf()
+		grpOptionAvatar = nil
+	end
+	grpTextProfile.x = intW
+	grpOptionAvatar = display.newGroup()
+	
+	local bg0 = display.newRect( midW, midH + h, intW, intH )
+	bg0:setFillColor( 0 )
+	bg0.alpha = .8
+	grpOptionAvatar:insert( bg0 )
+	bg0:addEventListener( 'tap', hideoptionAvatar )
+	
+	if( typeP == "myPhoto" ) then
+		local path = system.pathForFile( avatar.name, system.TemporaryDirectory )
+		local fhd = io.open( path )
+		--verifica si existe la imagen
+		if fhd then
+			avatarFull = display.newImage(avatar.name, system.TemporaryDirectory)
+			avatarFull:translate(midW, midH)
+			grpOptionAvatar:insert(avatarFull)
+			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+			avatarFull.height = desiredHigh
+			avatarFull.width = intW-100
+			
+			local iconExitAvatarFull = display.newImage("img/delete.png")
+			iconExitAvatarFull:translate(intW - 50, avatarFull.y - midH/1.5)
+			grpOptionAvatar:insert(iconExitAvatarFull)
+			
+		end
+	elseif( typeP == "newPhoto") then
+	
+		local nameImage
+		for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
+			nameImage = k
+			--t[k] = v
+		end
+	
+		local path = system.pathForFile( "tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory )
+		local fhd = io.open( path )
+		--verifica si existe la imagen
+		
+		if fhd then
+		
+			local bg1 = display.newRoundedRect( midW, midH + h, intW - 80, intH, 15 )
+			bg1:setFillColor( 1 )
+			bg1.anchorY = 0
+			grpOptionAvatar:insert( bg1 )
+			--bg1:addEventListener( 'tap', hideoptionAvatar )
+		
+			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
+			avatarFull:translate(midW, midH - 100)
+			grpOptionAvatar:insert(avatarFull)
+			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+			avatarFull.height = desiredHigh
+			avatarFull.width = intW-100
+			
+			local posY = (desiredHigh + avatarFull.height) - 100
+			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
+			btnSaveAvatar.id = nameImage
+			btnSaveAvatar:setFillColor( {
+				type = 'gradient',
+				color1 = { 129/255, 61/255, 153/255 }, 
+				color2 = { 89/255, 31/255, 103/255 },
+				direction = "bottom"
+			} )
+			grpOptionAvatar:insert(btnSaveAvatar)
+			btnSaveAvatar:addEventListener( 'tap', saveAvatar )
+			
+			bg1.y = (avatarFull.y / 2) + 15
+			bg1.height = avatarFull.height + btnSaveAvatar.height + 50
+			
+			local lblSaveAvatar = display.newText({
+				text = "Editar", 
+				x = midW, y = posY,
+				font = native.systemFontBold,   
+				fontSize = 36, align = "center"
+			})
+			lblSaveAvatar:setFillColor( 1 )
+			grpOptionAvatar:insert(lblSaveAvatar)
+			
+			local iconExitAvatarFull = display.newImage("img/delete.png")
+			iconExitAvatarFull:translate(intW - 50, bg1.y)
+			grpOptionAvatar:insert(iconExitAvatarFull)
+			
+		end
+		
+	end
+	
+end
+
+function mysplitPoint(s)
+    
+	return t
+end
+
+function takePicture()
+
+	local function onComplete( event )
+		local photo = event.target
+		photo.height = 150
+		photo.width = 200
+		photo.x = 100
+		photo.y = intH/2.04
+		
+	end
+	
+	local namePhoto = avatar.name
+	
+	if media.hasSource( media.Camera ) then
+		media.capturePhoto({ 
+			listener=onComplete,
+			destination = {
+				baseDir = system.TemporaryDirectory,
+				filename = "tempFotos/" .. namePhoto,
+				type = "image"
+			}
+		})
+	else
+		native.showAlert( "Corona", "This device does not have a camera.", { "OK" } )
+	end
+
+end
+
+------------------------------------------------------------------------------
+-- seleciona la opcion de ver o editar perfil
+-- @param item nombre de la imagen
+------------------------------------------------------------------------------
+function selectOptionAvatar( event )
+	if( event.target.type == "Editar Foto" ) then
+		
+		
+		--takePicture()
+		showAvatar( "newPhoto" )
+		
+	elseif( event.target.type == "Ver Foto" ) then
+		showAvatar( "myPhoto" )
+	end
+	return true
+end
+
+------------------------------------------------------------------------------
+-- muestra las opciones de foto de perfil
+-- ver o editar
+------------------------------------------------------------------------------
+function optionAvatar( event )
+	componentActive = true
+	if grpOptionAvatar then
+		grpOptionAvatar:removeSelf()
+		grpOptionAvatar = nil
+	end
+	grpTextProfile.x = intW
+	grpOptionAvatar = display.newGroup()
+	
+	local bg0 = display.newRect( midW, midH + h, intW, intH )
+	bg0:setFillColor( 0 )
+	bg0.alpha = .8
+	grpOptionAvatar:insert( bg0 )
+	bg0:addEventListener( 'tap', hideoptionAvatar )
+	local bg1 = display.newRoundedRect( midW, midH/2 + h - 2, 606, 310, 10 )
+	bg1.anchorY = 0
+	bg1:setFillColor( .7 )
+	grpOptionAvatar:insert( bg1 )
+	
+	local posY = midH/2 + h
+	
+	local option = {"Editar Foto", "Ver Foto"}
+	local optionIcon = {"edit-2-85", "eye-3-85"}
+	for i = 1, #option, 1 do
+		local container3 = display.newContainer( 606, 150 )
+		grpOptionAvatar:insert(container3)
+		container3.anchorY = 0
+		container3:translate( midW, posY )
+		
+		local bg0Option = display.newRoundedRect( 0, 0, 600, 150, 5 )
+		bg0Option:setFillColor( 1 )
+		bg0Option.type = option[i]
+		container3:insert( bg0Option )
+		bg0Option:addEventListener( 'tap', selectOptionAvatar )
+		
+		local iconOption = display.newImage("img/" .. optionIcon[i] .. ".png")
+		iconOption:translate(-230, 0)
+		container3:insert(iconOption)
+		
+		--label nombre
+		local lblNameOption = display.newText({
+			text = option[i], 
+			x = 0, y = 0,
+			width = 500,
+			font = native.systemFont, 
+			fontSize = 50, align = "center"
+		})
+		lblNameOption:setFillColor( 129/255, 61/255, 153/255 )
+		container3:insert(lblNameOption)
+		posY = posY + 155
+	end
+	
+	bg1.height = #option * 156
+	
+	return true
+	
+end
+
+function hideoptionAvatar( event )
+	componentActive = false
+	if grpOptionAvatar then
+		grpOptionAvatar:removeSelf()
+		grpOptionAvatar = nil
+	end
+	grpTextProfile.x = 0
+	return true
 end
 
 -----------------------------------
@@ -1541,11 +1770,43 @@ function createProfileAvatar()
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
-		local avatar = display.newImage(item.image, system.TemporaryDirectory)
+		avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate(midW - 190, 170)
 		avatar.height = 230
 		avatar.width = 230
+		avatar.name = item.image
 		scrPerfile:insert(avatar)
+		
+		local ChangePhoto = display.newRect( midW - 190, 170, 235, 235 )
+		ChangePhoto:setFillColor( 1 )
+		ChangePhoto.alpha = .1
+		scrPerfile:insert(ChangePhoto)
+		ChangePhoto:addEventListener( 'tap', optionAvatar )
+		
+		local bgChangePhoto = display.newRect( midW - 190, 247, 225, 80 )
+		bgChangePhoto:setFillColor( 1 )
+		bgChangePhoto.alpha = .8
+		scrPerfile:insert(bgChangePhoto)
+		
+		--[[local imgChangePhoto = display.newImage("img/camera-5-64.png")
+		imgChangePhoto:translate(midW - 115, 250)
+		imgChangePhoto.alpha = .8
+		scrPerfile:insert(imgChangePhoto)]]
+		
+		local imgChangePhoto = display.newImage("img/camera-slr-64.png")
+		imgChangePhoto:translate(midW - 107, 255)
+		imgChangePhoto.alpha = .8
+		scrPerfile:insert(imgChangePhoto)
+		
+		local lblChangePhoto = display.newText({
+			text = "Editar", 
+			x = midW - 230, y = 255,
+			font = native.systemFont,   
+			fontSize = 32, align = "left"
+		})
+		lblChangePhoto:setFillColor( 129/255, 61/255, 153/255 )
+		scrPerfile:insert(lblChangePhoto)
+		
 	else
 		local items = {}
 		items[1] = item
@@ -1586,7 +1847,7 @@ end
 -- ScrollView listener
 function scrListen( event )
     local x, y = scrPerfile:getContentPosition()
-    print(y)
+   -- print(y)
     if y < -80 and textUserName.x == 550 then
         textUserName.x = 1000
     elseif y >= -80 and textUserName.x == 1000 then
