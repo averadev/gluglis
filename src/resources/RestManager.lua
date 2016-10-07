@@ -852,6 +852,8 @@ local RestManager = {}
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
 	RestManager.saveLocationProfile = function( residence, idResidence )
 		
+		local settings = DBManager.getSettings()
+		local site = settings.url
         local url = site.."api/saveLocationProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		if idResidence ~= '' then

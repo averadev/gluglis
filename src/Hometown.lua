@@ -112,7 +112,7 @@ function OptionLocationHt( item )
 end
 
 function saveCityHt( event )
-	
+	print(event.target.id )
 	if ( event.target.id ~= 0 ) then
 		RestManager.saveLocationProfile( event.target.city, event.target.id )
 	else
@@ -146,7 +146,9 @@ function goToHomeHt( event )
 	if textLocation == "" then
 		textLocation = 0
 	end
-	DBManager.updateCity(textLocation)
+	--DBManager.updateCity(textLocation, btnSearch.id)
+	--RestManager.saveCityU
+	
 	composer.gotoScene( "src.Home", { time = 400, effect = "fade" } )
 end
 
@@ -231,7 +233,7 @@ function scene:create( event )
 	txtLocationHt:setTextColor( .5 )
 	grpHometown:insert( txtLocationHt )
 	
-	lastY = intH - 100
+	lastY = intH - 200
 	
 	btnSearch = display.newRoundedRect( midW, lastY, 650, 100, 10 )
     btnSearch:setFillColor( {
