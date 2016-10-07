@@ -216,13 +216,41 @@ end
 
 function saveAvatar( event )
 
-	local nameImage
+	--[[local nameImage
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
 		nameImage = k
 		--t[k] = v
 	end
 
-	RestManager.savePhoto(nameImage)
+	RestManager.savePhoto(nameImage)]]
+	
+	display.save( avatarMask, { filename="entireGroup.png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+	
+	print("holaaaa")
+	
+	return true
+end
+
+function moveMasckAvatar( event )
+
+	--[[if ( event.phase == "began" ) then
+        differenceX = event.x - avatarMask.maskX
+		differenceY = event.y - avatarMask.maskY
+	elseif ( event.phase == "moved" ) then
+		newPositionX = event.x - differenceX
+		newPositionY = event.y - differenceY
+		avatarMask.maskX = newPositionX
+		avatarMask.maskY = newPositionY
+	--avatarMask.maskY = event.y
+		avatarMask.maskScaleX = 1
+	
+	elseif ( event.phase == "ended" ) then
+    end]]
+
+	--event.target.maskX = -10
+	
+	avatarMask.y = 300
+	
 	return true
 end
 
@@ -273,7 +301,59 @@ function showAvatar( typeP )
 		
 		if fhd then
 		
-			local bg1 = display.newRoundedRect( midW, midH + h, intW - 80, intH, 15 )
+			local scrNewPhoto = widget.newScrollView({
+				top = h + 100,
+				left = 50,
+				width = intW - 100,
+				height = intH - 200,
+				--horizontalScrollDisabled = true,
+				backgroundColor = { .96 },
+				listener = moveMasckAvatar
+			})
+			grpOptionAvatar:insert(scrNewPhoto)
+			scrNewPhoto:addEventListener( 'tap', noAction )
+			
+			local iconExitAvatarFull = display.newImage("img/x-mark-3-64.png")
+			iconExitAvatarFull:translate(intW - 50, h + 100)
+			grpOptionAvatar:insert(iconExitAvatarFull)
+			
+		
+			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
+			avatarFull:translate(midW, midH - 100)
+			scrNewPhoto:insert(avatarFull)
+			--avatarFull:addEventListener('touch', moveMasckAvatar)
+			avatarFull:addEventListener( 'tap', noAction )
+			--avatarFull:setMask( mask )
+			avatarFull.alpha = .5
+		
+			local mask = graphics.newMask( "img/maskPhoto2.png" )
+			avatarMask = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
+			avatarMask:translate(midW, midH - 100)
+			grpOptionAvatar:insert(avatarMask)
+			--avatarMask:addEventListener('touch', moveMasckAvatar)
+			--avatarMask:addEventListener( 'tap', noAction )
+			avatarMask:setMask( mask )
+			--[[
+			posY = intH - 200
+			
+			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
+			btnSaveAvatar.id = nameImage
+			btnSaveAvatar:setFillColor( {
+				type = 'gradient',
+				color1 = { 129/255, 61/255, 153/255 }, 
+				color2 = { 89/255, 31/255, 103/255 },
+				direction = "bottom"
+			} )
+			grpOptionAvatar:insert(btnSaveAvatar)
+			btnSaveAvatar:addEventListener( 'tap', saveAvatar )]]
+			
+			--local desiredHigh = ( (intW - 400) * avatarFull.height ) / avatarFull.width 
+			--avatarFull.height = desiredHigh
+			--local desiredHigh  = 600
+			--avatarFull.height = desiredHigh
+			--avatarFull.width = intW-100
+		
+			--[[local bg1 = display.newRoundedRect( midW, midH + h, intW - 80, intH, 15 )
 			bg1:setFillColor( 1 )
 			bg1.anchorY = 0
 			grpOptionAvatar:insert( bg1 )
@@ -282,13 +362,13 @@ function showAvatar( typeP )
 			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
 			avatarFull:translate(midW, midH - 100)
 			grpOptionAvatar:insert(avatarFull)
-			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+			--local desiredHigh = ( (intW - 400) * avatarFull.height ) / avatarFull.width 
 			--avatarFull.height = desiredHigh
-			avatarFull.height = 300
+			local desiredHigh  = 600
+			avatarFull.height = desiredHigh
 			avatarFull.width = intW-100
 			
-			
-			local posY = (300 + avatarFull.height) - 100
+			local posY = (desiredHigh + avatarFull.height) - 100
 			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
 			btnSaveAvatar.id = nameImage
 			btnSaveAvatar:setFillColor( {
@@ -301,7 +381,8 @@ function showAvatar( typeP )
 			btnSaveAvatar:addEventListener( 'tap', saveAvatar )
 			
 			bg1.y = (avatarFull.y / 2) + 15
-			bg1.height = avatarFull.height + btnSaveAvatar.height + 50
+			--bg1.height = avatarFull.height + btnSaveAvatar.height + 50
+			bg1.height = avatarFull.height + 50
 			
 			local lblSaveAvatar = display.newText({
 				text = "Editar", 
@@ -314,7 +395,7 @@ function showAvatar( typeP )
 			
 			local iconExitAvatarFull = display.newImage("img/delete.png")
 			iconExitAvatarFull:translate(intW - 50, bg1.y)
-			grpOptionAvatar:insert(iconExitAvatarFull)
+			grpOptionAvatar:insert(iconExitAvatarFull)]]
 			
 		end
 		
@@ -375,8 +456,8 @@ function selectOptionAvatar( event )
 	if( event.target.type == "Editar Foto" ) then
 		
 		
-		takePicture()
-		--showAvatar( "newPhoto" )
+		--takePicture()
+		showAvatar( "newPhoto" )
 		
 	elseif( event.target.type == "Ver Foto" ) then
 		showAvatar( "myPhoto" )
@@ -1180,8 +1261,8 @@ function createTextField( item, name, coordY )
 		textUserResidence:resizeHeightToFitFont()
 		textUserResidence:addEventListener( "userInput", userInputProfile )
 		textUserResidence.name = "residence"
-		textUserResidence.city = ""
-		textUserResidence.id = 0
+		textUserResidence.city = item.residencia
+		textUserResidence.id = item.residenciaId
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
 		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )

@@ -65,13 +65,12 @@ local dbManager = {}
 	dbManager.updateFilter = function(city, iniDate, endDate, genH, genM, iniAge, endAge, accommodation, cityId )
 		openConnection( )
         local query = "UPDATE filter SET city = '"..city.."', iniDate = '"..iniDate.."', endDate = '"..endDate.."', genH = '"..genH.."', genM = '"..genM.."', iniAge = '"..iniAge.."', endAge = '"..endAge.."', accommodation = '"..accommodation.."', cityId = '"..cityId.."';"
-        db:exec( query )
+		db:exec( query )
 		closeConnection( )
 	end
 	
 	--actualiza la configuracion de los filtros
 	dbManager.updateCity = function( city, cityId )
-		print(cityId)
 		openConnection( )
         local query = "UPDATE filter SET city = '"..city.."', cityId = '"..cityId.."';"
         db:exec( query )
@@ -93,7 +92,7 @@ local dbManager = {}
         db:exec( query )
 		local query = "delete from filter;"
         db:exec( query )
-		local query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí');"
+		local query = "INSERT INTO filter VALUES (1, '0', '0000-00-00', '0000-00-00', 1, 1, 18, 99, 'Sí',0);"
 		db:exec( query )
 		closeConnection( )
     end

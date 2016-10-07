@@ -454,7 +454,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	   
+		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -505,7 +505,6 @@ local RestManager = {}
 		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
-	   print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -552,7 +551,6 @@ local RestManager = {}
 		url = url.."/endAge/" 	.. settFilter.endAge
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )

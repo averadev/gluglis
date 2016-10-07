@@ -425,6 +425,8 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			grpTextField:insert( txtLocation )
 			if settFilter.city ~= '0' then
 				txtLocation.text = settFilter.city
+				txtLocation.city = settFilter.city
+				txtLocation.id = settFilter.cityId
 			end
 			
 			local imgDado = display.newImage( screen, "img/1454731709.png" )
