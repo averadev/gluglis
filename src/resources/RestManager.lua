@@ -752,7 +752,8 @@ local RestManager = {}
 	
 		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
 		-- Also define the method as "PUT".
-		local url = "http://192.168.1.77:8080/gluglis_api2/upload/uploadImage"
+		--local url = "http://192.168.1.77:8080/gluglis_api2/upload/uploadImage"
+		local url = site.."upload/uploadImage"
 		local method = "PUT"
 		 
 		-- Set some reasonable parameters for the upload process:

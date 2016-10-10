@@ -216,15 +216,15 @@ end
 
 function saveAvatar( event )
 
-	--[[local nameImage
+	local nameImage
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
 		nameImage = k
 		--t[k] = v
 	end
 
-	RestManager.savePhoto(nameImage)]]
+	RestManager.savePhoto(nameImage)
 	
-	display.save( avatarMask, { filename="entireGroup.png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+	--display.save( avatarMask, { filename="entireGroup.png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
 	
 	print("holaaaa")
 	
@@ -249,7 +249,32 @@ function moveMasckAvatar( event )
 
 	--event.target.maskX = -10
 	
-	avatarMask.y = 300
+	--avatarMask.y = 300
+	
+	if ( event.phase == "began" ) then
+        differenceX = event.x - avatarMask.maskX
+		differenceY = event.y - avatarMask.y
+		--print(avatarMask.maskY)
+		--print(event.y)
+		--print(avatarMask.y)
+	elseif ( event.phase == "moved" ) then
+		avatarMask.y = event.y -400
+		--newPositionX = event.x - differenceX
+		--newPositionY = event.y - differenceY
+		--avatarMask.y = newPositionY
+		print(event.target.y)
+		
+		--avatarMask.maskY = newPositionY
+		--avatarMask.maskX = newPositionX
+		--avatarMask.maskY = newPositionY
+	--avatarMask.maskY = event.y
+		--avatarMask.maskScaleX = 1
+	
+	elseif ( event.phase == "ended" ) then
+		--newPositionY = event.y - differenceY
+		--avatarMask.y = newPositionY
+		--avatarMask.y = event.y -400
+    end
 	
 	return true
 end
@@ -301,12 +326,34 @@ function showAvatar( typeP )
 		
 		if fhd then
 		
-			local scrNewPhoto = widget.newScrollView({
+			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
+			avatarFull:translate(midW, midH  + h)
+			grpOptionAvatar:insert(avatarFull)
+			avatarFull:addEventListener( 'tap', noAction )
+			
+			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+			avatarFull.height = desiredHigh
+			--local desiredHigh  = 600
+			avatarFull.height = desiredHigh
+			avatarFull.width = intW-100
+			
+			btnSaveAvatar = display.newRoundedRect( midW, intH - 200, 650, 110, 10 )
+			btnSaveAvatar.id = nameImage
+			btnSaveAvatar:setFillColor( {
+				type = 'gradient',
+				color1 = { 129/255, 61/255, 153/255 }, 
+				color2 = { 89/255, 31/255, 103/255 },
+				direction = "bottom"
+			} )
+			grpOptionAvatar:insert(btnSaveAvatar)
+			btnSaveAvatar:addEventListener( 'tap', saveAvatar )
+		
+			--[[local scrNewPhoto = widget.newScrollView({
 				top = h + 100,
 				left = 50,
 				width = intW - 100,
 				height = intH - 200,
-				--horizontalScrollDisabled = true,
+				horizontalScrollDisabled = true,
 				backgroundColor = { .96 },
 				listener = moveMasckAvatar
 			})
@@ -317,22 +364,34 @@ function showAvatar( typeP )
 			iconExitAvatarFull:translate(intW - 50, h + 100)
 			grpOptionAvatar:insert(iconExitAvatarFull)
 			
-		
 			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarFull:translate(midW, midH - 100)
+			avatarFull:translate(midW - 50, midH - 100)
 			scrNewPhoto:insert(avatarFull)
 			--avatarFull:addEventListener('touch', moveMasckAvatar)
 			avatarFull:addEventListener( 'tap', noAction )
 			--avatarFull:setMask( mask )
 			avatarFull.alpha = .5
+			
+			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+			avatarFull.height = desiredHigh
+			--local desiredHigh  = 600
+			avatarFull.height = desiredHigh
+			avatarFull.width = intW-100
+		
+			print(scrNewPhoto.top)
+			print(desiredHigh)
 		
 			local mask = graphics.newMask( "img/maskPhoto2.png" )
 			avatarMask = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarMask:translate(midW, midH - 100)
+			avatarMask.anchorY = 0
+			avatarMask:translate(midW, h + 99)
+			avatarMask.height = desiredHigh
+			avatarMask.width = intW-100
 			grpOptionAvatar:insert(avatarMask)
-			--avatarMask:addEventListener('touch', moveMasckAvatar)
-			--avatarMask:addEventListener( 'tap', noAction )
-			avatarMask:setMask( mask )
+		
+			local posyMask = desiredHigh / 3.74
+			avatarMask.maskY = - posyMask
+			scrNewPhoto:setScrollHeight( desiredHigh + ((intH - 449) - posyMask) )]]
 			--[[
 			posY = intH - 200
 			
@@ -456,8 +515,8 @@ function selectOptionAvatar( event )
 	if( event.target.type == "Editar Foto" ) then
 		
 		
-		--takePicture()
-		showAvatar( "newPhoto" )
+		takePicture()
+		--showAvatar( "newPhoto" )
 		
 	elseif( event.target.type == "Ver Foto" ) then
 		showAvatar( "myPhoto" )
