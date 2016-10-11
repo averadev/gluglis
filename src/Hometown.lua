@@ -48,9 +48,60 @@ function onTxtFocusHomeTown( event )
 	
 end
 
+-------------------------------------
+-- limpia el campo de busqueda
+-------------------------------------
+function cleanTxtLocationH( event )
+
+	if grpCityHt then
+		grpCityHt:removeSelf()
+	end
+	if txtLocationHt then
+		txtLocationHt.text = ""
+		txtLocationHt.city = ""
+		txtLocationHt.id = 0
+	end
+	return true
+end
+
+-------------------------------------
+-- lSelecciona la ciudad 
+-------------------------------------
 function selectCityHt( event )
+
+	local p = event.target.posc
+	for i = 1, #bgCity do
+		lblCityH[i]:removeSelf()
+	end
+	lblCityH = nil
+	lblCityH = {}
+	local heightItem = 120
+	local lastY = 3
+
 	for i = 1, #bgCity do
 		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
+		if( i == p ) then
+			lblCityH[i] = display.newText({
+				text = bgCity[i].city, 
+				x = midW, y = lastY + (heightItem - (heightItem/2)),
+				width = intW - 50,
+				font = native.systemFont,   
+				fontSize = 42, align = "center"
+			})
+			lblCityH[i]:setFillColor( 68/255, 14/255, 98/255 )
+			bgCompCity:insert(lblCityH[i])
+		else
+			lblCityH[i] = display.newText({
+				text = bgCity[i].city, 
+				x = midW, y = lastY + (heightItem - (heightItem/2)),
+				width = intW - 50,
+				font = native.systemFont,   
+				fontSize = 30, align = "center"
+			})
+			lblCityH[i]:setFillColor( 68/255, 14/255, 98/255 )
+			bgCompCity:insert(lblCityH[i])
+		end
+		lastY = lastY + heightItem + 5
 	end
 	event.target:setFillColor( 1 )
 	btnSearch.city = event.target.city
@@ -71,11 +122,13 @@ function OptionLocationHt( item )
 	local lastY = 355
 	
 	bgCompCity = widget.newScrollView({
-		top = bgText.y + 100,
+		top = bgText.y,
 		left = 0,
 		width = intW,
-		height = intH/2.3,
+		height = intH/2,
 		horizontalScrollDisabled = true,
+		isBounceEnabled = false,
+		hideBackground = true,
 		backgroundColor = { .88 }
 	})
 	grpCityHt:insert(bgCompCity)
@@ -83,6 +136,8 @@ function OptionLocationHt( item )
 	lastY = 3
 	bgCity = nil
 	bgCity = {}
+	lblCityH = nil
+	lblCityH = {}
 	
 	local heightItem = 120
 	for i = 1, #item do
@@ -91,19 +146,20 @@ function OptionLocationHt( item )
 		bgCity[i].anchorY = 0
 		bgCity[i].city = item[i].description
 		bgCity[i].id = item[i].place_id
+		bgCity[i].posc = i
 		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
 		bgCompCity:insert(bgCity[i])
 		bgCity[i]:addEventListener( 'tap', selectCityHt )
 		
-		local lbl0 = display.newText({
+		lblCityH[i] = display.newText({
 			text = item[i].description, 
 			x = midW, y = lastY + (heightItem - (heightItem/2)),
 			width = intW - 50,
 			font = native.systemFont,   
-			fontSize = 32, align = "left"
+			fontSize = 32, align = "center"
 		})
-		lbl0:setFillColor( 0 )
-		bgCompCity:insert(lbl0)
+		lblCityH[i]:setFillColor( 68/255, 14/255, 98/255 )
+		bgCompCity:insert(lblCityH[i])
 		
 		lastY = lastY + heightItem + 5
 				
@@ -199,24 +255,29 @@ function scene:create( event )
 	
 	local lastY = intH/7
 	
-	local iconLogo = display.newImage("img/logo2.png")
+	local iconLogo = display.newImage( "img/logo2.png"  )
 	iconLogo:translate( midW, lastY )
-	grpHometown:insert( iconLogo )
+	grpHometown:insert(iconLogo)
 	
-	local lastY = lastY + 200
+	lastY = lastY + 200
 	
-	local bgSearchHt0 = display.newRect( midW , lastY - 3, intW, 106 )
-	bgSearchHt0.anchorY = 0
+	local bgSearchHt0 = display.newRect( midW , lastY + 3, intW, 106 )
+	bgSearchHt0.anchorY = 1
 	bgSearchHt0:setFillColor( 225/255 )
 	grpHometown:insert(bgSearchHt0)
 	
 	bgText = display.newRoundedRect( midW, lastY, intW, 100, 0 )
-	bgText.anchorY = 0
+	bgText.anchorY = 1
 	bgText:setFillColor( 1 )
 	grpHometown:insert(bgText)
 	
+	local imgClean = display.newImage( "img/x-mark-4-48.png" )
+	imgClean:translate( 55, lastY - 50 )
+	grpHometown:insert(imgClean)
+	imgClean:addEventListener( 'tap', cleanTxtLocationH )
+	
 	txtLocationHt = native.newTextField( midW, lastY, 540, 100 )
-	txtLocationHt.anchorY = 0
+	txtLocationHt.anchorY = 1
 	txtLocationHt.inputType = "default"
 	txtLocationHt.hasBackground = false
 	txtLocationHt:addEventListener( "userInput", onTxtFocusHomeTown )
@@ -227,12 +288,12 @@ function scene:create( event )
 	grpHometown:insert( txtLocationHt )
 	
 	local imgDado = display.newImage( "img/brujula.png" )
-	imgDado:translate( intW - 65, lastY + 50 )
-	imgDado.height = 90
-	imgDado.width = 90
+	imgDado:translate( intW - 55, lastY - 50 )
+	imgDado.height = 80
+	imgDado.width = 80
 	grpHometown:insert(imgDado)
 	
-	lastY = intH - 200
+	lastY = intH - 150
 	
 	local btnSearch0 = display.newRoundedRect( midW, lastY, intW, 106, 0 )
 	btnSearch0:setFillColor( 225/255 )

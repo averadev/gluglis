@@ -90,13 +90,9 @@ settings =
                 "Icon-Small@3x.png"
 			},
             UIAppFonts = {
-                "Lato-Thin.ttf",
-                "Lato-Hairline.ttf",
-                "Lato-Light.ttf",
-                "Lato-Regular.ttf",
-                "Lato-Black.ttf",
-                "Lato-Bold.ttf",
-                "Lato-Italic.ttf"
+                "Oxygen-Regular.ttf",
+                "Oxygen-Light.ttf",
+                "Oxygen-Bold.ttf"
             },
 			UIBackgroundModes = {"remote-notification"},
 			UIApplicationExitsOnSuspend = false,

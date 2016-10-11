@@ -26,7 +26,7 @@ local avaR = {}
 local detail = {}
 local borders = {}
 local idxA, countA
-local lblName, lblInts
+local lblName, lblInts, lblAge
 local loadUsers = {}
 local btnViewProfile
 local lblTitle
@@ -35,6 +35,7 @@ local totalCard = 0
 local isReady = true
 local counter = 0
 local isFirstI = true
+local grpHome
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -120,13 +121,16 @@ function buildCard(item)
 	grpImage:insert(img)
 	local imgWidth = img.contentWidth 
 	local imgHeight = img.contentHeight
-	if imgWidth < 700 then
-		img.width = 700
+	print(imgWidth)
+	if imgWidth < 600 then
+		img.width = 600
+		print("entro")
 	end
-	if imgHeight < 700 then
-		img.height = 700
+	if imgHeight < 600 then
+		img.height = 600
 	end
-	if imgWidth < 700 or imgHeight < 700 then
+	
+	if imgWidth < 600 or imgHeight < 600 then
 		--item.image = "a" .. item.image
 		--grpImage.alpha = 1
 		--display.save( grpImage, { filename=item.image , baseDir=system.TemporaryDirectory, isFullResolution=false, backgroundColor={0, 0, 0, 0} } )
@@ -136,14 +140,17 @@ function buildCard(item)
 
     local idx = #avaL + 1
 	local imgS = nil
-	if imgWidth < 700 or imgHeight < 700 then 
+	if imgWidth < 600 or imgHeight < 600 then 
 		imgWidth = math.round( imgWidth/2 ) - 1
 		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
+	elseif imgWidth > 600 or imgHeight > 600 then
+		imgWidth = math.round( imgWidth/2 )
+		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
 	else
-		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 350, height = 700, numFrames = 2 })
+		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 300, height = 600, numFrames = 2 })
 	end
     
-    avaL[idx] = display.newRect( midW, 60, 350, 700 )
+    avaL[idx] = display.newRect( midW, 60, 300, 600 )
     avaL[idx].alpha = 0
     avaL[idx].anchorY = 0
     avaL[idx].anchorX = 1
@@ -151,7 +158,7 @@ function buildCard(item)
     avaL[idx].fill = { type = "image", sheet = imgS, frame = 1 }
     profiles:insert(avaL[idx])
     
-    avaR[idx] = display.newRect( midW, 60, 350, 700 )
+    avaR[idx] = display.newRect( midW, 60, 300, 600 )
     avaR[idx].alpha = 0
     avaR[idx].anchorY = 0
     avaR[idx].anchorX = 0
@@ -210,12 +217,21 @@ function setInfo(idx)
     end
     -- Set info
     lblName.text = loadUsers[idx].userName 
-    --detail[1].lbl.text = loadUsers[idx].residencia
     if loadUsers[idx].edad then 
-        lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+        --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+		lblAge.text = loadUsers[idx].edad.." años"
+	else
+		lblAge.text = "Edad no registrada"
     end
+	 if loadUsers[idx].residencia then 
+        --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+		lblInts.text = loadUsers[idx].residencia
+	else
+		lblInts.text = "Residencia no registrada"
+    end
+	
 	-- Hobbies
-    if loadUsers[idx].hobbies then
+    --[[if loadUsers[idx].hobbies then
         local max = 3
         if #loadUsers[idx].hobbies < max then 
             max = #loadUsers[idx].hobbies 
@@ -251,7 +267,7 @@ function setInfo(idx)
         end
     else
         lblInts.text = ''
-    end
+    end]]
 	
 	btnViewProfile.item = loadUsers[idx]
     --
@@ -280,22 +296,22 @@ function touchScreen(event)
                 direction = 1
                 avaR[idxA+1]:toBack()
                 avaR[idxA+1].alpha = 1
-                avaR[idxA+1].width = 350
+                avaR[idxA+1].width = 300
             elseif x > 10 and idxA > 1 then
                 direction = -1
                 avaL[idxA-1]:toBack()
                 avaL[idxA-1].alpha = 1
-                avaL[idxA-1].width = 350
+                avaL[idxA-1].width = 300
             end
-        elseif direction == 1 and x <= 0 and xM >= -700 then
-            if xM > -350 then
+        elseif direction == 1 and x <= 0 and xM >= -600 then
+            if xM > -300 then
                 if avaR[idxA].alpha == 0 then
                     avaL[idxA+1].alpha = 0
                     avaR[idxA].alpha = 1
                     avaR[idxA].width = 0
                 end
                 -- Move current to left
-                avaR[idxA].width = 350 + xM
+                avaR[idxA].width = 300 + xM
             else
                 if avaL[idxA+1].alpha == 0 then
                     avaR[idxA].alpha = 0
@@ -304,18 +320,18 @@ function touchScreen(event)
                     avaL[idxA+1].width = 0
                 end
                 -- Move new to left
-                avaL[idxA+1].width = (xM*-1)-350
+                avaL[idxA+1].width = (xM*-1)-300
             end
         elseif direction == -1 and x >= 0 then
-            if xM < 350 then
+            if xM < 300 then
                 if avaL[idxA].alpha == 0 then
                     avaR[idxA-1].alpha = 0
                     avaL[idxA].alpha = 1
                     avaL[idxA].width = 0
                 end
                 -- Move current to left
-                avaL[idxA].width = 350 - xM
-            elseif xM < 700 then
+                avaL[idxA].width = 300 - xM
+            elseif xM < 600 then
                 if avaR[idxA-1].alpha == 0 then
                     avaL[idxA].alpha = 0
                     avaR[idxA-1]:toFront()
@@ -323,46 +339,46 @@ function touchScreen(event)
                     avaR[idxA-1].width = 0
                 end
                 -- Move new to left
-                avaR[idxA-1].width = xM - 350
+                avaR[idxA-1].width = xM - 300
             end
             
         end
     elseif event.phase == "ended" or event.phase == "cancelled" then
         local xM = ((event.x - event.xStart) * 3)
         -- To Rigth
-        if direction == 1 and xM >= -700 then
+        if direction == 1 and xM >= -600 then
             avaR[idxA].alpha = 1
             avaL[idxA+1].alpha = 0
-            transition.to( avaR[idxA], { width = 350, time = 200, onComplete=function()
+            transition.to( avaR[idxA], { width = 300, time = 200, onComplete=function()
                 avaR[idxA+1].alpha = 0
                 isReady = true
             end})
-        elseif direction == 1 and xM < -700 then
+        elseif direction == 1 and xM < -600 then
             if idxA % 5 == 0 and #loadUsers < totalCard then
                 getProfile()
             end
 			avaR[idxA].alpha = 0
             avaL[idxA+1].alpha = 1
             setInfo(idxA+1)
-            transition.to( avaL[idxA+1], { width = 350, time = 200, onComplete=function()
+            transition.to( avaL[idxA+1], { width = 300, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA + 1
                 isReady = true
             end})
         -- To Left
-        elseif direction == -1 and xM <= 700 then
+        elseif direction == -1 and xM <= 600 then
             avaL[idxA].alpha = 1
             avaR[idxA-1].alpha = 0
-            transition.to( avaL[idxA], { width = 350, time = 200, onComplete=function()
+            transition.to( avaL[idxA], { width = 300, time = 200, onComplete=function()
                 avaR[idxA-1].alpha = 0
                 isReady = true
             end})
-        elseif direction == -1 and xM > 700 then
+        elseif direction == -1 and xM > 600 then
             avaL[idxA].alpha = 0
             avaR[idxA-1].alpha = 1
             setInfo(idxA-1)
-            transition.to( avaR[idxA-1], { width = 350, time = 200, onComplete=function()
+            transition.to( avaR[idxA-1], { width = 300, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA - 1
@@ -471,14 +487,14 @@ function showInfoButton()
     ---  ------ ---
     
 	--btn perfil
-	btnViewProfile = display.newRoundedRect( midW, posY, 720, 70, 10 )
+	btnViewProfile = display.newRoundedRect( midW, intH - 100, intW, 80, 0 )
     btnViewProfile.anchorY = 0
 	btnViewProfile.id = 0
-    btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
+    btnViewProfile:setFillColor( 0/255, 174/255, 239/255 )
     bottomCmp:insert(btnViewProfile)
 	local lblViewProfile = display.newText({
-        text = "Ver perfil",
-        x = midW, y = posY + 32,
+        text = "VER PERFIL",
+        x = midW, y = intH - 100 +  35,
         font = native.systemFontBold,
         fontSize = 32, align = "left"
     })
@@ -535,8 +551,20 @@ function scene:create( event )
     tools:buildHeader()
     screen:insert(tools)
 	
-	container = display.newContainer( 720, 900 )
-	container:translate( midW , 90 + h)
+	
+	local lastY = 90 + h + 40
+	
+	grpHome = display.newGroup()
+	screen:insert(grpHome)
+	grpHome.y = h
+	
+	
+	local iconLogo = display.newImage( "img/logo2.png"  )
+	iconLogo:translate( midW, lastY )
+	grpHome:insert(iconLogo)
+	
+	container = display.newContainer( intW, 900 )
+	container:translate( midW , lastY + 95)
 	container.anchorY = 0
     screen:insert(container)
 	
@@ -546,14 +574,22 @@ function scene:create( event )
     container:insert(topCmp)
 	topCmp.x = - 384
 	topCmp.y = - 500
-    
+	
+	
+	
     -- Content profile
-    local bgCard = display.newRoundedRect( midW, 50, 720, 800, 10 )
+	
+	local bgCard0 = display.newRect( midW, 102, intW, 515 )
+    bgCard0.anchorY = 0
+    bgCard0:setFillColor( 11/225, 163/225, 212/225 )
+    topCmp:insert(bgCard0)
+	
+    local bgCard = display.newRoundedRect( midW, 52, 615, 615, 20 )
     bgCard.anchorY = 0
     bgCard:setFillColor( 11/225, 163/225, 212/225 )
     topCmp:insert(bgCard)
     
-    bgAvatar = display.newRect( midW, 60, 700, 700 )
+    bgAvatar = display.newRect( midW, 60, 600, 600 )
     bgAvatar.anchorY = 0
     bgAvatar:setFillColor( 0, 193/225, 1 )
     topCmp:insert(bgAvatar)
@@ -570,21 +606,32 @@ function scene:create( event )
     -- Personal data
     lblName = display.newText({
         text = "", 
-        x = 420, y = 790,
+        x = 420, y = 710,
         width = 680,
         font = native.systemFontBold,   
         fontSize = 30, align = "left"
     })
-    lblName:setFillColor( 1 )
+    lblName:setFillColor( 0 )
     topCmp:insert(lblName)
+	
+	lblAge = display.newText({
+        text = "", 
+        x = 420, y = 760,
+        width = 680,
+        font = native.systemFontBold,   
+        fontSize = 30, align = "left"
+    })
+    lblAge:setFillColor( 0 )
+    topCmp:insert(lblAge)
+	
     lblInts = display.newText({
         text = "", 
-        x = 420, y = 825,
+        x = 420, y = 810,
         width = 680,
         font = native.systemFont, 
         fontSize = 22, align = "left"
     })
-    lblInts:setFillColor( 1 )
+    lblInts:setFillColor( 0 )
     topCmp:insert(lblInts)
     
 	bottomCmp = display.newGroup()
@@ -619,6 +666,8 @@ function scene:create( event )
 			end
 		end, -1)
 	end
+	
+	tools:toFront()
 end	
 
 -------------------------------------

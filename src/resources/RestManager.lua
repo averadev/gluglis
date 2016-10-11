@@ -505,6 +505,7 @@ local RestManager = {}
 		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -550,6 +551,7 @@ local RestManager = {}
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
 		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
+		print(url)
 		url = url.."/limit/" .. urlencode(limit)
         local function callback(event)
             if ( event.isError ) then

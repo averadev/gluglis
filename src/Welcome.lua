@@ -21,6 +21,7 @@ local scene = composer.newScene()
 local grpWelcome
 local txtLocationW
 local grpCityWc
+local lblCityW = {}
 
 -- Variables
 
@@ -66,17 +67,71 @@ function onTxtFocusWelcome( event )
     end
 end
 
+-------------------------------------
+-- limpia el campo de busqueda
+-------------------------------------
+function cleanTxtLocationW( event )
+
+	if grpCityWc then
+		grpCityWc:removeSelf()
+	end
+	if txtLocationW then
+		txtLocationW.text = ""
+		txtLocationW.city = ""
+		txtLocationW.id = 0
+	end
+	return true
+end
+
+-------------------------------------
+-- lSelecciona la ciudad 
+-------------------------------------
 function selectCityWc( event )
+	local p = event.target.posc
+	for i = 1, #bgCity do
+		lblCityW[i]:removeSelf()
+	end
+	
+	lblCityW = nil
+	lblCityW = {}
+	local heightItem = 120
+	local lastY = 3
 	for i = 1, #bgCity do
 		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
+		if( i == p ) then
+			lblCityW[i] = display.newText({
+				text = bgCity[i].city, 
+				x = midW, y = lastY + (heightItem - (heightItem/2)),
+				width = intW - 50,
+				font = native.systemFont,   
+				fontSize = 42, align = "center"
+			})
+			lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
+			bgCompCity:insert(lblCityW[i])
+		else
+			lblCityW[i] = display.newText({
+				text = bgCity[i].city, 
+				x = midW, y = lastY + (heightItem - (heightItem/2)),
+				width = intW - 50,
+				font = native.systemFont,   
+				fontSize = 30, align = "center"
+			})
+			lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
+			bgCompCity:insert(lblCityW[i])
+		end
+		lastY = lastY + heightItem + 5
 	end
 	event.target:setFillColor( 1 )
+	
 	txtLocationW.text = event.target.city
 	txtLocationW.city = event.target.city
 	txtLocationW.id = event.target.id
 	return true
 end
 
+-------------------------------------
+-- Muestra las opciones de ciudades 
+-------------------------------------
 function OptionLocationWc( item )
 
 	if grpCityWc then
@@ -95,6 +150,8 @@ function OptionLocationWc( item )
 		width = intW,
 		height = intH/2.3,
 		horizontalScrollDisabled = true,
+		isBounceEnabled = false,
+		hideBackground = true,
 		backgroundColor = { .88 }
 	})
 	grpCityWc:insert(bgCompCity)
@@ -102,6 +159,8 @@ function OptionLocationWc( item )
 	lastY = 3
 	bgCity = nil
 	bgCity = {}
+	lblCityW = nil
+	lblCityW = {}
 	
 	local heightItem = 120
 	for i = 1, #item do
@@ -112,17 +171,18 @@ function OptionLocationWc( item )
 		bgCity[i].id = item[i].place_id
 		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
 		bgCompCity:insert(bgCity[i])
+		bgCity[i].posc = i
 		bgCity[i]:addEventListener( 'tap', selectCityWc )
 		
-		local lbl0 = display.newText({
+		lblCityW[i] = display.newText({
 			text = item[i].description, 
 			x = midW, y = lastY + (heightItem - (heightItem/2)),
 			width = intW - 50,
 			font = native.systemFont,   
-			fontSize = 32, align = "center"
+			fontSize = 30, align = "center"
 		})
-		lbl0:setFillColor( 68/255, 14/255, 98/255 )
-		bgCompCity:insert(lbl0)
+		lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
+		bgCompCity:insert(lblCityW[i])
 		
 		lastY = lastY + heightItem + 5
 				
@@ -277,6 +337,11 @@ function scene:create( event )
 	bgText:setFillColor( 1 )
 	grpWelcome:insert(bgText)
 	
+	local imgClean = display.newImage( "img/x-mark-4-48.png" )
+	imgClean:translate( 55, lastY - 50 )
+	grpWelcome:insert(imgClean)
+	imgClean:addEventListener( 'tap', cleanTxtLocationW )
+	
 	txtLocationW = native.newTextField( midW, lastY, 540, 100 )
 	txtLocationW.anchorY = 1
 	txtLocationW.inputType = "default"
@@ -291,9 +356,9 @@ function scene:create( event )
 	grpWelcome:insert( txtLocationW )
 	
 	local imgDado = display.newImage( "img/1454731709.png" )
-	imgDado:translate( intW - 65, lastY - 45 )
-	imgDado.height = 90
-	imgDado.width = 90
+	imgDado:translate( intW - 55, lastY - 50 )
+	imgDado.height = 80
+	imgDado.width = 80
 	grpWelcome:insert(imgDado)
 	imgDado:addEventListener( 'tap', randomCitiesWelcome )
 	
@@ -308,18 +373,18 @@ function scene:create( event )
 	grpWelcome:insert(btnSearch)
 	local textButtom = ""
 	btnSearch:addEventListener( 'tap', goToHome )
-	textButtom = "BUSCAR"
 	
 	local lblSearch = display.newText({
-        text = textButtom, 
+        text = "Buscar", 
         x = midW, y = lastY,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "center"
+        font = native.systemFontBold,  
+		width = intW - 200,
+        fontSize = 30, align = "left"
     })
-    lblSearch:setFillColor( 0 )
+    lblSearch:setFillColor( 68/255, 14/255, 98/255 )
     grpWelcome:insert(lblSearch)
 	
-	lastY = lastY + 150
+	lastY = intH - 125
 	
 	local btnFilter0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
 	btnFilter0:setFillColor( 225/255 )
@@ -331,63 +396,14 @@ function scene:create( event )
 	btnFilter:addEventListener( 'tap', goFilter )
 	
 	local lblFilter = display.newText({
-        text = "Mas Filtros", 
+        text = "Más Filtros", 
         x = midW, y = lastY,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "center"
+        font = native.systemFontBold,
+		width = intW - 200,
+        fontSize = 30, align = "left"
     })
-    lblFilter:setFillColor( 0 )
+    lblFilter:setFillColor( 68/255, 14/255, 98/255 )
     grpWelcome:insert(lblFilter)
-	
-	--[[lastY = (intH/2 + h) - 100
-	
-	lastY = lastY + 100
-	
-	local btnSearch = display.newRoundedRect( midW, lastY, 650, 100, 10 )
-    btnSearch:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )
-    grpWelcome:insert(btnSearch)
-	local textButtom = ""
-	btnSearch:addEventListener( 'tap', goToHome )
-	textButtom = "BUSCAR"
-	
-	local lblSearch = display.newText({
-        text = textButtom, 
-        x = midW, y = lastY,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "center"
-    })
-    lblSearch:setFillColor( 1 )
-    grpWelcome:insert(lblSearch)
-	
-	
-	posY = 110 + h
-	
-	local bgSearch = display.newRect( 590 , intH - posY, 350, 100 )
-	bgSearch.anchorY = 0
-	bgSearch:setFillColor( 1 )
-	bgSearch.alpha = .1
-	grpWelcome:insert(bgSearch)
-	bgSearch:addEventListener( 'tap', goFilter )
-		
-	local iconSearch = display.newImage( "img/iconSearch.png" )
-	iconSearch:translate( intW - 75, intH - posY/2 - 12 )
-	iconSearch.height = 80
-	iconSearch.width = 80
-	grpWelcome:insert(iconSearch)
-	
-	local lblSearch = display.newText({
-		text = "Mas Filtros", 
-		x = 550, y = intH - posY/2 - 12,
-		font = native.systemFont, 
-		fontSize = 25, align = "center"
-	})
-	lblSearch:setFillColor( 0 )
-	grpWelcome:insert(lblSearch)]]
 	
     --RestManager.getUserAvatar()
 end	
