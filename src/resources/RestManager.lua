@@ -926,6 +926,8 @@ local RestManager = {}
 					if data.status == "OK" then
 						if( name == "hometown" ) then
 							OptionLocationHt(data.predictions)
+						elseif( name == "welcome" ) then
+							OptionLocationWc(data.predictions)
 						else
 							showCities(data.predictions, name, parent, itemOption)
 						end

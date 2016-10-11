@@ -10,6 +10,7 @@
 -- Includes
 require('src.Tools')
 require('src.resources.Globals')
+local widget = require( "widget" )
 require('src.resources.majorCities')
 local composer = require( "composer" )
 local DBManager = require('src.resources.DBManager')
@@ -19,6 +20,7 @@ local screen
 local scene = composer.newScene()
 local grpWelcome
 local txtLocationW
+local grpCityWc
 
 -- Variables
 
@@ -62,6 +64,70 @@ function onTxtFocusWelcome( event )
 		txtLocationW.id = 0
 		RestManager.getCity(txtLocationW.text, "welcome", grpWelcome, itemOption )
     end
+end
+
+function selectCityWc( event )
+	for i = 1, #bgCity do
+		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
+	end
+	event.target:setFillColor( 1 )
+	txtLocationW.text = event.target.city
+	txtLocationW.city = event.target.city
+	txtLocationW.id = event.target.id
+	return true
+end
+
+function OptionLocationWc( item )
+
+	if grpCityWc then
+		grpCityWc:removeSelf()
+	end
+	
+	grpCityWc = display.newGroup()
+	screen:insert(grpCityWc)
+	grpCityWc.y = h
+	
+	local lastY = 355
+	
+	bgCompCity = widget.newScrollView({
+		top = bgText.y,
+		left = 0,
+		width = intW,
+		height = intH/2.3,
+		horizontalScrollDisabled = true,
+		backgroundColor = { .88 }
+	})
+	grpCityWc:insert(bgCompCity)
+	
+	lastY = 3
+	bgCity = nil
+	bgCity = {}
+	
+	local heightItem = 120
+	for i = 1, #item do
+	
+		bgCity[i] = display.newRect( midW, lastY, intW, heightItem )
+		bgCity[i].anchorY = 0
+		bgCity[i].city = item[i].description
+		bgCity[i].id = item[i].place_id
+		bgCity[i]:setFillColor( 1, 1,1 ,.1 )
+		bgCompCity:insert(bgCity[i])
+		bgCity[i]:addEventListener( 'tap', selectCityWc )
+		
+		local lbl0 = display.newText({
+			text = item[i].description, 
+			x = midW, y = lastY + (heightItem - (heightItem/2)),
+			width = intW - 50,
+			font = native.systemFont,   
+			fontSize = 32, align = "center"
+		})
+		lbl0:setFillColor( 68/255, 14/255, 98/255 )
+		bgCompCity:insert(lbl0)
+		
+		lastY = lastY + heightItem + 5
+				
+	end
+	
 end
 
 -------------------------------------------
@@ -110,6 +176,7 @@ function goToHome( event )
 	end
 	typeSearch = "welcome"
 	DBManager.updateCity(textLocation, txtLocationW.id)
+	composer.removeScene( "src.Home" )
 	composer.gotoScene( "src.Home", { time = 400, effect = "fade" } )
 end
 
@@ -169,13 +236,8 @@ end
 
 function scene:create( event )
 
-	--obtiene la configuracion de los filtros
-	--settFilter = DBManager.getSettingFilter()
-
 	screen = self.view
     screen.y = h
-	
-	--grpWelcome.y = 200 + h
 	
 	--se crea y se deshace la imagen del fondo
 	display.setDefault( "textureWrapX", "repeat" )
@@ -197,26 +259,25 @@ function scene:create( event )
 	screen:insert(grpWelcome)
 	grpWelcome.y = h
 	
-	--[[
-	local lineGoFilter = display.newLine( 430, 85, 720, 85 )
-	lineGoFilter:setStrokeColor( 0 )
-	lineGoFilter.strokeWidth = 3
-	grpWelcome:insert(lineGoFilter)]]
+	local lastY = intH/7
 	
-	local lastY = intH/6
-	
-	local iconLogo = display.newImage( "img/logo.png"  )
+	local iconLogo = display.newImage( "img/logo2.png"  )
 	iconLogo:translate( midW, lastY )
 	grpWelcome:insert(iconLogo)
 	
-	lastY = (intH/2 + h) - 100
+	lastY = lastY + 200
 	
-	local bgText = display.newRoundedRect( midW - 50, lastY + 5, 540, 100, 5 )
+	local bgText0 = display.newRoundedRect( midW, lastY + 3, intW, 106, 0 )
+	bgText0.anchorY = 1
+	bgText0:setFillColor( 225/255 )
+	grpWelcome:insert(bgText0)
+	
+	bgText = display.newRoundedRect( midW, lastY, intW, 100, 0 )
 	bgText.anchorY = 1
 	bgText:setFillColor( 1 )
 	grpWelcome:insert(bgText)
 	
-	txtLocationW = native.newTextField( midW - 55, lastY, 540, 100 )
+	txtLocationW = native.newTextField( midW, lastY, 540, 100 )
 	txtLocationW.anchorY = 1
 	txtLocationW.inputType = "default"
 	txtLocationW.hasBackground = false
@@ -228,13 +289,57 @@ function scene:create( event )
 	txtLocationW.city = ""
 	txtLocationW.id = 0
 	grpWelcome:insert( txtLocationW )
-		
+	
 	local imgDado = display.newImage( "img/1454731709.png" )
-	imgDado:translate( intW - 85, lastY - 50 )
-	imgDado.height = 100
-	imgDado.width = 100
+	imgDado:translate( intW - 65, lastY - 45 )
+	imgDado.height = 90
+	imgDado.width = 90
 	grpWelcome:insert(imgDado)
 	imgDado:addEventListener( 'tap', randomCitiesWelcome )
+	
+	lastY = intH - 250
+	
+	local btnSearch0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
+	btnSearch0:setFillColor( 225/255 )
+	grpWelcome:insert(btnSearch0)
+	
+	local btnSearch = display.newRoundedRect( midW, lastY, intW, 94, 0 )
+	btnSearch:setFillColor( 1 )
+	grpWelcome:insert(btnSearch)
+	local textButtom = ""
+	btnSearch:addEventListener( 'tap', goToHome )
+	textButtom = "BUSCAR"
+	
+	local lblSearch = display.newText({
+        text = textButtom, 
+        x = midW, y = lastY,
+        font = native.systemFontBold,   
+        fontSize = 30, align = "center"
+    })
+    lblSearch:setFillColor( 0 )
+    grpWelcome:insert(lblSearch)
+	
+	lastY = lastY + 150
+	
+	local btnFilter0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
+	btnFilter0:setFillColor( 225/255 )
+	grpWelcome:insert(btnFilter0)
+	
+	local btnFilter = display.newRoundedRect( midW, lastY, intW, 94, 0 )
+	btnFilter:setFillColor( 1 )
+	grpWelcome:insert(btnFilter)
+	btnFilter:addEventListener( 'tap', goFilter )
+	
+	local lblFilter = display.newText({
+        text = "Mas Filtros", 
+        x = midW, y = lastY,
+        font = native.systemFontBold,   
+        fontSize = 30, align = "center"
+    })
+    lblFilter:setFillColor( 0 )
+    grpWelcome:insert(lblFilter)
+	
+	--[[lastY = (intH/2 + h) - 100
 	
 	lastY = lastY + 100
 	
@@ -282,7 +387,7 @@ function scene:create( event )
 		fontSize = 25, align = "center"
 	})
 	lblSearch:setFillColor( 0 )
-	grpWelcome:insert(lblSearch)
+	grpWelcome:insert(lblSearch)]]
 	
     --RestManager.getUserAvatar()
 end	

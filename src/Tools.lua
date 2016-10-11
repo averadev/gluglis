@@ -39,10 +39,14 @@ function Tools:new()
 			bgShadow:setFillColor( 0 )
 			bgShadow:addEventListener( 'tap', showMenu)
         end
+		bgToolbar = display.newRect( midW, 0, display.contentWidth, 80 )
+		bgToolbar.anchorY = 0
+		bgToolbar:setFillColor( 68/255, 14/255, 98/255 )
+		self:insert( bgToolbar )
         -- Icons
-        local iconLogo = display.newImage("img/iconLogo.png")
+        --[[local iconLogo = display.newImage("img/iconLogo.png")
         iconLogo:translate(display.contentWidth/2, 45)
-        self:insert( iconLogo )
+        self:insert( iconLogo )]]
         local currentScene = composer.getSceneName( "current" )
         if currentScene == "src.Home" or currentScene == "src.Welcome" then
             -- Iconos Home
@@ -51,14 +55,14 @@ function Tools:new()
             iconMenu:addEventListener( 'tap', showMenu)
             self:insert( iconMenu )
 			if currentScene ~= "src.Welcome" then
-				local iconHome = display.newImage("img/iconHome.png")
-				iconHome:translate(intW - 135, 45)
+				local iconHome = display.newImage("img/home.png")
+				iconHome:translate(midW, 40)
 				iconHome.screen = 'Welcome'
 				iconHome:addEventListener( 'tap', toScreen)
 				self:insert( iconHome )
 			end
-			local iconChat = display.newImage("img/iconChat.png")
-			iconChat:translate(display.contentWidth-45, 45)
+			local iconChat = display.newImage("img/mensajes.png")
+			iconChat:translate(intW - 75, 70)
 			iconChat.screen = 'Messages'
 			iconChat:addEventListener( 'tap', toScreen)
 			self:insert( iconChat )
@@ -69,15 +73,31 @@ function Tools:new()
 				scrMenu:builScreen()
 			end
         else
-            local icoBack = display.newImage("img/icoBack.png")
-            icoBack:translate(45, 45)
-            icoBack.screen = 'Home'
+			
+			bgIcoBack = display.newRect( 125, 5, 200, 70 )
+			bgIcoBack.anchorY = 0
+			bgIcoBack:setFillColor( 68/255, 14/255, 98/255 )
+			bgIcoBack.screen = 'Home'
+			--bgIcoBack:setFillColor( 0 )
+			bgIcoBack:addEventListener( 'tap', toScreen)
+			self:insert( bgIcoBack )
+		
+            local icoBack = display.newImage("img/Regresar-icono.png")
+            icoBack:translate(45, 40)
 			icoBack.isReturn = 1
-            icoBack:addEventListener( 'tap', toScreen)
             self:insert( icoBack )
+			
+			local lblIcoBack  = display.newText({
+				text = "Regresar", 
+				x = 115, y = 40,
+				font = native.systemFont,   
+				fontSize = 24, align = "left"
+			})
+			lblIcoBack:setFillColor( 1 )
+			self:insert(lblIcoBack)
             
-            local iconHome = display.newImage("img/iconHome.png")
-            iconHome:translate(intW - 45, 45)
+            local iconHome = display.newImage("img/home.png")
+            iconHome:translate(midW, 40)
             iconHome.screen = 'Welcome'
             iconHome:addEventListener( 'tap', toScreen)
             self:insert( iconHome )
