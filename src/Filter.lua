@@ -722,33 +722,14 @@ function scene:create( event )
     
     -- BG Component
 	--523
-    local bgComp1 = display.newRoundedRect( midW, 160, 650, 603, 10 )
+    --[[local bgComp1 = display.newRoundedRect( midW, 160, 650, 603, 10 )
     bgComp1.anchorY = 0
     bgComp1:setFillColor( .88 )
     screen:insert(bgComp1)
     local bgComp2 = display.newRoundedRect( midW, 160, 646, 600, 10 )
     bgComp2.anchorY = 0
     bgComp2:setFillColor( 1 )
-    screen:insert(bgComp2)
-    
-    -- Titulo
-    local bgTitle = display.newRoundedRect( midW, 160, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    screen:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, 220, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    screen:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "BÚSQUEDA AVANZADA", 
-        x = 310, y = 195,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    screen:insert(lblTitle)
+    screen:insert(bgComp2)]]
     
     -- Opciones
     local posY = 205
@@ -802,7 +783,7 @@ function scene:create( event )
             lbl.x = 590 
         end
     end 
-	posY = 565
+	--[[posY = 565
     -- Campos
     xFields = {
         {label = "vuelta", x = 435, y = -180},
@@ -925,7 +906,7 @@ function scene:create( event )
         fontSize = 25, align = "center"
     })
     lblSearch:setFillColor( 1 )
-    screen:insert(lblSearch)
+    screen:insert(lblSearch)]]
 	
 end	
 -- Called immediately after scene has moved onscreen:

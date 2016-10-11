@@ -43,7 +43,7 @@ language = require('src.resources.Language')
 language = language.es
 
 if isUser then
-	composer.gotoScene( "src.Home", { time = 400, effect = "fade"})
+	composer.gotoScene( "src.Filter", { time = 400, effect = "fade"})
 else
 	composer.gotoScene("src.LoginSplash")
 end

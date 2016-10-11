@@ -56,7 +56,7 @@ function Tools:new()
         iconLogo:translate(display.contentWidth/2, 45)
         self:insert( iconLogo )]]
         local currentScene = composer.getSceneName( "current" )
-        if currentScene == "src.Home" or currentScene == "src.Welcome" then
+        if currentScene == "src.Home" or currentScene == "src.Welcome"  then
             -- Iconos Home
             local iconMenu = display.newImage("img/menu.png")
             iconMenu:translate(80, 45)
