@@ -218,10 +218,10 @@ function setInfo(idx)
     -- Set info
     lblName.text = loadUsers[idx].userName 
     if loadUsers[idx].edad then 
-        --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
-		lblAge.text = loadUsers[idx].edad.." años"
+        lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+		--lblAge.text = loadUsers[idx].edad.." años"
 	else
-		lblAge.text = "Edad no registrada"
+		--lblAge.text = "Edad no registrada"
     end
 	 if loadUsers[idx].residencia then 
         --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
@@ -487,14 +487,14 @@ function showInfoButton()
     ---  ------ ---
     
 	--btn perfil
-	btnViewProfile = display.newRoundedRect( midW, intH - 100, intW, 80, 0 )
+	btnViewProfile = display.newRect( midW, intH - 130, intW, 120 )
     btnViewProfile.anchorY = 0
 	btnViewProfile.id = 0
     btnViewProfile:setFillColor( 0/255, 174/255, 239/255 )
     bottomCmp:insert(btnViewProfile)
 	local lblViewProfile = display.newText({
         text = "VER PERFIL",
-        x = midW, y = intH - 100 +  35,
+        x = midW, y = intH - 70,
         font = native.systemFontBold,
         fontSize = 32, align = "left"
     })
@@ -551,20 +551,14 @@ function scene:create( event )
     tools:buildHeader()
     screen:insert(tools)
 	
-	
-	local lastY = 90 + h + 40
+	local lastY = 90 + h 
 	
 	grpHome = display.newGroup()
 	screen:insert(grpHome)
-	grpHome.y = h
-	
-	
-	local iconLogo = display.newImage( "img/logo2.png"  )
-	iconLogo:translate( midW, lastY )
-	grpHome:insert(iconLogo)
+	--grpHome.y = h
 	
 	container = display.newContainer( intW, 900 )
-	container:translate( midW , lastY + 95)
+	container:translate( midW , lastY + 75)
 	container.anchorY = 0
     screen:insert(container)
 	
@@ -574,8 +568,6 @@ function scene:create( event )
     container:insert(topCmp)
 	topCmp.x = - 384
 	topCmp.y = - 500
-	
-	
 	
     -- Content profile
 	
@@ -614,7 +606,7 @@ function scene:create( event )
     lblName:setFillColor( 0 )
     topCmp:insert(lblName)
 	
-	lblAge = display.newText({
+	--[[lblAge = display.newText({
         text = "", 
         x = 420, y = 760,
         width = 680,
@@ -622,14 +614,14 @@ function scene:create( event )
         fontSize = 30, align = "left"
     })
     lblAge:setFillColor( 0 )
-    topCmp:insert(lblAge)
+    topCmp:insert(lblAge)]]
 	
     lblInts = display.newText({
         text = "", 
-        x = 420, y = 810,
+        x = 420, y = 760,
         width = 680,
         font = native.systemFont, 
-        fontSize = 22, align = "left"
+        fontSize = 28, align = "left"
     })
     lblInts:setFillColor( 0 )
     topCmp:insert(lblInts)

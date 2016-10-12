@@ -140,15 +140,15 @@ function OptionLocationWc( item )
 	
 	grpCityWc = display.newGroup()
 	screen:insert(grpCityWc)
-	grpCityWc.y = h
+	--grpCityWc.y = h
 	
 	local lastY = 355
-	
+	local heiScroll = (btnSearch.y - txtLocationW.y) - 100
 	bgCompCity = widget.newScrollView({
 		top = bgText.y,
 		left = 0,
 		width = intW,
-		height = intH/2.3,
+		height = heiScroll,
 		horizontalScrollDisabled = true,
 		isBounceEnabled = false,
 		hideBackground = true,
@@ -317,32 +317,27 @@ function scene:create( event )
 	
 	grpWelcome = display.newGroup()
 	screen:insert(grpWelcome)
-	grpWelcome.y = h
+	--grpWelcome.y = h
 	
-	local lastY = intH/7
+	local lastY = 250 + h
 	
-	local iconLogo = display.newImage( "img/logo2.png"  )
+	local iconLogo = display.newImage( "img/logo.png"  )
 	iconLogo:translate( midW, lastY )
 	grpWelcome:insert(iconLogo)
 	
-	lastY = lastY + 200
+	lastY = lastY + 270
 	
-	local bgText0 = display.newRoundedRect( midW, lastY + 3, intW, 106, 0 )
+	local bgText0 = display.newRoundedRect( midW, lastY + 3, intW, 116, 0 )
 	bgText0.anchorY = 1
 	bgText0:setFillColor( 225/255 )
 	grpWelcome:insert(bgText0)
 	
-	bgText = display.newRoundedRect( midW, lastY, intW, 100, 0 )
+	bgText = display.newRoundedRect( midW, lastY, intW, 110, 0 )
 	bgText.anchorY = 1
 	bgText:setFillColor( 1 )
 	grpWelcome:insert(bgText)
 	
-	local imgClean = display.newImage( "img/x-mark-4-48.png" )
-	imgClean:translate( 55, lastY - 50 )
-	grpWelcome:insert(imgClean)
-	imgClean:addEventListener( 'tap', cleanTxtLocationW )
-	
-	txtLocationW = native.newTextField( midW, lastY, 540, 100 )
+	txtLocationW = native.newTextField( midW - 75, lastY, 540, 110 )
 	txtLocationW.anchorY = 1
 	txtLocationW.inputType = "default"
 	txtLocationW.hasBackground = false
@@ -355,42 +350,50 @@ function scene:create( event )
 	txtLocationW.id = 0
 	grpWelcome:insert( txtLocationW )
 	
+	local imgClean = display.newImage( "img/1476237545_Cancel-01.png" )
+	imgClean:translate( intW - 160, lastY - 55 )
+	grpWelcome:insert(imgClean)
+	imgClean.height = 48
+	imgClean.width = 48
+	imgClean:addEventListener( 'tap', cleanTxtLocationW )
+	
 	local imgDado = display.newImage( "img/1454731709.png" )
-	imgDado:translate( intW - 55, lastY - 50 )
+	imgDado:translate( intW - 65, lastY - 50 )
 	imgDado.height = 80
 	imgDado.width = 80
 	grpWelcome:insert(imgDado)
 	imgDado:addEventListener( 'tap', randomCitiesWelcome )
 	
-	lastY = intH - 250
+	lastY = intH - 185
 	
-	local btnSearch0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
+	local btnSearch0 = display.newRoundedRect( midW, lastY + 2, intW, 126, 0 )
 	btnSearch0:setFillColor( 225/255 )
 	grpWelcome:insert(btnSearch0)
 	
-	local btnSearch = display.newRoundedRect( midW, lastY, intW, 94, 0 )
-	btnSearch:setFillColor( 1 )
+	btnSearch = display.newRoundedRect( midW, lastY, intW, 120, 0 )
+	btnSearch:setFillColor( 45/255, 10/255, 65/255 )
 	grpWelcome:insert(btnSearch)
 	local textButtom = ""
 	btnSearch:addEventListener( 'tap', goToHome )
 	
 	local lblSearch = display.newText({
-        text = "Buscar", 
+        text = "BUSCAR", 
         x = midW, y = lastY,
         font = native.systemFontBold,  
 		width = intW - 200,
-        fontSize = 30, align = "left"
+        fontSize = 32, align = "center"
     })
-    lblSearch:setFillColor( 68/255, 14/255, 98/255 )
+    lblSearch:setFillColor( 1 )
     grpWelcome:insert(lblSearch)
 	
-	lastY = intH - 125
+	lastY = intH - 60
 	
-	local btnFilter0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
+	--[[local btnFilter0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
 	btnFilter0:setFillColor( 225/255 )
-	grpWelcome:insert(btnFilter0)
+	grpWelcome:insert(btnFilter0)]]
 	
-	local btnFilter = display.newRoundedRect( midW, lastY, intW, 94, 0 )
+	local btnFilter = display.newRect( midW, lastY, intW, 120 )
+	--btnFilter.anchorY = 0
 	btnFilter:setFillColor( 1 )
 	grpWelcome:insert(btnFilter)
 	btnFilter:addEventListener( 'tap', goFilter )
@@ -398,12 +401,19 @@ function scene:create( event )
 	local lblFilter = display.newText({
         text = "Más Filtros", 
         x = midW, y = lastY,
-        font = native.systemFontBold,
-		width = intW - 200,
-        fontSize = 30, align = "left"
+        font = native.systemFont,
+		width = intW - 300,
+        fontSize = 30, align = "right"
     })
-    lblFilter:setFillColor( 68/255, 14/255, 98/255 )
+    lblFilter:setFillColor( 90/255 )
     grpWelcome:insert(lblFilter)
+	
+	local imgMoreFilter = display.newImage( "img/buscar.png" )
+	imgMoreFilter:translate( intW - 65, lastY )
+	imgMoreFilter.height = 80
+	imgMoreFilter.width = 80
+	grpWelcome:insert(imgMoreFilter)
+	
 	
     --RestManager.getUserAvatar()
 end	

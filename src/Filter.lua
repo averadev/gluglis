@@ -19,7 +19,7 @@ local RestManager = require('src.resources.RestManager')
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local grpTextField, grpDatePicker, grpScrCity
+local grpTextField, grpDatePicker, grpScrCity, grpFilter
 
 -- Variables
 local settFilter
@@ -37,6 +37,7 @@ local pickerWheel2
 local sliderX = 0
 local circleSlider1, circleSlider2
 local checkGen = {}
+local lblGen = {}
 local poscCircle1, poscCircle2
 local newPoscCircle = nil
 local isCircle = false
@@ -112,7 +113,7 @@ function onTxtFocusFilter( event )
 		native.setKeyboardFocus(nil)
     elseif ( event.phase == "editing" ) then
 		--hace la busqueda de la ciudad
-		local itemOption = {posY = 324, posX = 453, height = 340, width = 410}
+		local itemOption = {posY = 275, posX = 465, height = 340, width = 380}
 		txtLocation.city = ""
 		txtLocation.id = 0
 		RestManager.getCity(txtLocation.text, "location", screen, itemOption )
@@ -148,18 +149,18 @@ function moveToggleButton( event )
 	local t = event.target
 	if t.onOff == "Sí" then
 		t.onOff = "No"
-		transition.to( toggleButton, { x = toggleButton.x - 100, time = 200})
+		transition.to( toogle1, { x = toogle1.x - 70, time = 200})
 		accommodation = "No"
-		toggleButton:setFillColor( .7 )
+		toogle1:setFillColor( 1 )
 		bgToogle1:setFillColor( .7 )
-		toogle1:setFillColor( .9 )
+		--toogle1:setFillColor( .9 )
 	else
 		t.onOff = "Sí"
-		transition.to( toggleButton, { x = toggleButton.x + 100, time = 200})
+		transition.to( toogle1, { x = toogle1.x + 70, time = 200})
 		accommodation = "Sí"
-		toggleButton:setFillColor( 89/255, 31/255, 103/255 )
-		bgToogle1:setFillColor( 89/255, 31/255, 103/255 )
-		toogle1:setFillColor( 129/255, 61/255, 153/255 )
+		toogle1:setFillColor( 1 )
+		bgToogle1:setFillColor( 0/255, 174/255, 239/255 )
+		--toogle1:setFillColor( 129/255, 61/255, 153/255 )
 	end
 end
 
@@ -171,11 +172,13 @@ function changeGender( event )
 	local posc = event.target.posc
 	if checkGen[posc].isTrue == 0 then
 		checkGen[posc].isTrue = 1
-		checkGen[posc]:setFillColor( .93 )
+		checkGen[posc]:setFillColor( 45/255, 10/255, 65/255 )
+		lblGen[posc]:setFillColor( 1 )
 	--si esta activo
 	else
 		checkGen[posc].isTrue = 0
-		checkGen[posc]:setFillColor( 1 )
+		checkGen[posc]:setFillColor( 245/255 )
+		lblGen[posc]:setFillColor( 0 )
 	end
 end
 
@@ -414,7 +417,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 	if typeF == "textField" then
 		--crea un textField si es la opcion de ciudad
 		if name == "location" then
-			txtLocation = native.newTextField( coordX, coordY, wField, 50 )
+			txtLocation = native.newTextField( coordX, coordY - 1, wField, 90 )
 			txtLocation.anchorX = 1
 			txtLocation.inputType = "default"
 			txtLocation.hasBackground = false
@@ -429,12 +432,6 @@ function createTextField( name, wField, coordX, coordY, typeF )
 				txtLocation.id = settFilter.cityId
 			end
 			
-			local imgDado = display.newImage( screen, "img/1454731709.png" )
-			imgDado:translate( coordX + 50, coordY )
-			imgDado.height = 50
-			imgDado.width = 50
-			screen:insert(imgDado)
-			imgDado:addEventListener( 'tap', randomCities )
 		end
 	elseif typeF == "datePicker" then
 		--asigna la fecha de ida o vuelta
@@ -454,7 +451,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 		--convierte la fehca a un formato dd/mm/yyyy
 		local dateC = t[3] .. "/" .. t[2] .. "/" .. t[1]
 		if dateC == "00/00/0000" then
-			dateC = ""
+			dateC = "00/00/0000"
 		end
 		--crea el componente de fecha de ida
 		if name == "iniDate" then
@@ -482,10 +479,10 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			lblEndDate.date = settFilter.endDate
 			screen:insert(lblEndDate)
 			
-			local imgCleanDate = display.newImage( screen, "img/iconClean.png" )
+			--[[local imgCleanDate = display.newImage( screen, "img/iconClean.png" )
 			imgCleanDate:translate( coordX + 40, coordY )
 			screen:insert(imgCleanDate)
-			imgCleanDate:addEventListener( 'tap', cleanDateField )
+			imgCleanDate:addEventListener( 'tap', cleanDateField )]]
 			
 		end
 	--crea el componente toggleButton
@@ -500,7 +497,7 @@ function createTextField( name, wField, coordX, coordY, typeF )
 		lblYes:setFillColor( 1 )
 		screen:insert(lblYes)
 		
-		local posXTB = 303 + 100
+		local posXTB = coordX - 3
 		local onOff = "Sí"
 		accommodation = "Sí"
 		if settFilter.accommodation == "No" then
@@ -509,18 +506,28 @@ function createTextField( name, wField, coordX, coordY, typeF )
 			accommodation = "No"
 		end
 		--boton del toggleButton
-		toggleButton = display.newRect( posXTB, coordY - 22, 97, 44 )
-		toggleButton.anchorY = 0
-		toggleButton.anchorX = 0
-		toggleButton:setFillColor( 89/255, 31/255, 103/255 )
+		--toggleButton = display.newRoundedRect( posXTB, coordY, 60, 60, 30 )
 		
-		screen:insert(toggleButton)
+		--toggleButton.anchorY = 0
+		--toggleButton.anchorX = 1
+		--toggleButton:setFillColor( 89/255, 31/255, 103/255 )
+		
+		--[[
+		
+			toogle1 = display.newRoundedRect( xFields[i].x - 3, posY + xFields[i].y, 60, 60, 30 )
+			toogle1.anchorX = 1
+			toogle1:setFillColor( 129/255, 61/255, 153/255 )
+			screen:insert(toogle1)
+			
+		]]
+		
+		--screen:insert(toggleButton)
 		if onOff == "No" then
-			toggleButton:setFillColor( .7 )
+			--toggleButton:setFillColor( .7 )
 			bgToogle1:setFillColor( .7 )
-			toogle1:setFillColor( .9 )
+			toogle1:setFillColor( 1 )
 		end
-		toggleButton.name = name
+		toogle1.name = name
 		bgToogle1.onOff = onOff
 		bgToogle1:addEventListener( 'tap', moveToggleButton )
 	end
@@ -532,13 +539,14 @@ end
 ---------------------------------------------------------------------
 function listenerSlider( event )
 	if event.phase == "began" then
+		
 		isCircle = false
 		--rango valido para hacer funcionar los slider
-		if event.yStart > 557 and event.yStart < 625 then
+		if event.yStart > 617 and event.yStart < 667 then
 			newPoscCircle = nil
 			direction = 0
 			sliderX = event.x
-			
+		
 			--detecta cual boton esta activo y encima de otro
 			if event.x > poscCircle1 - 30 and event.x < poscCircle1 + 30 and circleSlider1.front == 1   then
 				isCircle = true
@@ -568,6 +576,9 @@ function listenerSlider( event )
 			
 		end
 	elseif event.phase == "moved" then
+	
+		print(midW - 10)
+	
 		if isCircle then
 			local x = (event.x - sliderX)
 			local xM = (event.target.x * 1.5)
@@ -577,10 +588,11 @@ function listenerSlider( event )
 				direction = -1
 			end
 			--mueve los botones de izquierda o derecha
-			if event.x <= 339 then
-				newPoscCircle.x = 340
-			elseif event.x >= 638 then
-				newPoscCircle.x = 637
+			--print(event.x)
+			if event.x <= 221 then
+				newPoscCircle.x = 222
+			elseif event.x >= 591 then
+				newPoscCircle.x = 590
 			else
 				if (circleSlider1.x >= circleSlider2.x and direction == -1 and newPoscCircle.name == "slider1" ) then
 					circleSlider1.x = circleSlider2.x
@@ -591,7 +603,7 @@ function listenerSlider( event )
 					newPoscCircle.x = event.x
 				end
 				local poscX = 0
-				poscX = (newPoscCircle.x - 299)/3.69
+				poscX = (newPoscCircle.x - 176)/4.61
 				poscX = math.round( poscX ) + 7
 				if newPoscCircle.name == "slider1" then
 					lblSlider1.text = tonumber(poscX)
@@ -603,10 +615,10 @@ function listenerSlider( event )
 	elseif event.phase == "ended" or event.phase == "cancelled" then
 		if isCircle then
 			--acomoda los botones a una pocision valida
-			if event.x <= 339 then
-				newPoscCircle.x = 339
-			elseif event.x >= 638 then
-				newPoscCircle.x = 637
+			if event.x <= 221 then
+				newPoscCircle.x = 222
+			elseif event.x >= 591 then
+				newPoscCircle.x = 590
 			else
 				if (circleSlider1.x >= circleSlider2.x and newPoscCircle.name == "slider1" ) then
 					circleSlider1.x = circleSlider2.x
@@ -617,7 +629,7 @@ function listenerSlider( event )
 				end
 			end
 			local poscX = 0
-			poscX = (newPoscCircle.x - 299)/3.69
+			poscX = (newPoscCircle.x - 176)/4.61
 			poscX = math.round( poscX ) + 7
 			if newPoscCircle.name == "slider1" then
 				lblSlider1.text = tonumber(poscX)
@@ -659,33 +671,34 @@ end
 -----------------------------------
 --crea los componentes del slider
 -----------------------------------
-function newSlider()
+function newSlider( w,x,y )
 	--background
-	local bgSlider0 = display.newRoundedRect( 488, 556, 300, 22, 5 )
+	local bgSlider0 = display.newRoundedRect( x, y, w, 10, 5 )
     bgSlider0.anchorY = 0
-    bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
+    --bgSlider0:setFillColor( 129/255, 61/255, 153/255 )
+	bgSlider0:setFillColor( 245/255 )
     screen:insert(bgSlider0)
-	local bgSlider1 = display.newRect( 488, 559, 294, 16 )
+	local bgSlider1 = display.newRect( x, y, w , 10 )
     bgSlider1.anchorY = 0
-    bgSlider1:setFillColor( 1 )
+    bgSlider1:setFillColor( 0 )
     screen:insert(bgSlider1)
 	--botones
-	circleSlider1 = display.newRoundedRect( 340, 569, 40, 40, 10 )
-	circleSlider1:setFillColor( 129/255, 61/255, 153/255 )
+	circleSlider1 = display.newRoundedRect( x - w/2, y + 5, 40, 40, 20 )
+	circleSlider1:setFillColor( 0/255, 174/255, 239/255 )
 	circleSlider1.name = "slider1"
 	screen:insert(circleSlider1)
 	circleSlider1.front = 0
 	poscCircle1 = circleSlider1.x
 	circleSlider1:addEventListener( 'touch', inFront )
-	circleSlider2 = display.newRoundedRect( 636, 569, 40, 40, 10 )
-	circleSlider2:setFillColor( 129/255, 61/255, 153/255 )
+	circleSlider2 = display.newRoundedRect( x + w/2, y + 5, 40, 40, 20 )
+	circleSlider2:setFillColor( 0/255, 174/255, 239/255 )
 	circleSlider2.name = "slider2"
 	screen:insert(circleSlider2)
 	poscCircle2 = circleSlider2.x
 	circleSlider2.front = 0
 	circleSlider2:addEventListener( 'touch', inFront )
-	local poscC1 = (settFilter.iniAge - 18)*3.69
-	local poscC2 = ( 99 - settFilter.endAge )*3.69
+	local poscC1 = (settFilter.iniAge - 18)*4.61
+	local poscC2 = ( 99 - settFilter.endAge )*4.61
 	circleSlider1.x = circleSlider1.x + tonumber(poscC1)
 	circleSlider2.x = circleSlider2.x - tonumber(poscC2)
 end
@@ -705,12 +718,13 @@ function scene:create( event )
 	--se crea y se deshace la imagen del fondo
 	display.setDefault( "textureWrapX", "repeat" )
 	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
+    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
+    --[[o.fill = { type="image", filename="img/fillPattern.png" }
     o.fill.scaleX = .2
-    o.fill.scaleY = .2
+    o.fill.scaleY = .2]]
 	o:addEventListener( 'touch', listenerSlider )
 	o:addEventListener( 'tap', closeAll )
+	o:setFillColor( 245/255 )
     screen:insert(o)
 	display.setDefault( "textureWrapX", "clampToEdge" )
 	display.setDefault( "textureWrapY", "clampToEdge" )
@@ -719,6 +733,10 @@ function scene:create( event )
     tools = Tools:new()
     tools:buildHeader()
     screen:insert(tools)
+	
+	grpFilter = display.newGroup()
+	screen:insert(grpFilter)
+	--grpFilter.y = h
     
     -- BG Component
 	--523
@@ -732,49 +750,61 @@ function scene:create( event )
     screen:insert(bgComp2)]]
     
     -- Opciones
-    local posY = 205
+    local posY = 200 + h
     local opt = {
-        {icon = 'icoFilterCity', label= 'Ciudad:', wField = 350, nameField = "location", type="textField"}, 
-        {icon = 'icoFilterAvailable', label= ' ida', wField = 160, nameField = "endDate", type="datePicker"}, 
-        {label= 'Género:'}, 
-        {label= 'Edad Entre:'},
-		{icon = 'icoFilterCheck', label= 'Alojamiento'},
+        {icon = 'brujula', label= 'Ciudad:', wField = 380, nameField = "location", type="textField"}, 
+		{icon = 'down', label= '¿Cuando viajas?', wField = 380, nameField = "iniDate", type = "datePicker"}, 
+		{icon = 'down', label= '¿Cuando Regresas?', wField = 380, nameField = "endDate", type="datePicker"}, 
+        --{icon = 'icoFilterAvailable', label= ' ida', wField = 160, nameField = "endDate", type="datePicker"}, 
+        --{label= 'Género:'}, 
+        --{label= 'Edad Entre:'},
+		--{icon = 'icoFilterCheck', label= 'Alojamiento'},
 		}
-    for i=1, #opt do
-        posY = posY + 90
-        if opt[i].fixM then posY = posY - 85 end
 		
-        local ico
+	local line = display.newLine( 0, posY - 53 , intW, posY - 53 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpFilter:insert(line)	
+		
+    for i=1, #opt do
+		
+		local bgField = display.newRect( midW, posY, intW, 100 )
+		bgField:setFillColor( 1 )
+		grpFilter:insert(bgField)
+		
+		local line = display.newLine( 0, posY + 50 , intW, posY + 50)
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		grpFilter:insert(line)	
+		
+		local ico
         if opt[i].icon then
             ico = display.newImage( screen, "img/"..opt[i].icon..".png" )
-            ico:translate( 115, posY - 5 )
+            ico:translate( intW - 65, posY )
+			grpFilter:insert(ico)
         end
-        local lbl = display.newText({
+		
+		local lbl = display.newText({
             text = opt[i].label, 
-            x = 350, y = posY,
-            width = 400,
+            x = midW, y = posY,
+            width = intW - 65,
             font = native.systemFont,   
-            fontSize = 22, align = "left"
+            fontSize = 24, align = "left"
         })
-        lbl:setFillColor( 0 )
-        screen:insert(lbl)
-        
+        lbl:setFillColor( 50/255 )
+        grpFilter:insert(lbl)
+		
         if opt[i].wField then
 			local disX = 0
-			if opt[i].nameField == "location" then disX = 60 else disX = 40  end
-            local bg1 = display.newRoundedRect( 660 - disX, posY, opt[i].wField, 50, 5 )
-            bg1.anchorX = 1
-            bg1:setFillColor( .93 )
-            screen:insert(bg1)
-            local bg2 = display.newRoundedRect( 658 - disX, posY, opt[i].wField - 4, 46, 5 )
+            local bg2 = display.newRoundedRect( 660 - disX, posY - 1, opt[i].wField - 4, 90, 5 )
             bg2.anchorX = 1
             bg2:setFillColor( 1 )
 			bg2.name = opt[i].nameField
             screen:insert(bg2)
-			if opt[i].nameField == "endDate" then
+			if opt[i].nameField == "endDate" or opt[i].nameField == "iniDate" then
 				bg2:addEventListener( 'tap', createDatePicker )
 			end
-			createTextField(opt[i].nameField, opt[i].wField, 658 - disX, posY,  opt[i].type)
+			createTextField(opt[i].nameField, opt[i].wField, 660 - disX, posY ,  opt[i].type)
 			-- - 60	
         end
         -- Fix Mujer
@@ -782,19 +812,141 @@ function scene:create( event )
             ico.x = 350 
             lbl.x = 590 
         end
+		 posY = posY + 102
     end 
-	--[[posY = 565
+	
+	
+	
+	posY = posY - 1
     -- Campos
     xFields = {
-        {label = "vuelta", x = 435, y = -180},
+		{label = "HOMBRE", x = 0, y = 0, w = midW, type = "checkBox", isGen = "H"},
+		{label = "MUJER", x = midW, y = 0, w = midW, type = "checkBox", isGen = "M"},
+		{label = "Entre:", label2 = "Años", x = midW + 20, y = 102 , w = midW - 10, type = "slider", isGen = "M"},
+		{label = "Requiero Alojamiento:", x = 720, y = 204, w = 140, nameField = "alojamiento:", type = "toggleButton"} 
+        --[[{label = "vuelta", x = 435, y = -180},
         {w = 160, x = 370, y = -180, nameField = "iniDate", type = "datePicker"},
 		{label = "HOMBRE", x = 430, y = -90, w = 170, isGen = "H"},
         {label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
 		{label = "MUJER", x = 630, y = -90, w = 150, isGen = "M"} ,
-		{x = 500, y = 90, w = 200, nameField = "alojamiento", type = "toggleButton"} ,
+		{x = 500, y = 90, w = 200, nameField = "alojamiento", type = "toggleButton"} ,]]
 	}
     for i=1, #xFields do
-        if  xFields[i].label then
+		if  xFields[i].type == "checkBox" then
+			local numCheck = #checkGen + 1
+			checkGen[numCheck] = display.newRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 100 )
+			checkGen[numCheck].anchorX = 0
+			checkGen[numCheck]:setFillColor( 45/255, 10/255, 65/255 )
+			checkGen[numCheck].isTrue = 1
+			checkGen[numCheck].posc = numCheck
+			grpFilter:insert(checkGen[numCheck])
+			checkGen[numCheck]:addEventListener( 'tap', changeGender )
+			
+			lblGen[numCheck] = display.newText({
+                text = xFields[i].label, 
+                x = xFields[i].x +  (xFields[i].w / 2), y = posY + xFields[i].y,
+                width = xFields[i].w,
+                font = native.systemFont,   
+                fontSize = 22, align = "center"
+            })
+            lblGen[numCheck]:setFillColor( 1 )
+            screen:insert(lblGen[numCheck])
+			
+			if xFields[i].isGen == "H" and settFilter.genH == 0 then
+				checkGen[numCheck]:setFillColor( 245/255  )
+				checkGen[numCheck].isTrue = 0
+				lblGen[numCheck]:setFillColor( 0 )
+			elseif xFields[i].isGen == "M" and settFilter.genM == 0 then
+				checkGen[numCheck]:setFillColor( 245/255 )
+				checkGen[numCheck].isTrue = 0
+				lblGen[numCheck]:setFillColor( 0 )
+			end
+			
+		end
+		
+		if  xFields[i].type == "slider" then
+		
+			local bgField = display.newRect( midW, posY + xFields[i].y, intW, 100 )
+			bgField:setFillColor( 1 )
+			grpFilter:insert(bgField)
+			
+			local lbl = display.newText({
+				text = xFields[i].label, 
+				x = midW, y = posY + xFields[i].y,
+				width = intW - 65,
+				font = native.systemFont,   
+				fontSize = 24, align = "left"
+			})
+			lbl:setFillColor( 50/255 )
+			grpFilter:insert(lbl)
+			
+			lblSlider1 = display.newText({
+				text = settFilter.iniAge, 
+				x = 185, y = posY + xFields[i].y,
+				font = native.systemFontBold,   
+				fontSize = 25, align = "center"
+			})
+			lblSlider1:setFillColor( 0 )
+			grpFilter:insert(lblSlider1)
+			lblSlider2 = display.newText({
+				text = settFilter.endAge, 
+				x = 625, y = posY + xFields[i].y,
+				font = native.systemFontBold,   
+				fontSize = 25, align = "center"
+			})
+			lblSlider2:setFillColor( 0 )
+			screen:insert(lblSlider2)
+			
+			local lbl2 = display.newText({
+				text = xFields[i].label2, 
+				x = intW + 250, y = posY + xFields[i].y,
+				width = intW - 65,
+				font = native.systemFontBold,   
+				fontSize = 25, align = "left"
+			})
+			lbl2:setFillColor( 0 )
+			grpFilter:insert(lbl2)
+			
+			--creacion del slider para edad
+			newSlider( xFields[i].w,  xFields[i].x, posY + xFields[i].y - 6 )
+			
+		end
+		
+		if  xFields[i].type == "toggleButton" then
+			
+			local bgField = display.newRect( midW, posY + xFields[i].y, intW, 100 )
+			bgField:setFillColor( 1 )
+			grpFilter:insert(bgField)
+			
+			local lbl = display.newText({
+				text = xFields[i].label, 
+				x = midW, y = posY + xFields[i].y,
+				width = intW - 65,
+				font = native.systemFont,   
+				fontSize = 24, align = "left"
+			})
+			lbl:setFillColor( 50/255 )
+			grpFilter:insert(lbl)
+			
+			bgToogle1 = display.newRoundedRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 70, 35 )
+			bgToogle1.anchorX = 1
+			bgToogle1:setFillColor( 0/255, 174/255, 239/255 )
+			screen:insert(bgToogle1)
+			toogle1 = display.newRoundedRect( xFields[i].x - 3, posY + xFields[i].y, 60, 60, 30 )
+			toogle1.anchorX = 1
+			toogle1:setFillColor( 1 )
+			screen:insert(toogle1)
+			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
+			
+		end
+		
+		local line = display.newLine( 0, posY + xFields[i].y + 52, intW, posY + xFields[i].y + 52  )
+		line:setStrokeColor( 227/255 )
+		line:setStrokeColor( 0 )
+		line.strokeWidth = 2
+		grpFilter:insert(line)
+	
+        --[[if  xFields[i].label then
 			
 			if xFields[i].isGen then
 				local numCheck = #checkGen + 1
@@ -802,43 +954,16 @@ function scene:create( event )
 				bg0.anchorX = 0
 				bg0:setFillColor( .93 )
 				screen:insert(bg0)
-				bg0:addEventListener( 'tap', changeGender )
-				bg0.posc = numCheck
-				checkGen[numCheck] = display.newRoundedRect( xFields[i].x - 107, posY + xFields[i].y, xFields[i].w - 6, 64, 10 )
-				checkGen[numCheck].anchorX = 0
-				checkGen[numCheck]:setFillColor( .93 )
-				checkGen[numCheck].isTrue = 1
-				screen:insert(checkGen[numCheck])
-				if xFields[i].isGen == "H" and settFilter.genH == 0 then
-					checkGen[numCheck]:setFillColor( 1 )
-					checkGen[numCheck].isTrue = 0
-				elseif xFields[i].isGen == "M" and settFilter.genM == 0 then
-					checkGen[numCheck]:setFillColor( 1 )
-					checkGen[numCheck].isTrue = 0
-				end
+				
+				
+				
 			end
 		
-            local lbl = display.newText({
-                text = xFields[i].label, 
-                x = xFields[i].x, y = posY + xFields[i].y,
-                width = 100,
-                font = native.systemFont,   
-                fontSize = 22, align = "left"
-            })
-            lbl:setFillColor( 0 )
-            screen:insert(lbl)
+            
 			
 		elseif  xFields[i].type == "toggleButton" then 
 			-- BG Component
-			bgToogle1 = display.newRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50 )
-			bgToogle1.anchorX = 1
-			bgToogle1:setFillColor( 89/255, 31/255, 103/255 )
-			screen:insert(bgToogle1)
-			toogle1 = display.newRect( xFields[i].x - 3, posY + xFields[i].y, xFields[i].w - 6, 44 )
-			toogle1.anchorX = 1
-			toogle1:setFillColor( 129/255, 61/255, 153/255 )
-			screen:insert(toogle1)
-			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
+			
         else
             local bg1 = display.newRoundedRect( xFields[i].x, posY + xFields[i].y, xFields[i].w, 50, 5 )
             bg1.anchorX = 1
@@ -853,29 +978,10 @@ function scene:create( event )
 				bg2:addEventListener( 'tap', createDatePicker )
 			end
 			createTextField(xFields[i].nameField, xFields[i].w, xFields[i].x, posY + xFields[i].y, xFields[i].type)
-        end
+        end]]
     end
-	
+	--[[
 	--label slider
-	lblSlider1 = display.newText({
-        text = settFilter.iniAge, 
-        x = 295, y = posY,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "center"
-    })
-    lblSlider1:setFillColor( 0 )
-    screen:insert(lblSlider1)
-	lblSlider2 = display.newText({
-        text = settFilter.endAge, 
-        x = 680, y = posY,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "center"
-    })
-    lblSlider2:setFillColor( 0 )
-    screen:insert(lblSlider2)
-	
-	--creacion del slider para edad
-	newSlider()
     
     -- Genero
 	--genH = Hombre
@@ -885,28 +991,23 @@ function scene:create( event )
 	--genH.alpha = settFilter.genH
     genM = display.newImage( screen, "img/icoFilterM.png" )
     genM:translate( 548, posY - 90 )
-	--genM.alpha = settFilter.genM
+	--genM.alpha = settFilter.genM]]
     
     -- Search Button
 	--170
-    posY = posY + 250
-    local btnSearch = display.newRoundedRect( midW, posY, 650, 80, 10 )
-    btnSearch:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )
+    posY = posY + 400
+    local btnSearch = display.newRect( midW, posY, intW, 120 )
+    btnSearch:setFillColor( 0/255, 174/255, 239/255 )
     screen:insert(btnSearch)
 	btnSearch:addEventListener( 'tap', filterUser )
     local lblSearch = display.newText({
         text = "BUSCAR", 
         x = midW, y = posY,
         font = native.systemFontBold,   
-        fontSize = 25, align = "center"
+        fontSize = 32, align = "center"
     })
     lblSearch:setFillColor( 1 )
-    screen:insert(lblSearch)]]
+    screen:insert(lblSearch)
 	
 end	
 -- Called immediately after scene has moved onscreen:

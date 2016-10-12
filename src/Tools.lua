@@ -563,7 +563,7 @@ function Tools:new()
 			local posY = itemOption.posY + 2
 			local posX = itemOption.posX
 			if name == "residence" then
-				posY = itemOption.posY - 63
+				posY = itemOption.posY - 103
 			end
 			--[[local posY = 325
 			local posX = 453
@@ -574,7 +574,7 @@ function Tools:new()
 				posY = 688
 				posX = 500
 			end]]
-			local heightItem = 60
+			local heightItem = 100
 			local fontsize = 20
 			if name == "welcome" then
 				heightItem = 80
@@ -595,7 +595,7 @@ function Tools:new()
 					x = posX, y = posY + (heightItem - (heightItem/2)),
 					width = itemOption.width - 50,
 					font = native.systemFont,   
-					fontSize = fontsize, align = "left"
+					fontSize = 22, align = "left"
 				})
 				lbl0:setFillColor( 0 )
 				grpScrCity:insert(lbl0)
