@@ -207,11 +207,21 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function setImagePerfil( item )
-	avatar = display.newImage(item[1].image, system.TemporaryDirectory)
+
+	local mask = graphics.newMask( "img/mask.png" )
+	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
+	avatar:translate( 69.5, posY)
+	avatar.anchorX = 0
+	avatar.height = 250
+	avatar.width = 250
+	scrPerfile:insert(avatar)
+	avatar:setMask( mask )
+
+	--[[avatar = display.newImage(item[1].image, system.TemporaryDirectory)
 	avatar:translate(midW - 190, 170)
 	avatar.height = 230
 	avatar.width = 230
-	scrPerfile:insert(avatar)
+	scrPerfile:insert(avatar)]]
 end
 
 function saveAvatar( event )
@@ -793,48 +803,49 @@ end
 function createComboBox(item, name, coordY, coordX )
 	coordY = coordY - 25
 	-- BG Component
-	local bg0CheckAcco = display.newRect( coordX, coordY, 300, 56 )
+	--intW - 65, coordY, 400 , 90
+	--[[local bg0CheckAcco = display.newRect( intW - 65, coordY, 400, 90 )
 	bg0CheckAcco.anchorY = 0
-	bg0CheckAcco.anchorX = 0
+	bg0CheckAcco.anchorX = 1
 	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
-	scrPerfile:insert(bg0CheckAcco)
-	local bg0CheckAcco = display.newRect( coordX + 3, coordY + 3, 294, 50 )
-	bg0CheckAcco.anchorY = 0
-	bg0CheckAcco.anchorX = 0
+	scrPerfile:insert(bg0CheckAcco)]]
+	local bg0CheckAcco = display.newRect( intW - 65, coordY + 25, 400, 90 )
+	--bg0CheckAcco.anchorY = 0
+	bg0CheckAcco.anchorX = 1
 	bg0CheckAcco:setFillColor( 1 )
 	bg0CheckAcco.name = name
 	scrPerfile:insert(bg0CheckAcco)
 	bg0CheckAcco:addEventListener( 'tap', showComboBox )
-	local triangle = display.newImage("img/triangleDown.png")
-	triangle:translate(coordX + 270, coordY + 30)
+	local triangle = display.newImage("img/down.png")
+	triangle:translate(coordX + 290, coordY + 25)
 	scrPerfile:insert(triangle)
 	if name == "residenceTime" then
 		lblResidenceTime = display.newText({
 			text = item.tiempoResidencia, 
-			x = coordX + 160, y = coordY + 30,
-			width = 280, height = 30,
-			font = native.systemFont,   
-			fontSize = 22, align = "left"
+			x = coordX + 90, y = coordY + 25,
+			width = 280, --height = 30,
+			font = fontFamilyRegular,   
+			fontSize = 30, align = "left"
 		})
 		lblResidenceTime:setFillColor( 0 )
 		scrPerfile:insert(lblResidenceTime)
 	elseif name == "race" then
 		lblRace = display.newText({
 			text = item.nivelEstudio, 
-			x = coordX + 160, y = coordY + 30,
-			width = 280, height = 30,
-			font = native.systemFont,   
-			fontSize = 22, align = "left"
+			x = coordX + 90, y = coordY + 25,
+			width = 280, --height = 30,
+			font = fontFamilyRegular,   
+			fontSize = 30, align = "left"
 		})
 		lblRace:setFillColor( 0 )
 		scrPerfile:insert(lblRace)
 	elseif name == "workArea" then
 		lblWorkArea = display.newText({
 			text = item.areaLaboral, 
-			x = coordX + 160, y = coordY + 30,
-			width = 280, height = 30,
-			font = native.systemFont,   
-			fontSize = 22, align = "left"
+			x = coordX + 90, y = coordY + 25,
+			width = 280, --height = 30,
+			font = fontFamilyRegular,   
+			fontSize = 30, align = "left"
 		})
 		lblWorkArea:setFillColor( 0 )
 		scrPerfile:insert(lblWorkArea)
@@ -866,7 +877,7 @@ function createToggleButtons(item, name, coordY, coordX )
 	bg0CheckAcco.num = num
 		
 	--label si/no
-	local lblYes = display.newText({
+	--[[local lblYes = display.newText({
 		text = "Si", 
 		x = coordX + 50, y = coordY + 25,
 		width = 100,
@@ -974,7 +985,7 @@ function createToggleButtons(item, name, coordY, coordX )
         bg0CheckAcco:setFillColor( .9 )
         toggleBg[num]:setFillColor( .7 )
         toggleButtons[num]:setFillColor( .7 )
-    end
+    end]]
 	
 
 end
@@ -1268,71 +1279,77 @@ end
 ------------------------------------
 function createTextField( item, name, coordY )
 	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
-	if name == "name" then
-		local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
+	local bgTextField = display.newRect( intW - 65, coordY + 30, 400, 2 )
+		bgTextField.anchorX = 1
 		bgTextField:setFillColor( .6 )
 		scrPerfile:insert(bgTextField)
+	if name == "name" then
 		--textField user name
 		--485
-		textName = native.newTextField( 485, coordY, 400 , 50 )
+		textName = native.newTextField(  intW - 65, coordY, 400 , 90 )
+		textName.anchorX = 1
 		textName.text = item.nombre
 		textName.hasBackground = false
-		textName.size = 25
-		textName:resizeHeightToFitFont()
+		textName.size = 45
+		--textName:resizeHeightToFitFont()
 		textName:addEventListener( "userInput", userInputProfile )
 		textName.name = "name"
 		grpTextProfile:insert(textName)
 	elseif name == "lastName" then
 		--textField apellido
-		local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
+		--[[local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
 		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)
-		textLastName = native.newTextField( 485, coordY, 400, 50 )
+		scrPerfile:insert(bgTextField)]]
+		textLastName = native.newTextField( intW - 65, coordY, 400 , 90 )
+		textLastName.anchorX = 1
 		textLastName.text = item.apellidos
 		textLastName.hasBackground = false
-		textLastName.size = 25
-		textLastName:resizeHeightToFitFont()
+		textLastName.size = 45
+		--textLastName:resizeHeightToFitFont()
 		textLastName:addEventListener( "userInput", userInputProfile )
 		textLastName.name = "lastName"
 		grpTextProfile:insert(textLastName)
 	elseif name == "originCountry" then
 		--textField pais de origen
-		local bgTextField = display.newRect( 500, coordY + 18, 350, 2 )
+		--[[local bgTextField = display.newRect( 500, coordY + 18, 350, 2 )
 		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)
-		textOriginCountry = native.newTextField( 500, coordY, 350, 50 )
+		scrPerfile:insert(bgTextField)]]
+		textOriginCountry = native.newTextField( intW - 65, coordY, 400 , 90 )
+		textOriginCountry.anchorX = 1
 		textOriginCountry.text = item.paisOrigen
 		textOriginCountry.hasBackground = false
-		textOriginCountry.size = 25
-		textOriginCountry:resizeHeightToFitFont()
+		textOriginCountry.size = 45
+		--textOriginCountry:resizeHeightToFitFont()
 		textOriginCountry:addEventListener( "userInput", userInputProfile )
 		textOriginCountry.name = "originCountry"
 		grpTextProfile:insert(textOriginCountry)
 	elseif name == "residence" then
-		local bgTextField = display.newRect( 500, coordY + 18, 400, 2 )
+		--[[local bgTextField = display.newRect( 500, coordY + 18, 400, 2 )
 		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)
+		scrPerfile:insert(bgTextField)]]
 		--textField residence
-		textUserResidence = native.newTextField( 500, coordY, 400, 50 )
+		textUserResidence = native.newTextField( intW - 65, coordY, 400 , 90 )
+		textUserResidence.anchorX = 1
 		textUserResidence.text = item.residencia
 		textUserResidence.hasBackground = false
-		textUserResidence.size = 25
-		textUserResidence:resizeHeightToFitFont()
+		textUserResidence.size = 45
+		--textUserResidence:resizeHeightToFitFont()
 		textUserResidence:addEventListener( "userInput", userInputProfile )
 		textUserResidence.name = "residence"
 		textUserResidence.city = item.residencia
 		textUserResidence.id = item.residenciaId
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
-		local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
+		--[[local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
 		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)
+		scrPerfile:insert(bgTextField)]]
 		--textField pais de origen
-		textEmailContact = native.newTextField( 515, coordY, 350, 50 )
+		textEmailContact = native.newTextField( intW - 65, coordY, 400 , 90 )
+		textEmailContact.anchorX = 1
 		textEmailContact.text = item.emailContacto
 		textEmailContact.hasBackground = false
-		textEmailContact.size = 25
-		textEmailContact:resizeHeightToFitFont()
+		textEmailContact.size = 45
+		--textEmailContact:resizeHeightToFitFont()
 		textEmailContact:addEventListener( "userInput", userInputProfile )
 		textEmailContact.name = "emailContact"
 		grpTextProfile:insert(textEmailContact)
@@ -1569,32 +1586,17 @@ end
 function createTouristGuideItems( item )
 	-------Generales-----------
     -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    scrPerfile:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    scrPerfile:insert(bgComp2)
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    scrPerfile:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    scrPerfile:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "Guia turistica:", 
-        x = 310, y = posY+35,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    scrPerfile:insert(lblTitle)
+    
+	local line = display.newLine( 0, posY - 2 , intW, posY - 2 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+	bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
 	local iconOpcion = {}
 	local infoOpcion = {}
 	local typeOpcion = {}
@@ -1609,7 +1611,7 @@ function createTouristGuideItems( item )
 	if not item.diponibilidad then
 		item.diponibilidad = "Consultarme"
     end
-	availability = item.diponibilidad
+	--[[availability = item.diponibilidad
 	--alojamiento
 	infoOpcion[num] = "Alojamiento: "
 	iconOpcion[num] = ''
@@ -1644,38 +1646,52 @@ function createTouristGuideItems( item )
     posY = posY + 45
 	
 	bgComp1.height = (#infoOpcion * 80) + 70
-	bgComp2.height = (#infoOpcion * 80) + 66
+	bgComp2.height = (#infoOpcion * 80) + 66]]
 	
     for i=1, #infoOpcion do
-        posY = posY + 75
         
-        local ico
+        --[[local ico
         if iconOpcion[i] ~= '' then
             ico = display.newImage( "img/"..iconOpcion[i]..".png" )
             ico:translate( 115, posY - 3 )
 			scrPerfile:insert(ico)
-        end
+        end]]
 		
         local lbl = display.newText({
             text = infoOpcion[i], 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
+            x = midW + 65, y = posY + 50,
+            width = intW,
+            font = fontFamilyLight,   
             fontSize = 22, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
 		
 		if typeOpcion[i] == "textField" then
-			createTextField(item, nameOption[i], posY)
+			createTextField(item, nameOption[i], posY + 50)
 		elseif typeOpcion[i] == "toggleButton" then
-			createToggleButtons(item, nameOption[i], posY, 350)
+			createToggleButtons(item, nameOption[i], posY + 50, 350)
 		end
+		
+		posY = posY + 100
+		
+		local line = display.newLine( 0, posY, intW, posY )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		scrPerfile:insert(line)
+		
     end
 	
-	posY = posY + 100
+	bgA0.height = #infoOpcion * 100
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = posY + 50
 	--creamos los componentes de preferencias
-	createPreferencesItems( item )
+	--createPreferencesItems( item )
 end
 
 ------------------------------------
@@ -1684,32 +1700,18 @@ end
 function createGeneralItems( item )
 	-------Generales-----------
     -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    scrPerfile:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    scrPerfile:insert(bgComp2)
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    scrPerfile:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    scrPerfile:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "Generales:", 
-        x = 310, y = posY+35,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    scrPerfile:insert(lblTitle)
+	posY = 350
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+	bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
 	local iconOpcion = {}
 	local infoOpcion = {}
 	local typeOpcion = {}
@@ -1734,7 +1736,7 @@ function createGeneralItems( item )
 		item.apellidos = ""
 	end
 	--genero
-	infoOpcion[num] = "Genero"
+	--[[infoOpcion[num] = "Genero"
 	iconOpcion[num] = 'icoFilterM'
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "gender"
@@ -1742,7 +1744,7 @@ function createGeneralItems( item )
 	if not item.genero then
 		item.genero = "Hombre"
 	end
-	gender = item.genero
+	gender = item.genero]]
 	
 	--pais de origen
 	infoOpcion[num] = "Pais de origen: "
@@ -1782,39 +1784,49 @@ function createGeneralItems( item )
 	end
     
     -- Options
-    posY = posY + 45
-	
-	bgComp1.height = (#infoOpcion * 80) + 70
-	bgComp2.height = (#infoOpcion * 80) + 66
-	
     for i=1, #infoOpcion do
-        posY = posY + 75
         
-        local ico
+        --[[local ico
         if iconOpcion[i] ~= '' then
             ico = display.newImage( "img/"..iconOpcion[i]..".png" )
             ico:translate( 115, posY - 3 )
 			scrPerfile:insert(ico)
-        end
-        local lbl = display.newText({
+        end]]
+		
+		local lbl = display.newText({
             text = infoOpcion[i], 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
+            x = midW + 65, y = posY + 50,
+            width = intW,
+            font = fontFamilyLight,   
             fontSize = 22, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
 		
 		if typeOpcion[i] == "textField" then
-			createTextField(item, nameOption[i], posY)
+			createTextField(item, nameOption[i], posY + 50)
 		elseif typeOpcion[i] == "toggleButton" then
-			createToggleButtons(item, nameOption[i], posY, 300)
+			createToggleButtons(item, nameOption[i], posY + 50, 300)
 		elseif typeOpcion[i] == "comboBox" then
-			createComboBox(item, nameOption[i], posY, 380)
+			createComboBox(item, nameOption[i], posY + 50, 380)
 		end
+		
+		posY = posY + 100
+		
+		local line = display.newLine( 0, posY, intW, posY )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		scrPerfile:insert(line)
+		
     end
-	posY = posY + 100
+	bgA0.height = #infoOpcion * 100
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = posY + 50
 	createTouristGuideItems( item )
 end
 
@@ -1834,15 +1846,17 @@ function MyProfile( item )
 	grpTextProfile = display.newGroup()
 	scrPerfile:insert(grpTextProfile)
 	
-	local bgTextField = display.newRect( 550, 100 + 22, 400, 2 )
+	posY = 90
+	
+	local bgTextField = display.newRect( 550, posY + 33, 400, 2 )
 	bgTextField:setFillColor( .6 )
 	scrPerfile:insert(bgTextField)
 	--textField user name
-	textUserName = native.newTextField( 550, 100, 400, 50 )
+	textUserName = native.newTextField( 550, posY, 400, 90 )
 	textUserName.text = item.userName
 	textUserName.hasBackground = false
-	textUserName.size = 35
-	textUserName:resizeHeightToFitFont()
+	textUserName.size = 45
+	--textUserName:resizeHeightToFitFont()
 	textUserName:addEventListener( "userInput", userInputProfile )
 	grpTextProfile:insert(textUserName)
 	
@@ -1856,14 +1870,14 @@ function MyProfile( item )
         text = edad, 
         x = 550, y = 180,
         width = 400,
-        font = native.systemFont, 
-        fontSize = 35, align = "left"
+        font = fontFamilyRegular, 
+        fontSize = 34, align = "left"
     })
     lblAge:setFillColor( 0 )
     scrPerfile:insert(lblAge)
 	--lblAge:addElements( 'tap', birthdate )
 	-- BG Component
-    local bgInts = display.newRect( 550, 210, 410, 80 )
+    --[[local bgInts = display.newRect( 550, 210, 410, 80 )
     bgInts.anchorY = 0
     bgInts:setFillColor( 1 )
 	bgInts.alpha = .02
@@ -1901,7 +1915,7 @@ function MyProfile( item )
     else
 		myHobbies = {}
         lblInts.text = 'Editar pasatiempos'
-    end
+    end]]
 	
 	--creamos los componentes generales
 	createGeneralItems( item )
@@ -1913,25 +1927,35 @@ function createProfileAvatar()
 	
 	item = itemProfile
 	-- Avatar
-    local bgA1 = display.newRoundedRect( midW - 190, 170, 250, 250, 10 )
-    bgA1:setFillColor( 11/225, 163/225, 212/225 )
-    scrPerfile:insert(bgA1)
-    
-    local bgA2 = display.newRect( midW - 190, 170, 235, 235 )
-    bgA2:setFillColor( 0, 193/225, 1 )
-    scrPerfile:insert(bgA2)
+    posY = 0
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+    bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
+	posY = posY + 150
+	
+	bgA1 = display.newImage( "img/circle-256.png" )
+	bgA1.anchorX = 0
+	bgA1:translate( 65, posY )
+	scrPerfile:insert(bgA1)
+	
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
-		avatar = display.newImage(item.image, system.TemporaryDirectory)
-		avatar:translate(midW - 190, 170)
-		avatar.height = 230
-		avatar.width = 230
-		avatar.name = item.image
+	
+		local mask = graphics.newMask( "img/mask.png" )
+		local avatar = display.newImage(item.image, system.TemporaryDirectory)
+		avatar:translate( 69.5, posY)
+		avatar.anchorX = 0
+		avatar.height = 250
+		avatar.width = 250
 		scrPerfile:insert(avatar)
+		avatar:setMask( mask )
 		
-		local ChangePhoto = display.newRect( midW - 190, 170, 235, 235 )
+		--[[local ChangePhoto = display.newRect( midW - 190, 170, 235, 235 )
 		ChangePhoto:setFillColor( 1 )
 		ChangePhoto.alpha = .1
 		scrPerfile:insert(ChangePhoto)
@@ -1941,11 +1965,6 @@ function createProfileAvatar()
 		bgChangePhoto:setFillColor( 1 )
 		bgChangePhoto.alpha = .8
 		scrPerfile:insert(bgChangePhoto)
-		
-		--[[local imgChangePhoto = display.newImage("img/camera-5-64.png")
-		imgChangePhoto:translate(midW - 115, 250)
-		imgChangePhoto.alpha = .8
-		scrPerfile:insert(imgChangePhoto)]]
 		
 		local imgChangePhoto = display.newImage("img/camera-slr-64.png")
 		imgChangePhoto:translate(midW - 107, 255)
@@ -1959,7 +1978,7 @@ function createProfileAvatar()
 			fontSize = 32, align = "left"
 		})
 		lblChangePhoto:setFillColor( 129/255, 61/255, 153/255 )
-		scrPerfile:insert(lblChangePhoto)
+		scrPerfile:insert(lblChangePhoto)]]
 		
 	else
 		local items = {}
@@ -1967,10 +1986,17 @@ function createProfileAvatar()
 		RestManager.getImagePerfile(items)
 	end
 	
+	posY = posY + 150
+	
+	local line = display.newLine( 0, posY , intW, posY )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
 	if not isReadOnly then
 		MyProfile( item )
 		-- Btn Iniciar conversación
-		posY = posY + 120
+		--[[posY = posY + 120
 		btnSaveProfile = display.newRoundedRect( midW, posY, 650, 80, 10 )
 		btnSaveProfile.id = item.id
 		btnSaveProfile:setFillColor( {
@@ -1988,7 +2014,7 @@ function createProfileAvatar()
 			fontSize = 25, align = "center"
 		})
 		lblSaveProfile:setFillColor( 1 )
-		scrPerfile:insert(lblSaveProfile)
+		scrPerfile:insert(lblSaveProfile)]]
     end
 	
 	scrPerfile:setScrollHeight(posY + 100)
@@ -2000,38 +2026,50 @@ end
 ---------------------------------------------------------------------------------
 -- ScrollView listener
 function scrListen( event )
-    local x, y = scrPerfile:getContentPosition()
-   -- print(y)
-    if y < -80 and textUserName.x == 550 then
-        textUserName.x = 1000
-    elseif y >= -80 and textUserName.x == 1000 then
-        textUserName.x = 550
-    end
-    if y < -460 and textName.x == 485 then
-        textName.x = 1000
-    elseif y >= -460 and textName.x == 1000 then
-        textName.x = 485
-    end
-    if y < -540 and textLastName.x == 485 then
-        textLastName.x = 1000
-    elseif y >= -540 and textLastName.x == 1000 then
-        textLastName.x = 485
-    end
-    if y < -680 and textOriginCountry.x == 500 then
-        textOriginCountry.x = 1000
-    elseif y >= -680 and textOriginCountry.x == 1000 then
-        textOriginCountry.x = 500
-    end
-    if y < -750 and textUserResidence.x == 500 then
-        textUserResidence.x = 1000
-    elseif y >= -750 and textUserResidence.x == 1000 then
-        textUserResidence.x = 500
-    end
-    if y < -910 and textEmailContact.x == 515 then
-        textEmailContact.x = 1000
-    elseif y >= -910 and textEmailContact.x == 1000 then
-        textEmailContact.x = 515
-    end
+	local x, y = scrPerfile:getContentPosition()
+	if textUserName  then
+	   -- print(y)
+		if y < -80 and textUserName.x == 550 then
+			textUserName.x = 1000
+		elseif y >= -80 and textUserName.x == 1000 then
+			textUserName.x = 550
+		end
+	end
+	if textName then
+		if y < -460 and textName.x == 485 then
+			textName.x = 1000
+		elseif y >= -460 and textName.x == 1000 then
+			textName.x = 485
+		end
+	end
+	if textLastName  then
+		if y < -540 and textLastName.x == 485 then
+			textLastName.x = 1000
+		elseif y >= -540 and textLastName.x == 1000 then
+			textLastName.x = 485
+		end
+	end
+	if textOriginCountry  then
+		if y < -680 and textOriginCountry.x == 500 then
+			textOriginCountry.x = 1000
+		elseif y >= -680 and textOriginCountry.x == 1000 then
+			textOriginCountry.x = 500
+		end
+	end
+	if textUserResidence  then
+		if y < -750 and textUserResidence.x == 500 then
+			textUserResidence.x = 1000
+		elseif y >= -750 and textUserResidence.x == 1000 then
+			textUserResidence.x = 500
+		end
+	end
+	if textEmailContact  then
+		if y < -910 and textEmailContact.x == 515 then
+			textEmailContact.x = 1000
+		elseif y >= -910 and textEmailContact.x == 1000 then
+			textEmailContact.x = 515
+		end
+	end
     
     return true
 end
@@ -2044,18 +2082,10 @@ function scene:create( event )
 	screen = self.view
     --screen.y = h
 	
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-	
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
+	local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
+	o:setFillColor( 245/255 )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAll )
-	
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
 	
 	--tools
     tools = Tools:new()

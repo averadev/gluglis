@@ -63,11 +63,14 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function setImagePerfil( item )
-	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
-	avatar:translate(midW - 190, 170)
-	avatar.height = 230
-	avatar.width = 230
+	local mask = graphics.newMask( "img/mask.png" )
+	local avatar = display.newImage(item.image, system.TemporaryDirectory)
+	avatar:translate( 69.5, posY)
+	avatar.anchorX = 0
+	avatar.height = 250
+	avatar.width = 250
 	scrPerfile:insert(avatar)
+	avatar:setMask( mask )
 end
 
 ----------------------------------------
@@ -75,85 +78,86 @@ end
 ----------------------------------------
 function infoProfile( item )
 
+	posY = 80
+
 	-- informacion personal
     local lblName = display.newText({
         text = item.userName, 
-        x = 550, y = 150,
+        x = 550, y = posY,
         width = 400,
-        font = native.systemFontBold,   
-        fontSize = 35, align = "left"
+        font = fontFamilyBold,   
+        fontSize = 38, align = "left"
     })
     lblName:setFillColor( 0 )
     scrPerfile:insert(lblName)
+	
+	posY = posY + 50
+	
 	local edad = ""
 	if not item.edad then edad = "" else edad = item.edad .. " Años" end
     local lblAge= display.newText({
         text = edad, 
-        x = 550, y = 200,
+        x = 550, y = posY,
         width = 400,
-        font = native.systemFont, 
-        fontSize = 35, align = "left"
+        font = fontFamilyBold, 
+        fontSize = 33, align = "left"
     })
     lblAge:setFillColor( 0 )
     scrPerfile:insert(lblAge)
-    local lblInts = display.newText({
-        text = "", 
-        x = 550, y = 250,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 25, align = "left"
-    })
-    lblInts:setFillColor( 0 )
-    scrPerfile:insert(lblInts)
 	
-	if item.hobbies then
-        local max = 4
-        if #item.hobbies < max then 
-            max = #item.hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = item.hobbies[i]
-            else
-                lblInts.text = lblInts.text..', '..item.hobbies[i]
-            end
-        end
-        if #item.hobbies > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = ''
-    end
-    -------Generales-----------
-    -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY, 650, 460, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    scrPerfile:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY, 646, 456, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    scrPerfile:insert(bgComp2)
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( .93 )
-    scrPerfile:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( .93 )
-    scrPerfile:insert(bgTitleX)
-    local lblTitle = display.newText({
-        text = "Generales:", 
-        x = 310, y = posY+35,
-        width = 400,
-        font = native.systemFontBold,   
-        fontSize = 25, align = "left"
-    })
-    lblTitle:setFillColor( 0 )
-    scrPerfile:insert(lblTitle)
+	posY = posY + 45
+	
+	--genero
+	if item.genero then
+		local lblGender= display.newText({
+			text = item.genero, 
+			x = 550, y = posY,
+			width = 400,
+			font = fontFamilyRegular, 
+			fontSize = 25, align = "left"
+		})
+		lblGender:setFillColor( 0 )
+		scrPerfile:insert(lblGender)
+	end
+	
+	posY = posY + 55
+	
+	--residencia
+	local Residence = ""
+	if not item.residencia then 
+		Residence = "Ciudad no disponible"
+	else
+		Residence = "Vive en " .. item.residencia
+	end
+
+	local lblResidence = display.newText({
+		text = Residence, 
+		x = 550, y = posY,
+		width = 400,
+		font = fontFamilyRegular, 
+		fontSize = 25, align = "left"
+	})
+	lblResidence:setFillColor( 0 )
+	scrPerfile:insert(lblResidence)
+	
+	posY = 350
+	
 	local iconOpcion = {}
 	local infoOpcion = {}
+	
+	--------Generales-----------
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+	bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
+	
 	local num = #infoOpcion + 1
 	--nombre y apellido
 	if item.nombre then
@@ -161,32 +165,18 @@ function infoProfile( item )
 		if item.apellidos then
 			infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
 		end
+		if infoOpcion[num] == " " then infoOpcion[num] = "Desconocido" end
 		iconOpcion[num] = 'iconName'
 		num = #infoOpcion + 1
 	end
-	--genero
-	if item.genero then
-		infoOpcion[num] = item.genero 
-		iconOpcion[num] = 'icoFilterM'
-		if item.genero == "Hombre" then
-			iconOpcion[num] = 'icoFilterH'
-		end
-		num = #infoOpcion + 1
-	end
+	
 	--pais de origen
 	if item.paisOrigen then
 		infoOpcion[num] = "Es de " .. item.paisOrigen 
 		iconOpcion[num] = 'icoFilterCity'
 		num = #infoOpcion + 1
 	end
-	--residencia
-	if not item.residencia then 
-		infoOpcion[num] = "Ciudad no disponible"
-	else
-		infoOpcion[num] = "Vive en " .. item.residencia
-	end
-	iconOpcion[num] = 'icoFilterCity'
-	num = #infoOpcion + 1
+	
 	--tiempo de residencia
 	if item.residencia then
 		if item.tiempoResidencia then
@@ -196,159 +186,161 @@ function infoProfile( item )
 		end
 	end
 	if item.emailContacto then
-		infoOpcion[num] = item.emailContacto 
-		iconOpcion[num] = 'iconEmailContacto'
-		num = #infoOpcion + 1
+		if item.emailContacto == " " then
+			infoOpcion[num] = item.emailContacto 
+			iconOpcion[num] = 'iconEmailContacto'
+			num = #infoOpcion + 1
+		end
 	end
-    
-    -- Options
-    posY = posY + 45
-	
-	bgComp1.height = (#infoOpcion * 80) + 70
-	bgComp2.height = (#infoOpcion * 80) + 66
-	
-    for i=1, #infoOpcion do
-        posY = posY + 75
-        
-        local ico
-        if iconOpcion[i] ~= '' then
-            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
-			scrPerfile:insert(ico)
-        end
-        local lbl = display.newText({
-            text = infoOpcion[i], 
-            x = 350, y = posY,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 22, align = "left"
-        })
-        lbl:setFillColor( 0 )
-        scrPerfile:insert(lbl)
-    end
-	
-	posY = posY + 75
-	
-	------- guia turistica -----------
-	-- BG Component
-	local bgComp1 = display.newRoundedRect( midW, posY, 650, 382, 10 )
-	bgComp1.anchorY = 0
-	bgComp1:setFillColor( .88 )
-	scrPerfile:insert(bgComp1)
-	local bgComp2 = display.newRoundedRect( midW, posY, 646, 378, 10 )
-	bgComp2.anchorY = 0
-	bgComp2:setFillColor( 1 )
-	scrPerfile:insert(bgComp2)
-	-- Title
-	local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-	bgTitle.anchorY = 0
-	bgTitle:setFillColor( .93 )
-	scrPerfile:insert(bgTitle)
-	local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-	bgTitleX.anchorY = 0
-	bgTitleX:setFillColor( .93 )
-	scrPerfile:insert(bgTitleX)
-	local lblTitle = display.newText({
-		text = "Guia turistica:", 
-		x = 310, y = posY+35,
-		width = 400,
-		font = native.systemFontBold,   
-		fontSize = 25, align = "left"
-	})
-	lblTitle:setFillColor( 0 )
-	scrPerfile:insert(lblTitle)
-	
-	local iconOpcion = {}
-	local infoOpcion = {}
-	--disponibilidad
-    if item.diponibilidad and item.diponibilidad == 'Siempre' then
-        infoOpcion[1] = 'Disponible'
-		iconOpcion[1] = "icoFilterCheckAvailble"
-    else 
-         infoOpcion[1] = 'No disponible'
-		 iconOpcion[1] = "icoFilterUnCheck"
-    end
-	--alojamiento
-	if item.alojamiento and item.alojamiento == 'Sí' then
-		infoOpcion[2] = 'Ofrece alojamiento'
-		iconOpcion[2] = "icoFilterCheck"
-    else 
-		infoOpcion[2] = 'No ofrece alojamiento'
-		iconOpcion[2] = "icoFilterUnCheck"
-    end
-	-- transporte
-    if item.vehiculo and item.vehiculo == 'Sí' then
-        infoOpcion[3] = 'Cuenta con vehiculo propio'
-		iconOpcion[3] = "icoFilterCheck"
-    else 
-        infoOpcion[3] = 'No cuenta con vehiculo propio'
-		iconOpcion[3] = "icoFilterUnCheck"
-    end
-	--comida
-    if item.comida and item.comida == 'Sí' then
-        infoOpcion[4] = 'Ofrece comida'
-		iconOpcion[4] = "icoFilterCheckAvailble"
-    else 
-         infoOpcion[4] = 'No ofrece comida'
-		 iconOpcion[4] = "icoFilterUnCheck"
-    end
-	
-	posY = posY + 45
 	
 	for i=1, #infoOpcion do
-        posY = posY + 75
-        
         local ico
         if iconOpcion[i] ~= '' then
-           -- print("img/"..opt[i].icon..".png" )
             ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
+            ico.anchorX = 0
+            ico:translate( 65, posY + 50 )
 			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
             text = infoOpcion[i], 
-            x = 350, y = posY,
+            x = 340, y = posY + 50,
             width = 400,
-            font = native.systemFont,   
+            font = fontFamilyLight,   
             fontSize = 22, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
+		
+		posY = posY + 100
+		
+		local line = display.newLine( 0, posY, intW, posY )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		scrPerfile:insert(line)
     end
 	
-	posY = posY + 75
+	bgA0.height = #infoOpcion * 100
 	
-	------- gustos y preferencias -----------
-	-- BG Component
-	local bgComp1 = display.newRoundedRect( midW, posY, 650, 382, 10 )
-	bgComp1.anchorY = 0
-	bgComp1:setFillColor( .88 )
-	scrPerfile:insert(bgComp1)
-	local bgComp2 = display.newRoundedRect( midW, posY, 646, 378, 10 )
-	bgComp2.anchorY = 0
-	bgComp2:setFillColor( 1 )
-	scrPerfile:insert(bgComp2)
-	-- Title
-	local bgTitle = display.newRoundedRect( midW, posY, 650, 70, 10 )
-	bgTitle.anchorY = 0
-	bgTitle:setFillColor( .93 )
-	scrPerfile:insert(bgTitle)
-	local bgTitleX = display.newRect( midW, posY+60, 650, 10 )
-	bgTitleX.anchorY = 0
-	bgTitleX:setFillColor( .93 )
-	scrPerfile:insert(bgTitleX)
-	local lblTitle = display.newText({
-		text = "Gustos y preferencias:", 
-		x = 310, y = posY+35,
-		width = 400,
-		font = native.systemFontBold,   
-		fontSize = 25, align = "left"
-	})
-	lblTitle:setFillColor( 0 )
-	scrPerfile:insert(lblTitle)
+	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = posY + 50
+	
+	------- guia turistica -----------
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+	bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
 	
 	local iconOpcion = {}
+	local labelOpcion = {}
 	local infoOpcion = {}
+	--disponibilidad
+	labelOpcion[1] = "Puedo ser tu Guia"
+    if item.diponibilidad and item.diponibilidad == 'Siempre' then
+        infoOpcion[1] = 'Si'
+		iconOpcion[1] = "si"
+    else 
+		infoOpcion[1] = 'No'
+		iconOpcion[1] = "no"
+    end
+	--alojamiento
+	labelOpcion[2] = "Ofreco Alojamiento"
+	if item.alojamiento and item.alojamiento == 'Sí' then
+		infoOpcion[2] = 'Si'
+		iconOpcion[2] = "si"
+    else 
+		infoOpcion[2] = 'No'
+		iconOpcion[2] = "no"
+    end
+	-- transporte
+	labelOpcion[3] = "Vehiculo Propio"
+    if item.vehiculo and item.vehiculo == 'Sí' then
+    	infoOpcion[3] = 'Si'
+		iconOpcion[3] = "si"
+    else 
+		infoOpcion[3] = 'No'
+		iconOpcion[3] = "no"
+    end
+	--comida
+	labelOpcion[4] = "Comida"
+	if item.comida and item.comida == 'Sí' then
+    	infoOpcion[4] = 'Si'
+		iconOpcion[4] = "si"
+    else 
+		infoOpcion[4] = 'No'
+		iconOpcion[4] = "no"
+    end
+	
+	for i=1, #infoOpcion do
+        local ico
+        if iconOpcion[i] ~= '' then
+            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
+            ico.anchorX = 0
+            ico:translate( 65, posY + 50 )
+			scrPerfile:insert(ico)
+        end
+        local lbl = display.newText({
+            text = labelOpcion[i], 
+            x = 340, y = posY + 50,
+            width = 400,
+            font = fontFamilyLight,   
+            fontSize = 22, align = "left"
+        })
+        lbl:setFillColor( 0 )
+        scrPerfile:insert(lbl)
+		
+		local lbl1 = display.newText({
+            text = infoOpcion[i], 
+            x = midW - 65, y = posY + 50,
+            width = intW,
+            font = fontFamilyBold,   
+            fontSize = 22, align = "right"
+        })
+        lbl1:setFillColor( 0 )
+        scrPerfile:insert(lbl1)
+		
+		posY = posY + 100
+		
+		local line = display.newLine( 0, posY, intW, posY )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		scrPerfile:insert(line)
+    end
+	
+	bgA0.height = #infoOpcion * 100
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = posY + 50
+	
+	------- gustos y preferencias -----------
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+	bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
+	local iconOpcion = {}
+	local labelOpcion = {}
+	local infoOpcion = {}
+	
 	local num = #infoOpcion + 1
 	--idioma
 	if item.idiomas then
@@ -358,43 +350,66 @@ function infoProfile( item )
             else
                 infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
             end
+			iconOpcion[num] = 'si'
         end
     else
-        infoOpcion[num] = 'No cuenta con ningun idioma'
+        infoOpcion[num] = 'Ninguno'
+		iconOpcion[num] = 'no'
     end
-	iconOpcion[num] = 'icoFilterLanguage'
+	labelOpcion[num] = 'Idiomas'
 	num = #infoOpcion + 1
+	
+	if item.hobbies then
+		local hob = ""
+        local max = 4
+        if #item.hobbies < max then 
+            max = #item.hobbies 
+        end
+        for i=1, max do
+            if i == 1 then
+                hob = item.hobbies[i]
+            else
+                hob = hob ..', '..item.hobbies[i]
+            end
+        end
+        if #item.hobbies > max then 
+            hob = lblInts.text..'...'
+        end
+		infoOpcion[num] = hob
+		iconOpcion[num] = 'si'
+    else
+        infoOpcion[num] = 'Ninguno'
+		iconOpcion[num] = 'no'
+    end
+	labelOpcion[num] = 'Hobbies'
+	num = #infoOpcion + 1
+	
 	--nivel de estudio
 	if item.nivelEstudio then
-		infoOpcion[num] = "Nivel de estudio: " .. item.nivelEstudio
-		iconOpcion[num] = 'iconSchool'
+		labelOpcion[num] = 'Nivel de estudio'
+		infoOpcion[num] = item.nivelEstudio
+		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
 	end
 	--formacion profesional
 	if item.formacionProfesional then
-		infoOpcion[num] = "Formacion profesional: " .. item.formacionProfesional 
-		iconOpcion[num] = 'iconSchool'
+		labelOpcion[num] = 'Formacion profesional'
+		infoOpcion[num] = item.formacionProfesional 
+		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
 	end
 	--area laboral
 	
 	if item.areaLaboral then
-		infoOpcion[num] = "Area laboral: " .. item.areaLaboral 
-		iconOpcion[num] = 'iconJob'
+		labelOpcion[num] = 'Area laboral'
+		infoOpcion[num] = item.areaLaboral 
+		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
 	end
-	--cuenta propia
-	--[[print(item.cuentaPropia )
-	if item.cuentaPropia then
-		infoOpcion[num] = item.cuentaPropia 
-		iconOpcion[num] = 'icoFilterCheck'
-		num = #infoOpcion + 1
-	end]]
 	
-	--print(item.cuentaPropia)
+	--cuenta propia
 	--item.cuentaPropia = json.encode(item.cuentaPropia)
-	iconOpcion[num] = 'icoFilterCheck'
-	print(item.cuentaPropia)
+	labelOpcion[num] = 'Por Cuenta Propia'
 	if item.cuentaPropia then
         for i=1, #item.cuentaPropia do
             if i == 1 then
@@ -403,27 +418,33 @@ function infoProfile( item )
                 infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
             end
         end
-		num = #infoOpcion + 1
+		iconOpcion[num] = 'si'
     else
         infoOpcion[num] = 'Por cuenta ajena'
-		num = #infoOpcion + 1
+		iconOpcion[num] = 'no'
+		
     end
-	
+	num = #infoOpcion + 1
 	--mascota
 	if item.mascota then
+		labelOpcion[num] = 'Mascota'
 		if item.mascota == "Sí" then
-			infoOpcion[num] = "Tiene mascota" 
+			infoOpcion[num] = "Si" 
 			if item.tipoMascota then
 				infoOpcion[num] = "Tiene " .. item.tipoMascota
 			end
+			iconOpcion[num] = 'si'
 		else
-			infoOpcion[num] = "No tiene mascota" 
+			infoOpcion[num] = "No" 
+			iconOpcion[num] = 'no'
 		end
-		iconOpcion[num] = 'iconPet'
+		
 		num = #infoOpcion + 1
 	end
+	
 	--deporte
 	if item.deporte then
+		labelOpcion[num] = 'Deportes'
 		if item.deporte == "Sí" then
 			infoOpcion[num] = "Practica deporte" 
 			if item.tipoDeporte then
@@ -436,14 +457,15 @@ function infoProfile( item )
 					end
 				end
 			end
+			iconOpcion[num] = 'si'
 		else
-			infoOpcion[num] = "No practica ningun deporte" 
+			infoOpcion[num] = "Ninguno" 
+			iconOpcion[num] = 'no'
 		end
-		iconOpcion[num] = 'iconSport'
 		num = #infoOpcion + 1
 	end
 	--fumas
-	if item.fumas then
+	--[[if item.fumas then
 		infoOpcion[num] = "Fumas: " .. item.fumas
 		iconOpcion[num] = 'icoFilterCheck'
 		num = #infoOpcion + 1
@@ -459,32 +481,54 @@ function infoProfile( item )
 		infoOpcion[num] = "Psicotropicos: " .. item.psicotropicos
 		iconOpcion[num] = 'icoFilterCheck'
 		num = #infoOpcion + 1
-	end
+	end]]
 	
-	 -- Options
-    posY = posY + 45
-	bgComp1.height = (#infoOpcion * 78) + 70
-	bgComp2.height = (#infoOpcion * 78) + 66
 	for i=1, #infoOpcion do
-        posY = posY + 75
-        
         local ico
         if iconOpcion[i] ~= '' then
-           -- print("img/"..opt[i].icon..".png" )
             ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
+            ico.anchorX = 0
+            ico:translate( 65, posY + 50 )
 			scrPerfile:insert(ico)
         end
         local lbl = display.newText({
-            text = infoOpcion[i], 
-            x = 425, y = posY,
-            width = 550,
-            font = native.systemFont,   
+            text = labelOpcion[i], 
+            x = 340, y = posY + 50,
+            width = 400,
+            font = fontFamilyLight,   
             fontSize = 22, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
+		
+		local lbl1 = display.newText({
+            text = infoOpcion[i], 
+            x = midW - 65, y = posY + 50,
+            width = intW,
+            font = fontFamilyBold,   
+            fontSize = 22, align = "right"
+        })
+        lbl1:setFillColor( 0 )
+        scrPerfile:insert(lbl1)
+		
+		posY = posY + 100
+		
+		local line = display.newLine( 0, posY, intW, posY )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 2
+		scrPerfile:insert(line)
     end
+	
+	bgA0.height = #infoOpcion * 100
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = posY + 50
+	
+	return posY
 
 end
 
@@ -500,18 +544,10 @@ function scene:create( event )
 	screen = self.view
     --screen.y = h
 	
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-	
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
+    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
+	o:setFillColor( 245/255 )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAll )
-	
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
 	
 	--tools
     tools = Tools:new()
@@ -520,7 +556,7 @@ function scene:create( event )
 
 	--scrollview
 	scrPerfile = widget.newScrollView({
-        top = 100 + h,
+        top = 93 + h,
         left = 0,
         width = intW,
         height = intH-(100+h),
@@ -528,48 +564,68 @@ function scene:create( event )
 		horizontalScrollDisabled = true,
     })
 	screen:insert(scrPerfile)
+	
+	posY = 0
+	
+	local bgA0 = display.newRect( midW, posY, intW, 300 )
+	bgA0.anchorY = 0
+    bgA0:setFillColor( 1 )
+    scrPerfile:insert(bgA0)
+	
+	posY = posY + 150
     
     -- Avatar
-    local bgA1 = display.newRoundedRect( midW - 190, 170, 250, 250, 10 )
-    bgA1:setFillColor( 11/225, 163/225, 212/225 )
-    scrPerfile:insert(bgA1)
-    
-    local bgA2 = display.newRect( midW - 190, 170, 235, 235 )
-    bgA2:setFillColor( 0, 193/225, 1 )
-    scrPerfile:insert(bgA2)
+    --[[local bgA1 = display.newRoundedRect( 65, posY, 255, 255, 125 )
+	bgA1.anchorX = 0
+    bgA1:setFillColor( 0/255, 174/255, 239/255 )
+    scrPerfile:insert(bgA1)]]
+	
+	bgA1 = display.newImage( "img/circle-256.png" )
+	bgA1.anchorX = 0
+	bgA1:translate( 65, posY )
+	scrPerfile:insert(bgA1)
     
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
+		local mask = graphics.newMask( "img/mask.png" )
 		local avatar = display.newImage(item.image, system.TemporaryDirectory)
-		avatar:translate(midW - 190, 170)
-		avatar.height = 230
-		avatar.width = 230
+		avatar:translate( 69.5, posY)
+		avatar.anchorX = 0
+		avatar.height = 250
+		avatar.width = 250
 		scrPerfile:insert(avatar)
+		avatar:setMask( mask )
 	else
 		local items = {}
 		items[1] = item
 		RestManager.getImagePerfile(items)
 	end
 	
+	posY = posY + 150
 	
-	infoProfile( item )
+	local line = display.newLine( 0, posY , intW, posY )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	scrPerfile:insert(line)
+	
+	posY = infoProfile( item )
 	
 	if isReadOnly then
 		posY = posY + 120
 		local lblReadOnly = display.newText( {
 			text = "¿QUIERES CONVERSAR CON " .. item.userName .. "?",     
 			x = midW, y = posY, width = 600,
-			font = "Lato-Regular", fontSize = 26, align = "center"
+			font = fontFamilyLight, fontSize = 26, align = "center"
 		})
 		lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
 		scrPerfile:insert(lblReadOnly)
 			
 		posY = posY + 100
         
-		local rctFree = display.newRoundedRect( midW, posY, 350, 80, 5 )
-		rctFree:setFillColor( .2, .6 ,0 )
+		local rctFree = display.newRect( midW, posY, intW, 120 )
+		rctFree:setFillColor( 0/255, 174/255, 239/255 )
 		rctFree.screen = "LoginSplash"
 		rctFree:addEventListener( 'tap', toScreen)
 		scrPerfile:insert(rctFree)
@@ -577,27 +633,22 @@ function scene:create( event )
 		local lblSign = display.newText( {
 			text = "¡Registrate ahora!",     
 			x = midW, y = posY, width = 600,
-			fontSize = 32, align = "center"
+			font = fontFamilyBold, fontSize = 32, align = "center"
 		})
 		lblSign:setFillColor( 1 )
 		scrPerfile:insert(lblSign)
 	else
 		-- Btn Iniciar conversación
 		posY = posY + 120
-		local btnStartChat = display.newRoundedRect( midW, posY, 650, 80, 10 )
+		local btnStartChat = display.newRect( midW, posY, intW, 120 )
 		btnStartChat.id = item.id
-		btnStartChat:setFillColor( {
-			type = 'gradient',
-			color1 = { 129/255, 61/255, 153/255 }, 
-			color2 = { 89/255, 31/255, 103/255 },
-			direction = "bottom"
-		} )
+		btnStartChat:setFillColor( 0/255, 174/255, 239/255 )
 		scrPerfile:insert(btnStartChat)
 		btnStartChat:addEventListener( 'tap', startConversation)
 		local lblStartChat = display.newText({
 			text = "INICIAR CONVERSACIÓN", 
 			x = midW, y = posY,
-			font = native.systemFontBold,   
+			font = fontFamilyBold,   
 			fontSize = 25, align = "center"
 		})
 		lblStartChat:setFillColor( 1 )

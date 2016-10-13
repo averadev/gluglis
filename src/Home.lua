@@ -573,12 +573,13 @@ function scene:create( event )
 	
 	local bgCard0 = display.newRect( midW, 102, intW, 515 )
     bgCard0.anchorY = 0
-    bgCard0:setFillColor( 11/225, 163/225, 212/225 )
+    bgCard0:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(bgCard0)
 	
     local bgCard = display.newRoundedRect( midW, 52, 615, 615, 20 )
     bgCard.anchorY = 0
-    bgCard:setFillColor( 11/225, 163/225, 212/225 )
+    --bgCard:setFillColor( 11/225, 163/225, 212/225 )
+	bgCard:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(bgCard)
     
     bgAvatar = display.newRect( midW, 60, 600, 600 )

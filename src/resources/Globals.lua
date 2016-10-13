@@ -28,6 +28,16 @@ if ( system.getInfo( "environment" ) == "simulator" ) then
 else
 	timeZone = os.date( "%z" )
 end
+local environment = system.getInfo( "environment" )
+if environment == "simulator" then
+	fontFamilyBold = native.systemFontBold
+	fontFamilyLight = native.systemFont
+	fontFamilyRegular = native.systemFont
+else
+	fontFamilyBold = "Oxygen-Bold.ttf"
+	fontFamilyLight = "Oxygen-Light.ttf"
+	fontFamilyRegular = "Oxygen-Regular.ttf"
+end
 
 --indica el lenguaje a tomar
 language = ""
