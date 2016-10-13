@@ -753,7 +753,7 @@ function scene:create( event )
             text = opt[i].label, 
             x = midW + 65, y = posY,
             width = intW,
-            font = native.systemFont,   
+            font = fontFamilyLight,   
             fontSize = 24, align = "left"
         })
         lbl:setFillColor( 50/255 )
@@ -805,7 +805,7 @@ function scene:create( event )
                 text = xFields[i].label, 
                 x = xFields[i].x +  (xFields[i].w / 2), y = posY + xFields[i].y,
                 width = xFields[i].w,
-                font = native.systemFont,   
+                font = fontFamilyBold,   
                 fontSize = 22, align = "center"
             })
             lblGen[numCheck]:setFillColor( 1 )
@@ -833,16 +833,16 @@ function scene:create( event )
 				text = xFields[i].label, 
 				x = midW + 65, y = posY + xFields[i].y,
 				width = intW,
-				font = native.systemFont,   
+				font = fontFamilyLight,   
 				fontSize = 24, align = "left"
 			})
 			lbl:setFillColor( 50/255 )
 			grpFilter:insert(lbl)
-			
+			--native.systemFont
 			lblSlider1 = display.newText({
 				text = settFilter.iniAge, 
 				x = 185, y = posY + xFields[i].y,
-				font = native.systemFontBold,   
+				font = fontFamilyBold,   
 				fontSize = 25, align = "center"
 			})
 			lblSlider1:setFillColor( 0 )
@@ -850,7 +850,7 @@ function scene:create( event )
 			lblSlider2 = display.newText({
 				text = settFilter.endAge, 
 				x = 625, y = posY + xFields[i].y,
-				font = native.systemFontBold,   
+				font = fontFamilyBold,   
 				fontSize = 25, align = "center"
 			})
 			lblSlider2:setFillColor( 0 )
@@ -860,7 +860,7 @@ function scene:create( event )
 				text = xFields[i].label2, 
 				x = intW + 250, y = posY + xFields[i].y,
 				width = intW - 65,
-				font = native.systemFontBold,   
+				font = fontFamilyBold,   
 				fontSize = 25, align = "left"
 			})
 			lbl2:setFillColor( 0 )
@@ -881,7 +881,7 @@ function scene:create( event )
 				text = xFields[i].label, 
 				x = midW + 65, y = posY + xFields[i].y,
 				width = intW,
-				font = native.systemFont,   
+				font = fontFamilyLight,   
 				fontSize = 24, align = "left"
 			})
 			lbl:setFillColor( 50/255 )
@@ -918,7 +918,7 @@ function scene:create( event )
     local lblSearch = display.newText({
         text = "BUSCAR", 
         x = midW, y = posY,
-        font = native.systemFontBold,   
+        font = fontFamilyBold,   
         fontSize = 32, align = "center"
     })
     lblSearch:setFillColor( 1 )

@@ -888,6 +888,7 @@ local RestManager = {}
     RestManager.getHobbies = function()
         local url = site.."api/getHobbies/format/json"
 		url = url.."/idApp/" .. settings.idApp
+		print(url)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -896,7 +897,7 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
-						setList(data.hobbies, data.language, data.sport, data.residenceTime, data.race, data.workArea)
+						setList( data.hobbies, data.language, data.sport, data.residenceTime, data.race, data.workArea, data.gender )
 					else
 						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
 					end

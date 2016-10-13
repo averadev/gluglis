@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------------------
 -- Encabezao general
 ---------------------------------------------------------------------------------
-require('src.Menu')
+--require('src.Menu')
 require('src.resources.Globals')
 local composer = require( "composer" )
 local facebook = require("plugin.facebook.v4")
@@ -37,7 +37,7 @@ function Tools:new()
 			bgShadow.anchorX = 0
 			bgShadow.anchorY = 0
 			bgShadow:setFillColor( 0 )
-			bgShadow:addEventListener( 'tap', showMenu)
+			--bgShadow:addEventListener( 'tap', showMenu)
         end
 		
 		local bgToolbar0 = display.newRect( midW, 84, display.contentWidth, 10 )
@@ -60,7 +60,8 @@ function Tools:new()
             -- Iconos Home
             local iconMenu = display.newImage("img/menu.png")
             iconMenu:translate(80, 45)
-            iconMenu:addEventListener( 'tap', showMenu)
+			iconMenu.screen = 'Menu'
+            iconMenu:addEventListener( 'tap', toScreen)
             self:insert( iconMenu )
 			if currentScene ~= "src.Welcome" then
 			
@@ -82,10 +83,10 @@ function Tools:new()
 			self:insert( iconChat )
 			
             -- Get Menu
-			if not scrMenu then
+			--[[if not scrMenu then
 				scrMenu = Menu:new()
 				scrMenu:builScreen()
-			end
+			end]]
         else
 			
 			bgIcoBack = display.newRect( (intW/3)/2, 0, intW/3, 90 )
@@ -308,7 +309,7 @@ function Tools:new()
 		tools:setLoading(false,"")
         -- Hide Menu
         if bgShadow.alpha > 0 then
-            showMenu()
+            --showMenu()
         end
         -- Animate    
         local t = event.target
@@ -643,7 +644,7 @@ local function onKeyEventBack( event )
 		if ( platformName == "Android" ) then
 			if composer.getSceneName( "current" ) == "src.Home" then
 				if componentActive == "menu" then
-					showMenu()
+					--showMenu()
 				else
 				return false
 				--return true

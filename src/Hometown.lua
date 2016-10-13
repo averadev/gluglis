@@ -117,15 +117,15 @@ function OptionLocationHt( item )
 	
 	grpCityHt = display.newGroup()
 	screen:insert(grpCityHt)
-	grpCityHt.y = h
+	--grpCityHt.y = h
 	
 	local lastY = 355
-	
+	local heiScroll = (btnSearch.y - txtLocationHt.y) - 100
 	bgCompCity = widget.newScrollView({
 		top = bgText.y,
 		left = 0,
 		width = intW,
-		height = intH/2,
+		height = heiScroll,
 		horizontalScrollDisabled = true,
 		isBounceEnabled = false,
 		hideBackground = true,
@@ -234,16 +234,10 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
 	
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
+    local o = display.newRect( midW, midH + h, intW+8, intH )
+	o:setFillColor( 245/255 )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAllHometown )
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
 	
 	tools = Tools:new()
     tools:buildHeader()
@@ -251,32 +245,27 @@ function scene:create( event )
 	
 	grpHometown = display.newGroup()
 	screen:insert(grpHometown)
-	grpHometown.y = h
+	--grpHometown.y = h
 	
-	local lastY = intH/7
+	local lastY = 250 + h
 	
-	local iconLogo = display.newImage( "img/logo2.png"  )
+	local iconLogo = display.newImage( "img/logo.png"  )
 	iconLogo:translate( midW, lastY )
 	grpHometown:insert(iconLogo)
 	
-	lastY = lastY + 200
+	lastY = lastY + 270
 	
-	local bgSearchHt0 = display.newRect( midW , lastY + 3, intW, 106 )
+	local bgSearchHt0 = display.newRect( midW, lastY + 3, intW, 116 )
 	bgSearchHt0.anchorY = 1
 	bgSearchHt0:setFillColor( 225/255 )
 	grpHometown:insert(bgSearchHt0)
 	
-	bgText = display.newRoundedRect( midW, lastY, intW, 100, 0 )
+	bgText = display.newRoundedRect( midW, lastY, intW, 110, 0 )
 	bgText.anchorY = 1
 	bgText:setFillColor( 1 )
 	grpHometown:insert(bgText)
 	
-	local imgClean = display.newImage( "img/x-mark-4-48.png" )
-	imgClean:translate( 55, lastY - 50 )
-	grpHometown:insert(imgClean)
-	imgClean:addEventListener( 'tap', cleanTxtLocationH )
-	
-	txtLocationHt = native.newTextField( midW, lastY, 540, 100 )
+	txtLocationHt = native.newTextField( midW - 75, lastY, 540, 110 )
 	txtLocationHt.anchorY = 1
 	txtLocationHt.inputType = "default"
 	txtLocationHt.hasBackground = false
@@ -285,28 +274,30 @@ function scene:create( event )
 	txtLocationHt.size = 40
 	txtLocationHt.placeholder = "¿Donde vives?"
 	txtLocationHt:setTextColor( .5 )
+	txtLocationHt.font = native.newFont( fontFamilyRegular )
 	grpHometown:insert( txtLocationHt )
 	
+	local imgClean = display.newImage( "img/1476237545_Cancel-01.png" )
+	imgClean:translate( intW - 160, lastY - 55 )
+	grpHometown:insert(imgClean)
+	imgClean.height = 48
+	imgClean.width = 48
+	imgClean:addEventListener( 'tap', cleanTxtLocationH )
+	
 	local imgDado = display.newImage( "img/brujula.png" )
-	imgDado:translate( intW - 55, lastY - 50 )
+	imgDado:translate( intW - 65, lastY - 56 )
 	imgDado.height = 80
 	imgDado.width = 80
 	grpHometown:insert(imgDado)
 	
-	lastY = intH - 150
+	lastY = intH - 185
 	
 	local btnSearch0 = display.newRoundedRect( midW, lastY, intW, 106, 0 )
 	btnSearch0:setFillColor( 225/255 )
 	grpHometown:insert(btnSearch0)
 	
 	btnSearch = display.newRoundedRect( midW, lastY, intW, 100, 0 )
-	btnSearch:setFillColor( 1 )
-    --[[btnSearch:setFillColor( {
-        type = 'gradient',
-        color1 = { 129/255, 61/255, 153/255 }, 
-        color2 = { 89/255, 31/255, 103/255 },
-        direction = "bottom"
-    } )]]
+	btnSearch:setFillColor( 45/255, 10/255, 65/255 )
     grpHometown:insert(btnSearch)
 	btnSearch.city = ""
 	btnSearch.id = 0
@@ -315,25 +306,11 @@ function scene:create( event )
 	local lblSearch = display.newText({
         text = "Ok! Start Glugling!", 
         x = midW, y = lastY,
-        font = native.systemFontBold,   
+        font = fontFamilyBold,   
         fontSize = 32, align = "center"
     })
-    lblSearch:setFillColor( 0 )
+    lblSearch:setFillColor( 1 )
     grpHometown:insert(lblSearch)
-	
-	--[[
-	
-	local lastY = 100
-	
-	local lblWelco= display.newText({
-		text = "Welcome! Please select your hometown", 
-		x = midW, y = lastY,
-		font = native.systemFont, 
-		fontSize = 38, align = "center"
-	})
-	lblWelco:setFillColor( 129/255, 61/255, 153/255 )
-	grpHometown:insert(lblWelco)]]
-	
 	
 end	
 -- Called immediately after scene has moved onscreen:

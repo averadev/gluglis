@@ -103,8 +103,9 @@ function selectCityWc( event )
 				text = bgCity[i].city, 
 				x = midW, y = lastY + (heightItem - (heightItem/2)),
 				width = intW - 50,
-				font = native.systemFont,   
-				fontSize = 42, align = "center"
+				font = fontFamilyBold,   
+				font = fontFamilyBold,   
+				fontSize = 36, align = "center"
 			})
 			lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
 			bgCompCity:insert(lblCityW[i])
@@ -113,7 +114,7 @@ function selectCityWc( event )
 				text = bgCity[i].city, 
 				x = midW, y = lastY + (heightItem - (heightItem/2)),
 				width = intW - 50,
-				font = native.systemFont,   
+				font = fontFamilyRegular,   
 				fontSize = 30, align = "center"
 			})
 			lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
@@ -178,7 +179,7 @@ function OptionLocationWc( item )
 			text = item[i].description, 
 			x = midW, y = lastY + (heightItem - (heightItem/2)),
 			width = intW - 50,
-			font = native.systemFont,   
+			font = fontFamilyRegular,   
 			fontSize = 30, align = "center"
 		})
 		lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
@@ -300,16 +301,10 @@ function scene:create( event )
     screen.y = h
 	
 	--se crea y se deshace la imagen del fondo
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
+    local o = display.newRect( midW, midH + h, intW+8, intH )
+	o:setFillColor( 245/255 )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAllWelcome )
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
 	
 	tools = Tools:new()
     tools:buildHeader()
@@ -345,9 +340,10 @@ function scene:create( event )
 	txtLocationW:setReturnKey( "default" )
 	txtLocationW.size = 40
 	txtLocationW.placeholder = "Ingresa una ciudad"
-	txtLocationW:setTextColor( .5 )
+	txtLocationW:setTextColor( 45/255, 10/255, 65/255 )
 	txtLocationW.city = ""
 	txtLocationW.id = 0
+	txtLocationW.font = native.newFont( fontFamilyRegular )
 	grpWelcome:insert( txtLocationW )
 	
 	local imgClean = display.newImage( "img/1476237545_Cancel-01.png" )
@@ -379,7 +375,7 @@ function scene:create( event )
 	local lblSearch = display.newText({
         text = "BUSCAR", 
         x = midW, y = lastY,
-        font = native.systemFontBold,  
+        font = fontFamilyBold,  
 		width = intW - 200,
         fontSize = 32, align = "center"
     })
@@ -401,8 +397,8 @@ function scene:create( event )
 	local lblFilter = display.newText({
         text = "Más Filtros", 
         x = midW, y = lastY,
-        font = native.systemFont,
-		width = intW - 300,
+        font = fontFamilyRegular,
+		width = intW - 270,
         fontSize = 30, align = "right"
     })
     lblFilter:setFillColor( 90/255 )

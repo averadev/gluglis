@@ -121,10 +121,8 @@ function buildCard(item)
 	grpImage:insert(img)
 	local imgWidth = img.contentWidth 
 	local imgHeight = img.contentHeight
-	print(imgWidth)
 	if imgWidth < 600 then
 		img.width = 600
-		print("entro")
 	end
 	if imgHeight < 600 then
 		img.height = 600
@@ -394,7 +392,6 @@ function touchScreen(event)
 end
 
 function getProfile()
-    print("Load Images "..#loadUsers)
 	--screen:removeEventListener( "touch", touchScreen )
 	tools:setLoading(true,grpLoad2)
 	--RestManager.getUsersByFilter(limitCard)
@@ -404,52 +401,6 @@ function getProfile()
 		RestManager.getUsersByFilter(limitCard)
 	end
 	limitCard = limitCard + 5
-	
-end
-
-
-------------------------------------------
--- Mostramos el detalle en recuadro fijo
-------------------------------------------
-function showInfoDisplay()
-    -- Position
-    local posY = 860 + h
-    
-    -- BG Component
-    local bgComp1 = display.newRoundedRect( midW, posY+50, 720, 340, 10 )
-    bgComp1.anchorY = 0
-    bgComp1:setFillColor( .88 )
-    screen:insert(bgComp1)
-    local bgComp2 = display.newRoundedRect( midW, posY+50, 716, 336, 10 )
-    bgComp2.anchorY = 0
-    bgComp2:setFillColor( 1 )
-    screen:insert(bgComp2)
-    
-    -- Title
-    local bgTitle = display.newRoundedRect( midW, posY+50, 720, 20, 10 )
-    bgTitle.anchorY = 0
-    bgTitle:setFillColor( 68/255, 14/255, 98/255 )
-    screen:insert(bgTitle)
-    local bgTitleX = display.newRect( midW, posY+60, 720, 10 )
-    bgTitleX.anchorY = 0
-    bgTitleX:setFillColor( 68/255, 14/255, 98/255 )
-    screen:insert(bgTitleX)
-    
-	--btn perfil
-	btnViewProfile = display.newRoundedRect( midW, posY, 720, 70, 10 )
-    btnViewProfile.anchorY = 0
-	btnViewProfile.id = 0
-    btnViewProfile:setFillColor( 68/255, 14/255, 98/255 )
-    screen:insert(btnViewProfile)
-	--btnViewProfile:addEventListener( 'tap', showProfiles )
-	local lblViewProfile = display.newText({
-        text = "Ver perfil",
-        x = midW, y = posY + 32,
-        font = native.systemFontBold,
-        fontSize = 32, align = "left"
-    })
-    lblViewProfile:setFillColor( 1 )
-    screen:insert(lblViewProfile)
 	
 end
 
@@ -479,7 +430,7 @@ function showInfoButton()
             text = "", 
             x = 0, y = 0,
             width = 0,
-            font = native.systemFont
+            font = fontFamilyRegular
         })
         detail[i].alpha = 0
         bottomCmp:insert(detail[i].lbl)
@@ -495,7 +446,7 @@ function showInfoButton()
 	local lblViewProfile = display.newText({
         text = "VER PERFIL",
         x = midW, y = intH - 70,
-        font = native.systemFontBold,
+        font = fontFamilyBold,
         fontSize = 32, align = "left"
     })
     lblViewProfile:setFillColor( 1 )
@@ -535,17 +486,9 @@ function scene:create( event )
     screen.y = h
     local isH = (intH - h) >  1270
 	
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-	
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
+    local o = display.newRect( midW, midH + h, intW+8, intH )
+	o:setFillColor( 245/255 )
     screen:insert(o)
-	
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
     
     tools = Tools:new()
     tools:buildHeader()
@@ -601,7 +544,7 @@ function scene:create( event )
         text = "", 
         x = 420, y = 710,
         width = 680,
-        font = native.systemFontBold,   
+        font = fontFamilyBold,   
         fontSize = 30, align = "left"
     })
     lblName:setFillColor( 0 )
@@ -621,7 +564,7 @@ function scene:create( event )
         text = "", 
         x = 420, y = 760,
         width = 680,
-        font = native.systemFont, 
+        font = fontFamilyRegular, 
         fontSize = 28, align = "left"
     })
     lblInts:setFillColor( 0 )

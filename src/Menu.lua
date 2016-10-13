@@ -4,110 +4,217 @@
 -- GeekBucket 2015
 ---------------------------------------------------------------------------------
 
---tabla
-Menu = {}
+---------------------------------- OBJETOS Y VARIABLES ----------------------------------
+-- Includes
+require('src.Tools')
+require('src.resources.Globals')
+local composer = require( "composer" )
+local RestManager = require('src.resources.RestManager')
 
---------------------------
---inicializa el menu
---------------------------
-function Menu:new()
-    -- Variables
-    require('src.resources.Globals')
-    local selfMenu = display.newGroup()
-    local fxTap = audio.loadSound( "fx/click.wav")
-    local Menu
-    local option = {}
-	
-    -- Bloquea cierre de menu
-    function blockTap()
-        return true;
-    end
-    
-    -- Creamos la pantalla del menu
-    function selfMenu:builScreen()
-        Menu =  menu
-        selfMenu.anchorY = 0
-        selfMenu.y = h
-        selfMenu.x = -500
-        
-        -- Background
-        local background = display.newRect(250, midH, 500, intH )
-        background:setFillColor( 37/255, 41/255, 49/255 )
-        background:addEventListener( 'tap', blockTap)
-        selfMenu:insert(background)
-		
-        -- Options
-        local opt = {{'Filter', 'icoFilter', 'Buscar'}, {'MyProfile', 'icoProfile', 'Mi Perfil'}, {'Home', 'icoHome', 'Home'}}
-        for i=1,#opt do
-            -- Opt
-			local posc = (i * 110) - 55
-			local num = #option + 1
-			option[num] = display.newContainer( 500, 110 )
-			option[num]:translate( 250, posc )
-            selfMenu:insert(option[num])
-			
-            local bgOpt1 = display.newRect(0, 0, 500, 110 )
-            bgOpt1:setFillColor( 37/255, 41/255, 49/255 )
-            bgOpt1.screen = opt[i][1]
-            bgOpt1:addEventListener( 'tap', toScreen)
-            option[num]:insert(bgOpt1)
-            local imgOpt1 = display.newImage( option[num], "img/"..opt[i][2]..".png" )
-            imgOpt1:translate( -200, 0 )
-			local lblOpt1 = display.newText({
-                text = opt[i][3],     
-                x = 60, y = 0,
-                width = 400,
-                font = native.systemFont,   
-                fontSize = 30, align = "left"
-            })
-            lblOpt1:setFillColor( .9 )
-            option[num]:insert(lblOpt1)
-            local bgSeparate = display.newRect(0, 52, 500, 4 )
-            bgSeparate:setFillColor( .26 )
-            option[num]:insert(bgSeparate)
-			if i == 2 or i == 3 then
-				if isReadOnly then
-					bgOpt1:removeEventListener( 'tap', toScreen)
-					bgOpt1:setFillColor( 35/255, 41/255, 54/255 )
-				end
-			end
-        end
-        
-        local bgExit = display.newRect(250, intH-h-55, 500, 110 )
-        bgExit:setFillColor( 37/255, 41/255, 49/255 )
-        bgExit.screen = "LoginSplash"
-        bgExit:addEventListener( 'tap', toScreen)
-        selfMenu:insert(bgExit)
-        local imgExit = display.newImage( selfMenu, "img/icoExit.png" )
-        imgExit:translate( 60, intH-h-55 )
-        local lblExit = display.newText({
-            text = "Cerrar Sesión", 
-            x = 310, y = intH-h-55,
-            width = 400,
-            font = native.systemFont,   
-            fontSize = 30, align = "left"
-        })
-        lblExit:setFillColor( .9 )
-        selfMenu:insert(lblExit)
-        local bgSeparate = display.newRect(250, intH-h-110, 500, 4 )
-        bgSeparate:setFillColor( .26 )
-        selfMenu:insert(bgSeparate)
-        
-        -- Border Right
-        local borderRight = display.newRect( 498, midH, 4, intH )
-        borderRight:setFillColor( {
-            type = 'gradient',
-            color1 = { .1, .1, .1, .7 }, 
-            color2 = { .4, .4, .4, .2 },
-            direction = "left"
-        } ) 
-        borderRight:setFillColor( 0, 0, 0 ) 
-        selfMenu:insert(borderRight)
-    end
-	
-	function showOptionHome()
-		option[3].alpha = 0
-	end
 
-    return selfMenu
+-- Grupos y Contenedores
+local screen
+local scene = composer.newScene()
+local grpMenu
+
+-- Variables
+
+---------------------------------- FUNCIONES ----------------------------------
+
+-------------------------------------
+-- Asignamos total de tarjetas
+------------------------------------
+
+function gotoMyProfle()
+	composer.removeScene( "src.MyProfile" )
+	composer.gotoScene("src.MyProfile", { time = 400, effect = "fade", params = { item = itemProfile } } )
+	return true
 end
+
+
+function gotoSearch()
+	composer.removeScene( "src.Filter" )
+	composer.gotoScene( "src.Filter", { time = 400, effect = "fade" } )
+	return true
+end
+
+function logOut()
+	RestManager.clearUser()
+	return true
+end
+
+
+---------------------------------- DEFAULT SCENE METHODS ----------------------------------
+
+-------------------------------------
+-- Se llama antes de mostrarse la escena
+-- @param event objeto evento
+------------------------------------
+function scene:create( event )
+	screen = self.view
+    screen.y = h
+    local isH = (intH - h) >  1270
+	
+    local o = display.newRect( midW, midH + h, intW+8, intH )
+	o:setFillColor( 245/255 )
+    screen:insert(o)
+    
+    tools = Tools:new()
+    tools:buildHeader()
+    screen:insert(tools)
+	
+	grpMenu = display.newGroup()
+	screen:insert(grpMenu)
+	
+	local posY = 190 + h 
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	local btnSearch = display.newRect( midW, posY, intW, 200 )
+	btnSearch.anchorY = 0
+	btnSearch:setFillColor( 1 )
+    grpMenu:insert(btnSearch)
+	btnSearch:addEventListener( 'tap', gotoSearch )
+	
+	local iconSearch = display.newImage("img/buscar.png")
+	iconSearch.anchorX = 0
+    iconSearch:translate(100, posY + 100)
+    grpMenu:insert( iconSearch )
+	
+	local lblSearch = display.newText({
+        text = "Buscar Gluglers", 
+        x = 500, y = posY + 65,
+        width = 490,
+        font = fontFamilyBold,   
+        fontSize = 46, align = "left"
+    })
+    lblSearch:setFillColor( 0 )
+    grpMenu:insert(lblSearch)
+	
+	local lblSubSearch = display.newText({
+        text = "Conoce usuarios Gluglis \ndonde quiera que vayas.", 
+        x = 500, y = posY + 130,
+        width = 490,
+        font = fontFamilyRegular,   
+        fontSize = 26, align = "left"
+    })
+    lblSubSearch:setFillColor( 0 )
+    grpMenu:insert(lblSubSearch)
+	
+	posY = posY + 200
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	---------------------
+	
+	posY = posY + 75
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	local btnEdit = display.newRect( midW, posY, intW, 200 )
+	btnEdit.anchorY = 0
+	btnEdit:setFillColor( 1 )
+    grpMenu:insert(btnEdit)
+	btnEdit:addEventListener( 'tap', gotoMyProfle )
+	
+	local iconEdit = display.newImage("img/editar.png")
+	iconEdit.anchorX = 0
+    iconEdit:translate(100, posY + 100)
+    grpMenu:insert( iconEdit )
+	
+	local lblEdit = display.newText({
+        text = "Editar Perfil", 
+        x = 500, y = posY + 65,
+        width = 490,
+        font = fontFamilyBold,   
+        fontSize = 46, align = "left"
+    })
+    lblEdit:setFillColor( 0 )
+    grpMenu:insert(lblEdit)
+	
+	local lblSubEdit = display.newText({
+        text = "Editar tu perfil personal.", 
+        x = 500, y = posY + 120,
+        width = 490,
+        font = fontFamilyRegular,   
+        fontSize = 26, align = "left"
+    })
+    lblSubEdit:setFillColor( 0 )
+    grpMenu:insert(lblSubEdit)
+	
+	posY = posY + 200
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	local line = display.newLine( 0, intH - 176 , intW, intH - 176 )
+	line:setStrokeColor( 216/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	local btnLogout = display.newRect( midW, intH - 175, intW, 150 )
+	btnLogout.anchorY = 0
+	btnLogout:setFillColor( 226/255 )
+    grpMenu:insert(btnLogout)
+	btnLogout:addEventListener( 'tap', logOut )
+	
+	local lblLogoutt = display.newText({
+        text = "Cerrar Sesión", 
+        x = midW, y = intH - 95,
+        font = fontFamilyBold,   
+        fontSize = 38, align = "left"
+    })
+    lblLogoutt:setFillColor( 85/255 )
+    grpMenu:insert(lblLogoutt)
+	
+	local line = display.newLine( 0, intH - 26 , intW, intH - 26 )
+	line:setStrokeColor( 216/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+end	
+
+-------------------------------------
+-- Se llama al mostrarse la escena
+-- @param event objeto evento
+------------------------------------
+function scene:show( event )
+	
+end
+
+
+ 
+
+-------------------------------------
+-- Se llama al cambiar la escena
+-- @param event objeto evento
+------------------------------------
+function scene:hide( event )
+	
+end
+
+-------------------------------------
+-- Se llama al destruirse la escena
+-- @param event objeto evento
+------------------------------------
+function scene:destroy( event )
+end
+
+-- Listeners de la Escena
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
+
+return scene
