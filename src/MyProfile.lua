@@ -210,7 +210,7 @@ end
 ------------------------------------------------------------------------------
 function setImagePerfil( item )
 
-	local mask = graphics.newMask( "img/mask.png" )
+	local mask = graphics.newMask( "img/image-mask-mask3.png" )
 	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
 	avatar:translate( 69.5, posY)
 	avatar.anchorX = 0
@@ -218,12 +218,9 @@ function setImagePerfil( item )
 	avatar.width = 250
 	scrPerfile:insert(avatar)
 	avatar:setMask( mask )
-
-	--[[avatar = display.newImage(item[1].image, system.TemporaryDirectory)
-	avatar:translate(midW - 190, 170)
-	avatar.height = 230
-	avatar.width = 230
-	scrPerfile:insert(avatar)]]
+	avatar.maskScaleY = 1.35
+	avatar.maskScaleX = 1.35
+	
 end
 
 function saveAvatar( event )
@@ -2002,14 +1999,16 @@ function createProfileAvatar()
 	--verifica si existe la imagen
 	if fhd then
 	
-		local mask = graphics.newMask( "img/mask.png" )
+		local mask = graphics.newMask( "img/image-mask-mask3.png" )
 		local avatar = display.newImage(item.image, system.TemporaryDirectory)
-		avatar:translate( 69.5, posY)
+		avatar:translate( 69, posY)
 		avatar.anchorX = 0
 		avatar.height = 250
 		avatar.width = 250
 		scrPerfile:insert(avatar)
 		avatar:setMask( mask )
+		avatar.maskScaleY = 1.35
+		avatar.maskScaleX = 1.35
 		
 		--[[local ChangePhoto = display.newRect( midW - 190, 170, 235, 235 )
 		ChangePhoto:setFillColor( 1 )

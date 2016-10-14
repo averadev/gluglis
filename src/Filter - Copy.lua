@@ -254,12 +254,12 @@ function DatePicker(name)
 	local options = {
 		frames = 
 		{
-			{ x=0, y=0, width=900, height=250 },
-			{ x=900, y=0, width=900, height=250 },
-			{ x=2000, y=0, width=8, height=250 }
+			{ x=0, y=0, width=900, height=222 },
+			{ x=900, y=0, width=900, height=222 },
+			{ x=2000, y=0, width=8, height=222 }
 		},
 		sheetContentWidth = 1808,
-		sheetContentHeight = 250
+		sheetContentHeight = 222
 	}
 	local pickerWheelSheet = graphics.newImageSheet( "img/pickerSheet4.png", options )
 	
@@ -275,13 +275,13 @@ function DatePicker(name)
         backgroundFrame = 2,
         backgroundFrameWidth = 900,
         backgroundFrameHeight = 222,
-        separatorFrame = 20,
+        separatorFrame = 3,
         separatorFrameWidth = 8,
         separatorFrameHeight = 222,
         columnColor = { 0, 0, 0, 0 },
         fontColor = { 0.4, 0.4, 0.4, 0.5 },
         fontColorSelected = { 129/255, 61/255, 153/255},
-		fontSize = 40,
+		fontSize = 32,
     })
 	pickerWheel2:addEventListener( 'tap', noAction )
 	
@@ -545,7 +545,7 @@ function listenerSlider( event )
 		
 		isCircle = false
 		--rango valido para hacer funcionar los slider
-		if event.yStart > 600 and event.yStart < 690 then
+		if event.yStart > 617 and event.yStart < 667 then
 			newPoscCircle = nil
 			direction = 0
 			sliderX = event.x
@@ -606,7 +606,7 @@ function listenerSlider( event )
 					newPoscCircle.x = event.x
 				end
 				local poscX = 0
-				poscX = (newPoscCircle.x - 170)/4.58
+				poscX = (newPoscCircle.x - 176)/4.61
 				poscX = math.round( poscX ) + 7
 				if newPoscCircle.name == "slider1" then
 					lblSlider1.text = tonumber(poscX)
@@ -632,7 +632,7 @@ function listenerSlider( event )
 				end
 			end
 			local poscX = 0
-			poscX = (newPoscCircle.x - 170)/4.58
+			poscX = (newPoscCircle.x - 176)/4.61
 			poscX = math.round( poscX ) + 7
 			if newPoscCircle.name == "slider1" then
 				lblSlider1.text = tonumber(poscX)
@@ -789,10 +789,6 @@ function scene:create( event )
         if opt[i].icon then
             ico = display.newImage( screen, "img/"..opt[i].icon..".png" )
             ico:translate( intW - 65, posY )
-			if  opt[i].type == "datePicker" then
-				ico.height = 54
-				ico.width = 54
-			end
 			grpFilter:insert(ico)
         end
 		
@@ -860,7 +856,7 @@ function scene:create( event )
 			--native.systemFont
 			lblSlider1 = display.newText({
 				text = settFilter.iniAge, 
-				x = 170, y = posY + xFields[i].y,
+				x = 185, y = posY + xFields[i].y,
 				font = fontFamilyBold,   
 				fontSize = 25, align = "center"
 			})
@@ -868,7 +864,7 @@ function scene:create( event )
 			grpFilter:insert(lblSlider1)
 			lblSlider2 = display.newText({
 				text = settFilter.endAge, 
-				x = 640, y = posY + xFields[i].y,
+				x = 625, y = posY + xFields[i].y,
 				font = fontFamilyBold,   
 				fontSize = 25, align = "center"
 			})
@@ -877,7 +873,7 @@ function scene:create( event )
 			
 			local lbl2 = display.newText({
 				text = xFields[i].label2, 
-				x = intW + 255, y = posY + xFields[i].y,
+				x = intW + 250, y = posY + xFields[i].y,
 				width = intW - 65,
 				font = fontFamilyBold,   
 				fontSize = 25, align = "left"

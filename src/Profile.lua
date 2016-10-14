@@ -63,7 +63,7 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function setImagePerfil( item )
-	local mask = graphics.newMask( "img/mask.png" )
+	local mask = graphics.newMask( "img/image-mask-mask3.png" )
 	local avatar = display.newImage(item.image, system.TemporaryDirectory)
 	avatar:translate( 69.5, posY)
 	avatar.anchorX = 0
@@ -71,6 +71,8 @@ function setImagePerfil( item )
 	avatar.width = 250
 	scrPerfile:insert(avatar)
 	avatar:setMask( mask )
+	avatar.maskScaleY = 1.35
+	avatar.maskScaleX = 1.35
 end
 
 ----------------------------------------
@@ -221,7 +223,7 @@ function infoProfile( item )
 	
 	bgA0.height = #infoOpcion * 100
 	
-	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
 	line:setStrokeColor( 227/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
@@ -318,7 +320,7 @@ function infoProfile( item )
 	
 	bgA0.height = #infoOpcion * 100
 	
-	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
 	line:setStrokeColor( 227/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
@@ -465,23 +467,35 @@ function infoProfile( item )
 		num = #infoOpcion + 1
 	end
 	--fumas
-	--[[if item.fumas then
-		infoOpcion[num] = "Fumas: " .. item.fumas
-		iconOpcion[num] = 'icoFilterCheck'
+	if item.fumas then
+		labelOpcion[num] = 'Fumas'
+		infoOpcion[num] = item.fumas
+		iconOpcion[num] = 'si'
+		if item.fumas == "No" then
+			iconOpcion[num] = 'no'
+		end
 		num = #infoOpcion + 1
 	end
 	--bebes
 	if item.bebes then
-		infoOpcion[num] = "Bebes: " .. item.bebes
-		iconOpcion[num] = 'icoFilterCheck'
+		labelOpcion[num] = 'Bebes'
+		infoOpcion[num] = item.bebes
+		iconOpcion[num] = 'si'
+		if item.bebes == "No" then
+			iconOpcion[num] = 'no'
+		end
 		num = #infoOpcion + 1
 	end
 	--psicotroficos
 	if item.psicotropicos then
-		infoOpcion[num] = "Psicotropicos: " .. item.psicotropicos
-		iconOpcion[num] = 'icoFilterCheck'
+		labelOpcion[num] = 'Psicotropicos'
+		infoOpcion[num] = item.psicotropicos
+		iconOpcion[num] = 'si'
+		if item.psicotropicos == "No" then
+			iconOpcion[num] = 'no'
+		end
 		num = #infoOpcion + 1
-	end]]
+	end
 	
 	for i=1, #infoOpcion do
         local ico
@@ -589,7 +603,7 @@ function scene:create( event )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
-		local mask = graphics.newMask( "img/mask.png" )
+		local mask = graphics.newMask( "img/image-mask-mask3.png" )
 		local avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate( 69.5, posY)
 		avatar.anchorX = 0
@@ -597,6 +611,8 @@ function scene:create( event )
 		avatar.width = 250
 		scrPerfile:insert(avatar)
 		avatar:setMask( mask )
+		avatar.maskScaleY = 1.35
+		avatar.maskScaleX = 1.35
 	else
 		local items = {}
 		items[1] = item
@@ -611,6 +627,8 @@ function scene:create( event )
 	scrPerfile:insert(line)
 	
 	posY = infoProfile( item )
+	
+	--posY = 500
 	
 	if isReadOnly then
 		posY = posY + 120

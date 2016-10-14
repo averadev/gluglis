@@ -273,7 +273,7 @@ function scene:create( event )
 	txtLocationHt:setReturnKey( "default" )
 	txtLocationHt.size = 40
 	txtLocationHt.placeholder = "¿Donde vives?"
-	txtLocationHt:setTextColor( .5 )
+	txtLocationHt:setTextColor( 45/255, 10/255, 65/255  )
 	txtLocationHt.font = native.newFont( fontFamilyRegular )
 	grpHometown:insert( txtLocationHt )
 	

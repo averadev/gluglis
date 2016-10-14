@@ -94,13 +94,30 @@ function HomeError( message )
     
 	tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
-	local bgavatarDefault = display.newRect( midW, 60, 700, 700 )
+	
+	local bgCard0 = display.newRect( midW, 102, intW, 515 )
+    bgCard0.anchorY = 0
+    bgCard0:setFillColor( 0/255, 174/255, 239/255 )
+    topCmp:insert(bgCard0)
+	
+    local bgCard = display.newRoundedRect( midW, 52, 615, 615, 20 )
+    bgCard.anchorY = 0
+    --bgCard:setFillColor( 11/225, 163/225, 212/225 )
+	bgCard:setFillColor( 0/255, 174/255, 239/255 )
+    topCmp:insert(bgCard)
+    
+    bgAvatar = display.newRect( midW, 60, 600, 600 )
+    bgAvatar.anchorY = 0
+    bgAvatar:setFillColor( 0, 193/225, 1 )
+    topCmp:insert(bgAvatar)
+    
+	--[[local bgavatarDefault = display.newRect( midW, 60, 700, 700 )
 	bgavatarDefault.anchorY = 0
-	bgavatarDefault:setFillColor( 1 )
-	topCmp:insert(bgavatarDefault)
+	bgavatarDefault:setFillColor( 0 )
+	topCmp:insert(bgavatarDefault)]]
 		
-	local avatarDefault = display.newImage( "img/avatar.png" )
-	avatarDefault:translate( midW, 450 )
+	local avatarDefault = display.newImage( "img/avatar2.png" )
+	avatarDefault:translate( midW, 360 )
 	topCmp:insert(avatarDefault)
 	bottomCmp.alpha = 1
 	container.alpha = 1
