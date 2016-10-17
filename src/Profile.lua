@@ -375,7 +375,7 @@ function infoProfile( item )
             end
         end
         if #item.hobbies > max then 
-            hob = lblInts.text..'...'
+            hob = hob ..'...'
         end
 		infoOpcion[num] = hob
 		iconOpcion[num] = 'si'
@@ -517,8 +517,8 @@ function infoProfile( item )
 		
 		local lbl1 = display.newText({
             text = infoOpcion[i], 
-            x = midW - 65, y = posY + 50,
-            width = intW,
+            x = midW + 185 - 65, y = posY + 50,
+            width = 400,
             font = fontFamilyBold,   
             fontSize = 22, align = "right"
         })

@@ -263,16 +263,11 @@ function moveMasckAvatar( event )
 	if ( event.phase == "began" ) then
         differenceX = event.x - avatarMask.maskX
 		differenceY = event.y - avatarMask.y
-		--print(avatarMask.maskY)
-		--print(event.y)
-		--print(avatarMask.y)
 	elseif ( event.phase == "moved" ) then
 		avatarMask.y = event.y -400
 		--newPositionX = event.x - differenceX
 		--newPositionY = event.y - differenceY
 		--avatarMask.y = newPositionY
-		print(event.target.y)
-		
 		--avatarMask.maskY = newPositionY
 		--avatarMask.maskX = newPositionX
 		--avatarMask.maskY = newPositionY
@@ -913,7 +908,6 @@ function createToggleButtons(item, name, coordY, coordX )
 		lblNo.text = "Mujer"
 		lblNo.size = 24
 	end]]
-	print(name)
 	local posXTB = coordX - 75
 	local onOff = "No"
 	--alojamiento
@@ -2010,14 +2004,30 @@ function createProfileAvatar()
 		avatar.maskScaleY = 1.35
 		avatar.maskScaleX = 1.35
 		
-		--[[local ChangePhoto = display.newRect( midW - 190, 170, 235, 235 )
+		--[[local ChangePhoto = display.newRoundedRect( midW - 190, posY, 250, 250, 125 )
 		ChangePhoto:setFillColor( 1 )
-		ChangePhoto.alpha = .1
+		ChangePhoto.alpha = .01
+		--ChangePhoto.alpha = .5
 		scrPerfile:insert(ChangePhoto)
 		ChangePhoto:addEventListener( 'tap', optionAvatar )
 		
+		local bgChangePhoto = display.newImage( 'img/halfCircle-250.png' )
+		bgChangePhoto:translate( 69, posY)
+		bgChangePhoto.anchorX = 0
+		scrPerfile:insert(bgChangePhoto)]]
+		
+		
+		--[[local mask2 = graphics.newMask( "img/image-mask-mask3.png" )
 		local bgChangePhoto = display.newRect( midW - 190, 247, 225, 80 )
-		bgChangePhoto:setFillColor( 1 )
+		bgChangePhoto:setFillColor( 0 )
+		bgChangePhoto.alpha = .8
+		bgChangePhoto:setMask( mask2 )
+		scrPerfile:insert(bgChangePhoto)]]
+		
+		--
+		
+		--[[local bgChangePhoto = display.newRect( midW - 190, 247, 225, 80 )
+		bgChangePhoto:setFillColor( 0 )
 		bgChangePhoto.alpha = .8
 		scrPerfile:insert(bgChangePhoto)
 		
@@ -2078,7 +2088,6 @@ end
 function scrListen( event )
 	local x, y = scrPerfile:getContentPosition()
 	if textUserName  then
-	   -- print(y)
 		if y < -80 and textUserName.x == 550 then
 			textUserName.x = 1000
 		elseif y >= -80 and textUserName.x == 1000 then

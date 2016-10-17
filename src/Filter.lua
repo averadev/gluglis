@@ -78,7 +78,11 @@ end
 
 function cleanTxtLocationF( event )
 	closeAll( nil )
-	txtLocation.text = ""
+	if txtLocation then
+		txtLocation.text = ""
+		txtLocation.city = ""
+		txtLocation.id = 0
+	end
 	return true
 end
 --------------------------------------------
@@ -94,7 +98,7 @@ function filterUser( event )
 		textLocation = 0
 	end
 	typeSearch = "filter"
-	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, accommodation, txtLocation.id )
+	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, '', txtLocation.id )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
 end
@@ -239,7 +243,7 @@ function DatePicker(name)
 			align = "center",
 			width = 200,
 			startIndex = tonumber(dates[3].month),
-			labels = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre" }
+			labels = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }
 		},
 		-- Years
 		{
@@ -281,7 +285,7 @@ function DatePicker(name)
         columnColor = { 0, 0, 0, 0 },
         fontColor = { 0.4, 0.4, 0.4, 0.5 },
         fontColorSelected = { 129/255, 61/255, 153/255},
-		fontSize = 40,
+		fontSize = 35,
     })
 	pickerWheel2:addEventListener( 'tap', noAction )
 	
@@ -336,7 +340,7 @@ function createDatePicker( event )
             text = "Aceptar", 
             x = intW, y = 50,
             width = 250,
-            font = native.systemFont,   
+            font = fontFamilyRegular,   
             fontSize = 35, align = "center"
         })
 	labelAcceptDate:setFillColor( 1 )
@@ -807,7 +811,7 @@ function scene:create( event )
 		{label = "HOMBRE", x = 0, y = 0, w = midW, type = "checkBox", isGen = "H"},
 		{label = "MUJER", x = midW, y = 0, w = midW, type = "checkBox", isGen = "M"},
 		{label = "Entre:", label2 = "Años", x = midW + 20, y = 102 , w = midW - 10, type = "slider", isGen = "M"},
-		{label = "Requiero Alojamiento:", x = 720, y = 204, w = 140, nameField = "alojamiento:", type = "toggleButton"} 
+		--{label = "Requiero Alojamiento:", x = 720, y = 204, w = 140, nameField = "alojamiento:", type = "toggleButton"} 
 	}
     for i=1, #xFields do
 		if  xFields[i].type == "checkBox" then

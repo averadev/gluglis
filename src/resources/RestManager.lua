@@ -550,9 +550,9 @@ local RestManager = {}
 		url = url.."/genM/" 	.. settFilter.genM
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
-		url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
-		print(url)
+		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -616,6 +616,7 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/playerId/"..urlencode(playerId)
         -- Do request
+		print(url)
 		network.request( url, "GET", callback )
     end
 	

@@ -50,7 +50,7 @@ end
 -- Creamos primera tanda de tarjetas
 ------------------------------------
 function getFirstCards(items)
-	tools:setLoadingPerson(false,grpLoad)
+	--tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad2)
 	bottomCmp.alpha = 1
 	container.alpha = 1
@@ -92,7 +92,7 @@ end
 function HomeError( message )
     btnViewProfile.alpha = 0
     
-	tools:setLoadingPerson(false,grpLoad)
+	--tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
 	
 	local bgCard0 = display.newRect( midW, 102, intW, 515 )
@@ -155,15 +155,35 @@ function buildCard(item)
 
     local idx = #avaL + 1
 	local imgS = nil
-	if imgWidth < 600 or imgHeight < 600 then 
+	--[[if imgWidth < 600 or imgHeight < 600 then 
 		imgWidth = math.round( imgWidth/2 ) - 1
 		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
 	elseif imgWidth > 600 or imgHeight > 600 then
-		imgWidth = math.round( imgWidth/2 )
+		
+		local WidthSheet = imgWidth/2
+		local integralPart, fractionalPart = math.modf( WidthSheet )
+		if ( fractionalPart == 0 ) then
+			imgWidth = math.round( imgWidth/2 )
+		else
+			imgWidth = math.round( imgWidth/2 ) - 1
+		end
+		
+		--print( math.modf( imgWidth/2 ) )
+		
 		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
 	else
 		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 300, height = 600, numFrames = 2 })
+	end]]
+	
+	local WidthSheet = imgWidth/2
+	local integralPart, fractionalPart = math.modf( WidthSheet )
+	if ( fractionalPart == 0 ) then
+		imgWidth = math.round( imgWidth/2 )
+	else
+		imgWidth = math.round( imgWidth/2 ) - 1
 	end
+	
+	imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
     
     avaL[idx] = display.newRect( midW, 60, 300, 600 )
     avaL[idx].alpha = 0
@@ -414,10 +434,13 @@ function getProfile()
 	--RestManager.getUsersByFilter(limitCard)
 	if typeSearch == "welcome" then
         RestManager.getUsersByCity(limitCard)
+		limitCard = limitCard + 5
 	else
 		RestManager.getUsersByFilter(limitCard)
+		
+		limitCard = limitCard + 10
 	end
-	limitCard = limitCard + 5
+	
 	
 end
 
@@ -594,7 +617,7 @@ function scene:create( event )
 	grpLoad = display.newGroup()
 	screen:insert(grpLoad)
 	grpLoad.y = 650 + h
-	tools:setLoadingPerson(true,grpLoad)
+	tools:setLoading(true,grpLoad)
 	clearTempDir()
     
 	grpLoad2 = display.newGroup()
@@ -606,19 +629,13 @@ function scene:create( event )
 	--RestManager.getUsersById()
 	if typeSearch == "welcome" then
 		RestManager.getUsersByCity(0)
+		limitCard = 5
 	else
 		RestManager.getUsersByFilter(0)
+		limitCard = 10
 	end
     --
-	limitCard = 5
-	if isReadOnly == false then
-		timeMarker = timer.performWithDelay( 1000, function( event )
-			if playerId ~= 0 then
-				timer.cancel( event.source ) 
-				--RestManager.updatePlayerId()
-			end
-		end, -1)
-	end
+	
 	
 	tools:toFront()
 end	

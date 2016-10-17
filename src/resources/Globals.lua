@@ -13,6 +13,7 @@ hm3 = intH / 3
 h = display.topStatusBarContentHeight
 --token de notificaciones
 playerId = 0
+isPlayerIdUpdate = 0
 --info del usuario
 itemProfile = nil
 --si no existen datos de session

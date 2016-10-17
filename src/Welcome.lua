@@ -410,6 +410,18 @@ function scene:create( event )
 	imgMoreFilter.width = 80
 	grpWelcome:insert(imgMoreFilter)
 	
+	if isReadOnly == false then
+		timeMarker = timer.performWithDelay( 1000, function( event )
+			if playerId ~= 0 then
+				timer.cancel( event.source )
+				if isPlayerIdUpdate == 0 then
+					RestManager.updatePlayerId()
+					isPlayerIdUpdate = 1
+				end
+			end
+		end, -1)
+	end
+	
 	
     --RestManager.getUserAvatar()
 end	
