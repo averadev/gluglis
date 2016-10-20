@@ -1027,17 +1027,17 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
             else
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
 						setList( data.hobbies, data.language, data.sport, data.residenceTime, data.race, data.workArea, data.gender )
 					else
-						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+						--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
 					end
 				else
-					noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
 				end
             end
             return true
