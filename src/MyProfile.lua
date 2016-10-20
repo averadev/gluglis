@@ -102,7 +102,7 @@ function saveProfile()
 	textLastName.text = trimString(textLastName.text)
 	textOriginCountry.text = trimString(textOriginCountry.text)
 	textUserResidence.text = trimString(textUserResidence.text)
-	textEmailContact.text = trimString(textEmailContact.text)
+	--textEmailContact.text = trimString(textEmailContact.text)
 	RestManager.saveProfile(
 		textUserName.text, 
 		myHobbies,
@@ -112,8 +112,8 @@ function saveProfile()
 		textOriginCountry.text,
 		textUserResidence.text,
 		lblResidenceTime.text, 
-		textEmailContact.text,
-		availability,
+		--textEmailContact.text,
+		--availability,
 		accommodation,
 		vehicle,
 		food,
@@ -230,6 +230,8 @@ function saveAvatar( event )
 		nameImage = k
 		--t[k] = v
 	end
+	
+	hideoptionAvatar()
 
 	RestManager.savePhoto(nameImage)
 	
@@ -283,39 +285,13 @@ function moveMasckAvatar( event )
 	return true
 end
 
-function showAvatar( typeP )
+function showAvatar2( typeP )
 	
-	componentActive = true
-	if grpOptionAvatar then
-		grpOptionAvatar:removeSelf()
-		grpOptionAvatar = nil
-	end
-	grpTextProfile.x = intW
-	grpOptionAvatar = display.newGroup()
-	
-	local bg0 = display.newRect( midW, midH + h, intW, intH )
-	bg0:setFillColor( 0 )
-	bg0.alpha = .8
-	grpOptionAvatar:insert( bg0 )
+	bgOptionAvatar()
 	bg0:addEventListener( 'tap', hideoptionAvatar )
 	
 	if( typeP == "myPhoto" ) then
-		local path = system.pathForFile( avatar.name, system.TemporaryDirectory )
-		local fhd = io.open( path )
-		--verifica si existe la imagen
-		if fhd then
-			avatarFull = display.newImage(avatar.name, system.TemporaryDirectory)
-			avatarFull:translate(midW, midH)
-			grpOptionAvatar:insert(avatarFull)
-			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
-			avatarFull.height = desiredHigh
-			avatarFull.width = intW-100
-			
-			local iconExitAvatarFull = display.newImage("img/delete.png")
-			iconExitAvatarFull:translate(intW - 50, avatarFull.y - midH/1.5)
-			grpOptionAvatar:insert(iconExitAvatarFull)
-			
-		end
+		
 	elseif( typeP == "newPhoto") then
 	
 		local nameImage
@@ -466,12 +442,109 @@ function showAvatar( typeP )
 	
 end
 
+function showAvatar( event )
+
+	bgOptionAvatar()
+	
+	local t = event.target
+	--image
+	
+	local path = system.pathForFile( t.image, system.TemporaryDirectory )
+	local fhd = io.open( path )
+	--verifica si existe la imagen
+	if fhd then
+	
+		
+		local bg1 = display.newRect( midW, midH + h, intW, intH )
+		bg1:setFillColor( 0/255, 174/255, 239/255 )
+		--bg1.anchorY = 0
+		--bg1.alpha = .8
+		grpOptionAvatar:insert( bg1 )
+		bg1:addEventListener( 'tap', hideoptionAvatar )
+		
+		avatarFull = display.newImage( t.image, system.TemporaryDirectory )
+		avatarFull:translate(midW, midH + h)
+		grpOptionAvatar:insert(avatarFull)
+		local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+		avatarFull.height = desiredHigh
+		avatarFull.width = intW-100
+		
+		bg1.height = desiredHigh  + 16
+		bg1.width = intW-100  + 16
+			
+		local iconExitAvatarFull = display.newImage("img/x-mark-4-64.png")
+		iconExitAvatarFull:translate(intW - 50, bg1.y - bg1.height/2)
+		grpOptionAvatar:insert(iconExitAvatarFull)
+	end
+
+end
+
+function bgOptionAvatar()
+	
+	componentActive = true
+	if grpOptionAvatar then
+		grpOptionAvatar:removeSelf()
+		grpOptionAvatar = nil
+	end
+	grpTextProfile.x = intW
+	grpOptionAvatar = display.newGroup()
+	
+	local bg0 = display.newRect( midW, midH + h, intW, intH )
+	bg0:setFillColor( 0 )
+	bg0.alpha = .8
+	grpOptionAvatar:insert( bg0 )
+	bg0:addEventListener( 'tap', hideoptionAvatar )
+	
+end
+
+function showNewAvatar( event )
+	bgOptionAvatar()
+	
+	local nameImage
+	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
+		nameImage = k
+	end
+	
+	local path = system.pathForFile( "tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory )
+	local fhd = io.open( path )
+	--verifica si existe la imagen
+		
+	if fhd then
+		
+		avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
+		avatarFull:translate(midW, midH  + h)
+		grpOptionAvatar:insert(avatarFull)
+		avatarFull:addEventListener( 'tap', noAction )
+			
+		local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
+		avatarFull.height = desiredHigh
+		--local desiredHigh  = 600
+		avatarFull.height = desiredHigh
+		avatarFull.width = intW-100
+			
+		btnSaveAvatar = display.newRoundedRect( midW, intH - 200, 650, 110, 10 )
+		btnSaveAvatar.id = nameImage
+		btnSaveAvatar:setFillColor( {
+			type = 'gradient',
+			color1 = { 129/255, 61/255, 153/255 }, 
+			color2 = { 89/255, 31/255, 103/255 },
+			direction = "bottom"
+		} )
+		grpOptionAvatar:insert(btnSaveAvatar)
+		btnSaveAvatar:addEventListener( 'tap', saveAvatar )
+	end
+	
+	
+end
+
 function mysplitPoint(s)
     
 	return t
 end
 
 function takePicture()
+
+	--showNewAvatar()
 
 	local function onComplete( event )
 		--local photo = event.target
@@ -482,7 +555,7 @@ function takePicture()
 		photo.alpha = 0]]
 		--event.target.alpha = 0
 		
-		showAvatar( "newPhoto" )
+		showNewAvatar( "newPhoto" )
 		
 	end
 	
@@ -516,14 +589,10 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function selectOptionAvatar( event )
-	if( event.target.type == "Editar Foto" ) then
+	if( event.target.type == "Tomarse una Foto" ) then
+		takePicture( "myPhoto" )
+	elseif( event.target.type == "Seleccionar una Foto" ) then
 		
-		
-		takePicture()
-		--showAvatar( "newPhoto" )
-		
-	elseif( event.target.type == "Ver Foto" ) then
-		showAvatar( "myPhoto" )
 	end
 	return true
 end
@@ -532,54 +601,44 @@ end
 -- muestra las opciones de foto de perfil
 -- ver o editar
 ------------------------------------------------------------------------------
-function optionAvatar( event )
+function optionPictureAvatar( event )
 	componentActive = true
-	if grpOptionAvatar then
-		grpOptionAvatar:removeSelf()
-		grpOptionAvatar = nil
-	end
-	grpTextProfile.x = intW
-	grpOptionAvatar = display.newGroup()
-	
-	local bg0 = display.newRect( midW, midH + h, intW, intH )
-	bg0:setFillColor( 0 )
-	bg0.alpha = .8
-	grpOptionAvatar:insert( bg0 )
-	bg0:addEventListener( 'tap', hideoptionAvatar )
-	local bg1 = display.newRoundedRect( midW, midH/2 + h - 2, 606, 310, 10 )
+	bgOptionAvatar()
+	local bg1 = display.newRect( midW, midH/2 + h - 3, 606, 310 )
 	bg1.anchorY = 0
-	bg1:setFillColor( .7 )
+	bg1:setFillColor( 0/255, 174/255, 239/25 )
 	grpOptionAvatar:insert( bg1 )
 	
 	local posY = midH/2 + h
 	
-	local option = {"Editar Foto", "Ver Foto"}
-	local optionIcon = {"edit-2-85", "eye-3-85"}
+	local option = {"Tomarse una Foto", "Seleccionar una Foto"}
+	--local option = {"Tomarse una Foto"}
+	local optionIcon = {"screenshot-80", "folder-80"}
 	for i = 1, #option, 1 do
-		local container3 = display.newContainer( 606, 150 )
+		local container3 = display.newContainer( 600, 150 )
 		grpOptionAvatar:insert(container3)
 		container3.anchorY = 0
 		container3:translate( midW, posY )
 		
-		local bg0Option = display.newRoundedRect( 0, 0, 600, 150, 5 )
+		local bg0Option = display.newRect( 3, 0, 600, 150 )
 		bg0Option:setFillColor( 1 )
 		bg0Option.type = option[i]
 		container3:insert( bg0Option )
 		bg0Option:addEventListener( 'tap', selectOptionAvatar )
 		
 		local iconOption = display.newImage("img/" .. optionIcon[i] .. ".png")
-		iconOption:translate(-230, 0)
+		iconOption:translate(-200, 0)
 		container3:insert(iconOption)
 		
 		--label nombre
 		local lblNameOption = display.newText({
 			text = option[i], 
-			x = 0, y = 0,
-			width = 500,
-			font = native.systemFont, 
-			fontSize = 50, align = "center"
+			x = 75, y = 0,
+			width = 400,
+			font = fontFamilyLight, 
+			fontSize = 35, align = "left"
 		})
-		lblNameOption:setFillColor( 129/255, 61/255, 153/255 )
+		lblNameOption:setFillColor( 68/255, 14/255, 98/255)
 		container3:insert(lblNameOption)
 		posY = posY + 155
 	end
@@ -797,6 +856,7 @@ end
 -- @param posY2 coordenada y del elemento
 -------------------------------------------------
 function createComboBox(item, name, coordY, coordX )
+
 	coordY = coordY - 25
 	-- BG Component
 	--intW - 65, coordY, 400 , 90
@@ -813,45 +873,48 @@ function createComboBox(item, name, coordY, coordX )
 	scrPerfile:insert(bg0CheckAcco)
 	bg0CheckAcco:addEventListener( 'tap', showComboBox )
 	local triangle = display.newImage("img/down.png")
-	triangle:translate(coordX + 290, coordY + 25)
+	triangle:translate(coordX + 295, coordY + 25)
+	--triangle:translate(intW - 90, posY + 55)
+	triangle.height = 48
+	triangle.width = 48
 	scrPerfile:insert(triangle)
 	if name == "gender" then
 		lblGender = display.newText({
 			text = item.genero, 
-			x = coordX + 125, y = coordY + 25,
-			width = 380, --height = 30,
+			x = coordX + 75, y = coordY + 25,
+			width = 375, --height = 30,
 			font = fontFamilyBold,   
-			fontSize = 26, align = "left"
+			fontSize = 26, align = "right"
 		})
 		lblGender:setFillColor( 0 )
 		scrPerfile:insert(lblGender)
 	elseif name == "residenceTime" then
 		lblResidenceTime = display.newText({
 			text = item.tiempoResidencia, 
-			x = coordX + 125, y = coordY + 25,
-			width = 380, --height = 30,
+			x = coordX + 75, y = coordY + 25,
+			width = 375, --height = 30,
 			font = fontFamilyBold,   
-			fontSize = 26, align = "left"
+			fontSize = 26, align = "right"
 		})
 		lblResidenceTime:setFillColor( 0 )
 		scrPerfile:insert(lblResidenceTime)
 	elseif name == "race" then
 		lblRace = display.newText({
 			text = item.nivelEstudio, 
-			x = coordX + 125, y = coordY + 25,
-			width = 380, --height = 30,
+			x = coordX + 75, y = coordY + 25,
+			width = 375, --height = 30,
 			font = fontFamilyBold,   
-			fontSize = 26, align = "left"
+			fontSize = 26, align = "right"
 		})
 		lblRace:setFillColor( 0 )
 		scrPerfile:insert(lblRace)
 	elseif name == "workArea" then
 		lblWorkArea = display.newText({
 			text = item.areaLaboral, 
-			x = coordX + 125, y = coordY + 25,
-			width = 380, --height = 30,
+			x = coordX + 75, y = coordY + 25,
+			width = 375, --height = 30,
 			font = fontFamilyBold,   
-			fontSize = 26, align = "left"
+			fontSize = 26, align = "right"
 		})
 		lblWorkArea:setFillColor( 0 )
 		scrPerfile:insert(lblWorkArea)
@@ -1279,7 +1342,7 @@ function createTextField( item, name, coordY )
 	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 	local bgTextField = display.newRect( intW - 65, coordY + 30, 400, 2 )
 	bgTextField.anchorX = 1
-	bgTextField:setFillColor( .6 )
+	bgTextField:setFillColor( 240/255 )
 	scrPerfile:insert(bgTextField)
 	if name == "name" then
 		--textField user name
@@ -1288,10 +1351,11 @@ function createTextField( item, name, coordY )
 		textName.anchorX = 1
 		textName.text = item.nombre
 		textName.hasBackground = false
-		textName.size = 45
+		textName.size = 35
 		--textName:resizeHeightToFitFont()
 		textName:addEventListener( "userInput", userInputProfile )
 		textName.name = "name"
+		textName.align = "right"
 		grpTextProfile:insert(textName)
 	elseif name == "lastName" then
 		--textField apellido
@@ -1302,7 +1366,8 @@ function createTextField( item, name, coordY )
 		textLastName.anchorX = 1
 		textLastName.text = item.apellidos
 		textLastName.hasBackground = false
-		textLastName.size = 45
+		textLastName.size = 35
+		textLastName.align = "right"
 		--textLastName:resizeHeightToFitFont()
 		textLastName:addEventListener( "userInput", userInputProfile )
 		textLastName.name = "lastName"
@@ -1316,10 +1381,11 @@ function createTextField( item, name, coordY )
 		textOriginCountry.anchorX = 1
 		textOriginCountry.text = item.paisOrigen
 		textOriginCountry.hasBackground = false
-		textOriginCountry.size = 45
+		textOriginCountry.size = 35
 		--textOriginCountry:resizeHeightToFitFont()
 		textOriginCountry:addEventListener( "userInput", userInputProfile )
 		textOriginCountry.name = "originCountry"
+		textOriginCountry.align = "right"
 		grpTextProfile:insert(textOriginCountry)
 	elseif name == "residence" then
 		--[[local bgTextField = display.newRect( 500, coordY + 18, 400, 2 )
@@ -1330,12 +1396,18 @@ function createTextField( item, name, coordY )
 		textUserResidence.anchorX = 1
 		textUserResidence.text = item.residencia
 		textUserResidence.hasBackground = false
-		textUserResidence.size = 45
+		textUserResidence.size = 35
 		--textUserResidence:resizeHeightToFitFont()
 		textUserResidence:addEventListener( "userInput", userInputProfile )
 		textUserResidence.name = "residence"
+		textUserResidence.align = "right"
 		textUserResidence.city = item.residencia
-		textUserResidence.id = item.residenciaId
+		if item.residenciaId then
+			textUserResidence.id = item.residenciaId
+		else
+			textUserResidence.id = 0
+		end
+		
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
 		--[[local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
@@ -1344,9 +1416,10 @@ function createTextField( item, name, coordY )
 		--textField pais de origen
 		textEmailContact = native.newTextField( intW - 65, coordY, 400 , 90 )
 		textEmailContact.anchorX = 1
-		textEmailContact.text = item.emailContacto
+		textEmailContact.text = item.userEmail
 		textEmailContact.hasBackground = false
-		textEmailContact.size = 45
+		textEmailContact.size = 35
+		textEmailContact.align = "right"
 		--textEmailContact:resizeHeightToFitFont()
 		textEmailContact:addEventListener( "userInput", userInputProfile )
 		textEmailContact.name = "emailContact"
@@ -1360,7 +1433,7 @@ function createPreferencesItems( item )
 	---------- Preferences -----------
     -- BG Component
 	local line = display.newLine( 0, posY - 2 , intW, posY - 2 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1513,7 +1586,7 @@ function createPreferencesItems( item )
             x = midW + 65, y = posY + 50,
             width = intW,
             font = fontFamilyLight,   
-            fontSize = 22, align = "left"
+            fontSize = 28, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
@@ -1542,17 +1615,19 @@ function createPreferencesItems( item )
 			
 			lblLang = display.newText({
 				text = languageText, 
-				x = intW - 50, y = posY + 50,
-				width = 390,
+				x = 465 , y = posY + 50,
+				width = 360,
 				font = fontFamilyBold,   
-				fontSize = 22, align = "left"
+				fontSize = 26, align = "right"
 			})
 			lblLang:setFillColor( 0 )
-			lblLang.anchorX = 1
+			--lblLang.anchorX = 1
 			scrPerfile:insert(lblLang)
 			
 			local triangle = display.newImage("img/down.png")
-			triangle:translate(intW - 97, posY + 55)
+			triangle:translate(intW - 90, posY + 55)
+			triangle.height = 48
+			triangle.width = 48
 			scrPerfile:insert(triangle)
 			
 		elseif nameOption[i] == "sport" then
@@ -1579,22 +1654,24 @@ function createPreferencesItems( item )
 			
 			lblSport = display.newText({
 				text = sportText, 
-				x = intW - 50, y = posY + 50,
-				width = 390,
+				x = 465, y = posY + 50,
+				width = 360,
 				font = fontFamilyBold,   
-				fontSize = 22, align = "left"
+				fontSize = 26, align = "right"
 			})
 			lblSport:setFillColor( 0 )
-			lblSport.anchorX = 1
+			--lblSport.anchorX = 1
 			scrPerfile:insert(lblSport)
 			
 			local triangle = display.newImage("img/down.png")
-			triangle:translate(intW - 97, posY + 55)
+			triangle:translate(intW - 90, posY + 55)
+			triangle.height = 48
+			triangle.width = 48
 			scrPerfile:insert(triangle)
 			
 		elseif nameOption[i] == "hobbies" then
 			
-			if item.deportes then
+			--[[if item.deportes then
 				for i=1, #item.deportes do
 					if i == 1 then
 						sportText = item.deportes[i]
@@ -1602,14 +1679,14 @@ function createPreferencesItems( item )
 						sportText = sportText ..', '.. item.deportes[i]
 					end
 				end
-			end
+			end]]
 			local hobbiesText = "Editar pasatiempos"
 			if item.hobbies then
-				for i=1, #item.deportes do
+				for i=1, #item.hobbies do
 					if i == 1 then
-						hobbiesText = item.deportes[i]
+						hobbiesText = item.hobbies[i]
 					else
-						hobbiesText = hobbiesText ..', '.. item.deportes[i]
+						hobbiesText = hobbiesText ..', '.. item.hobbies[i]
 					end
 				end
 			end
@@ -1626,17 +1703,19 @@ function createPreferencesItems( item )
 			
 			lblInts = display.newText({
 				text = hobbiesText, 
-				x = intW - 50, y = posY + 50,
-				width = 390,
+				x = 465, y = posY + 50,
+				width = 360,
 				font = fontFamilyBold,   
-				fontSize = 22, align = "left"
+				fontSize = 26, align = "right"
 			})
 			lblInts:setFillColor( 0 )
-			lblInts.anchorX = 1
+			--lblInts.anchorX = 1
 			scrPerfile:insert(lblInts)
 			
 			local triangle = display.newImage("img/down.png")
-			triangle:translate(intW - 97, posY + 55)
+			triangle:translate(intW - 90, posY + 55)
+			triangle.height = 48
+			triangle.width = 48
 			scrPerfile:insert(triangle)
 		
 		end
@@ -1652,7 +1731,7 @@ function createPreferencesItems( item )
 		posY = posY + 100
 		
 		local line = display.newLine( 0, posY, intW, posY )
-		line:setStrokeColor( 227/255 )
+		line:setStrokeColor( 240/255 )
 		line.strokeWidth = 2
 		scrPerfile:insert(line)
 		
@@ -1661,7 +1740,7 @@ function createPreferencesItems( item )
 	bgA0.height = #infoOpcion * 100
 	
 	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1674,7 +1753,7 @@ function createTouristGuideItems( item )
 	-------Generales-----------
     -- BG Component
 	local line = display.newLine( 0, posY - 2 , intW, posY - 2 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1689,7 +1768,7 @@ function createTouristGuideItems( item )
 	local nameOption = {}
 	local num = #infoOpcion + 1
 	--disponibilidad
-	infoOpcion[num] = "Disponibilidad: "
+	--[[infoOpcion[num] = "Disponibilidad: "
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "availability"
@@ -1697,7 +1776,7 @@ function createTouristGuideItems( item )
 	if not item.diponibilidad then
 		item.diponibilidad = "Consultarme"
     end
-	availability = item.diponibilidad
+	availability = item.diponibilidad]]
 	--alojamiento
 	infoOpcion[num] = "Alojamiento: "
 	iconOpcion[num] = ''
@@ -1748,7 +1827,7 @@ function createTouristGuideItems( item )
             x = midW + 65, y = posY + 50,
             width = intW,
             font = fontFamilyLight,   
-            fontSize = 22, align = "left"
+            fontSize = 28, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
@@ -1762,7 +1841,7 @@ function createTouristGuideItems( item )
 		posY = posY + 100
 		
 		local line = display.newLine( 0, posY, intW, posY )
-		line:setStrokeColor( 227/255 )
+		line:setStrokeColor( 240/255 )
 		line.strokeWidth = 2
 		scrPerfile:insert(line)
 		
@@ -1771,7 +1850,7 @@ function createTouristGuideItems( item )
 	bgA0.height = #infoOpcion * 100
 	
 	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1789,7 +1868,7 @@ function createGeneralItems( item )
 	posY = 350
 	
 	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1851,7 +1930,7 @@ function createGeneralItems( item )
 		item.residencia = ""
 	end
 	--tiempo de residencia
-	infoOpcion[num] = "Tiempo de residencia: "
+	infoOpcion[num] = "Tiempo de \nresidencia: "
 	iconOpcion[num] = 'icoFilterCity'
 	typeOpcion[num] = "comboBox"
 	nameOption[num] = "residenceTime"
@@ -1860,14 +1939,14 @@ function createGeneralItems( item )
 		item.tiempoResidencia = "Seleccionar"
 	end
 	--email contacto
-	infoOpcion[num] = "Email de contacto: "
+	infoOpcion[num] = "Email: "
 	iconOpcion[num] = 'iconEmailContacto'
-	typeOpcion[num] = "textField"
-	nameOption[num] = "emailContact"
-	num = #infoOpcion + 1
-	if not item.emailContacto then
-		item.emailContacto = ""
+	typeOpcion[num] = "label"
+	if not item.userEmail then
+		item.userEmail = ""
 	end
+	nameOption[num] = item.userEmail
+	num = #infoOpcion + 1
     
     -- Options
     for i=1, #infoOpcion do
@@ -1884,7 +1963,7 @@ function createGeneralItems( item )
             x = midW + 65, y = posY + 50,
             width = intW,
             font = fontFamilyLight,   
-            fontSize = 22, align = "left"
+            fontSize = 28, align = "left"
         })
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
@@ -1895,12 +1974,22 @@ function createGeneralItems( item )
 			createToggleButtons(item, nameOption[i], posY + 50, intW - 65)
 		elseif typeOpcion[i] == "comboBox" then
 			createComboBox(item, nameOption[i], posY + 50, 380)
+		elseif typeOpcion[i] == "label" then
+			lblLabel1 = display.newText({
+				text = nameOption[i], 
+				x = 390 + 115, y = posY + 50,
+				width = 375, --height = 30,
+				font = fontFamilyBold,   
+				fontSize = 26, align = "right"
+			})
+			lblLabel1:setFillColor( 0 )
+			scrPerfile:insert(lblLabel1)
 		end
 		
 		posY = posY + 100
 		
 		local line = display.newLine( 0, posY, intW, posY )
-		line:setStrokeColor( 227/255 )
+		line:setStrokeColor( 240/255 )
 		line.strokeWidth = 2
 		scrPerfile:insert(line)
 		
@@ -1908,7 +1997,7 @@ function createGeneralItems( item )
 	bgA0.height = #infoOpcion * 100
 	
 	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -1941,7 +2030,7 @@ function MyProfile( item )
 	textUserName = native.newTextField( 550, posY, 400, 90 )
 	textUserName.text = item.userName
 	textUserName.hasBackground = false
-	textUserName.size = 45
+	textUserName.size = 35
 	--textUserName:resizeHeightToFitFont()
 	textUserName:addEventListener( "userInput", userInputProfile )
 	grpTextProfile:insert(textUserName)
@@ -1994,56 +2083,46 @@ function createProfileAvatar()
 	if fhd then
 	
 		local mask = graphics.newMask( "img/image-mask-mask3.png" )
-		local avatar = display.newImage(item.image, system.TemporaryDirectory)
+		avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate( 69, posY)
 		avatar.anchorX = 0
 		avatar.height = 250
 		avatar.width = 250
+		avatar.name = item.image
 		scrPerfile:insert(avatar)
 		avatar:setMask( mask )
 		avatar.maskScaleY = 1.35
 		avatar.maskScaleX = 1.35
 		
-		--[[local ChangePhoto = display.newRoundedRect( midW - 190, posY, 250, 250, 125 )
-		ChangePhoto:setFillColor( 1 )
-		ChangePhoto.alpha = .01
-		--ChangePhoto.alpha = .5
-		scrPerfile:insert(ChangePhoto)
-		ChangePhoto:addEventListener( 'tap', optionAvatar )
+		local bgShowPhoto = display.newRoundedRect( midW - 190, posY, 250, 250, 125 )
+		bgShowPhoto:setFillColor( 1 )
+		bgShowPhoto.alpha = .01
+		bgShowPhoto.image = item.image
+		scrPerfile:insert(bgShowPhoto)
+		bgShowPhoto:addEventListener( 'tap', showAvatar )
 		
-		local bgChangePhoto = display.newImage( 'img/halfCircle-250.png' )
-		bgChangePhoto:translate( 69, posY)
+		--[[local bgChangePhoto = display.newImage( 'img/circle-94.png' )
+		bgChangePhoto:translate( midW - 115, posY + 100)
 		bgChangePhoto.anchorX = 0
-		scrPerfile:insert(bgChangePhoto)]]
+		--bgChangePhoto.alpha = .8
+		bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+		scrPerfile:insert(bgChangePhoto)
 		
+		local imgChangePhoto = display.newImage("img/camera-4-64.png")
+		imgChangePhoto:translate(midW - 68, 249)
+		imgChangePhoto.alpha = .8
+		scrPerfile:insert(imgChangePhoto)]]
 		
-		--[[local mask2 = graphics.newMask( "img/image-mask-mask3.png" )
-		local bgChangePhoto = display.newRect( midW - 190, 247, 225, 80 )
-		bgChangePhoto:setFillColor( 0 )
-		bgChangePhoto.alpha = .8
-		bgChangePhoto:setMask( mask2 )
-		scrPerfile:insert(bgChangePhoto)]]
-		
-		--
-		
-		--[[local bgChangePhoto = display.newRect( midW - 190, 247, 225, 80 )
-		bgChangePhoto:setFillColor( 0 )
+		--[[local bgChangePhoto = display.newImage( 'img/halfCircle-250.png' )
+		bgChangePhoto:translate( 69, posY + 85)
+		bgChangePhoto.anchorX = 0
 		bgChangePhoto.alpha = .8
 		scrPerfile:insert(bgChangePhoto)
 		
-		local imgChangePhoto = display.newImage("img/camera-slr-64.png")
-		imgChangePhoto:translate(midW - 107, 255)
+		local imgChangePhoto = display.newImage("img/camera-4-48.png")
+		imgChangePhoto:translate(midW - 175, 230)
 		imgChangePhoto.alpha = .8
-		scrPerfile:insert(imgChangePhoto)
-		
-		local lblChangePhoto = display.newText({
-			text = "Editar", 
-			x = midW - 230, y = 255,
-			font = native.systemFont,   
-			fontSize = 32, align = "left"
-		})
-		lblChangePhoto:setFillColor( 129/255, 61/255, 153/255 )
-		scrPerfile:insert(lblChangePhoto)]]
+		scrPerfile:insert(imgChangePhoto)]]
 		
 	else
 		local items = {}
@@ -2054,7 +2133,7 @@ function createProfileAvatar()
 	posY = posY + 150
 	
 	local line = display.newLine( 0, posY , intW, posY )
-	line:setStrokeColor( 227/255 )
+	line:setStrokeColor( 240/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
@@ -2071,7 +2150,7 @@ function createProfileAvatar()
 			text = "Guardar Cambios", 
 			x = midW, y = posY,
 			font = fontFamilyBold,   
-			fontSize = 32, align = "center"
+			fontSize = 30, align = "center"
 		})
 		lblSaveProfile:setFillColor( 1 )
 		scrPerfile:insert(lblSaveProfile)
@@ -2137,6 +2216,7 @@ end
 -- Se crea la scena con los datos del perfil
 ---------------------------------------------
 function scene:create( event )
+
 	--local item = event.params.item
 	screen = self.view
     --screen.y = h

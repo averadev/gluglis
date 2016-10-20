@@ -43,8 +43,10 @@ language = require('src.resources.Language')
 language = language.es
 
 if isUser then
+	composer.removeScene( "src.Welcome" )
 	composer.gotoScene( "src.Welcome", { time = 400, effect = "fade"})
 else
+	composer.removeScene( "src.LoginSplash" )
 	composer.gotoScene("src.LoginSplash")
 end
 ---------------------Notificaciones---------------------------
@@ -69,6 +71,7 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 					--displaysInList(item[1], false )
 				else
 					system.vibrate()
+					
 				end
 				--si la scena messages existe acomoda los chats
 				local titleScene = composer.getScene( "src.Messages" )

@@ -39,6 +39,7 @@ function gotoSearch()
 end
 
 function logOut()
+	itemProfile = nil
 	RestManager.clearUser()
 	return true
 end
@@ -115,48 +116,54 @@ function scene:create( event )
 	
 	posY = posY + 75
 	
-	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
-	line:setStrokeColor( 227/255 )
-	line.strokeWidth = 3
-	grpMenu:insert(line)
+	if not isReadOnly then
 	
-	local btnEdit = display.newRect( midW, posY, intW, 200 )
-	btnEdit.anchorY = 0
-	btnEdit:setFillColor( 1 )
-    grpMenu:insert(btnEdit)
-	btnEdit:addEventListener( 'tap', gotoMyProfle )
+		local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpMenu:insert(line)
+		
+		local btnEdit = display.newRect( midW, posY, intW, 200 )
+		btnEdit.anchorY = 0
+		btnEdit:setFillColor( 1 )
+		grpMenu:insert(btnEdit)
+		btnEdit:addEventListener( 'tap', gotoMyProfle )
+		
+		local iconEdit = display.newImage("img/editar.png")
+		iconEdit.anchorX = 0
+		iconEdit:translate(100, posY + 100)
+		grpMenu:insert( iconEdit )
+		
+		local lblEdit = display.newText({
+			text = "Editar Perfil", 
+			x = 500, y = posY + 65,
+			width = 490,
+			font = fontFamilyBold,   
+			fontSize = 46, align = "left"
+		})
+		lblEdit:setFillColor( 0 )
+		grpMenu:insert(lblEdit)
+		
+		local lblSubEdit = display.newText({
+			text = "Editar tu perfil personal.", 
+			x = 500, y = posY + 120,
+			width = 490,
+			font = fontFamilyRegular,   
+			fontSize = 26, align = "left"
+		})
+		lblSubEdit:setFillColor( 0 )
+		grpMenu:insert(lblSubEdit)
+		
+		posY = posY + 200
 	
-	local iconEdit = display.newImage("img/editar.png")
-	iconEdit.anchorX = 0
-    iconEdit:translate(100, posY + 100)
-    grpMenu:insert( iconEdit )
+		local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpMenu:insert(line)
 	
-	local lblEdit = display.newText({
-        text = "Editar Perfil", 
-        x = 500, y = posY + 65,
-        width = 490,
-        font = fontFamilyBold,   
-        fontSize = 46, align = "left"
-    })
-    lblEdit:setFillColor( 0 )
-    grpMenu:insert(lblEdit)
+	end
 	
-	local lblSubEdit = display.newText({
-        text = "Editar tu perfil personal.", 
-        x = 500, y = posY + 120,
-        width = 490,
-        font = fontFamilyRegular,   
-        fontSize = 26, align = "left"
-    })
-    lblSubEdit:setFillColor( 0 )
-    grpMenu:insert(lblSubEdit)
 	
-	posY = posY + 200
-	
-	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
-	line.strokeWidth = 3
-	grpMenu:insert(line)
 	
 	local line = display.newLine( 0, intH - 176 , intW, intH - 176 )
 	line:setStrokeColor( 216/255 )
@@ -169,8 +176,15 @@ function scene:create( event )
     grpMenu:insert(btnLogout)
 	btnLogout:addEventListener( 'tap', logOut )
 	
+	txtLogout = "Registrarse"
+	
+	if not isReadOnly then
+		txtLogout = "Cerrar Sesión"
+	end
+	
+	
 	local lblLogoutt = display.newText({
-        text = "Cerrar Sesión", 
+        text = txtLogout, 
         x = midW, y = intH - 95,
         font = fontFamilyBold,   
         fontSize = 38, align = "left"
@@ -191,10 +205,7 @@ end
 ------------------------------------
 function scene:show( event )
 	
-end
-
-
- 
+end 
 
 -------------------------------------
 -- Se llama al cambiar la escena

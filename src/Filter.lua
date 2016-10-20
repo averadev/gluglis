@@ -98,7 +98,12 @@ function filterUser( event )
 		textLocation = 0
 	end
 	typeSearch = "filter"
-	DBManager.updateFilter(textLocation, lblIniDate.date, lblEndDate.date, checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, '', txtLocation.id )
+	DBManager.updateFilter(textLocation, "", "", checkGen[1].isTrue, checkGen[2].isTrue, lblSlider1.text, lblSlider2.text, '', txtLocation.id )
+	composer.removeScene( "src.Home" )
+    composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
+end
+
+function filterGotoHome( event )
 	composer.removeScene( "src.Home" )
     composer.gotoScene( "src.Home", { time = 400, effect = "slideLeft" } )
 end
@@ -549,7 +554,8 @@ function listenerSlider( event )
 		
 		isCircle = false
 		--rango valido para hacer funcionar los slider
-		if event.yStart > 600 and event.yStart < 690 then
+		print(event.yStart)
+		if event.yStart > 400 and event.yStart < 470 then
 			newPoscCircle = nil
 			direction = 0
 			sliderX = event.x
@@ -690,15 +696,19 @@ function newSlider( w,x,y )
     bgSlider1:setFillColor( 111/255 )
     screen:insert(bgSlider1)
 	--botones
-	circleSlider1 = display.newRoundedRect( x - w/2, y + 5, 50, 50, 25 )
-	circleSlider1:setFillColor( 0/255, 174/255, 239/255 )
+	--circleSlider1 = display.newRoundedRect( x - w/2, y + 5, 48, 48, 24 )
+	--circleSlider1:setFillColor( 0/255, 174/255, 239/255 )
+	circleSlider1 = display.newImage( "img/circle-40.png" )
+	circleSlider1:translate( x - w/2, y + 5 )
 	circleSlider1.name = "slider1"
 	screen:insert(circleSlider1)
 	circleSlider1.front = 0
 	poscCircle1 = circleSlider1.x
 	circleSlider1:addEventListener( 'touch', inFront )
-	circleSlider2 = display.newRoundedRect( x + w/2, y + 5, 50, 50, 25 )
-	circleSlider2:setFillColor( 0/255, 174/255, 239/255 )
+	--circleSlider2 = display.newRoundedRect( x + w/2, y + 5, 50, 50, 25 )
+	--circleSlider2:setFillColor( 0/255, 174/255, 239/255 )
+	circleSlider2 = display.newImage( "img/circle-40.png" )
+	circleSlider2:translate( x + w/2, y + 5 )
 	circleSlider2.name = "slider2"
 	screen:insert(circleSlider2)
 	poscCircle2 = circleSlider2.x
@@ -743,8 +753,8 @@ function scene:create( event )
     local posY = 200 + h
     local opt = {
         {icon = 'brujula', label= 'Ciudad:', wField = 380, x = 660, nameField = "location", type="textField"}, 
-		{icon = 'down', label= '¿Cuando viajas?', wField = 450, x = 727, nameField = "iniDate", type = "datePicker"}, 
-		{icon = 'down', label= '¿Cuando Regresas?', wField = 450, x = 727, nameField = "endDate", type="datePicker"}, 
+		--{icon = 'down', label= '¿Cuando viajas?', wField = 450, x = 727, nameField = "iniDate", type = "datePicker"}, 
+		--{icon = 'down', label= '¿Cuando Regresas?', wField = 450, x = 727, nameField = "endDate", type="datePicker"}, 
 	}
 		
 	--group Filter
@@ -938,7 +948,12 @@ function scene:create( event )
     local btnSearch = display.newRect( midW, posY, intW, 120 )
     btnSearch:setFillColor( 0/255, 174/255, 239/255 )
     screen:insert(btnSearch)
-	btnSearch:addEventListener( 'tap', filterUser )
+	if not isReadOnly then
+		btnSearch:addEventListener( 'tap', filterUser )
+	else
+		btnSearch:addEventListener( 'tap', filterGotoHome )
+	end
+	
     local lblSearch = display.newText({
         text = "BUSCAR", 
         x = midW, y = posY,

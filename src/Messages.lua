@@ -174,11 +174,16 @@ function buildListMsg(posc, item )
         lblName:setFillColor( 0 )
         ListChats[poscC]:insert(lblName)
         -- Subject
+		local subject = item[i].subject
+		--print(#item[i].subject)
+		if ( #item[i].subject > 75 ) then
+			subject = subject:sub( 1,75 ) .. "..."
+		end
         local lblSubject = display.newText({
-            text = item[i].subject,     
-            x = 100, y = 20,
-            width = 600,
-            font = native.systemFont,   
+            text = subject,     
+            x = 90, y = 45,
+            width = 580, height = 80,
+            font = fontFamilyLight,   
             fontSize = 25, align = "left"
         })
         lblSubject:setFillColor( .3 )
@@ -211,15 +216,9 @@ function scene:create( event )
 	screen = self.view
     screen.y = h
 	--background
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
-    screen:insert(o)
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
+    local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
+	o:setFillColor( 245/255 )
+	screen:insert(o)
 	--toolbar
     tools = Tools:new()
     tools:buildHeader()

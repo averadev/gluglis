@@ -159,40 +159,53 @@ function infoProfile( item )
 	bgA0:setFillColor( 1 )
     scrPerfile:insert(bgA0)
 	
+	local function trimString( s )
+		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
+	end
+	
 	
 	local num = #infoOpcion + 1
 	--nombre y apellido
 	if item.nombre then
-		infoOpcion[num] = item.nombre
-		if item.apellidos then
-			infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
+		local nameTxt = trimString(item.nombre)
+		if #nameTxt > 0 then
+			infoOpcion[num] = item.nombre
+			if item.apellidos then
+				infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
+			end
+			if infoOpcion[num] == " " then infoOpcion[num] = "Desconocido" end
+			iconOpcion[num] = 'iconName'
+			num = #infoOpcion + 1
 		end
-		if infoOpcion[num] == " " then infoOpcion[num] = "Desconocido" end
-		iconOpcion[num] = 'iconName'
-		num = #infoOpcion + 1
 	end
 	
 	--pais de origen
 	if item.paisOrigen then
-		infoOpcion[num] = "Es de " .. item.paisOrigen 
-		iconOpcion[num] = 'icoFilterCity'
-		num = #infoOpcion + 1
-	end
-	
-	--tiempo de residencia
-	if item.residencia then
-		if item.tiempoResidencia then
-			infoOpcion[num] = "Desde hace " .. item.tiempoResidencia 
+		local CountryTxt = trimString(item.paisOrigen)
+		if #CountryTxt > 0 then
+			infoOpcion[num] = "Es de " .. item.paisOrigen 
 			iconOpcion[num] = 'icoFilterCity'
 			num = #infoOpcion + 1
 		end
 	end
-	if item.emailContacto then
-		if item.emailContacto == " " then
-			infoOpcion[num] = item.emailContacto 
+	
+	--tiempo de residencia
+	if item.residencia then
+		local residentTxt = trimString(item.residencia)
+		if #residentTxt > 0 then
+			if item.tiempoResidencia then
+				infoOpcion[num] = "Desde hace " .. item.tiempoResidencia 
+				iconOpcion[num] = 'icoFilterCity'
+				num = #infoOpcion + 1
+			end
+		end
+	end
+	if item.userEmail then
+		--if item.userEmail == " " then
+			infoOpcion[num] = item.userEmail 
 			iconOpcion[num] = 'iconEmailContacto'
 			num = #infoOpcion + 1
-		end
+		--end
 	end
 	
 	for i=1, #infoOpcion do
@@ -246,40 +259,43 @@ function infoProfile( item )
 	local labelOpcion = {}
 	local infoOpcion = {}
 	--disponibilidad
-	labelOpcion[1] = "Puedo ser tu Guia"
+	--[[labelOpcion[1] = "Puedo ser tu Guia"
     if item.diponibilidad and item.diponibilidad == 'Siempre' then
         infoOpcion[1] = 'Si'
 		iconOpcion[1] = "si"
     else 
 		infoOpcion[1] = 'No'
 		iconOpcion[1] = "no"
-    end
+    end]]
 	--alojamiento
-	labelOpcion[2] = "Ofreco Alojamiento"
+	local num = #infoOpcion + 1
+	labelOpcion[num] = "Ofreco Alojamiento"
 	if item.alojamiento and item.alojamiento == 'Sí' then
-		infoOpcion[2] = 'Si'
-		iconOpcion[2] = "si"
+		infoOpcion[num] = 'Si'
+		iconOpcion[num] = "si"
     else 
-		infoOpcion[2] = 'No'
-		iconOpcion[2] = "no"
+		infoOpcion[num] = 'No'
+		iconOpcion[num] = "no"
     end
+	num = num + 1
 	-- transporte
-	labelOpcion[3] = "Vehiculo Propio"
+	labelOpcion[num] = "Vehiculo Propio"
     if item.vehiculo and item.vehiculo == 'Sí' then
-    	infoOpcion[3] = 'Si'
-		iconOpcion[3] = "si"
+    	infoOpcion[num] = 'Si'
+		iconOpcion[num] = "si"
     else 
-		infoOpcion[3] = 'No'
-		iconOpcion[3] = "no"
+		infoOpcion[num] = 'No'
+		iconOpcion[num] = "no"
     end
+	num = num + 1
 	--comida
-	labelOpcion[4] = "Comida"
+	labelOpcion[num] = "Comida"
 	if item.comida and item.comida == 'Sí' then
-    	infoOpcion[4] = 'Si'
-		iconOpcion[4] = "si"
+    	infoOpcion[num] = 'Si'
+		iconOpcion[num] = "si"
     else 
-		infoOpcion[4] = 'No'
-		iconOpcion[4] = "no"
+		infoOpcion[num] = 'No'
+		iconOpcion[num] = "no"
     end
 	
 	for i=1, #infoOpcion do

@@ -36,6 +36,7 @@ local isReady = true
 local counter = 0
 local isFirstI = true
 local grpHome
+local lastY = 0
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -95,7 +96,17 @@ function HomeError( message )
 	--tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
 	
-	local bgCard0 = display.newRect( midW, 102, intW, 515 )
+	if topCmp then
+		topCmp:removeSelf()
+		topCmp = nil
+	end
+	
+	topCmp = display.newGroup()
+    container:insert(topCmp)
+	topCmp.x = - 384
+	topCmp.y = - 500
+	
+	--[[local bgCard0 = display.newRect( midW, 102, intW, 515 )
     bgCard0.anchorY = 0
     bgCard0:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(bgCard0)
@@ -109,19 +120,28 @@ function HomeError( message )
     bgAvatar = display.newRect( midW, 60, 600, 600 )
     bgAvatar.anchorY = 0
     bgAvatar:setFillColor( 0, 193/225, 1 )
-    topCmp:insert(bgAvatar)
+    topCmp:insert(bgAvatar)]]
     
 	--[[local bgavatarDefault = display.newRect( midW, 60, 700, 700 )
 	bgavatarDefault.anchorY = 0
 	bgavatarDefault:setFillColor( 0 )
 	topCmp:insert(bgavatarDefault)]]
 		
-	local avatarDefault = display.newImage( "img/avatar2.png" )
-	avatarDefault:translate( midW, 360 )
-	topCmp:insert(avatarDefault)
+	local imgNoResultHome = display.newImage( "img/Vector Smart Object2-01.png" )
+	imgNoResultHome:translate( midW, 360 )
+	topCmp:insert(imgNoResultHome)
 	bottomCmp.alpha = 1
 	container.alpha = 1
-	lblName.text = message
+	
+	local lblnoResultHome = display.newText({
+        text = "Busqueda \nsin resultados", 
+        x = midW, y = 620,
+        font = fontFamilyLight,   
+        fontSize = 30, align = "center"
+    })
+    lblnoResultHome:setFillColor( 100/255 )
+    topCmp:insert(lblnoResultHome)
+	
 end
 
 -------------------------------------
@@ -185,7 +205,7 @@ function buildCard(item)
 	
 	imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
     
-    avaL[idx] = display.newRect( midW, 60, 300, 600 )
+    avaL[idx] = display.newRect( midW, 60, 360, 720 )
     avaL[idx].alpha = 0
     avaL[idx].anchorY = 0
     avaL[idx].anchorX = 1
@@ -193,7 +213,7 @@ function buildCard(item)
     avaL[idx].fill = { type = "image", sheet = imgS, frame = 1 }
     profiles:insert(avaL[idx])
     
-    avaR[idx] = display.newRect( midW, 60, 300, 600 )
+    avaR[idx] = display.newRect( midW, 60, 360, 720 )
     avaR[idx].alpha = 0
     avaR[idx].anchorY = 0
     avaR[idx].anchorX = 0
@@ -246,10 +266,10 @@ end
 ------------------------------------
 function setInfo(idx)
     -- Hide Icons
-    for i=3, 4 do
+    --[[for i=3, 4 do
         detail[i].icon.alpha = 0
         detail[i].icon2.alpha = 0
-    end
+    end]]
     -- Set info
     lblName.text = loadUsers[idx].userName 
     if loadUsers[idx].edad then 
@@ -331,22 +351,22 @@ function touchScreen(event)
                 direction = 1
                 avaR[idxA+1]:toBack()
                 avaR[idxA+1].alpha = 1
-                avaR[idxA+1].width = 300
+                avaR[idxA+1].width = 360
             elseif x > 10 and idxA > 1 then
                 direction = -1
                 avaL[idxA-1]:toBack()
                 avaL[idxA-1].alpha = 1
-                avaL[idxA-1].width = 300
+                avaL[idxA-1].width = 360
             end
-        elseif direction == 1 and x <= 0 and xM >= -600 then
-            if xM > -300 then
+        elseif direction == 1 and x <= 0 and xM >= -720 then
+            if xM > -360 then
                 if avaR[idxA].alpha == 0 then
                     avaL[idxA+1].alpha = 0
                     avaR[idxA].alpha = 1
                     avaR[idxA].width = 0
                 end
                 -- Move current to left
-                avaR[idxA].width = 300 + xM
+                avaR[idxA].width = 360 + xM
             else
                 if avaL[idxA+1].alpha == 0 then
                     avaR[idxA].alpha = 0
@@ -355,18 +375,18 @@ function touchScreen(event)
                     avaL[idxA+1].width = 0
                 end
                 -- Move new to left
-                avaL[idxA+1].width = (xM*-1)-300
+                avaL[idxA+1].width = (xM*-1)-360
             end
         elseif direction == -1 and x >= 0 then
-            if xM < 300 then
+            if xM < 360 then
                 if avaL[idxA].alpha == 0 then
                     avaR[idxA-1].alpha = 0
                     avaL[idxA].alpha = 1
                     avaL[idxA].width = 0
                 end
                 -- Move current to left
-                avaL[idxA].width = 300 - xM
-            elseif xM < 600 then
+                avaL[idxA].width = 360 - xM
+            elseif xM < 720 then
                 if avaR[idxA-1].alpha == 0 then
                     avaL[idxA].alpha = 0
                     avaR[idxA-1]:toFront()
@@ -374,46 +394,46 @@ function touchScreen(event)
                     avaR[idxA-1].width = 0
                 end
                 -- Move new to left
-                avaR[idxA-1].width = xM - 300
+                avaR[idxA-1].width = xM - 360
             end
             
         end
     elseif event.phase == "ended" or event.phase == "cancelled" then
         local xM = ((event.x - event.xStart) * 3)
         -- To Rigth
-        if direction == 1 and xM >= -600 then
+        if direction == 1 and xM >= -720 then
             avaR[idxA].alpha = 1
             avaL[idxA+1].alpha = 0
-            transition.to( avaR[idxA], { width = 300, time = 200, onComplete=function()
+            transition.to( avaR[idxA], { width = 360, time = 200, onComplete=function()
                 avaR[idxA+1].alpha = 0
                 isReady = true
             end})
-        elseif direction == 1 and xM < -600 then
+        elseif direction == 1 and xM < -720 then
             if idxA % 5 == 0 and #loadUsers < totalCard then
                 getProfile()
             end
 			avaR[idxA].alpha = 0
             avaL[idxA+1].alpha = 1
             setInfo(idxA+1)
-            transition.to( avaL[idxA+1], { width = 300, time = 200, onComplete=function()
+            transition.to( avaL[idxA+1], { width = 360, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA + 1
                 isReady = true
             end})
         -- To Left
-        elseif direction == -1 and xM <= 600 then
+        elseif direction == -1 and xM <= 720 then
             avaL[idxA].alpha = 1
             avaR[idxA-1].alpha = 0
-            transition.to( avaL[idxA], { width = 300, time = 200, onComplete=function()
+            transition.to( avaL[idxA], { width = 360, time = 200, onComplete=function()
                 avaR[idxA-1].alpha = 0
                 isReady = true
             end})
-        elseif direction == -1 and xM > 600 then
+        elseif direction == -1 and xM > 720 then
             avaL[idxA].alpha = 0
             avaR[idxA-1].alpha = 1
             setInfo(idxA-1)
-            transition.to( avaR[idxA-1], { width = 300, time = 200, onComplete=function()
+            transition.to( avaR[idxA-1], { width = 360, time = 200, onComplete=function()
                 avaL[idxA].alpha = 0
                 avaR[idxA].alpha = 0
                 idxA = idxA - 1
@@ -449,7 +469,7 @@ end
 -----------------------------------------------
 function showInfoButton()
 
-	local posY = 920 + h
+	--[[local posY = 920 + h
 	---  FIX FULL  ---
     local opt = {
         {icon = 'icoFilterCity'}, 
@@ -457,7 +477,7 @@ function showInfoButton()
         {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
         {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
     for i=1, 4 do
-       --[[]] detail[i] = {}
+        detail[i] = {}
         detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
         detail[i].icon:translate( -100, 0 )
         bottomCmp:insert(detail[i].icon)
@@ -474,23 +494,33 @@ function showInfoButton()
         })
         detail[i].alpha = 0
         bottomCmp:insert(detail[i].lbl)
-    end
+    end]]
     ---  ------ ---
-    
+    lastY = lastY + 30
 	--btn perfil
-	btnViewProfile = display.newRect( midW, intH - 130, intW, 120 )
+	btnViewProfile = display.newRect( midW, lastY, intW, 120 )
     btnViewProfile.anchorY = 0
 	btnViewProfile.id = 0
     btnViewProfile:setFillColor( 0/255, 174/255, 239/255 )
-    bottomCmp:insert(btnViewProfile)
+    topCmp:insert(btnViewProfile)
 	local lblViewProfile = display.newText({
         text = "VER PERFIL",
-        x = midW, y = intH - 70,
+        x = midW, y = lastY + 60,
         font = fontFamilyBold,
         fontSize = 32, align = "left"
     })
     lblViewProfile:setFillColor( 1 )
-    bottomCmp:insert(lblViewProfile)
+    topCmp:insert(lblViewProfile)
+	
+	local poscY = container.height - 90 - h
+	print(poscY)
+	
+	topCmp.y =  - (poscY / 2)
+	--container.y = aa + ( intH / 25.6 )
+	
+	print(intH)
+	
+	--topCmp.y = (midH - topCmp.height) / .47
 	
 end
 
@@ -534,34 +564,36 @@ function scene:create( event )
     tools:buildHeader()
     screen:insert(tools)
 	
-	local lastY = 90 + h 
+	lastY = midH + 90 + h
 	
 	grpHome = display.newGroup()
 	screen:insert(grpHome)
 	--grpHome.y = h
 	
-	container = display.newContainer( intW, 900 )
-	container:translate( midW , lastY + 75)
-	container.anchorY = 0
+	container = display.newContainer( intW, intH )
+	container:translate( midW , lastY)
+	--container.anchorY = 1
+	--container:setFillColor( 0/255, 174/255, 239/255 )
+	--container:s
     screen:insert(container)
 	
 	container.alpha = 0
 	
     topCmp = display.newGroup()
     container:insert(topCmp)
-	topCmp.x = - 384
-	topCmp.y = - 500
+	--topCmp.anchorY = 0
+	topCmp.x = - midW
+	topCmp.y = - midH
 	
     -- Content profile
 	
-	local bgCard0 = display.newRect( midW, 102, intW, 515 )
+	local bgCard0 = display.newRect( midW, 75, intW, 700 )
     bgCard0.anchorY = 0
     bgCard0:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(bgCard0)
 	
-    local bgCard = display.newRoundedRect( midW, 52, 615, 615, 20 )
+    local bgCard = display.newRect( midW, 52, 740, 740 )
     bgCard.anchorY = 0
-    --bgCard:setFillColor( 11/225, 163/225, 212/225 )
 	bgCard:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(bgCard)
     
@@ -578,11 +610,13 @@ function scene:create( event )
     
     profiles = display.newGroup()
     topCmp:insert(profiles)
+	
+	lastY = 820
     
     -- Personal data
     lblName = display.newText({
         text = "", 
-        x = 420, y = 710,
+        x = 420, y = lastY,
         width = 680,
         font = fontFamilyBold,   
         fontSize = 30, align = "left"
@@ -590,19 +624,11 @@ function scene:create( event )
     lblName:setFillColor( 0 )
     topCmp:insert(lblName)
 	
-	--[[lblAge = display.newText({
-        text = "", 
-        x = 420, y = 760,
-        width = 680,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "left"
-    })
-    lblAge:setFillColor( 0 )
-    topCmp:insert(lblAge)]]
+	lastY = lastY + 40
 	
     lblInts = display.newText({
         text = "", 
-        x = 420, y = 760,
+        x = 420, y = lastY,
         width = 680,
         font = fontFamilyRegular, 
         fontSize = 28, align = "left"
@@ -625,16 +651,22 @@ function scene:create( event )
 	screen:insert(grpLoad2)
 	grpLoad2.y = 840 + h
 	grpLoad2.x = midW - 80
-    
-	--RestManager.getUsersById()
-	if typeSearch == "welcome" then
-		RestManager.getUsersByCity(0)
-		limitCard = 5
+	
+	if not isReadOnly then
+		if typeSearch == "welcome" then
+			RestManager.getUsersByCity(0)
+			limitCard = 5
+		else
+			RestManager.getUsersByFilter(0)
+			limitCard = 10
+		end
 	else
-		RestManager.getUsersByFilter(0)
-		limitCard = 10
+		RestManager.getUsersDemo(0)
 	end
-    --
+    
+	posY = (topCmp.height /1.65)
+	topCmp.y = - posY
+	
 	
 	
 	tools:toFront()

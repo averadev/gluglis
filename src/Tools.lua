@@ -65,16 +65,20 @@ function Tools:new()
             self:insert( iconMenu )
 			if currentScene ~= "src.Welcome" then
 			
-				local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
-				bgIcoHome.anchorY = 0
-				bgIcoHome:setFillColor( 45/255, 10/255, 65/255 )
-				bgIcoHome.screen = 'Welcome'
-				bgIcoHome:addEventListener( 'tap', toScreen)
-				self:insert( bgIcoHome )
+				if not isReadOnly then
 			
-				local iconHome = display.newImage("img/home.png")
-				iconHome:translate(midW, 40)
-				self:insert( iconHome )
+					local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
+					bgIcoHome.anchorY = 0
+					bgIcoHome:setFillColor( 45/255, 10/255, 65/255 )
+					bgIcoHome.screen = 'Welcome'
+					bgIcoHome:addEventListener( 'tap', toScreen)
+					self:insert( bgIcoHome )
+				
+					local iconHome = display.newImage("img/home.png")
+					iconHome:translate(midW, 40)
+					self:insert( iconHome )
+				
+				end
 			end
 			local iconChat = display.newImage("img/mensajes.png")
 			iconChat:translate(intW - 90, 75)
@@ -111,19 +115,20 @@ function Tools:new()
 			})
 			lblIcoBack:setFillColor( 1 )
 			self:insert(lblIcoBack)
-			
-			local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
-			bgIcoHome.anchorY = 0
-			bgIcoHome:setFillColor( 45/255, 10/255, 65/255 )
-			bgIcoHome.screen = 'Welcome'
-			bgIcoHome:addEventListener( 'tap', toScreen)
-			self:insert( bgIcoHome )
-            
-            local iconHome = display.newImage("img/home.png")
-            iconHome:translate(midW, 40)
-            iconHome.screen = 'Welcome'
-            --iconHome:addEventListener( 'tap', toScreen)
-            self:insert( iconHome )
+			if not isReadOnly then
+				local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
+				bgIcoHome.anchorY = 0
+				bgIcoHome:setFillColor( 45/255, 10/255, 65/255 )
+				bgIcoHome.screen = 'Welcome'
+				bgIcoHome:addEventListener( 'tap', toScreen)
+				self:insert( bgIcoHome )
+				
+				local iconHome = display.newImage("img/home.png")
+				iconHome:translate(midW, 40)
+				iconHome.screen = 'Welcome'
+				--iconHome:addEventListener( 'tap', toScreen)
+				self:insert( iconHome )
+			end
         end
     end
     
@@ -345,7 +350,9 @@ function Tools:new()
 	end
 	
 	function resultCleanUser(isTrue, message)
-		NewAlert(true,message )
+		if not isReadOnly then
+			NewAlert(true,message )
+		end
 		timeMarker = timer.performWithDelay( 1000, function()
 			if isTrue == true then
 				DBManager.clearUser()

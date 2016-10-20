@@ -32,6 +32,9 @@ local RestManager = {}
     -- da de alta un nuevo usuario por facebook
     ---------------------------------------------
 	RestManager.createUser = function(userLogin, email, password, name, gender, birthday, location, facebookId, playerId)
+	
+		settings = DBManager.getSettings()
+		site = settings.url
 		
 		password = encryptedPass(password)
 		password = string.gsub( password, "/", '&#47;' )
@@ -97,6 +100,9 @@ local RestManager = {}
     -- da de alta un nuevo usuario
     -------------------------------------
 	RestManager.createUserNormal = function(userLogin, email, password, playerId)
+	
+		settings = DBManager.getSettings()
+		site = settings.url
 		
 		password = encryptedPass(password)
 		password = string.gsub( password, "/", '&#47;' )
@@ -142,6 +148,9 @@ local RestManager = {}
 	-- valida el logueo
 	-------------------------
 	RestManager.validateUser = function( email, password, playerId )
+	
+		settings = DBManager.getSettings()
+		site = settings.url
 	
 		password = encryptedPass(password)
 		
@@ -191,13 +200,16 @@ local RestManager = {}
     -- Obtiene la lista de los mensajes
     -------------------------------------
 	RestManager.getListMessageChat = function()
+	
+		settings = DBManager.getSettings()
+		site = settings.url
+	
         -- Set url
         local url = site
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
 		--url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/timeZone/" .. urlencode("-5")
-	
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -237,6 +249,9 @@ local RestManager = {}
     -- @param channelId identificador del canal de los mensajes
     -------------------------------------
 	RestManager.getChatMessages = function(channelId)
+	
+		settings = DBManager.getSettings()
+		site = settings.url
         -- Set url
         local url = site
         url = url.."api/getChatMessages/format/json"
@@ -282,6 +297,10 @@ local RestManager = {}
 	-- @param poscM posicion en la que esta colocado el chat
     ------------------------------------------------------------
 	RestManager.sendChat = function(channelId, message, poscM)
+	
+		settings = DBManager.getSettings()
+		site = settings.url
+	
         -- Set url
         local url = site
         url = url.."api/saveChat/format/json"
@@ -321,9 +340,10 @@ local RestManager = {}
     end
 	
 	RestManager.getMessagesByChannel = function(channelId)
-		local settings = DBManager.getSettings()
-        -- Set url
-        local url = settings.url
+	
+		settings = DBManager.getSettings()
+		site = settings.url
+		local url = site
         url = url.."api/getMessagesByChannel/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
@@ -363,6 +383,8 @@ local RestManager = {}
 	-- @param status define si el canal estara bloqueado o desbloqueado
     --------------------------------------------------------------------
 	RestManager.blokedChat = function(channelId,status)
+		settings = DBManager.getSettings()
+		site = settings.url
         -- Set url
         local url = site
         url = url.."api/blokedChat/format/json"
@@ -441,6 +463,8 @@ local RestManager = {}
     -- @param item informacion
     --------------------------------------------------------------------
 	RestManager.getImagePerfilMessage = function( item )
+		settings = DBManager.getSettings()
+		site = settings.url
         loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
     end
 
@@ -454,7 +478,6 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
-		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -505,7 +528,6 @@ local RestManager = {}
 		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -544,15 +566,51 @@ local RestManager = {}
 		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/version/v2"
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
-		url = url.."/iniDate/" 	.. urlencode(settFilter.iniDate)
-		url = url.."/endDate/" 	.. urlencode(settFilter.endDate)
+		--url = url.."/iniDate/" 	.. urlencode(settFilter.iniDate)
+		--url = url.."/endDate/" 	.. urlencode(settFilter.endDate)
 		url = url.."/genH/" 	.. settFilter.genH
 		url = url.."/genM/" 	.. settFilter.genM
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
 		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
-		print(url)
+        local function callback(event)
+            if ( event.isError ) then
+				HomeError( "Error con el servidor" )
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						local data = json.decode(event.response)
+						setTotalCard(data.total)
+						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
+					else
+						if data.error then
+							HomeError( "Error con el servidor" )
+						else
+							HomeError(data.message)
+						end
+					end
+				else
+					HomeError( "Error con el servidor" )
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	 ---------------------------------------
+    -- Obtiene los usuarios falsos
+    ---------------------------------------
+    RestManager.getUsersDemo = function(limit)
+		settings = DBManager.getSettings()
+		local settFilter = DBManager.getSettingFilter()
+        local url = site.."api/getUsersDemo/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		url = url.."/city/" 	.. 0
+		url = url.."/version/v2"
         local function callback(event)
             if ( event.isError ) then
 				HomeError( "Error con el servidor" )
@@ -584,6 +642,8 @@ local RestManager = {}
     -- Limpia los datos del usuario(playerId y local)
     --------------------------------------------------
     RestManager.clearUser = function()
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/clearUser/format/json"
 		url = url.."/idApp/" .. settings.idApp
 	
@@ -612,11 +672,12 @@ local RestManager = {}
     -- actualiza el playerId
     --------------------------------------------------
     RestManager.updatePlayerId = function()
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/updatePlayerId/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/playerId/"..urlencode(playerId)
         -- Do request
-		print(url)
 		network.request( url, "GET", callback )
     end
 	
@@ -626,6 +687,8 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     RestManager.startConversation = function(idUser)
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/startConversation/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/idUser/" .. idUser
@@ -656,7 +719,9 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, emailContact, availability, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
+	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
+		settings = DBManager.getSettings()
+		site = settings.url
 		
 		local hobbies2 = json.encode(hobbies)
 		local language2 = json.encode(language)
@@ -683,10 +748,10 @@ local RestManager = {}
 			url = url.."/idResidence/" .. urlencode(idResidence)
 		end
 		url = url.."/residenceTime/" .. urlencode(residenceTime)
-		if emailContact ~= '' then
+		--[[if emailContact ~= '' then
 			url = url.."/emailContact/" .. urlencode(emailContact)
-		end
-		url = url.."/availability/" .. urlencode(availability)
+		end]]
+		--url = url.."/availability/" .. urlencode(availability)
 		url = url.."/accommodation/" .. urlencode(accommodation)
 		url = url.."/vehicle/" .. urlencode(vehicle)
 		url = url.."/food/" .. urlencode(food)
@@ -730,8 +795,77 @@ local RestManager = {}
 	end
 	
 	function uploadImage(photophoto)
-	
+		
+		-- Callback function to handle the upload events that are generated.
+		-- There will be several events: one to indicate the start and end of the
+		-- process and several to indicate the progress (depends on the file size).
+		-- Always test for your error conditions!
+		 
 		local function uploadListener( event )
+			if ( event.isError ) then
+				print( "Network Errorr." )
+				print( "Status:", event.status )
+				print( "Response:", event.response )
+				native.showAlert( "Corona", "Network Errorr.", { "OK" } )
+				--native.showAlert( "Corona", "Status: " .. event.status, { "OK" } )
+				--native.showAlert( "Corona", "Response: " .. event.response, { "OK" } )
+				-- This is likely a time out or server being down. In other words,
+				-- It was unable to communicate with the web server. Now if the
+				-- connection to the web server worked, but the request is bad, this
+				-- will be false and you need to look at event.status and event.response
+				-- to see why the web server failed to do what you want.
+			else
+				if ( event.phase == "began" ) then
+					print( "Upload started" )
+					--native.showAlert( "Corona", "Upload started", { "OK" } )
+				elseif ( event.phase == "progress" ) then
+					print( "Uploading... bytes transferred ", event.bytesTransferred )
+					--native.showAlert( "Corona", "Network Errorr.", { "OK", "Network Errorr." } )
+				elseif ( event.phase == "ended" ) then
+					native.showAlert( "Corona", "Upload ended", { "OK" } )
+					--native.showAlert( "Corona", "Status. " .. event.status, { "OK" } )
+					--native.showAlert( "Corona", "Response. " .. event.response , { "OK" } )
+					print( "Upload ended..." )
+					print( "Status:", event.status )
+					print( "Response:", event.response )
+				end
+			end
+		end
+		 
+		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
+		-- Also define the method as "PUT".
+		local url = "http://www.gluglis.travel/gluglis_api/Upload/uploadImage"
+		local method = "PUT"
+		 
+		-- Set some reasonable parameters for the upload process:
+		local params = {
+			timeout = 60,
+			progress = true,
+			bodyType = "text"
+		}
+		 
+		-- Specify what file to upload and where to upload it from.
+		-- Also, set the MIME type of the file so that the server knows what to expect.
+		local filename =  "tempFotos/" .. photophoto .. ".jpg"
+		local baseDirectory = system.TemporaryDirectory
+		local contentType = "image/jpeg"  --another option is "text/plain"
+		 
+		
+		local headers = {}
+
+		headers["Content-Type"] = "application/x-www-form-urlencoded"
+		headers["Accept-Language"] = "en-US"
+		headers.filename = filename
+		params.headers = headers
+		 
+		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
+ 
+		
+	end
+	
+	function uploadImage2(photophoto)
+	
+		local function uploadListener2( event )
 		   if ( event.isError ) then
 			  print( "Network Error." )
 		 
@@ -887,10 +1021,10 @@ local RestManager = {}
     -- Obtiene la lista de hobbies
     -------------------------------------
     RestManager.getHobbies = function()
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/getHobbies/format/json"
 		url = url.."/idApp/" .. settings.idApp
-		print(url)
-	
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -917,11 +1051,13 @@ local RestManager = {}
     -- Obtiene los usuarios por ubicacion
     -------------------------------------
     RestManager.getCity = function(city,name,parent, itemOption)
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		
+		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -953,6 +1089,8 @@ local RestManager = {}
     -- valida que la ciudad exista
     -------------------------------------
     RestManager.getValidateCity = function(city)
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. city
 		--url = url.."&language=en"
@@ -985,6 +1123,8 @@ local RestManager = {}
     -- valida que la ciudad exista
     -------------------------------------
     RestManager.getRandomCities = function(city)
+		settings = DBManager.getSettings()
+		site = settings.url
         RandomCities()
     end
 	
@@ -1014,11 +1154,13 @@ local RestManager = {}
     end
 	
 	function getCityById(cityId)
+		settings = DBManager.getSettings()
+		site = settings.url
 		local url = "https://maps.googleapis.com/maps/api/place/details/json?placeid="
 		url = url .. cityId
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		
+		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -1100,7 +1242,7 @@ local RestManager = {}
 				local url
 				
 				if obj.items[obj.idx].identifier then
-					local sizeAvatar = 'width=550&height=550'
+					local sizeAvatar = 'width=720&height=720'
 					url = "http://graph.facebook.com/".. obj.items[obj.idx].identifier .."/picture?large&"..sizeAvatar
 					
 				else
