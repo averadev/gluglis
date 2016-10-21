@@ -42,6 +42,8 @@ end
 
 --indica el lenguaje a tomar
 language = ""
+--indica si hay chats sin leer
+unreadChats = 0
 
 conA = {}
 conA[1] = "The Products transacted through the Service are licensed, not sold, to You for use only under the terms of this license, unless a Product is accompanied by a separate license agreement, in which case the terms of that separate license agreement will govern, subject to Your prior acceptance of that separate license agreement. The licensor (“Application Provider”) reserves all rights not expressly granted to You. The Product that is subject to this license is referred to in this license as the “Licensed Application.”"

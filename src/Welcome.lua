@@ -411,6 +411,9 @@ function scene:create( event )
 	grpWelcome:insert(imgMoreFilter)
 	
 	if isReadOnly == false then
+		--obtiene la lista de mensajes no leidos
+		RestManager.getUnreadChats()
+		--actualiza el token de notificaciones
 		timeMarker = timer.performWithDelay( 1000, function( event )
 			if playerId ~= 0 then
 				timer.cancel( event.source )
@@ -422,12 +425,11 @@ function scene:create( event )
 		end, -1)
 	end
 	
-	
     --RestManager.getUserAvatar()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
-	
+	tools:bubble()
 end
 
 -- Hide scene

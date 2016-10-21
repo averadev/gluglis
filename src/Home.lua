@@ -667,7 +667,7 @@ function scene:create( event )
 	posY = (topCmp.height /1.65)
 	topCmp.y = - posY
 	
-	
+	--tools[2].alpha = 0
 	
 	tools:toFront()
 end	
@@ -677,12 +677,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
-
-	--[[local prevScene = composer.getSceneName( "previous" )
-	if prevScene == "src.MyProfile" then
-		--RestManager.getUsersById()
-	end]]
-	
+	tools:bubble()
 end
 
 function makeTimeStamp( dateString )

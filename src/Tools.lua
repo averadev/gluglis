@@ -50,11 +50,6 @@ function Tools:new()
 		bgToolbar:setFillColor( 68/255, 14/255, 98/255 )
 		self:insert( bgToolbar )
 		
-		
-        -- Icons
-        --[[local iconLogo = display.newImage("img/iconLogo.png")
-        iconLogo:translate(display.contentWidth/2, 45)
-        self:insert( iconLogo )]]
         local currentScene = composer.getSceneName( "current" )
         if currentScene == "src.Home" or currentScene == "src.Welcome"  then
             -- Iconos Home
@@ -63,34 +58,7 @@ function Tools:new()
 			iconMenu.screen = 'Menu'
             iconMenu:addEventListener( 'tap', toScreen)
             self:insert( iconMenu )
-			if currentScene ~= "src.Welcome" then
 			
-				if not isReadOnly then
-			
-					local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
-					bgIcoHome.anchorY = 0
-					bgIcoHome:setFillColor( 45/255, 10/255, 65/255 )
-					bgIcoHome.screen = 'Welcome'
-					bgIcoHome:addEventListener( 'tap', toScreen)
-					self:insert( bgIcoHome )
-				
-					local iconHome = display.newImage("img/home.png")
-					iconHome:translate(midW, 40)
-					self:insert( iconHome )
-				
-				end
-			end
-			local iconChat = display.newImage("img/mensajes.png")
-			iconChat:translate(intW - 90, 75)
-			iconChat.screen = 'Messages'
-			iconChat:addEventListener( 'tap', toScreen)
-			self:insert( iconChat )
-			
-            -- Get Menu
-			--[[if not scrMenu then
-				scrMenu = Menu:new()
-				scrMenu:builScreen()
-			end]]
         else
 			
 			bgIcoBack = display.newRect( (intW/3)/2, 0, intW/3, 90 )
@@ -115,6 +83,8 @@ function Tools:new()
 			})
 			lblIcoBack:setFillColor( 1 )
 			self:insert(lblIcoBack)
+        end
+		if currentScene ~= "src.Welcome" then
 			if not isReadOnly then
 				local bgIcoHome = display.newRect( midW, 0, intW/3, 90 )
 				bgIcoHome.anchorY = 0
@@ -125,13 +95,42 @@ function Tools:new()
 				
 				local iconHome = display.newImage("img/home.png")
 				iconHome:translate(midW, 40)
-				iconHome.screen = 'Welcome'
-				--iconHome:addEventListener( 'tap', toScreen)
 				self:insert( iconHome )
 			end
-        end
+		end
+		
+		if currentScene ~= "src.Messages" then
+			local iconChat = display.newImage("img/mensajes.png")
+			iconChat:translate(intW - 90, 75)
+			iconChat.name = 'Messages'
+			iconChat.screen = 'Messages'
+			iconChat:addEventListener( 'tap', toScreen)
+			self:insert( iconChat )
+			
+			local iconChat2 = display.newImage("img/Mensajes_Notificacion.png")
+			iconChat2:translate(intW - 90, 75)
+			iconChat2.name = 'Messages2'
+			iconChat2.screen = 'Messages'
+			iconChat2:addEventListener( 'tap', toScreen)
+			self:insert( iconChat2 )
+			iconChat2.alpha = 0
+		end
     end
-    
+	
+	function self:bubble()
+		for i = 1, 10, 1 do
+			if self[i] then
+				if self[i].name == 'Messages2' then
+					if unreadChats > 0 then
+						self[i].alpha = 1
+					else
+						self[i].alpha = 0
+					end
+				end
+			end
+		end
+	end
+	
 	--------------------------
     -- Creamos loading
 	--------------------------

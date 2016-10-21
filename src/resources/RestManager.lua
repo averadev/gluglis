@@ -208,8 +208,9 @@ local RestManager = {}
         local url = site
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
-		--url = url.."/timeZone/" .. urlencode(timeZone)
-		url = url.."/timeZone/" .. urlencode("-5")
+		url = url.."/timeZone/" .. urlencode(timeZone)
+		--url = url.."/timeZone/" .. urlencode("-5")
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -308,6 +309,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		print(url)
 	
         local function callback(event)
             if ( event.isError ) then
@@ -680,6 +682,21 @@ local RestManager = {}
         -- Do request
 		network.request( url, "GET", callback )
     end
+	
+	--------------------------------------------------
+    -- Obtiene el numero total de chats sin leer
+    --------------------------------------------------
+    RestManager.getUnreadChats = function()
+		print("como tu te llamas io no ze")
+		--[[settings = DBManager.getSettings()
+		site = settings.url
+        local url = site.."api/updatePlayerId/format/json"
+		url = url.."/idApp/" .. settings.idApp
+		url = url.."/playerId/"..urlencode(playerId)
+        -- Do request
+		network.request( url, "GET", callback )]]
+    end
+	
 	
 	---------------------------------- Pantalla PROFILE ----------------------------------
     -------------------------------------

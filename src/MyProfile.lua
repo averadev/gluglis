@@ -2174,31 +2174,31 @@ function scrListen( event )
 		end
 	end
 	if textName then
-		if y < -460 and textName.x == 485 then
-			textName.x = 1000
-		elseif y >= -460 and textName.x == 1000 then
-			textName.x = intW - 65
+		if y < -408.5 and textName.x == 703 then
+			textName.x = intW * 2
+		elseif y >= -408.5 and textName.x == intW * 2 then
+			textName.x = 703
 		end
 	end
 	if textLastName  then
-		if y < -540 and textLastName.x == 485 then
-			textLastName.x = 1000
-		elseif y >= -540 and textLastName.x == 1000 then
-			textLastName.x = intW - 65
+		if y < -500 and textLastName.x == 703 then
+			textLastName.x = intW * 2
+		elseif y >= -500 and textLastName.x == intW * 2 then
+			textLastName.x = 703
 		end
 	end
 	if textOriginCountry  then
-		if y < -680 and textOriginCountry.x == 500 then
-			textOriginCountry.x = 1000
-		elseif y >= -680 and textOriginCountry.x == 1000 then
-			textOriginCountry.x = intW - 65
+		if y < -700 and textOriginCountry.x == 703 then
+			textOriginCountry.x = intW * 2
+		elseif y >= -700 and textOriginCountry.x == intW * 2 then
+			textOriginCountry.x = 703
 		end
 	end
 	if textUserResidence  then
-		if y < -750 and textUserResidence.x == 500 then
-			textUserResidence.x = 1000
-		elseif y >= -750 and textUserResidence.x == 1000 then
-			textUserResidence.x = intW - 65
+		if y < -800 and textUserResidence.x == 703 then
+			textUserResidence.x = intW * 2
+		elseif y >= -800 and textUserResidence.x == intW * 2 then
+			textUserResidence.x = 703
 		end
 	end
 	if textEmailContact  then
@@ -2255,6 +2255,8 @@ function scene:create( event )
 	else
 		createProfileAvatar()
 	end
+	
+	tools:toFront()
 	
 end	
 --------------------------------------------------------

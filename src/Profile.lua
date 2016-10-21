@@ -690,6 +690,8 @@ function scene:create( event )
 	end
 	
 	scrPerfile:setScrollHeight(posY + 100)
+	
+	tools:toFront()
     
 end	
 --------------------------------------------------------
