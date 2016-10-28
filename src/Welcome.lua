@@ -291,6 +291,11 @@ function closeAllWelcome( event )
 	return true
 end
 
+function showBubbleWelcome(total)
+	bubble()
+end
+
+
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
 ---------------------------------------------------------------------------------
@@ -425,11 +430,13 @@ function scene:create( event )
 		end, -1)
 	end
 	
+	
+	
     --RestManager.getUserAvatar()
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
-	tools:bubble()
+	showBubbleWelcome()
 end
 
 -- Hide scene

@@ -9,13 +9,15 @@
 require('src.Tools')
 require('src.resources.Globals')
 local composer = require( "composer" )
+local facebook = require("plugin.facebook.v4")
+local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
 
 -- Grupos y Contenedores
 local screen
 local scene = composer.newScene()
-local grpMenu
+local grpMenu, grpLoadMenu, grpLogOut
 
 -- Variables
 
@@ -39,11 +41,79 @@ function gotoSearch()
 end
 
 function logOut()
+	tools:setLoading(true,grpLoadMenu)
 	itemProfile = nil
 	RestManager.clearUser()
 	return true
 end
 
+function resultCleanUser()
+	tools:setLoading(false,grpLoadMenu)
+	local message = "Sesión Cerrada \ncon exito"
+	if not isReadOnly then
+		messageLogOut(true,message )
+	end
+	timeMarker = timer.performWithDelay( 1000, function()
+		--if isTrue == true then	
+		DBManager.clearUser()
+		facebook.logout()
+		messageLogOut(false, message)
+		composer.removeScene( "src.LoginSplash" )
+		composer.gotoScene( "src.LoginSplash", { time = 400, effect = "fade" } )
+		--end
+		
+	end, 1 )
+end
+
+function messageLogOut(isOpen, message)
+	if isOpen then
+		if grpLogOut then
+			grpLogOut:removeSelf()
+			grpLogOut = nil
+		end
+		
+		grpLogOut = display.newGroup()
+		
+		local bg0 = display.newRect( midW, midH + h, intW, intH )
+		bg0:setFillColor( .95 )
+		bg0.alpha = .3
+		grpLogOut:insert( bg0 )
+		bg0:addEventListener( 'tap', noAction )
+		
+		local bg1 = display.newRect( midW, midH + h + 135, intW, intH )
+		bg1:setFillColor( 245/255 )
+		grpLogOut:insert( bg1 )
+		bg1:addEventListener( 'tap', noAction )
+		
+		local iconMessage = display.newImage("img/cerrada.png")
+		--iconMessage.anchorX = 0
+		iconMessage:translate(midW, intH / 3 )
+		grpLogOut:insert( iconMessage )
+		
+		local iconMessage0 = display.newImage("img/circulo-cerrada.png")
+		--iconMessage.anchorX = 0
+		iconMessage0:translate(midW, intH / 3 )
+		grpLogOut:insert( iconMessage0 )
+		
+		local lblMessage = display.newText({
+			text = message, 
+			x = midW, y = intH / 3 + 200,
+			font = fontFamilyLight,   
+			fontSize = 34, align = "center"
+		})
+		lblMessage:setFillColor( 166/255, 164/255, 156/255 )
+		grpLogOut:insert(lblMessage)
+		
+		--cerrada
+		
+	else
+		if grpLogOut then
+			grpLogOut:removeSelf()
+			grpLogOut = nil
+		end
+	end
+	--if grpLogOut 
+end
 
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
 
@@ -66,6 +136,10 @@ function scene:create( event )
 	
 	grpMenu = display.newGroup()
 	screen:insert(grpMenu)
+	
+	grpLoadMenu = display.newGroup()
+	screen:insert(grpLoadMenu)
+	--grpLoadMenu.y = 650 + h
 	
 	local posY = 190 + h 
 	
@@ -182,7 +256,6 @@ function scene:create( event )
 		txtLogout = "Cerrar Sesión"
 	end
 	
-	
 	local lblLogoutt = display.newText({
         text = txtLogout, 
         x = midW, y = intH - 95,
@@ -204,7 +277,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
-	
+	bubble()
 end 
 
 -------------------------------------

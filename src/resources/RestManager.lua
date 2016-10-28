@@ -209,8 +209,8 @@ local RestManager = {}
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
 		url = url.."/timeZone/" .. urlencode(timeZone)
-		--url = url.."/timeZone/" .. urlencode("-5")
 		print(url)
+		--url = url.."/timeZone/" .. urlencode("-5")
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -259,6 +259,7 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 		url = url.."/channelId/".. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -309,8 +310,6 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
-		print(url)
-	
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -465,9 +464,41 @@ local RestManager = {}
     -- @param item informacion
     --------------------------------------------------------------------
 	RestManager.getImagePerfilMessage = function( item )
-		settings = DBManager.getSettings()
-		site = settings.url
-        loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
+		local settings = DBManager.getSettings()
+        -- Set url
+        local url = settings.url
+        url = url.."api/getImagePerfilMessage/format/json"
+        url = url.."/idApp/" .. settings.idApp
+		--url = url.."/channelId/" .. channelId
+		--url = url.."/idMessage/" .. idMessage
+	
+        local function callback(event)
+            if ( event.isError ) then
+				noConnectionMessages("Error con el servidor")
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						--elimina las burbujas de mensajes no leidos
+						deleteNotBubble()
+					else
+						noConnectionMessage('Error con el servidor')
+					end
+				else
+					noConnectionMessage('Error con el servidor')
+				end
+            end
+            return true
+        end
+        -- Do request
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			noConnectionMessage('No se detecto conexion a internet')
+		end
+		--settings = DBManager.getSettings()
+		--site = settings.url
+        --loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
     end
 
     ---------------------------------- Pantalla HOME ----------------------------------
@@ -687,14 +718,45 @@ local RestManager = {}
     -- Obtiene el numero total de chats sin leer
     --------------------------------------------------
     RestManager.getUnreadChats = function()
-		print("como tu te llamas io no ze")
-		--[[settings = DBManager.getSettings()
+		settings = DBManager.getSettings()
 		site = settings.url
-        local url = site.."api/updatePlayerId/format/json"
-		url = url.."/idApp/" .. settings.idApp
-		url = url.."/playerId/"..urlencode(playerId)
+	
+        -- Set url
+        local url = site
+        url = url.."api/getUnreadChats/format/json"
+        url = url.."/idApp/"..settings.idApp
+		
+        local function callback(event)
+            if ( event.isError ) then
+				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				print('Error con el servidor. Intentelo mas tarde')
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.success then
+						unreadChats = data.items
+						require('src.Tools')
+						bubble()
+						--showBubbleWelcome()
+					else
+						print('Error con el servidor. Intentelo mas tarde')
+						--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					end
+				else
+					print('Error con el servidor. Intentelo mas tarde')
+					--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				end
+            end
+            return true
+        end
         -- Do request
-		network.request( url, "GET", callback )]]
+		if networkConnection then
+			network.request( url, "GET", callback )
+		else
+			--notifica si no existe conexion a internet
+			--noConnectionMessages('No se detecto conexion a internet')
+			print('No se detecto conexion a internet')
+		end
     end
 	
 	
@@ -812,6 +874,8 @@ local RestManager = {}
 	end
 	
 	function uploadImage(photophoto)
+	
+		--changeImageAvatar(photophoto)
 		
 		-- Callback function to handle the upload events that are generated.
 		-- There will be several events: one to indicate the start and end of the
@@ -824,13 +888,6 @@ local RestManager = {}
 				print( "Status:", event.status )
 				print( "Response:", event.response )
 				native.showAlert( "Corona", "Network Errorr.", { "OK" } )
-				--native.showAlert( "Corona", "Status: " .. event.status, { "OK" } )
-				--native.showAlert( "Corona", "Response: " .. event.response, { "OK" } )
-				-- This is likely a time out or server being down. In other words,
-				-- It was unable to communicate with the web server. Now if the
-				-- connection to the web server worked, but the request is bad, this
-				-- will be false and you need to look at event.status and event.response
-				-- to see why the web server failed to do what you want.
 			else
 				if ( event.phase == "began" ) then
 					print( "Upload started" )
@@ -845,6 +902,13 @@ local RestManager = {}
 					print( "Upload ended..." )
 					print( "Status:", event.status )
 					print( "Response:", event.response )
+					--native.showAlert( "Corona", event.status, { "OK" } )
+					--print()
+					
+					if event.status == 201 then
+						
+						changeImageAvatar(photophoto)
+					end
 				end
 			end
 		end
@@ -863,7 +927,7 @@ local RestManager = {}
 		 
 		-- Specify what file to upload and where to upload it from.
 		-- Also, set the MIME type of the file so that the server knows what to expect.
-		local filename =  "tempFotos/" .. photophoto .. ".jpg"
+		local filename =  "tempFotos/" .. photophoto .. ".png"
 		local baseDirectory = system.TemporaryDirectory
 		local contentType = "image/jpeg"  --another option is "text/plain"
 		 
@@ -876,7 +940,6 @@ local RestManager = {}
 		params.headers = headers
 		 
 		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
- 
 		
 	end
 	
@@ -1074,7 +1137,6 @@ local RestManager = {}
 		url = url .. city
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -1177,7 +1239,6 @@ local RestManager = {}
 		url = url .. cityId
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -1213,7 +1274,7 @@ local RestManager = {}
 		elseif  obj.name == "MessageAvatars" then
 			setImagePerfilMessage(obj.items[1])
         elseif  obj.name == "ProfileAvatars" then
-			setImagePerfil(obj.items)
+			setImagePerfil(obj.items[1].image)
         end
     end 
 
@@ -1271,6 +1332,44 @@ local RestManager = {}
             -- Dirigimos al metodo pertinente
             goToMethod(obj)
         end
+    end
+	
+	-------------------------------------
+    -- Cambia la nueva imagen subida al servidor a TemporaryDirectory
+    -- @param obj registros de la consulta con la propiedad image
+    ------------------------------------- 
+    function changeImageAvatar(photophoto)
+	
+		
+		local img = photophoto ..".png"
+        -- Next Image
+		-- Determinamos si la imagen existe para eliminarla
+		
+           
+		local function imageListener2( event )
+			if ( event.isError ) then
+			else
+				-- Eliminamos la imagen creada
+				if event.target then
+					event.target:removeSelf()
+					event.target = nil
+					--loadImage(obj)
+					setImagePerfil(photophoto ..".png")
+				else
+				
+					setImagePerfil("avatar.png")
+					--loadImage(obj)
+				end
+			end
+		end
+		-- Descargamos de la nube
+		local url = "http://gluglis.travel/gluglis_api/assets/img/avatar/" .. photophoto ..".png"
+		
+		print(url)
+		
+		display.loadRemoteImage( url ,"GET", imageListener2, img, system.TemporaryDirectory ) 
+		-- Dirigimos al metodo pertinente
+		--goToMethod(obj)
     end
 	
 	-------------------------------------

@@ -969,6 +969,7 @@ function scene:show( event )
 	if grpTextField then
 		grpTextField.x = 0
 	end
+	bubble()
 end
 
 -- Hide scene

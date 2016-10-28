@@ -513,12 +513,10 @@ function showInfoButton()
     topCmp:insert(lblViewProfile)
 	
 	local poscY = container.height - 90 - h
-	print(poscY)
 	
 	topCmp.y =  - (poscY / 2)
 	--container.y = aa + ( intH / 25.6 )
 	
-	print(intH)
 	
 	--topCmp.y = (midH - topCmp.height) / .47
 	
@@ -642,7 +640,7 @@ function scene:create( event )
 	showInfoButton()
 	grpLoad = display.newGroup()
 	screen:insert(grpLoad)
-	grpLoad.y = 650 + h
+	--grpLoad.y = 650 + h
 	tools:setLoading(true,grpLoad)
 	clearTempDir()
     
@@ -677,7 +675,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
-	tools:bubble()
+	bubble()
 end
 
 function makeTimeStamp( dateString )

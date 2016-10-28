@@ -17,6 +17,7 @@ local RestManager = require('src.resources.RestManager')
 
 local scrMenu, bgShadow, grpNewAlert, grpAlertLogin, grpScrCity, avatar, loopAvatar, loadAvatar
 local btnBackFunction = false
+local iconChat, iconChat2, lblIconChat
 
 Tools = {}
 function Tools:new()
@@ -78,7 +79,7 @@ function Tools:new()
 			local lblIcoBack  = display.newText({
 				text = "Regresar", 
 				x = 130, y = 45,
-				font = native.systemFont,   
+				font = fontFamilyLight,   
 				fontSize = 24, align = "left"
 			})
 			lblIcoBack:setFillColor( 1 )
@@ -99,37 +100,67 @@ function Tools:new()
 			end
 		end
 		
-		if currentScene ~= "src.Messages" then
-			local iconChat = display.newImage("img/mensajes.png")
+		if not grpChats then	
+			grpChats = display.newGroup()
+			grpChats.y = h
+			
+			iconChat = display.newImage("img/mensajes.png")
 			iconChat:translate(intW - 90, 75)
-			iconChat.name = 'Messages'
 			iconChat.screen = 'Messages'
 			iconChat:addEventListener( 'tap', toScreen)
-			self:insert( iconChat )
-			
-			local iconChat2 = display.newImage("img/Mensajes_Notificacion.png")
+			grpChats:insert( iconChat )
+					
+			iconChat2 = display.newImage("img/Mensajes_Notificacion.png")
 			iconChat2:translate(intW - 90, 75)
-			iconChat2.name = 'Messages2'
 			iconChat2.screen = 'Messages'
 			iconChat2:addEventListener( 'tap', toScreen)
-			self:insert( iconChat2 )
-			iconChat2.alpha = 0
+			grpChats:insert( iconChat2 )
+			--iconChat2.alpha = 0
+			
+			lblIconChat  = display.newText({
+				text = "", 
+				x = intW - 68, y = 42,
+				width = 50,
+				font = fontFamilyLight,   
+				fontSize = 22, align = "center"
+			})
+			lblIconChat:setFillColor( 1 )
+			grpChats:insert(lblIconChat)
+			
 		end
+		
+		if grpChats then
+			local currentScene = composer.getSceneName( "current" )
+			if currentScene == "src.Messages" or currentScene == "src.Message" then
+				grpChats.alpha = 0
+			else
+				grpChats.alpha = 1
+			end
+		end
+			
     end
 	
-	function self:bubble()
+	--[[function self:bubble()
 		for i = 1, 10, 1 do
 			if self[i] then
 				if self[i].name == 'Messages2' then
+					
 					if unreadChats > 0 then
 						self[i].alpha = 1
 					else
 						self[i].alpha = 0
 					end
 				end
+				if self[i].name == 'lblMessage' then
+					if unreadChats > 0 then
+						self[i].text = unreadChats
+					else
+						self[i].text = ""
+					end
+				end
 			end
 		end
-	end
+	end]]
 	
 	--------------------------
     -- Creamos loading
@@ -143,11 +174,14 @@ function Tools:new()
             grpLoading = display.newGroup()
             parent:insert(grpLoading)
             
-            local bg = display.newRect( (display.contentWidth / 2), (parent.height / 2), 
-                display.contentWidth, parent.height )
+           -- local bg = display.newRect( (display.contentWidth / 2), (parent.height / 2), display.contentWidth, parent.height )
+			local bg = display.newRect( midW, midH, intW, intH )
             bg:setFillColor( .95 )
             bg.alpha = .3
             grpLoading:insert(bg)
+			bg:addEventListener( 'tap', noAction )
+			print(bg.x)
+			
             
             local sheet, loading
             if parent.cards then
@@ -260,7 +294,7 @@ function Tools:new()
 			local lblNoConection = display.newText({
 				text = message, 
 				x = midW, y = 150 + h,
-				font = native.systemFont,   
+				font = fontFamilyLight,   
 				fontSize = 34, align = "center"
 			})
 			lblNoConection:setFillColor( 1 )
@@ -348,19 +382,21 @@ function Tools:new()
 		return true
 	end
 	
-	function resultCleanUser(isTrue, message)
+	--[[function resultCleanUser(isTrue, message)
 		if not isReadOnly then
 			NewAlert(true,message )
 		end
 		timeMarker = timer.performWithDelay( 1000, function()
 			if isTrue == true then
+				
 				DBManager.clearUser()
 				facebook.logout()
+				deleteLoadingMenu()
 				composer.gotoScene("src.LoginSplash", { time = 400, effect = "fade" } )
 			end
 			NewAlert(false, message)
 		end, 1 )
-	end
+	end]]
 	
 	----------------------------------
     -- Cerramos o mostramos shadow
@@ -420,7 +456,7 @@ function Tools:new()
 				text = text, 
 				x = midW, y = midH + h,
 				width = 500,
-				font = 	native.systemFont,   
+				font = 	fontFamilyLight,   
 				fontSize = 38, align = "center"
 			})
 			lbl0:setFillColor( 0 )
@@ -601,7 +637,7 @@ function Tools:new()
 					text = item[i].description, 
 					x = posX, y = posY + (heightItem - (heightItem/2)),
 					width = itemOption.width - 50,
-					font = native.systemFont,   
+					font = fontFamilyRegular,   
 					fontSize = 22, align = "left"
 				})
 				lbl0:setFillColor( 0 )
@@ -620,8 +656,36 @@ function Tools:new()
 	
 		end
 	end
-    
+	
     return self
+end
+
+function bubble()
+	--[[local currentScene = composer.getSceneName( "current" )
+	if currentScene ~= "src.Messages" then
+		grpChats.alpha = 0
+	elseif currentScene ~= "src.Message" then
+		grpChats.alpha = 0
+	else
+		grpChats.alpha = 1
+	end]]
+	
+	local currentScene = composer.getSceneName( "current" )
+	if currentScene == "src.Messages" or currentScene == "src.Message" then
+		grpChats.alpha = 0
+	else
+		grpChats.alpha = 1
+	end
+		
+	if unreadChats > 0 then
+		iconChat.alpha = 0
+		iconChat2.alpha = 1
+		lblIconChat.text = unreadChats
+	else
+		iconChat.alpha = 1
+		iconChat2.alpha = 0
+		lblIconChat.text = ""
+	end
 end
 
 function keuEve()

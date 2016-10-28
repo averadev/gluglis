@@ -56,7 +56,7 @@ function setItemsMessages( items )
 			tmpList[poscI] = {date = item.fechaFormat, dateOnly = item.dateOnly}
 			poscI = poscI + 1
 		end
-		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = item.message, time = item.hora, isRead = item.status_message} 
+		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = item.message, time = item.hora, isRead = item.status_message, senderId = item.sender_id } 
 	end
 	buildChat(0)
 end
@@ -142,7 +142,7 @@ end
 function displaysInList(itemTemp, isMe)
 	tmpList = nil
 	tmpList = {}
-	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message}
+	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = item.sender_id}
 	--verifica la fecha en que se mando
 	if lastDate ~= itemTemp.fechaFormat then
 		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
@@ -237,10 +237,6 @@ end]]
 
 function scrollListener( event )
 	if ( event.phase == "ended" ) then
-		--print('hola')
-		--print(event.yStart)
-		--print(event.y)
-		print(event.y - event.yStart)
 		if event.y - event.yStart == 0 then
 			native.setKeyboardFocus( nil )
 		end
@@ -352,6 +348,9 @@ end
 -- Elimina la burbuja de mensajes no leidos
 ---------------------------------------------
 function deleteNotBubble()
+	if unreadChats > 0 then
+		unreadChats = unreadChats - 1
+	end
 	local titleScene = composer.getScene( "src.Messages" )
 	if titleScene then
 		createNotBubble( poscList, 0 )
@@ -382,7 +381,214 @@ end
 -- @param poscD posicion del mensaje en la tabla
 ----------------------------------------------------
 function buildChat(poscD)
-    for z = 1, #tmpList do
+
+	for z = 1, #tmpList do
+	
+		local i = tmpList[z]
+		-- muestra la fecha
+        if i.date then
+			lastDate = i.date
+            local bgDate = display.newRect( midW, posY, intW, 2 )
+            bgDate.anchorY = 0
+            bgDate:setFillColor( 191/255, 190/255, 180/255 )
+            grpChat:insert(bgDate)
+            
+            local lblDate = display.newText({
+                text = i.date,     
+                x = midW, y = posY + 30,
+                font = fontFamilyLight,   
+                fontSize = 25, align = "center"
+            })
+            lblDate:setFillColor( .1 )
+            grpChat:insert(lblDate)
+            
+            posY = posY + 70
+		--muestra los mensajes
+        else
+			
+			local image = i.senderId .. ".png"
+		local avatar = nil
+			local path = system.pathForFile( image, system.TemporaryDirectory )
+			local fhd = io.open( path )
+			if fhd then
+				fhd:close()
+				avatar = display.newImage(image, system.TemporaryDirectory)
+				avatar:translate(10, posY)
+				avatar.anchorX = 0
+				avatar.anchorY = 0
+				avatar.width = 80
+				avatar.height = 80
+				grpChat:insert( avatar )
+				local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
+				avatar:setMask( maskCircle80 )
+			else
+				
+			end
+			
+		
+			local bgM0 = display.newRoundedRect( 100, posY, 502, 80, 5 )
+            bgM0.anchorX = 0
+            bgM0.anchorY = 0
+            bgM0.alpha = .2
+            bgM0:setFillColor( .3 )
+            grpChat:insert(bgM0)
+			
+			local bgM = display.newRoundedRect( 100, posY, 500, 77, 5 )
+            bgM.anchorX = 0
+            bgM.anchorY = 0
+            bgM:setFillColor( 68/255, 14/255, 98/255 )
+            grpChat:insert(bgM)
+			
+			local lblM = display.newText({
+                text = i.message,     
+                x = 110, y = posY + 10,
+                font = fontFamilyRegular,   
+                fontSize = 30, align = "left"
+            })
+            lblM.anchorX = 0
+            lblM.anchorY = 0
+            lblM:setFillColor( 1 )
+			--lblM:setFillColor( .1 )
+            grpChat:insert(lblM)
+			
+			if lblM.contentWidth > 450 then
+                lblM:removeSelf()
+                
+                lblM = display.newText({
+                    text = i.message, 
+                    width = 450,
+                    x = 40, y = posY + 10,
+                    font = "Lato-Regular",   
+                    fontSize = 30, align = "left"
+                })
+                lblM.anchorX = 0
+                lblM.anchorY = 0
+                lblM:setFillColor( .1 )
+                grpChat:insert(lblM)
+                
+                if i.isMe then
+                    --lblM.x = 270
+					lblM.anchorX = 1
+                    lblM.x = intW - 110
+					lblM:setFillColor( 68/255, 14/255, 98/255 )
+                end
+                bgM.height = lblM.contentHeight + 41
+                bgM0.height = lblM.contentHeight + 42
+            else
+                bgM.width = lblM.contentWidth + 40
+                bgM0.width = lblM.contentWidth + 42
+				if lblM.contentWidth < 60 then
+					 bgM.width = 140
+					 bgM0.width = 142
+				end
+                lblM.anchorX = 0
+                if i.isMe then
+                    lblM.anchorX = 1
+                    lblM.x = intW - 120
+					lblM:setFillColor( 68/255, 14/255, 98/255 )
+                end
+            end
+			
+			--muestra un cargando mientra se confirma el mensaje v9
+			local lblTime = nil
+			if poscD ~= 0 then
+				lblDateTemp[poscD] = display.newText({
+					text = "Cargando",
+					x = lblM.x, y = posY + lblM.contentHeight + 20,
+					font = "Lato-Regular",   
+					fontSize = 18, align = "left"
+				})
+				lblDateTemp[poscD].anchorX = lblM.anchorX
+				lblDateTemp[poscD]:setFillColor( .5 )
+				grpChat:insert(lblDateTemp[poscD])
+				if lblM.anchorX == 1 then
+					lblDateTemp[poscD].anchorX = 0
+					lblDateTemp[poscD].x = intW - bgM.width
+				end
+			--muestra la hora en que se envio el mensaje
+			else
+				lblTime = display.newText({
+					text = i.time,
+					x = lblM.x, y = posY + lblM.contentHeight + 25,
+					font = "Lato-Regular",   
+					fontSize = 18, align = "left"
+				})
+				lblTime.anchorX = lblM.anchorX
+				lblTime:setFillColor( .87 )
+				grpChat:insert(lblTime)
+				if lblM.anchorX == 1 then
+					lblTime.anchorX = 1
+					lblTime.x = intW - 130
+				end
+			end
+			
+			if i.isMe == true then
+				if i.isRead == '1' or i.isRead == 1 then
+					local iconCheckBlue = display.newImage("img/icoFilterCheck.png")
+					iconCheckBlue:translate(intW - 115, posY + lblM.contentHeight + 20)
+					grpChat:insert( iconCheckBlue )
+				else
+					local num = #checkBlue + 1
+					checkBlue[num] = display.newImage("img/icoFilterCheck.png")
+					checkBlue[num]:translate(728, posY + lblM.contentHeight + 20)
+					grpChat:insert( checkBlue[num] )
+					checkBlue[num].alpha = 0
+					if i.id then
+						checkBlue[num].id = i.id
+					else
+						checkBlue[num].id = 0
+						checkBlue[num].poscD = poscD
+					end
+				end
+			end
+			
+			--cambia la posicion del mensaje si es del usuario
+            if i.isMe then
+                bgM0.x = intW - 100
+                bgM.x = intW - 100
+                bgM0.anchorX = 1
+                bgM.anchorX = 1
+                bgM0.alpha = .3
+                bgM:setFillColor( 1 )
+				if lblTime then
+					lblTime:setFillColor( .5 )
+				end
+				if avatar then
+					avatar.anchorX = 1
+					avatar.x = intW - 10
+				end
+            end
+            
+            posY = posY + bgM.height + 30
+            if z < #tmpList then
+                if tmpList[z+1].isMe == i.isMe then 
+                    posY = posY - 20
+                end
+            end
+			
+			--posY = posY + 200
+		
+		end
+		
+		if i.isRead == '0' and i.isMe == false then
+			lastStatus = i.id
+		end
+	
+	end
+	
+	local point = display.newRect( 1, posY + 30, 1, 1 )
+	grpChat:insert(point)
+	if scrChat.height <= posY + 30 then
+		scrChat:setScrollHeight( posY )
+		scrChat:scrollTo( "bottom", { time=0 } )
+	end
+	if lastStatus ~= 0 then
+		RestManager.changeStatusMessages(itemsConfig.channelId, lastStatus)
+	else
+		messagesInRealTime()
+	end
+
+    --[[for z = 1, #tmpList do
 	
         local i = tmpList[z]
 		-- muestra la fecha
@@ -549,7 +755,7 @@ function buildChat(poscD)
 		RestManager.changeStatusMessages(itemsConfig.channelId, lastStatus)
 	else
 		messagesInRealTime()
-	end
+	end]]
 end
 
 -----------------------------------
@@ -574,40 +780,88 @@ function messagesInRealTime()
 	end
 end
 
----------------------------------------------------------------------------------
--- DEFAULT METHODS
----------------------------------------------------------------------------------
-
-function scene:create( event )
-    local item = event.params.item
-	chanelId = item.channelId
-	poscList = item.posc
-	screen = self.view
-	--toolbar
-    tools = Tools:new()
-    --screen.y = h
-    grpTextField = display.newGroup()
-	screen:insert( grpTextField )
-    local bg = display.newRect( midW, midH + h, intW, intH, 20 )
-    bg:setFillColor( 1 )
-    screen:insert(bg)
-	--background
-	display.setDefault( "textureWrapX", "repeat" )
-	display.setDefault( "textureWrapY", "repeat" )
-    local o = display.newRect( midW, midH + h, intW+8, intH, 20 )
-    o.fill = { type="image", filename="img/fillPattern.png" }
-    o.fill.scaleX = .2
-    o.fill.scaleY = .2
-    screen:insert(o)
-	display.setDefault( "textureWrapX", "clampToEdge" )
-	display.setDefault( "textureWrapY", "clampToEdge" )
-	--o:addEventListener( 'tap', hideKeyboard )
-	--o:addEventListener( 'touch', hideKeyboardSlider )
-	--bg component
-    local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
+function toolMessage(item)
+	
+	--[[local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
     bgH:setFillColor( 1 )
-    screen:insert(bgH)
-    local bgHBtn = display.newRect( intW - 55, 50 + h, 130, 100 )
+    screen:insert(bgH)]]
+	
+	local bgH0 = display.newRect( midW, 84 + h, display.contentWidth, 10 )
+	bgH0.anchorY = 0
+	bgH0:setFillColor( 103/255, 67/255, 123/255 )
+	screen:insert( bgH0 )
+		
+	local bgH = display.newRect( midW, h, display.contentWidth, 90 )
+	bgH.anchorY = 0
+	bgH:setFillColor( 68/255, 14/255, 98/255 )
+	screen:insert( bgH )
+	
+	-- back
+	local bgIcoBack = display.newRect( (intW/3)/2, h, intW/3, 90 )
+	bgIcoBack.anchorY = 0
+	bgIcoBack:setFillColor( 68/255, 14/255, 98/255 )
+	bgIcoBack.screen = 'Messages'
+	bgIcoBack.alpha = .01
+	bgIcoBack:addEventListener( 'tap', toScreen)
+	screen:insert( bgIcoBack )
+		
+	local icoBack = display.newImage("img/Regresar-icono.png")
+	icoBack:translate(60, 45 + h)
+	icoBack.isReturn = 1
+	screen:insert( icoBack )
+			
+	local lblIcoBack  = display.newText({
+		text = "Regresar", 
+		x = 130, y = 45 + h,
+		font = fontFamilyLight,   
+		fontSize = 24, align = "left"
+	})
+	lblIcoBack:setFillColor( 1 )
+	screen:insert(lblIcoBack)
+	
+	--name contact
+	local bgName = display.newRect( midW, h, intW/3, 90 )
+	bgName.anchorY = 0
+	bgName:setFillColor( 45/255, 10/255, 65/255 )
+	--bgIcoHome.screen = 'Welcome'
+	--bgIcoHome:addEventListener( 'tap', toScreen)
+	screen:insert( bgName )
+	
+	local lblName  = display.newText({
+		text = item.name, 
+		x = midW, y = 45 + h,
+		width = intW/3,
+		font = fontFamilyBold,   
+		fontSize = 24, align = "center"
+	})
+	lblName:setFillColor( 1 )
+	screen:insert(lblName)
+	
+	--block
+	--local bgIcoBlock = display.newRect( intW - (intW/3)/2, h, intW/3, 90 )
+	local btnBlock = display.newRect( 640, h, intW/3, 90 )
+	btnBlock.anchorY = 0
+	btnBlock:setFillColor( 0/255, 174/255, 239/255 )
+	screen:insert( btnBlock )
+	btnBlock:addEventListener( 'tap', blockedChat )
+	
+	local lblIcoBlock  = display.newText({
+		text = "BLOQUEAR", 
+		x = 640, y = 45 + h,
+		width = intW/3,
+		font = fontFamilyBold,   
+		fontSize = 24, align = "center"
+	})
+	lblIcoBlock:setFillColor( 1 )
+	screen:insert(lblIcoBlock)
+				
+	--[[local iconHome = display.newImage("img/home.png")
+	iconHome:translate(midW, 40 + h)
+	screen:insert( iconHome )]]
+	
+	
+	
+    --[[local bgHBtn = display.newRect( intW - 55, 50 + h, 130, 100 )
     bgHBtn:setFillColor( .95 )
     screen:insert(bgHBtn)
     -- Back button
@@ -648,59 +902,131 @@ function scene:create( event )
         fontSize = 30, align = "left"
     })
     lblName:setFillColor( .3 )
-    screen:insert(lblName)
+    screen:insert(lblName)]]
+	
+end
+
+---------------------------------------------------------------------------------
+-- DEFAULT METHODS
+---------------------------------------------------------------------------------
+
+function scene:create( event )
+    local item = event.params.item
+	chanelId = item.channelId
+	poscList = item.posc
+	screen = self.view
+	--toolbar
+    tools = Tools:new()
+    --screen.y = h
+    grpTextField = display.newGroup()
+	screen:insert( grpTextField )
+    local bg = display.newRect( midW, midH + h, intW, intH, 20 )
+    bg:setFillColor( 1 )
+    screen:insert(bg)
+	--background
+    local o = display.newRect( midW, midH + h, intW+8, intH )
+	o:setFillColor( 245/255 )
+    screen:insert(o)
+	
+	--o:addEventListener( 'tap', hideKeyboard )
+	--o:addEventListener( 'touch', hideKeyboardSlider )
+	--bg component
+	
+	toolMessage(item)
+	
 	--scrollView
 	scrChat = widget.newScrollView{
-        top = 130 + h,
+        top = 95 + h,
         left = 0,
         width = intW,
-        height = intH - 220 - h,
+        height = intH - 185 - h,
         scrollWidth = 600,
         scrollHeight = 800,
+		--backgroundColor = { 0.8, 0.8, 0.8 },
         hideBackground = true,
 		listener = scrollListener
     }
     screen:insert(scrChat)  
 	grpChat = display.newGroup()
 	scrChat:insert( grpChat )
+	
+	tools:setLoading(true,screen)
+	
 	--scrChat:addEventListener( 'tap', hideKeyboard )
 	--bg enviar
     local bgSendField = display.newRect( midW, intH - 45, intW, 90 )
-    bgSendField:setFillColor( .84 )
+    bgSendField:setFillColor( 68/255, 14/255, 98/255 )
     grpTextField:insert(bgSendField)
     local bgSend = display.newRect( intW - 75, intH - 45, 150, 90 )
-    bgSend:setFillColor( 68/255, 14/255, 98/255 )
+    bgSend:setFillColor( 0/255, 174/255, 239/255 )
 	bgSend:addEventListener( 'tap', sentMessage )
     grpTextField:insert(bgSend)
     --label enviar
     local lblSend = display.newText({
         text = "ENVIAR",     
         x = intW - 75, y = intH - 45, width = 150,
-        font = "Lato-Regular",   
+        font = fontFamilyLight,   
         fontSize = 30, align = "center"
     })
     lblSend:setFillColor( 1 )
     grpTextField:insert(lblSend)
-    --local bgField = display.newRoundedRect(  midW - 75, intH - 45, intW - 190, 60, 20 )
-    --bgField:setFillColor( 1 )
-    --grpTextField:insert(bgField)
-	--textField enviar
-	txtMessage = native.newTextField( midW - 75, intH - 45, intW - 200, 60 )
+   
+	txtMessage = native.newTextField( midW - 75, intH - 42, intW - 200, 80 )
     txtMessage.inputType = "default"
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "default" )
-	txtMessage.size = 30
-	txtMessage:resizeHeightToFitFont()
+	txtMessage.size = 32
+	txtMessage.hasBackground = true
+	txtMessage:setTextColor( 1 )
+	txtMessage.placeholder = "Escribir"
+	--txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
 	--txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
 	posY = 30
 	scrChatY = scrChat.y
 	scrChatH = scrChat.height
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
-	RestManager.getChatMessages(item.channelId)
+	
+	local settings = DBManager.getSettings()
+	local contI = 0
+	local imgExist = { settings.idApp .. ".png", item.recipientId .. ".png" }
+	
+	--
+	--print(#imgExist)
+	
+	for i = 1, #imgExist, 1 do
+		local path = system.pathForFile( imgExist[i], system.TemporaryDirectory )
+		local fhd = io.open( path )
+		if not fhd then
+			contI = contI + 1
+		else
+			fhd:close()
+		end
+	end
+	
+	print(contI)
+	if ( contI > 0 ) then
+		RestManager.getImagePerfilMessage(items)
+	else
+		RestManager.getChatMessages(item.channelId)
+	end
+	
+	--[[local path = system.pathForFile( item.image, system.TemporaryDirectory )
+	local fhd = io.open( path )
+	if not fhd then
+		contI++;
+	else
+		fhd:close()
+		
+	end]]
+	
+	--
+	
+	--
 	grpTextField:toFront()
-	--scrChat:setScrollHeight( posY + 300 )
-end	
+
+end
+	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
 end

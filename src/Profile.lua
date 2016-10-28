@@ -698,6 +698,7 @@ end
 -- Called immediately after scene has moved onscreen:
 --------------------------------------------------------
 function scene:show( event )
+	bubble()
 end
 ----------------
 -- Hide scene

@@ -18,7 +18,7 @@ RestManager = require('src.resources.RestManager')
 local screen
 local scene = composer.newScene()
 local scrPerfile, scrElements, scrCombo
-local grpOptionsLabel, grpOptionsCombo, grpComboBox, grpOptionAvatar
+local grpOptionsLabel, grpOptionsCombo, grpComboBox, grpOptionAvatar, grpOptionSave, grpAvatar
 local grpTextProfile = nil
 
 -- Variables
@@ -45,6 +45,8 @@ local gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke
 local lblAge
 local grpLoadMyProfile
 local avatar
+local maskA
+local maskHeight
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -208,22 +210,78 @@ end
 -- Pinta la imagen del usuario en caso de no encontrarse al crear la scena
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
-function setImagePerfil( item )
+function setImagePerfil( imageA )
 
-	local mask = graphics.newMask( "img/image-mask-mask3.png" )
-	local avatar = display.newImage(item[1].image, system.TemporaryDirectory)
+	if grpAvatar then
+		grpAvatar:removeSelf()
+		grpAvatar = nil
+	end
+	
+	grpAvatar = display.newGroup()
+	scrPerfile:insert(grpAvatar)
+
+	--[[maskA = graphics.newMask( "img/image-mask-mask3.png" )
+	avatar = display.newImage(imageA, system.TemporaryDirectory)
 	avatar:translate( 69.5, posY)
 	avatar.anchorX = 0
 	avatar.height = 250
 	avatar.width = 250
 	scrPerfile:insert(avatar)
-	avatar:setMask( mask )
+	avatar:setMask( maskA )
+	avatar.maskScaleY = 1.35
+	avatar.maskScaleX = 1.35]]
+	
+	posY = 150
+	
+	maskA = graphics.newMask( "img/image-mask-mask3.png" )
+	avatar = display.newImage(imageA, system.TemporaryDirectory)
+	avatar:translate( 69, posY)
+	avatar.anchorX = 0
+	avatar.height = 250
+	avatar.width = 250
+	avatar.name = imageA
+	grpAvatar:insert(avatar)
+	avatar:setMask( maskA )
 	avatar.maskScaleY = 1.35
 	avatar.maskScaleX = 1.35
+		
+	local bgShowPhoto = display.newRoundedRect( midW - 190, posY, 250, 250, 125 )
+	bgShowPhoto:setFillColor( 1 )
+	bgShowPhoto.alpha = .01
+	bgShowPhoto.image = imageA
+	grpAvatar:insert(bgShowPhoto)
+	bgShowPhoto:addEventListener( 'tap', showAvatar )
+		
+	local bgChangePhoto = display.newImage( 'img/circle-94.png' )
+	bgChangePhoto:translate( midW - 115, posY + 100)
+	bgChangePhoto.anchorX = 0
+	--bgChangePhoto.alpha = .8
+	bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+	grpAvatar:insert(bgChangePhoto)
+		
+	local imgChangePhoto = display.newImage("img/camera-4-64.png")
+	imgChangePhoto:translate(midW - 68, 249)
+	imgChangePhoto.alpha = .8
+	grpAvatar:insert(imgChangePhoto)
+	
+	tools:setLoading(false,grpLoadMyProfile)
+	
+end
+
+function deleteAvatarMyProfile()
+	
+	if avatar then
+		avatar:setMask( nil )
+		maskA = nil
+		avatar:removeSelf()
+		avatar = nil
+	end
 	
 end
 
 function saveAvatar( event )
+
+	tools:setLoading(true,grpLoadMyProfile)
 
 	local nameImage
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
@@ -231,214 +289,195 @@ function saveAvatar( event )
 		--t[k] = v
 	end
 	
+	deleteAvatarMyProfile()
+		local img = nameImage .. "png"
+		local path = system.pathForFile( img, system.TemporaryDirectory )
+		local fhd = io.open( path )
+		if fhd then
+			fhd:close()
+			
+			local lfs = require "lfs"
+			local doc_path = system.pathForFile( "", system.TemporaryDirectory )
+			local destDir = system.TemporaryDirectory  -- where the file is stored
+			local img = nameImage .. "png"
+			
+			for file in lfs.dir(doc_path) do
+				-- file is the current file or directory name
+				local file_attr = lfs.attributes( system.pathForFile( file, destDir  ) )
+				-- Elimina despues de 2 semanas
+				if file == img then
+					
+				   os.remove( system.pathForFile( file, destDir  ) ) 
+				end
+			end
+		end
+	
+	local t = event.target
+	
+	hideOptionSaveAvatar()
+	
+	if ( t.name == "cut" ) then
+		display.save( avatarMask, { filename="tempFotos/" .. nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+	else
+		display.save( avatarFull, { filename="tempFotos/" .. nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+	end
+	
 	hideoptionAvatar()
 
 	RestManager.savePhoto(nameImage)
 	
-	--display.save( avatarMask, { filename="entireGroup.png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
-	
-	print("holaaaa")
-	
 	return true
+end
+
+function optionSaveAvatar()
+	
+	if grpOptionSave then
+		grpOptionSave:removeSelf()
+		grpOptionSave = nil
+	end
+	
+	grpOptionSave = display.newGroup()
+
+	grpTextProfile.x = intW
+	
+	local bg0 = display.newRect( midW, midH + h, intW, intH )
+	bg0:setFillColor( 1 )
+	--bg0.alpha = .5
+	grpOptionSave:insert( bg0 )
+	bg0:addEventListener( 'tap', hideOptionSaveAvatar )
+	
+	local posY = 250 + h 
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
+	
+	local btnCut = display.newRect( midW, posY, intW, 200 )
+	btnCut.anchorY = 0
+	btnCut:setFillColor( 1 )
+    grpOptionSave:insert(btnCut)
+	btnCut.name = "cut"
+	btnCut:addEventListener( 'tap', saveAvatar )
+	
+	local iconCut = display.newImage("img/buscar.png")
+	iconCut.anchorX = 0
+    iconCut:translate(100, posY + 100)
+    grpOptionSave:insert( iconCut )
+	
+	local lblCut = display.newText({
+        text = "Recortar y guardad", 
+        x = 500, y = posY + 65 + 32,
+        width = 490,
+        font = fontFamilyBold,   
+        fontSize = 36, align = "left"
+    })
+    lblCut:setFillColor( 0 )
+    grpOptionSave:insert(lblCut)
+	
+	--[[local lblSubSearch = display.newText({
+        text = "Conoce usuarios Gluglis \ndonde quiera que vayas.", 
+        x = 500, y = posY + 130,
+        width = 490,
+        font = fontFamilyRegular,   
+        fontSize = 26, align = "left"
+    })
+    lblSubSearch:setFillColor( 0 )
+    grpOptionSave:insert(lblSubSearch)]]
+	
+	posY = posY + 200
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
+	
+	posY = posY + 75
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
+		
+	local btnFull = display.newRect( midW, posY, intW, 200 )
+	btnFull.anchorY = 0
+	btnFull:setFillColor( 1 )
+	grpOptionSave:insert(btnFull)
+	btnFull.name = "full"
+	btnFull:addEventListener( 'tap', saveAvatar )
+		
+	local iconFull = display.newImage("img/editar.png")
+	iconFull.anchorX = 0
+	iconFull:translate(100, posY + 100)
+	grpOptionSave:insert( iconFull )
+		
+	local lblFull = display.newText({
+		text = "Guardar sin recortar", 
+		x = 500, y = posY + 65 + 32,
+		width = 490,
+		font = fontFamilyBold,   
+		fontSize = 36, align = "left"
+	})
+	lblFull:setFillColor( 0 )
+	grpOptionSave:insert(lblFull)
+		
+	--[[local lblSubEdit = display.newText({
+		text = "Editar tu perfil personal.", 
+		x = 500, y = posY + 120,
+		width = 490,
+		font = fontFamilyRegular,   
+		fontSize = 26, align = "left"
+	})
+	lblSubEdit:setFillColor( 0 )
+	grpOptionSave:insert(lblSubEdit)]]
+		
+	posY = posY + 200
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
+		
+	return true
+	
+end
+
+function hideOptionSaveAvatar()
+	if grpOptionSave then
+		grpOptionSave:removeSelf()
+		grpOptionSave = nil
+	end
+	grpTextProfile.x = 0
+	grpAvatar.x = 0
 end
 
 function moveMasckAvatar( event )
-
-	--[[if ( event.phase == "began" ) then
-        differenceX = event.x - avatarMask.maskX
-		differenceY = event.y - avatarMask.maskY
-	elseif ( event.phase == "moved" ) then
-		newPositionX = event.x - differenceX
-		newPositionY = event.y - differenceY
-		avatarMask.maskX = newPositionX
-		avatarMask.maskY = newPositionY
-	--avatarMask.maskY = event.y
-		avatarMask.maskScaleX = 1
-	
-	elseif ( event.phase == "ended" ) then
-    end]]
-
-	--event.target.maskX = -10
-	
-	--avatarMask.y = 300
 	
 	if ( event.phase == "began" ) then
         differenceX = event.x - avatarMask.maskX
-		differenceY = event.y - avatarMask.y
+		differenceY = event.y - avatarMask.maskY
+		maxY = ( avatarFull.height / 2 ) - ( 552 / 2 ) -- 552 = tamaño de la mascara
+		maxX = ( avatarFull.width / 2 ) - ( 550 / 2 ) -- 550 = tamaño de la mascara
 	elseif ( event.phase == "moved" ) then
-		avatarMask.y = event.y -400
-		--newPositionX = event.x - differenceX
-		--newPositionY = event.y - differenceY
-		--avatarMask.y = newPositionY
-		--avatarMask.maskY = newPositionY
-		--avatarMask.maskX = newPositionX
-		--avatarMask.maskY = newPositionY
-	--avatarMask.maskY = event.y
-		--avatarMask.maskScaleX = 1
-	
+		newPositionX = event.x - differenceX
+		newPositionY = event.y - differenceY
+		if newPositionY >= -( maxY ) and  newPositionY <= ( maxY ) then
+			avatarMask.maskY = newPositionY
+		end
+		if newPositionX >= -( maxX ) and  newPositionX <= ( maxX ) then
+			avatarMask.maskX = newPositionX
+		end
 	elseif ( event.phase == "ended" ) then
-		--newPositionY = event.y - differenceY
-		--avatarMask.y = newPositionY
-		--avatarMask.y = event.y -400
+		newPositionX = event.x - differenceX
+		newPositionY = event.y - differenceY
+		if newPositionY >= -( maxY ) and  newPositionY <= ( maxY ) then
+			avatarMask.maskY = newPositionY
+		end
+		if newPositionX >= -( maxX ) and  newPositionX <= ( maxX ) then
+			avatarMask.maskX = newPositionX
+		end
     end
-	
 	return true
-end
-
-function showAvatar2( typeP )
-	
-	bgOptionAvatar()
-	bg0:addEventListener( 'tap', hideoptionAvatar )
-	
-	if( typeP == "myPhoto" ) then
-		
-	elseif( typeP == "newPhoto") then
-	
-		local nameImage
-		for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
-			nameImage = k
-			--t[k] = v
-		end
-	
-		local path = system.pathForFile( "tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory )
-		local fhd = io.open( path )
-		--verifica si existe la imagen
-		
-		if fhd then
-		
-			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarFull:translate(midW, midH  + h)
-			grpOptionAvatar:insert(avatarFull)
-			avatarFull:addEventListener( 'tap', noAction )
-			
-			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
-			avatarFull.height = desiredHigh
-			--local desiredHigh  = 600
-			avatarFull.height = desiredHigh
-			avatarFull.width = intW-100
-			
-			btnSaveAvatar = display.newRoundedRect( midW, intH - 200, 650, 110, 10 )
-			btnSaveAvatar.id = nameImage
-			btnSaveAvatar:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			grpOptionAvatar:insert(btnSaveAvatar)
-			btnSaveAvatar:addEventListener( 'tap', saveAvatar )
-		
-			--[[local scrNewPhoto = widget.newScrollView({
-				top = h + 100,
-				left = 50,
-				width = intW - 100,
-				height = intH - 200,
-				horizontalScrollDisabled = true,
-				backgroundColor = { .96 },
-				listener = moveMasckAvatar
-			})
-			grpOptionAvatar:insert(scrNewPhoto)
-			scrNewPhoto:addEventListener( 'tap', noAction )
-			
-			local iconExitAvatarFull = display.newImage("img/x-mark-3-64.png")
-			iconExitAvatarFull:translate(intW - 50, h + 100)
-			grpOptionAvatar:insert(iconExitAvatarFull)
-			
-			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarFull:translate(midW - 50, midH - 100)
-			scrNewPhoto:insert(avatarFull)
-			--avatarFull:addEventListener('touch', moveMasckAvatar)
-			avatarFull:addEventListener( 'tap', noAction )
-			--avatarFull:setMask( mask )
-			avatarFull.alpha = .5
-			
-			local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
-			avatarFull.height = desiredHigh
-			--local desiredHigh  = 600
-			avatarFull.height = desiredHigh
-			avatarFull.width = intW-100
-		
-			print(scrNewPhoto.top)
-			print(desiredHigh)
-		
-			local mask = graphics.newMask( "img/maskPhoto2.png" )
-			avatarMask = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarMask.anchorY = 0
-			avatarMask:translate(midW, h + 99)
-			avatarMask.height = desiredHigh
-			avatarMask.width = intW-100
-			grpOptionAvatar:insert(avatarMask)
-		
-			local posyMask = desiredHigh / 3.74
-			avatarMask.maskY = - posyMask
-			scrNewPhoto:setScrollHeight( desiredHigh + ((intH - 449) - posyMask) )]]
-			--[[
-			posY = intH - 200
-			
-			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
-			btnSaveAvatar.id = nameImage
-			btnSaveAvatar:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			grpOptionAvatar:insert(btnSaveAvatar)
-			btnSaveAvatar:addEventListener( 'tap', saveAvatar )]]
-			
-			--local desiredHigh = ( (intW - 400) * avatarFull.height ) / avatarFull.width 
-			--avatarFull.height = desiredHigh
-			--local desiredHigh  = 600
-			--avatarFull.height = desiredHigh
-			--avatarFull.width = intW-100
-		
-			--[[local bg1 = display.newRoundedRect( midW, midH + h, intW - 80, intH, 15 )
-			bg1:setFillColor( 1 )
-			bg1.anchorY = 0
-			grpOptionAvatar:insert( bg1 )
-			--bg1:addEventListener( 'tap', hideoptionAvatar )
-		
-			avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-			avatarFull:translate(midW, midH - 100)
-			grpOptionAvatar:insert(avatarFull)
-			--local desiredHigh = ( (intW - 400) * avatarFull.height ) / avatarFull.width 
-			--avatarFull.height = desiredHigh
-			local desiredHigh  = 600
-			avatarFull.height = desiredHigh
-			avatarFull.width = intW-100
-			
-			local posY = (desiredHigh + avatarFull.height) - 100
-			btnSaveAvatar = display.newRoundedRect( midW, posY, 650, 110, 10 )
-			btnSaveAvatar.id = nameImage
-			btnSaveAvatar:setFillColor( {
-				type = 'gradient',
-				color1 = { 129/255, 61/255, 153/255 }, 
-				color2 = { 89/255, 31/255, 103/255 },
-				direction = "bottom"
-			} )
-			grpOptionAvatar:insert(btnSaveAvatar)
-			btnSaveAvatar:addEventListener( 'tap', saveAvatar )
-			
-			bg1.y = (avatarFull.y / 2) + 15
-			--bg1.height = avatarFull.height + btnSaveAvatar.height + 50
-			bg1.height = avatarFull.height + 50
-			
-			local lblSaveAvatar = display.newText({
-				text = "Editar", 
-				x = midW, y = posY,
-				font = native.systemFontBold,   
-				fontSize = 36, align = "center"
-			})
-			lblSaveAvatar:setFillColor( 1 )
-			grpOptionAvatar:insert(lblSaveAvatar)
-			
-			local iconExitAvatarFull = display.newImage("img/delete.png")
-			iconExitAvatarFull:translate(intW - 50, bg1.y)
-			grpOptionAvatar:insert(iconExitAvatarFull)]]
-			
-		end
-		
-	end
 	
 end
 
@@ -454,11 +493,9 @@ function showAvatar( event )
 	--verifica si existe la imagen
 	if fhd then
 	
-		
+		fhd:close()
 		local bg1 = display.newRect( midW, midH + h, intW, intH )
 		bg1:setFillColor( 0/255, 174/255, 239/255 )
-		--bg1.anchorY = 0
-		--bg1.alpha = .8
 		grpOptionAvatar:insert( bg1 )
 		bg1:addEventListener( 'tap', hideoptionAvatar )
 		
@@ -469,11 +506,13 @@ function showAvatar( event )
 		avatarFull.height = desiredHigh
 		avatarFull.width = intW-100
 		
-		bg1.height = desiredHigh  + 16
-		bg1.width = intW-100  + 16
+		bg1.height = desiredHigh  + 8
+		bg1.width = intW-100  + 8
 			
-		local iconExitAvatarFull = display.newImage("img/x-mark-4-64.png")
+		local iconExitAvatarFull = display.newImage("img/close.png")
 		iconExitAvatarFull:translate(intW - 50, bg1.y - bg1.height/2)
+		iconExitAvatarFull.height = 64
+		iconExitAvatarFull.width = 64
 		grpOptionAvatar:insert(iconExitAvatarFull)
 	end
 
@@ -491,47 +530,123 @@ function bgOptionAvatar()
 	
 	local bg0 = display.newRect( midW, midH + h, intW, intH )
 	bg0:setFillColor( 0 )
-	bg0.alpha = .8
+	bg0.alpha = .7
 	grpOptionAvatar:insert( bg0 )
 	bg0:addEventListener( 'tap', hideoptionAvatar )
 	
 end
 
 function showNewAvatar( event )
-	bgOptionAvatar()
+	--bgOptionAvatar()
 	
 	local nameImage
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
 		nameImage = k
 	end
 	
-	local path = system.pathForFile( "tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory )
+	local path = system.pathForFile( "tempFotos/newAvatar.jpg", system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 		
 	if fhd then
-		
-		avatarFull = display.newImage("tempFotos/" .. nameImage .. ".jpg", system.TemporaryDirectory)
-		avatarFull:translate(midW, midH  + h)
+		fhd:close()
+	
+		avatarFull = display.newImage("tempFotos/newAvatar.jpg", system.TemporaryDirectory)
+		avatarFull:translate(midW, 0 + h)
+		--avatarFull.alpha = .7
 		grpOptionAvatar:insert(avatarFull)
+		
+		avatarFull:addEventListener('touch', moveMasckAvatar)
 		avatarFull:addEventListener( 'tap', noAction )
+		
+		local heightBgAvatar = intH - 120
+		local resizeWidth = 0
+		local resizeHeight = 0
+		local anchorY = .5
+		local pocsY = midH
+		if ( avatarFull.height > heightBgAvatar ) then
+			resizeWidth = ( heightBgAvatar * avatarFull.width ) / avatarFull.height
+			resizeHeight = heightBgAvatar
+			anchorY = 0
+			pocsY = 0
 			
-		local desiredHigh = ( (intW - 100) * avatarFull.height ) / avatarFull.width 
-		avatarFull.height = desiredHigh
-		--local desiredHigh  = 600
-		avatarFull.height = desiredHigh
-		avatarFull.width = intW-100
+		elseif ( avatarFull.width > intW ) then
+			resizeHeight = ( intW * avatarFull.height ) / avatarFull.width
+			resizeWidth = intW
+		else
+			resizeHeight = avatarFull.height
+			resizeWidth = avatarFull.width
+		end
+		
+		avatarFull.height = heightBgAvatar
+		avatarFull.width = resizeWidth
+		avatarFull.anchorY = anchorY
+		avatarFull.y = pocsY
+		--avatarFull:addEventListener( 'touch', moveMasckAvatar )
 			
-		btnSaveAvatar = display.newRoundedRect( midW, intH - 200, 650, 110, 10 )
+		local bg1 = display.newRect( midW, midH + h, intW, intH )
+		bg1:setFillColor( 1 )
+		bg1.alpha = .5
+		grpOptionAvatar:insert( bg1 )
+		bg1.height = heightBgAvatar
+		bg1.width = resizeWidth
+		bg1.anchorY = anchorY
+		bg1.y = pocsY
+		
+		
+		local maskA = graphics.newMask( "img/maskPhoto2.png" )
+		avatarMask = display.newImage("tempFotos/newAvatar.jpg", system.TemporaryDirectory)
+		avatarMask:translate(midW, 0 + h)
+		
+		grpOptionAvatar:insert(avatarMask)
+		avatarMask.posY = avatarMask.y
+		avatarMask:setMask( maskA )
+		avatarMask.height = heightBgAvatar
+		avatarMask.width = resizeWidth
+		avatarMask.anchorY = anchorY
+		avatarMask.y = pocsY
+		
+		local bgSaveAvatar = display.newRect( midW, intH - 60, intW, 120 )
+		bgSaveAvatar.id = nameImage
+		bgSaveAvatar:setFillColor( .73 )
+		grpOptionAvatar:insert(bgSaveAvatar)
+		
+		local btnCancelSaveAvatar = display.newRect( 0, intH - 60, midW - 1, 120 )
+		btnCancelSaveAvatar.anchorX = 0
+		btnCancelSaveAvatar.id = nameImage
+		btnCancelSaveAvatar:setFillColor( 0/255, 174/255, 239/255 )
+		grpOptionAvatar:insert(btnCancelSaveAvatar)
+		--btnCancelSaveAvatar:addEventListener( 'tap', hideoptionAvatar )
+		
+		local lblCancelSaveAvatar = display.newText({
+			text = "Cancelar", 
+			x = 0, y = intH - 60,
+			width = midW,
+			font = fontFamilyBold, 
+			fontSize = 28, align = "center"
+		})
+		lblCancelSaveAvatar:setFillColor( 1 )
+		lblCancelSaveAvatar.anchorX = 0
+		grpOptionAvatar:insert(lblCancelSaveAvatar)
+		
+		local btnSaveAvatar = display.newRect( midW + 1, intH - 60, midW - 1, 120 )
+		btnSaveAvatar.anchorX = 0
 		btnSaveAvatar.id = nameImage
-		btnSaveAvatar:setFillColor( {
-			type = 'gradient',
-			color1 = { 129/255, 61/255, 153/255 }, 
-			color2 = { 89/255, 31/255, 103/255 },
-			direction = "bottom"
-		} )
+		btnSaveAvatar:setFillColor( 0/255, 174/255, 239/255 )
 		grpOptionAvatar:insert(btnSaveAvatar)
-		btnSaveAvatar:addEventListener( 'tap', saveAvatar )
+		btnSaveAvatar:addEventListener( 'tap', optionSaveAvatar )
+		
+		local lblSaveAvatar = display.newText({
+			text = "Guardar", 
+			x = midW, y = intH - 60,
+			width = midW,
+			font = fontFamilyBold, 
+			fontSize = 28, align = "center"
+		})
+		lblSaveAvatar:setFillColor( 1 )
+		lblSaveAvatar.anchorX = 0
+		grpOptionAvatar:insert(lblSaveAvatar)
+		
 	end
 	
 	
@@ -543,23 +658,12 @@ function mysplitPoint(s)
 end
 
 function takePicture()
-
 	--showNewAvatar()
-
 	local function onComplete( event )
-		--local photo = event.target
-		--[[photo.height = 150
-		photo.width = 200
-		photo.x = 100
-		photo.y = intH/2.04
-		photo.alpha = 0]]
-		--event.target.alpha = 0
 		
 		showNewAvatar( "newPhoto" )
 		
 	end
-	
-	local namePhoto
 	
 	local namePhoto
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
@@ -567,7 +671,7 @@ function takePicture()
 		--t[k] = v
 	end
 	
-	namePhoto = namePhoto .. ".jpg"
+	namePhoto = "newAvatar.jpg"
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
@@ -579,9 +683,36 @@ function takePicture()
 			}
 		})
 	else
-		native.showAlert( "Corona", "This device does not have a camera.", { "OK" } )
+		native.showAlert( "Gluglis", "This device does not have a camera.", { "OK" } )
 	end
 
+end
+
+function libraryPicture()
+	--showNewAvatar()
+	local function onComplete( event )
+		showNewAvatar( "newPhoto" )
+	end
+	
+	local namePhoto
+	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
+		namePhoto = k
+		--t[k] = v
+	end
+	
+	namePhoto = "newAvatar.jpg"
+	if media.hasSource( media.PhotoLibrary ) then
+		media.selectPhoto({
+			mediaSource = media.SavedPhotosAlbum,
+			listener = onComplete, 
+			--origin = button.contentBounds, 
+			--permittedArrowDirections = { "right" },
+			destination = { baseDir=system.TemporaryDirectory, filename = "tempFotos/" .. namePhoto } 
+		})
+		
+	else
+		native.showAlert( "Gluglis", "This device does not have a photo library.", { "OK" } )
+	end
 end
 
 ------------------------------------------------------------------------------
@@ -589,10 +720,12 @@ end
 -- @param item nombre de la imagen
 ------------------------------------------------------------------------------
 function selectOptionAvatar( event )
-	if( event.target.type == "Tomarse una Foto" ) then
-		takePicture( "myPhoto" )
-	elseif( event.target.type == "Seleccionar una Foto" ) then
-		
+	
+	local t = event.target
+	if( t.name == "selectPhoto" ) then
+		takePicture()
+	elseif( t.name == "capturePhoto" ) then
+		libraryPicture()
 	end
 	return true
 end
@@ -602,48 +735,104 @@ end
 -- ver o editar
 ------------------------------------------------------------------------------
 function optionPictureAvatar( event )
+
 	componentActive = true
-	bgOptionAvatar()
-	local bg1 = display.newRect( midW, midH/2 + h - 3, 606, 310 )
-	bg1.anchorY = 0
-	bg1:setFillColor( 0/255, 174/255, 239/25 )
-	grpOptionAvatar:insert( bg1 )
 	
-	local posY = midH/2 + h
-	
-	local option = {"Tomarse una Foto", "Seleccionar una Foto"}
-	--local option = {"Tomarse una Foto"}
-	local optionIcon = {"screenshot-80", "folder-80"}
-	for i = 1, #option, 1 do
-		local container3 = display.newContainer( 600, 150 )
-		grpOptionAvatar:insert(container3)
-		container3.anchorY = 0
-		container3:translate( midW, posY )
-		
-		local bg0Option = display.newRect( 3, 0, 600, 150 )
-		bg0Option:setFillColor( 1 )
-		bg0Option.type = option[i]
-		container3:insert( bg0Option )
-		bg0Option:addEventListener( 'tap', selectOptionAvatar )
-		
-		local iconOption = display.newImage("img/" .. optionIcon[i] .. ".png")
-		iconOption:translate(-200, 0)
-		container3:insert(iconOption)
-		
-		--label nombre
-		local lblNameOption = display.newText({
-			text = option[i], 
-			x = 75, y = 0,
-			width = 400,
-			font = fontFamilyLight, 
-			fontSize = 35, align = "left"
-		})
-		lblNameOption:setFillColor( 68/255, 14/255, 98/255)
-		container3:insert(lblNameOption)
-		posY = posY + 155
+	if grpOptionSave then
+		grpOptionSave:removeSelf()
+		grpOptionSave = nil
 	end
 	
-	bg1.height = #option * 156
+	grpOptionSave = display.newGroup()
+
+	grpTextProfile.x = intW
+	grpAvatar.x = intW
+	
+	local bg0 = display.newRect( midW, midH + h + 135, intW, intH )
+	bg0:setFillColor( 245/255 )
+	grpOptionSave:insert( bg0 )
+	bg0:addEventListener( 'tap', hideOptionSaveAvatar )
+	
+	local posY = 250 + h 
+	local option = {"selectPhoto", "capturePhoto"}
+	local optionLabel = {"Tomar Foto", "Subir Foto"}
+	local optionIcon = {"img/photo.png", "img/up.png"}
+	local optionSub = {"No tienes fotos en este momento \ntoma una desde tu celular.", "Sube una foto desde tu celular."}
+	
+	for i = 1, #option, 1 do
+		local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpOptionSave:insert(line)
+		
+		local btnOption = display.newRect( midW, posY, intW, 200 )
+		btnOption.anchorY = 0
+		btnOption:setFillColor( 1)
+		grpOptionSave:insert(btnOption)
+		btnOption.name = option[i]
+		grpOptionSave:insert( btnOption )
+		btnOption:addEventListener( 'tap', selectOptionAvatar )
+		--btnCamera.name = "cut"
+		
+		local iconOption = display.newImage(optionIcon[i])
+		iconOption.anchorX = 0
+		iconOption:translate(100, posY + 100)
+		grpOptionSave:insert( iconOption )
+		
+		local lblOption = display.newText({
+			text = optionLabel[i], 
+			x = 500, y = posY + 65,
+			width = 490,
+			font = fontFamilyBold,   
+			fontSize = 36, align = "left"
+		})
+		lblOption:setFillColor( 0 )
+		grpOptionSave:insert(lblOption)
+		
+		local lblSubOption = display.newText({
+			text = optionSub[i], 
+			x = 500, y = posY + 130,
+			width = 490,
+			font = fontFamilyRegular,   
+			fontSize = 26, align = "left"
+		})
+		lblSubOption:setFillColor( 0 )
+		grpOptionSave:insert(lblSubOption)
+		
+		posY = posY + 200
+
+		local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpOptionSave:insert(line)
+		
+		posY = posY + 75
+	end
+	
+	local line = display.newLine( 0, intH - 176 , intW, intH - 176 )
+	line:setStrokeColor( 216/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
+	
+	local btnCancel = display.newRect( midW, intH - 175, intW, 150 )
+	btnCancel.anchorY = 0
+	btnCancel:setFillColor( 226/255 )
+    grpOptionSave:insert(btnCancel)
+	btnCancel:addEventListener( 'tap', hideOptionSaveAvatar )
+	
+	local lblCancel = display.newText({
+        text = "Cancelar", 
+        x = midW, y = intH - 95,
+        font = fontFamilyBold,   
+        fontSize = 38, align = "left"
+    })
+    lblCancel:setFillColor( 85/255 )
+    grpOptionSave:insert(lblCancel)
+	
+	local line = display.newLine( 0, intH - 26 , intW, intH - 26 )
+	line:setStrokeColor( 216/255 )
+	line.strokeWidth = 3
+	grpOptionSave:insert(line)
 	
 	return true
 	
@@ -2070,27 +2259,31 @@ function createProfileAvatar()
     bgA0:setFillColor( 1 )
     scrPerfile:insert(bgA0)
 	
-	posY = posY + 150
-	
-	bgA1 = display.newImage( "img/circle-256.png" )
-	bgA1.anchorX = 0
-	bgA1:translate( 65, posY )
-	scrPerfile:insert(bgA1)
-	
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
-	
-		local mask = graphics.newMask( "img/image-mask-mask3.png" )
+		fhd:close()
+		
+		posY = posY + 150
+		
+		grpAvatar = display.newGroup()
+		scrPerfile:insert(grpAvatar)
+		
+		bgA1 = display.newImage( "img/circle-256.png" )
+		bgA1.anchorX = 0
+		bgA1:translate( 65, posY )
+		grpAvatar:insert(bgA1)
+		
+		maskA = graphics.newMask( "img/image-mask-mask3.png" )
 		avatar = display.newImage(item.image, system.TemporaryDirectory)
 		avatar:translate( 69, posY)
 		avatar.anchorX = 0
 		avatar.height = 250
 		avatar.width = 250
 		avatar.name = item.image
-		scrPerfile:insert(avatar)
-		avatar:setMask( mask )
+		grpAvatar:insert(avatar)
+		avatar:setMask( maskA )
 		avatar.maskScaleY = 1.35
 		avatar.maskScaleX = 1.35
 		
@@ -2098,31 +2291,20 @@ function createProfileAvatar()
 		bgShowPhoto:setFillColor( 1 )
 		bgShowPhoto.alpha = .01
 		bgShowPhoto.image = item.image
-		scrPerfile:insert(bgShowPhoto)
+		grpAvatar:insert(bgShowPhoto)
 		bgShowPhoto:addEventListener( 'tap', showAvatar )
 		
-		--[[local bgChangePhoto = display.newImage( 'img/circle-94.png' )
+		local bgChangePhoto = display.newImage( 'img/circle-94.png' )
 		bgChangePhoto:translate( midW - 115, posY + 100)
 		bgChangePhoto.anchorX = 0
 		--bgChangePhoto.alpha = .8
 		bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
-		scrPerfile:insert(bgChangePhoto)
+		grpAvatar:insert(bgChangePhoto)
 		
 		local imgChangePhoto = display.newImage("img/camera-4-64.png")
 		imgChangePhoto:translate(midW - 68, 249)
 		imgChangePhoto.alpha = .8
-		scrPerfile:insert(imgChangePhoto)]]
-		
-		--[[local bgChangePhoto = display.newImage( 'img/halfCircle-250.png' )
-		bgChangePhoto:translate( 69, posY + 85)
-		bgChangePhoto.anchorX = 0
-		bgChangePhoto.alpha = .8
-		scrPerfile:insert(bgChangePhoto)
-		
-		local imgChangePhoto = display.newImage("img/camera-4-48.png")
-		imgChangePhoto:translate(midW - 175, 230)
-		imgChangePhoto.alpha = .8
-		scrPerfile:insert(imgChangePhoto)]]
+		grpAvatar:insert(imgChangePhoto)
 		
 	else
 		local items = {}
@@ -2263,6 +2445,7 @@ end
 -- Called immediately after scene has moved onscreen:
 --------------------------------------------------------
 function scene:show( event )
+	bubble()
 end
 ----------------
 -- Hide scene
