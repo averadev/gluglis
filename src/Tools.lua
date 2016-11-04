@@ -180,8 +180,6 @@ function Tools:new()
             bg.alpha = .3
             grpLoading:insert(bg)
 			bg:addEventListener( 'tap', noAction )
-			print(bg.x)
-			
             
             local sheet, loading
             if parent.cards then

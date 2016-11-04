@@ -43,6 +43,7 @@ end
 -- inicia una nueva conversacion
 ----------------------------------
 function startConversation( event )
+	tools:setLoading(true,screen)
 	RestManager.startConversation(event.target.id)
 	return true
 end
@@ -52,8 +53,9 @@ end
 -- @param item informacion del perfil
 -------------------------------------------------------
 function showNewConversation(item)
+	tools:setLoading(false,screen)
 	local tmpList = {id = 0, image = item.image, image2 = item.image2, name = item.display_name, subject = "", channelId = item.channel_id,
-			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier}
+			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier, recipientId = item.id}
 	composer.removeScene( "src.Message" )
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
@@ -96,7 +98,7 @@ function infoProfile( item )
 	posY = posY + 50
 	
 	local edad = ""
-	if not item.edad then edad = "" else edad = item.edad .. " Años" end
+	if not item.edad then edad = "" else edad = item.edad .. language.PYears end
     local lblAge= display.newText({
         text = edad, 
         x = 550, y = posY,
@@ -127,9 +129,9 @@ function infoProfile( item )
 	--residencia
 	local Residence = ""
 	if not item.residencia then 
-		Residence = "Ciudad no disponible"
+		Residence = language.PCityNotAvailable
 	else
-		Residence = "Vive en " .. item.residencia
+		Residence = language.PILiveIn .. item.residencia
 	end
 
 	local lblResidence = display.newText({
@@ -173,7 +175,7 @@ function infoProfile( item )
 			if item.apellidos then
 				infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
 			end
-			if infoOpcion[num] == " " then infoOpcion[num] = "Desconocido" end
+			if infoOpcion[num] == " " then infoOpcion[num] = language.PUnknown end
 			iconOpcion[num] = 'iconName'
 			num = #infoOpcion + 1
 		end
@@ -183,7 +185,7 @@ function infoProfile( item )
 	if item.paisOrigen then
 		local CountryTxt = trimString(item.paisOrigen)
 		if #CountryTxt > 0 then
-			infoOpcion[num] = "Es de " .. item.paisOrigen 
+			infoOpcion[num] = language.PIAmFrom .. item.paisOrigen 
 			iconOpcion[num] = 'icoFilterCity'
 			num = #infoOpcion + 1
 		end
@@ -194,7 +196,7 @@ function infoProfile( item )
 		local residentTxt = trimString(item.residencia)
 		if #residentTxt > 0 then
 			if item.tiempoResidencia then
-				infoOpcion[num] = "Desde hace " .. item.tiempoResidencia 
+				infoOpcion[num] = language.PSince .. item.tiempoResidencia 
 				iconOpcion[num] = 'icoFilterCity'
 				num = #infoOpcion + 1
 			end
@@ -269,32 +271,32 @@ function infoProfile( item )
     end]]
 	--alojamiento
 	local num = #infoOpcion + 1
-	labelOpcion[num] = "Ofreco Alojamiento"
+	labelOpcion[num] = language.POffersAccommodation
 	if item.alojamiento and item.alojamiento == 'Sí' then
-		infoOpcion[num] = 'Si'
+		infoOpcion[num] = language.PYes
 		iconOpcion[num] = "si"
     else 
-		infoOpcion[num] = 'No'
+		infoOpcion[num] = language.PNo
 		iconOpcion[num] = "no"
     end
 	num = num + 1
 	-- transporte
-	labelOpcion[num] = "Vehiculo Propio"
+	labelOpcion[num] = language.PCar
     if item.vehiculo and item.vehiculo == 'Sí' then
-    	infoOpcion[num] = 'Si'
+    	infoOpcion[num] = language.PYes
 		iconOpcion[num] = "si"
     else 
-		infoOpcion[num] = 'No'
+		infoOpcion[num] = language.PNo
 		iconOpcion[num] = "no"
     end
 	num = num + 1
 	--comida
-	labelOpcion[num] = "Comida"
+	labelOpcion[num] = language.PFood
 	if item.comida and item.comida == 'Sí' then
-    	infoOpcion[num] = 'Si'
+    	infoOpcion[num] = language.PYes
 		iconOpcion[num] = "si"
     else 
-		infoOpcion[num] = 'No'
+		infoOpcion[num] = language.PNo
 		iconOpcion[num] = "no"
     end
 	
@@ -371,10 +373,10 @@ function infoProfile( item )
 			iconOpcion[num] = 'si'
         end
     else
-        infoOpcion[num] = 'Ninguno'
+        infoOpcion[num] = language.PAny
 		iconOpcion[num] = 'no'
     end
-	labelOpcion[num] = 'Idiomas'
+	labelOpcion[num] = language.PLanguages
 	num = #infoOpcion + 1
 	
 	if item.hobbies then
@@ -396,30 +398,30 @@ function infoProfile( item )
 		infoOpcion[num] = hob
 		iconOpcion[num] = 'si'
     else
-        infoOpcion[num] = 'Ninguno'
+        infoOpcion[num] = language.PAny
 		iconOpcion[num] = 'no'
     end
-	labelOpcion[num] = 'Hobbies'
+	labelOpcion[num] = language.PHobbies
 	num = #infoOpcion + 1
 	
 	--nivel de estudio
 	if item.nivelEstudio then
-		labelOpcion[num] = 'Nivel de estudio'
+		labelOpcion[num] = language.PLevelOfEducation
 		infoOpcion[num] = item.nivelEstudio
 		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
 	end
 	--formacion profesional
 	if item.formacionProfesional then
-		labelOpcion[num] = 'Formacion profesional'
-		infoOpcion[num] = item.formacionProfesional 
+		labelOpcion[num] = language.PProfessionalTraining
+		infoOpcion[num] = item.formacionProfesional
 		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
 	end
 	--area laboral
 	
 	if item.areaLaboral then
-		labelOpcion[num] = 'Area laboral'
+		labelOpcion[num] = language.PWorkingArea
 		infoOpcion[num] = item.areaLaboral 
 		iconOpcion[num] = 'si'
 		num = #infoOpcion + 1
@@ -427,7 +429,7 @@ function infoProfile( item )
 	
 	--cuenta propia
 	--item.cuentaPropia = json.encode(item.cuentaPropia)
-	labelOpcion[num] = 'Por Cuenta Propia'
+	labelOpcion[num] = language.PFreelance
 	if item.cuentaPropia then
         for i=1, #item.cuentaPropia do
             if i == 1 then
@@ -438,18 +440,18 @@ function infoProfile( item )
         end
 		iconOpcion[num] = 'si'
     else
-        infoOpcion[num] = 'Por cuenta ajena'
+        infoOpcion[num] = language.PEmployee
 		iconOpcion[num] = 'no'
 		
     end
 	num = #infoOpcion + 1
 	--mascota
 	if item.mascota then
-		labelOpcion[num] = 'Mascota'
+		labelOpcion[num] = language.PPets 
 		if item.mascota == "Sí" then
 			infoOpcion[num] = "Si" 
 			if item.tipoMascota then
-				infoOpcion[num] = "Tiene " .. item.tipoMascota
+				infoOpcion[num] = language.PHas  .. item.tipoMascota
 			end
 			iconOpcion[num] = 'si'
 		else
@@ -462,11 +464,11 @@ function infoProfile( item )
 	
 	--deporte
 	if item.deporte then
-		labelOpcion[num] = 'Deportes'
+		labelOpcion[num] = language.PSports 
 		if item.deporte == "Sí" then
-			infoOpcion[num] = "Practica deporte" 
+			infoOpcion[num] = language.PSportYouPlay 
 			if item.tipoDeporte then
-				infoOpcion[num] = "Practica "
+				infoOpcion[num] = language.PYouPlay 
 				for i=1, #item.tipoDeporte do
 					if i == 1 then
 						infoOpcion[num] = infoOpcion[num] .. item.tipoDeporte[i]
@@ -477,38 +479,47 @@ function infoProfile( item )
 			end
 			iconOpcion[num] = 'si'
 		else
-			infoOpcion[num] = "Ninguno" 
+			infoOpcion[num] = language.PAny 
 			iconOpcion[num] = 'no'
 		end
 		num = #infoOpcion + 1
 	end
 	--fumas
 	if item.fumas then
-		labelOpcion[num] = 'Fumas'
-		infoOpcion[num] = item.fumas
-		iconOpcion[num] = 'si'
+		labelOpcion[num] = language.PYouSmoke 
+		--infoOpcion[num] = item.fumas
 		if item.fumas == "No" then
 			iconOpcion[num] = 'no'
+			infoOpcion[num] = language.PNo 
+		else
+			iconOpcion[num] = 'si'
+			infoOpcion[num] = language.PYes 
 		end
 		num = #infoOpcion + 1
 	end
 	--bebes
 	if item.bebes then
-		labelOpcion[num] = 'Bebes'
-		infoOpcion[num] = item.bebes
-		iconOpcion[num] = 'si'
+		labelOpcion[num] = language.PYouDrinkAlcohol
+		--infoOpcion[num] = item.bebes
 		if item.bebes == "No" then
 			iconOpcion[num] = 'no'
+			infoOpcion[num] = language.PNo 
+		else
+			iconOpcion[num] = 'si'
+			infoOpcion[num] = language.PYes
 		end
 		num = #infoOpcion + 1
 	end
 	--psicotroficos
 	if item.psicotropicos then
-		labelOpcion[num] = 'Psicotropicos'
-		infoOpcion[num] = item.psicotropicos
-		iconOpcion[num] = 'si'
+		labelOpcion[num] = language.PYouPsychotropicDrugs
+		--infoOpcion[num] = item.psicotropicos
 		if item.psicotropicos == "No" then
 			iconOpcion[num] = 'no'
+			infoOpcion[num] = language.PNo
+		else
+			iconOpcion[num] = 'si'
+			infoOpcion[num] = language.PYes
 		end
 		num = #infoOpcion + 1
 	end
@@ -649,7 +660,7 @@ function scene:create( event )
 	if isReadOnly then
 		posY = posY + 120
 		local lblReadOnly = display.newText( {
-			text = "¿QUIERES CONVERSAR CON " .. item.userName .. "?",     
+			text = language.PLikeToStart .. item.userName .. "?",     
 			x = midW, y = posY, width = 600,
 			font = fontFamilyLight, fontSize = 26, align = "center"
 		})
@@ -665,7 +676,7 @@ function scene:create( event )
 		scrPerfile:insert(rctFree)
         
 		local lblSign = display.newText( {
-			text = "¡Registrate ahora!",     
+			text = language.PSignUpNow,     
 			x = midW, y = posY, width = 600,
 			font = fontFamilyBold, fontSize = 32, align = "center"
 		})
@@ -680,7 +691,7 @@ function scene:create( event )
 		scrPerfile:insert(btnStartChat)
 		btnStartChat:addEventListener( 'tap', startConversation)
 		local lblStartChat = display.newText({
-			text = "INICIAR CONVERSACIÓN", 
+			text = language.pConversationWith,
 			x = midW, y = posY,
 			font = fontFamilyBold,   
 			fontSize = 25, align = "center"

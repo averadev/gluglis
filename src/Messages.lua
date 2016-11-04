@@ -34,7 +34,7 @@ local ListChats = {}
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
 		tmpList[i] = {id = items[i].idMessage, image = items[i].image, image2 = items[i].image2, name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
-			blockMe = items[i].blockMe, blockYour = items[i].blockYour, NoRead = items[i].NoRead, identifier = items[i].identifier, recipientId = items[i].id }
+			blockMe = items[i].blockMe, blockYour = items[i].blockYour, NoRead = items[i].NoRead, recipientId = items[i].id }
 	end
 	buildListMsg(100,tmpList)
 	tools:setLoading( false,screen )

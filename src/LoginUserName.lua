@@ -103,7 +103,7 @@ function toLogIn( event )
 			tools:setLoading(true,grpLoad)
 			RestManager.validateUser( textEmail, textPass, 11 )
 		else
-			alertLogin(true,"Campos vacios",2)
+			alertLogin( true, language.LUNEmptyFields, 2 )
 			timeMarker = timer.performWithDelay( 2000, function()
 				alertLogin(false,"",2)
 				flag = 0
@@ -134,14 +134,14 @@ function doCreate( event )
 			if textPass == textRePass then
 				RestManager.createUserNormal(textUser, textEmail, textPass, "", "", "", playerId)
 			else
-				alertLogin(true,"Contraseñas distintas",2)
+				alertLogin(true,language.LUNDifferentPass,2)
 				timeMarker = timer.performWithDelay( 2000, function()
 					alertLogin(false,"",2)
 					flag = 0
 				end, 1 )
 			end
 		else
-			alertLogin(true,"Campos vacios",2)
+			alertLogin(true,language.LUNEmptyFields,2)
 			timeMarker = timer.performWithDelay( 2000, function()
 				alertLogin(false,"",2)
 				flag = 0
@@ -535,7 +535,7 @@ function scene:create( event )
     lblTerms12:setFillColor( .5 )
     grpLogIn:insert(lblTerms12)
     local lblTerms22 = display.newText( {
-        text = language.LUNTerms1,
+        text = language.LUNTerms2,
         x = midW, y = midH + 510,
         font = native.systemFontBold,  
         width = 500,

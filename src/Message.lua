@@ -58,6 +58,7 @@ function setItemsMessages( items )
 		end
 		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = item.message, time = item.hora, isRead = item.status_message, senderId = item.sender_id } 
 	end
+	tools:setLoading( false, screen )
 	buildChat(0)
 end
 
@@ -65,7 +66,7 @@ end
 -- Muestra un mensaje cuando no se encuentren chats
 ------------------------------------------------------
 function notChatsMessages()
-	tools:setLoading( false,screen )
+	tools:setLoading( false, screen )
 	NoMessage = tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
 	messagesInRealTime()
 end
@@ -76,7 +77,7 @@ end
 ------------------------------------------------------------
 function noConnectionMessage(message)
 	tools:noConnection( true, screen, message )
-	tools:setLoading( false,screen )
+	tools:setLoading( false, screen )
 	messagesInRealTime()
 end
 
@@ -101,7 +102,8 @@ function sentMessage()
 				NoMessage:removeSelf()
 				NoMessage = nil
 			end
-			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando"}
+			local settings = DBManager.getSettings()
+			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando", sender_id = settings.idApp }
 			displaysInList(itemTemp, true)
 			local newMessageText = trimString(txtMessage.text)
 			newMessageText = string.gsub( newMessageText, "/", '&#47;' )
@@ -142,7 +144,7 @@ end
 function displaysInList(itemTemp, isMe)
 	tmpList = nil
 	tmpList = {}
-	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = item.sender_id}
+	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = itemTemp.sender_id}
 	--verifica la fecha en que se mando
 	if lastDate ~= itemTemp.fechaFormat then
 		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
@@ -425,15 +427,14 @@ function buildChat(poscD)
 				
 			end
 			
-		
-			local bgM0 = display.newRoundedRect( 100, posY, 502, 80, 5 )
+			local bgM0 = display.newRoundedRect( 100, posY, 502, 85, 5 )
             bgM0.anchorX = 0
             bgM0.anchorY = 0
             bgM0.alpha = .2
             bgM0:setFillColor( .3 )
             grpChat:insert(bgM0)
 			
-			local bgM = display.newRoundedRect( 100, posY, 500, 77, 5 )
+			local bgM = display.newRoundedRect( 100, posY, 500, 82, 5 )
             bgM.anchorX = 0
             bgM.anchorY = 0
             bgM:setFillColor( 68/255, 14/255, 98/255 )
@@ -441,7 +442,7 @@ function buildChat(poscD)
 			
 			local lblM = display.newText({
                 text = i.message,     
-                x = 110, y = posY + 10,
+                x = 120, y = posY + 10,
                 font = fontFamilyRegular,   
                 fontSize = 30, align = "left"
             })
@@ -457,29 +458,31 @@ function buildChat(poscD)
                 lblM = display.newText({
                     text = i.message, 
                     width = 450,
-                    x = 40, y = posY + 10,
-                    font = "Lato-Regular",   
+                    x = 120, y = posY + 10,
+                    font = fontFamilyRegular,   
                     fontSize = 30, align = "left"
                 })
                 lblM.anchorX = 0
                 lblM.anchorY = 0
-                lblM:setFillColor( .1 )
+                lblM:setFillColor( 1 )
                 grpChat:insert(lblM)
                 
                 if i.isMe then
                     --lblM.x = 270
 					lblM.anchorX = 1
-                    lblM.x = intW - 110
+                    lblM.x = intW - 120
 					lblM:setFillColor( 68/255, 14/255, 98/255 )
                 end
-                bgM.height = lblM.contentHeight + 41
-                bgM0.height = lblM.contentHeight + 42
+                --bgM.height = lblM.contentHeight + 46
+                --bgM0.height = lblM.contentHeight + 48
+				bgM.height = lblM.contentHeight + 46
+                bgM0.height = lblM.contentHeight + 48
             else
-                bgM.width = lblM.contentWidth + 40
-                bgM0.width = lblM.contentWidth + 42
+                bgM.width = lblM.contentWidth + 46
+                bgM0.width = lblM.contentWidth + 48
 				if lblM.contentWidth < 60 then
-					 bgM.width = 140
-					 bgM0.width = 142
+					 bgM.width = 146
+					 bgM0.width = 148
 				end
                 lblM.anchorX = 0
                 if i.isMe then
@@ -495,7 +498,7 @@ function buildChat(poscD)
 				lblDateTemp[poscD] = display.newText({
 					text = "Cargando",
 					x = lblM.x, y = posY + lblM.contentHeight + 20,
-					font = "Lato-Regular",   
+					font = fontFamilyLight,   
 					fontSize = 18, align = "left"
 				})
 				lblDateTemp[poscD].anchorX = lblM.anchorX
@@ -505,12 +508,14 @@ function buildChat(poscD)
 					lblDateTemp[poscD].anchorX = 0
 					lblDateTemp[poscD].x = intW - bgM.width
 				end
+				lblDateTemp[poscD].anchorX = 1
+				lblDateTemp[poscD].x = intW - 130
 			--muestra la hora en que se envio el mensaje
 			else
 				lblTime = display.newText({
 					text = i.time,
-					x = lblM.x, y = posY + lblM.contentHeight + 25,
-					font = "Lato-Regular",   
+					x = lblM.x, y = posY + lblM.height + 25,
+					font = fontFamilyLight,   
 					fontSize = 18, align = "left"
 				})
 				lblTime.anchorX = lblM.anchorX
@@ -588,187 +593,14 @@ function buildChat(poscD)
 		messagesInRealTime()
 	end
 
-    --[[for z = 1, #tmpList do
-	
-        local i = tmpList[z]
-		-- muestra la fecha
-        if i.date then
-			lastDate = i.date
-            local bgDate = display.newRoundedRect( midW, posY, 350, 40, 20 )
-            bgDate.anchorY = 0
-            bgDate:setFillColor( 220/255, 186/255, 218/255 )
-            grpChat:insert(bgDate)
-            
-            local lblDate = display.newText({
-                text = i.date,     
-                x = midW, y = posY + 20,
-                font = "Lato-Regular",   
-                fontSize = 25, align = "center"
-            })
-            lblDate:setFillColor( .1 )
-            grpChat:insert(lblDate)
-            
-            posY = posY + 70
-		--muestra los mensajes
-        else
-            local bgM0 = display.newRoundedRect( 20, posY, 502, 80, 20 )
-            bgM0.anchorX = 0
-            bgM0.anchorY = 0
-            bgM0.alpha = .2
-            bgM0:setFillColor( .3 )
-            grpChat:insert(bgM0)
-            
-            local bgM = display.newRoundedRect( 20, posY, 500, 77, 20 )
-            bgM.anchorX = 0
-            bgM.anchorY = 0
-            bgM:setFillColor( 1 )
-            grpChat:insert(bgM)
-            
-            local lblM = display.newText({
-                text = i.message,     
-                x = 40, y = posY + 10,
-                font = "Lato-Regular",   
-                fontSize = 30, align = "left"
-            })
-            lblM.anchorX = 0
-            lblM.anchorY = 0
-            lblM:setFillColor( .1 )
-            grpChat:insert(lblM)
-            
-			--ajusta el tamaño del background
-            if lblM.contentWidth > 450 then
-                lblM:removeSelf()
-                
-                lblM = display.newText({
-                    text = i.message, 
-                    width = 450,
-                    x = 40, y = posY + 10,
-                    font = "Lato-Regular",   
-                    fontSize = 30, align = "left"
-                })
-                lblM.anchorX = 0
-                lblM.anchorY = 0
-                lblM:setFillColor( .1 )
-                grpChat:insert(lblM)
-                
-                if i.isMe then
-                    lblM.x = 270
-                end
-                bgM.height = lblM.contentHeight + 41
-                bgM0.height = lblM.contentHeight + 42
-            else
-                bgM.width = lblM.contentWidth + 40
-                bgM0.width = lblM.contentWidth + 42
-				if lblM.contentWidth < 60 then
-					 bgM.width = 140
-					 bgM0.width = 142
-				end
-                lblM.anchorX = 0
-                if i.isMe then
-                    lblM.anchorX = 1
-                    lblM.x = intW - 40
-                end
-            end
-			
-            --muestra un cargando mientra se confirma el mensaje v9
-			
-			if poscD ~= 0 then
-				lblDateTemp[poscD] = display.newText({
-					text = "Cargando",
-					x = lblM.x, y = posY + lblM.contentHeight + 20,
-					font = "Lato-Regular",   
-					fontSize = 18, align = "left"
-				})
-				lblDateTemp[poscD].anchorX = lblM.anchorX
-				lblDateTemp[poscD]:setFillColor( .5 )
-				grpChat:insert(lblDateTemp[poscD])
-				if lblM.anchorX == 1 then
-					lblDateTemp[poscD].anchorX = 0
-					lblDateTemp[poscD].x = intW - bgM.width
-				end
-			--muestra la hora en que se envio el mensaje
-			else
-				local lblTime = display.newText({
-					text = i.time,
-					x = lblM.x, y = posY + lblM.contentHeight + 20,
-					font = "Lato-Regular",   
-					fontSize = 18, align = "left"
-				})
-				lblTime.anchorX = lblM.anchorX
-				lblTime:setFillColor( .5 )
-				grpChat:insert(lblTime)
-				if lblM.anchorX == 1 then
-					lblTime.anchorX = 0
-					lblTime.x = intW - bgM.width
-				end
-			end
-			if i.isMe == true then
-				if i.isRead == '1' or i.isRead == 1 then
-					local iconCheckBlue = display.newImage("img/icoFilterCheck.png")
-					iconCheckBlue:translate(728, posY + lblM.contentHeight + 20)
-					grpChat:insert( iconCheckBlue )
-				else
-					local num = #checkBlue + 1
-					checkBlue[num] = display.newImage("img/icoFilterCheck.png")
-					checkBlue[num]:translate(728, posY + lblM.contentHeight + 20)
-					grpChat:insert( checkBlue[num] )
-					checkBlue[num].alpha = 0
-					if i.id then
-						checkBlue[num].id = i.id
-					else
-						checkBlue[num].id = 0
-						checkBlue[num].poscD = poscD
-					end
-				end
-			end
-            
-			--cambia la posicion del mensaje si es del usuario
-            if i.isMe then
-                bgM0.x = intW - 20
-                bgM.x = intW - 20
-                bgM0.anchorX = 1
-                bgM.anchorX = 1
-                bgM0.alpha = .3
-                bgM:setFillColor( 178/255, 255/255, 178/255 )
-            end
-            
-            posY = posY + bgM.height + 30
-            if z < #tmpList then
-                if tmpList[z+1].isMe == i.isMe then 
-                    posY = posY - 20
-                end
-            end
-        end
-		
-		if i.isRead == '0' and i.isMe == false then
-			lastStatus = i.id
-		end
-		
-    end
-    local point = display.newRect( 1, posY + 30, 1, 1 )
-	grpChat:insert(point)
-	if scrChat.height <= posY + 30 then
-		scrChat:setScrollHeight( posY )
-		scrChat:scrollTo( "bottom", { time=0 } )
-	end
-	if lastStatus ~= 0 then
-		RestManager.changeStatusMessages(itemsConfig.channelId, lastStatus)
-	else
-		messagesInRealTime()
-	end]]
 end
 
 -----------------------------------
 -- Muestra la imagen del usuario
 -----------------------------------
-function setImagePerfilMessage(item)
-	local avatar = display.newImage(item.image, system.TemporaryDirectory)
-	avatar:translate(150, 50 + h)
-	avatar.width = 80
-	avatar.height = 80
-	screen:insert( avatar )
-	local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
-	avatar:setMask( maskCircle80 )
+function setImagePerfilMessage()
+	--obtiene los mensajes del canal
+	RestManager.getChatMessages(itemsConfig.channelId)
 end
 
 function messagesInRealTime()
@@ -976,7 +808,7 @@ function scene:create( event )
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "default" )
 	txtMessage.size = 32
-	txtMessage.hasBackground = true
+	txtMessage.hasBackground = false
 	txtMessage:setTextColor( 1 )
 	txtMessage.placeholder = "Escribir"
 	--txtMessage:resizeHeightToFitFont()
@@ -987,12 +819,10 @@ function scene:create( event )
 	scrChatH = scrChat.height
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
 	
+	--verifica si existe los avatares de loss usuarios
 	local settings = DBManager.getSettings()
 	local contI = 0
 	local imgExist = { settings.idApp .. ".png", item.recipientId .. ".png" }
-	
-	--
-	--print(#imgExist)
 	
 	for i = 1, #imgExist, 1 do
 		local path = system.pathForFile( imgExist[i], system.TemporaryDirectory )
@@ -1004,31 +834,23 @@ function scene:create( event )
 		end
 	end
 	
-	print(contI)
 	if ( contI > 0 ) then
-		RestManager.getImagePerfilMessage(items)
+		--descarga las imagenes en caso de no existir
+		RestManager.getImagePerfilMessage( item.recipientId )
 	else
+		--obtiene los mensajes del canal
 		RestManager.getChatMessages(item.channelId)
 	end
 	
-	--[[local path = system.pathForFile( item.image, system.TemporaryDirectory )
-	local fhd = io.open( path )
-	if not fhd then
-		contI++;
-	else
-		fhd:close()
-		
-	end]]
-	
-	--
-	
-	--
 	grpTextField:toFront()
 
 end
 	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
+	if grpChats then
+		grpChats.alpha = 0
+	end
 end
 
 -- Hide scene
@@ -1036,6 +858,10 @@ function scene:hide( event )
 	native.setKeyboardFocus( nil )
 	if timer1 then
 		timer.cancel( timer1 ) 
+	end
+	if grpTextField then
+		grpTextField:removeSelf()
+		grpTextField = nil
 	end
 end
 

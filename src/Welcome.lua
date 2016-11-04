@@ -261,7 +261,7 @@ function returnValidateCity(result)
 	if (result) then
 		RestManager.saveLocationProfile( txtLocationW.text )
 	else
-		local message = "Seleccione una ciudad validad.";
+		local message = language.WCSelectCity;
 		NewAlert(true, message)
 		timeMarker = timer.performWithDelay( 1000, function()
 			NewAlert(false, message)
@@ -344,7 +344,7 @@ function scene:create( event )
 	txtLocationW:addEventListener( "userInput", onTxtFocusWelcome )
 	txtLocationW:setReturnKey( "default" )
 	txtLocationW.size = 40
-	txtLocationW.placeholder = "Ingresa una ciudad"
+	txtLocationW.placeholder = language.WCEnterCity
 	txtLocationW:setTextColor( 45/255, 10/255, 65/255 )
 	txtLocationW.city = ""
 	txtLocationW.id = 0
@@ -378,7 +378,7 @@ function scene:create( event )
 	btnSearch:addEventListener( 'tap', goToHome )
 	
 	local lblSearch = display.newText({
-        text = "BUSCAR", 
+        text = language.WCSearch, 
         x = midW, y = lastY,
         font = fontFamilyBold,  
 		width = intW - 200,
@@ -400,7 +400,7 @@ function scene:create( event )
 	btnFilter:addEventListener( 'tap', goFilter )
 	
 	local lblFilter = display.newText({
-        text = "Más Filtros", 
+        text = language.WCMoreFilters,
         x = midW, y = lastY,
         font = fontFamilyRegular,
 		width = intW - 270,

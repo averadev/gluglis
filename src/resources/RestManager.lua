@@ -209,8 +209,8 @@ local RestManager = {}
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
 		url = url.."/timeZone/" .. urlencode(timeZone)
-		print(url)
 		--url = url.."/timeZone/" .. urlencode("-5")
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -259,7 +259,6 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 		url = url.."/channelId/".. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -310,6 +309,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -349,7 +349,7 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
-	
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -463,15 +463,15 @@ local RestManager = {}
     -- Obtiene el avatar de messajes, en caso de no existir en fichero interno
     -- @param item informacion
     --------------------------------------------------------------------
-	RestManager.getImagePerfilMessage = function( item )
+	RestManager.getImagePerfilMessage = function( recipientId )
 		local settings = DBManager.getSettings()
         -- Set url
         local url = settings.url
         url = url.."api/getImagePerfilMessage/format/json"
         url = url.."/idApp/" .. settings.idApp
+		url = url.."/recipientId/" .. recipientId
 		--url = url.."/channelId/" .. channelId
 		--url = url.."/idMessage/" .. idMessage
-	
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -479,8 +479,19 @@ local RestManager = {}
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
-						--elimina las burbujas de mensajes no leidos
-						deleteNotBubble()
+						
+						print(#data.items)
+						if #data.items > 0 then
+							--cargamos los elementos del mensaje
+							loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = data.items})
+						else
+							--notificamos que no existen chats
+							--notListMessages()
+							noConnectionMessage('Error con el servidor')
+						end
+						
+						
+						
 					else
 						noConnectionMessage('Error con el servidor')
 					end
@@ -771,7 +782,7 @@ local RestManager = {}
         local url = site.."api/startConversation/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/idUser/" .. idUser
-	
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				
@@ -1000,65 +1011,6 @@ local RestManager = {}
 		 
 		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 	
-	
-		--[[local settings = DBManager.getSettings()
-	
-		local function networkListener( event )
-
-			if ( event.isError ) then
-				print( "Network Error." )
-				print( "Network error: ", event.response )
-			else
-				if ( event.phase == "began" ) then
-					--print( "Upload started" )
-				elseif ( event.phase == "progress" ) then
-					--print( "Uploading... bytes transferred ", event.bytesTransferred )
-				elseif ( event.phase == "ended" ) then
-					--print( "Upload ended..." )
-					--print( "Status:", event.status )
-					--print( "Response:", event.response )
-					
-					if event.status == 201 then
-						print("imagen subida")
-						
-						
-					else
-						print("imagen no subida")
-						
-					end
-					
-					
-				end
-			end
-			
-		end
-
-		local url = settings.url .. "upload/uploadImage"
-		
-		local params = {
-			timeout = 60,
-			progress = true,
-			bodyType = "text"
-		}
-		
-		local filename = "tempFotos/" .. name .. ".jpg"
-		
-		print(filename)
-		print(url)
-		
-		local baseDirectory = system.TemporaryDirectory
-		local contentType = "image/jpeg"
-		
-		local headers = {}
-
-		headers["Content-Type"] = "application/x-www-form-urlencoded"
-		headers["Accept-Language"] = "en-US"
-		headers.filename = filename
-		params.headers = headers
-
-		--network.request( "http://localhost:8080/booking/upload/uploadImage", "POST", networkListener, params )
-		network.upload( url , "PUT", networkListener, params, filename, baseDirectory, contentType )]]
-	
 	end
 	
 	------------------------------------
@@ -1275,6 +1227,8 @@ local RestManager = {}
 			setImagePerfilMessage(obj.items[1])
         elseif  obj.name == "ProfileAvatars" then
 			setImagePerfil(obj.items[1].image)
+		elseif  obj.name == "ProfileAvatars" then
+			setImagePerfil(obj.items[1].image)
         end
     end 
 
@@ -1364,8 +1318,6 @@ local RestManager = {}
 		end
 		-- Descargamos de la nube
 		local url = "http://gluglis.travel/gluglis_api/assets/img/avatar/" .. photophoto ..".png"
-		
-		print(url)
 		
 		display.loadRemoteImage( url ,"GET", imageListener2, img, system.TemporaryDirectory ) 
 		-- Dirigimos al metodo pertinente

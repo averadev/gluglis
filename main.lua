@@ -35,16 +35,18 @@ display.setDefault( "background", 0 )
 
 local isUser = DBManager.setupSquema()
 
---local setting = DBManager.getSettings()
+local setting = DBManager.getSettings()
 --Globals.language = Globals.language.setting.language
 language = require('src.resources.Language')
---if setting.language == "es" then language = language.es
---elseif setting.language == "en" then language = language.en end
-language = language.es
+--print("skashdas djkjkjk sajksajkas asjkadjk")
+--print(setting.language)
+if setting.language == "es" then language = language.es
+elseif setting.language == "en" then language = language.en end
+--language = language.es
 
 if isUser then
 	composer.removeScene( "src.Welcome" )
-	composer.gotoScene( "src.Messages", { time = 400, effect = "fade"})
+	composer.gotoScene( "src.Welcome", { time = 400, effect = "fade"})
 else
 	composer.removeScene( "src.LoginSplash" )
 	composer.gotoScene("src.LoginSplash")
@@ -70,7 +72,8 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				if currScene == "src.Message" then
 					--displaysInList(item[1], false )
 				else
-					system.vibrate()
+					--system.vibrate()
+					OneSignal.EnableVibrate(true)
 					local RestManager = require('src.resources.RestManager')
 					RestManager.getUnreadChats()
 				end
@@ -90,7 +93,7 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				local RestManager = require('src.resources.RestManager')
 				local item = json.decode(additionalData.item)
 				local tmpListMain = {}
-				tmpListMain[1] = {id = item[1].id, image = item[1].image, image2 = item[1].image2, name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe }
+				tmpListMain[1] = {id = item[1].id, image = item[1].image, image2 = item[1].image2, name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe, recipientId = item[1].id  }
 				composer.removeScene( "src.Message" )
 				composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpListMain[1] } } )
 			end
@@ -102,13 +105,20 @@ end
 -- inicializa el plugin de notificaciones
 ------------------------------------------------
 local OneSignal = require("plugin.OneSignal")
+
+--system.cancelNotification()
+
 OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "836420576135", DidReceiveRemoteNotification)
+
+
 
 ------------------------------------------------
 -- obtiene el token por telefono
 ------------------------------------------------
 function IdsAvailable(playerID, pushToken)
+	--OneSignal.ClearAllNotifications()
 	playerId = playerID
+	
 end
 
 ------------------------------------------------

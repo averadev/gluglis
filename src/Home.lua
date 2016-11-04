@@ -82,7 +82,7 @@ function getFirstCards(items)
             getProfile()
         end
 	else
-		HomeError( "No se encontro usuarios")
+		HomeError( language.HNoUserFound )
 	end
 end
 
@@ -134,7 +134,7 @@ function HomeError( message )
 	container.alpha = 1
 	
 	local lblnoResultHome = display.newText({
-        text = "Busqueda \nsin resultados", 
+        text = language.HNoResultHome, 
         x = midW, y = 620,
         font = fontFamilyLight,   
         fontSize = 30, align = "center"
@@ -273,7 +273,7 @@ function setInfo(idx)
     -- Set info
     lblName.text = loadUsers[idx].userName 
     if loadUsers[idx].edad then 
-        lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+        lblName.text = lblName.text .." # "..  loadUsers[idx].edad.. " " .. language.HYears
 		--lblAge.text = loadUsers[idx].edad.." años"
 	else
 		--lblAge.text = "Edad no registrada"
@@ -282,7 +282,7 @@ function setInfo(idx)
         --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
 		lblInts.text = loadUsers[idx].residencia
 	else
-		lblInts.text = "Residencia no registrada"
+		lblInts.text = language.HUnregisteredResidence
     end
 	
 	-- Hobbies
@@ -504,7 +504,7 @@ function showInfoButton()
     btnViewProfile:setFillColor( 0/255, 174/255, 239/255 )
     topCmp:insert(btnViewProfile)
 	local lblViewProfile = display.newText({
-        text = "VER PERFIL",
+        text = language.HSeeProfile,
         x = midW, y = lastY + 60,
         font = fontFamilyBold,
         fontSize = 32, align = "left"
@@ -647,8 +647,8 @@ function scene:create( event )
 	grpLoad2 = display.newGroup()
     grpLoad2.cards = true
 	screen:insert(grpLoad2)
-	grpLoad2.y = 840 + h
-	grpLoad2.x = midW - 80
+	--grpLoad2.y = 840 + h
+	--grpLoad2.x = midW - 80
 	
 	if not isReadOnly then
 		if typeSearch == "welcome" then
@@ -664,8 +664,6 @@ function scene:create( event )
     
 	posY = (topCmp.height /1.65)
 	topCmp.y = - posY
-	
-	--tools[2].alpha = 0
 	
 	tools:toFront()
 end	

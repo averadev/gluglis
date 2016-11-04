@@ -537,7 +537,7 @@ function bgOptionAvatar()
 end
 
 function showNewAvatar( event )
-	--bgOptionAvatar()
+	bgOptionAvatar()
 	
 	local nameImage
 	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
@@ -1492,7 +1492,7 @@ function showOptionsLabels( event )
 		btnAceptOption.name = t.name
 		btnAceptOption:addEventListener( 'tap', savePreferences )
 		local lblStartChat = display.newText({
-			text = "Aceptar", 
+			text = language.MpOk, 
 			x = midW, y = midH + (midH/2) + 75,
 			font = fontFamilyBold,   
 			fontSize = 32, align = "center"
@@ -1535,7 +1535,6 @@ function createTextField( item, name, coordY )
 	scrPerfile:insert(bgTextField)
 	if name == "name" then
 		--textField user name
-		--485
 		textName = native.newTextField(  intW - 65, coordY, 400 , 90 )
 		textName.anchorX = 1
 		textName.text = item.nombre
@@ -1596,7 +1595,6 @@ function createTextField( item, name, coordY )
 		else
 			textUserResidence.id = 0
 		end
-		
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
 		--[[local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
@@ -1614,7 +1612,6 @@ function createTextField( item, name, coordY )
 		textEmailContact.name = "emailContact"
 		grpTextProfile:insert(textEmailContact)
 	end
-	
 end
 
 function createPreferencesItems( item )
@@ -1637,7 +1634,7 @@ function createPreferencesItems( item )
 	local nameOption = {}
 	local num = #infoOpcion + 1
 	--idiomas
-	infoOpcion[num] = "Idiomas: "
+	infoOpcion[num] = language.MpLanguages
 	iconOpcion[num] = 'icoFilterLanguage'
 	typeOpcion[num] = "multiComboBox"
 	nameOption[num] = "language"
@@ -1648,7 +1645,7 @@ function createPreferencesItems( item )
     end
 	local num = #infoOpcion + 1
 	--idiomas
-	infoOpcion[num] = "Hobbies: "
+	infoOpcion[num] = language.MpHobbies
 	iconOpcion[num] = 'icoFilterLanguage'
 	typeOpcion[num] = "multiComboBox"
 	nameOption[num] = "hobbies"
@@ -1674,51 +1671,51 @@ function createPreferencesItems( item )
 	
 	num = #infoOpcion + 1
 	--nivel de estudio
-	infoOpcion[num] = "Nivel de estudio: "
+	infoOpcion[num] = language.MpLevelOfEducation
 	iconOpcion[num] = 'iconSchool'
 	typeOpcion[num] = "comboBox"
 	nameOption[num] = "race"
 	num = #infoOpcion + 1
 	if not item.nivelEstudio then
-		item.nivelEstudio = "Ninguna"
+		item.nivelEstudio = language.MpAny
 	end
 	--area laboral
-	infoOpcion[num] = "Area laboral: "
+	infoOpcion[num] = language.MpWorkingArea
 	iconOpcion[num] = 'iconJob'
 	typeOpcion[num] = "comboBox"
 	nameOption[num] = "workArea"
 	num = #infoOpcion + 1
 	if not item.areaLaboral then
-		item.areaLaboral = "Ninguna"
+		item.areaLaboral = language.MpAny
 	end
 	--cuenta propia
-	infoOpcion[num] = "Cuenta propia: "
+	infoOpcion[num] = language.MpFreelance
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "ownAccount"
 	num = #infoOpcion + 1
 	if not item.cuentaPropia then
-		item.cuentaPropia = "Por cuenta ajena"
+		item.cuentaPropia = language.MpEmployee
 	end
 	ownAccount = item.cuentaPropia
 	--mascota
-	infoOpcion[num] = "mascota: "
+	infoOpcion[num] = language.MpPets
 	iconOpcion[num] = 'iconPet'
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "pet"
 	num = #infoOpcion + 1
 	if not item.mascota then
-		item.mascota = "No"
+		item.mascota = language.MpNo
 	end
 	pet = item.mascota
 	--deporte
-	infoOpcion[num] = "Practica deportes: "
+	infoOpcion[num] = language.MpSportYouPlay
 	iconOpcion[num] = 'iconSport'
 	typeOpcion[num] = "multiComboBox"
 	nameOption[num] = "sport"
 	
 	if not item.deporte then
-		item.deporte = "No"
+		item.deporte = language.MpNo
 	end
 	if item.deportes then
 		mySports = item.deportes
@@ -1727,33 +1724,33 @@ function createPreferencesItems( item )
     end
 	num = #infoOpcion + 1
 	--fumas
-	infoOpcion[num] = "¿Fumas?: "
+	infoOpcion[num] = language.MpYouSmok
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "smoke"
 	num = #infoOpcion + 1
 	if not item.fumas then
-		item.fumas = "No"
+		item.fumas = language.MpNo
 	end
 	 smoke = item.fumas
 	--bebes
-	infoOpcion[num] = "¿Bebes?: "
+	infoOpcion[num] = language.MpYouDrinkAlcohol
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "drink"
 	num = #infoOpcion + 1
 	if not item.bebes then
-		item.bebes = "No"
+		item.bebes = language.MpNo
 	end
 	drink = item.bebes
 	--psicotroficos
-	infoOpcion[num] = "¿Psicotropicos?: "
+	infoOpcion[num] = language.MpYouPsychotropicDrugs
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "psychrotrophic"
 	num = #infoOpcion + 1
 	if not item.psicotroficos then
-		item.psicotroficos = "No"
+		item.psicotroficos = language.MpNo
 	end
 	psychrotrophic = item.psicotroficos
 	-- Options
@@ -1781,7 +1778,7 @@ function createPreferencesItems( item )
         scrPerfile:insert(lbl)
 		
 		if nameOption[i] == "language" then
-			local languageText = "No cuenta con ningun idioma"
+			local languageText = language.MpNoLanguage
 			if item.idiomas then
 				for i=1, #item.idiomas do
 					if i == 1 then
@@ -1797,7 +1794,7 @@ function createPreferencesItems( item )
 			bgLangs:setFillColor( 1 )
 			bgLangs.alpha = .02
 			bgLangs.name = "languages"
-			bgLangs.label = "Tus Idiomas"
+			bgLangs.label = language.MpOtherLanguages
 			bgLangs.type = "create"
 			scrPerfile:insert(bgLangs)
 			bgLangs:addEventListener( 'tap', showOptionsLabels )
@@ -1820,7 +1817,7 @@ function createPreferencesItems( item )
 			scrPerfile:insert(triangle)
 			
 		elseif nameOption[i] == "sport" then
-			local sportText = "No cuenta con ningun deporte"
+			local sportText = language.MpNoSport
 			if item.deportes then
 				for i=1, #item.deportes do
 					if i == 1 then
@@ -1836,7 +1833,7 @@ function createPreferencesItems( item )
 			bgSport:setFillColor( 1 )
 			bgSport.alpha = .02
 			bgSport.name = "sport"
-			bgSport.label = "Deportes que practicas"
+			bgSport.label = language.MpSportThatYouPlay
 			bgSport.type = "create"
 			scrPerfile:insert(bgSport)
 			bgSport:addEventListener( 'tap', showOptionsLabels )
@@ -1869,7 +1866,7 @@ function createPreferencesItems( item )
 					end
 				end
 			end]]
-			local hobbiesText = "Editar pasatiempos"
+			local hobbiesText = language.MpEditHobbies
 			if item.hobbies then
 				for i=1, #item.hobbies do
 					if i == 1 then
@@ -1885,7 +1882,7 @@ function createPreferencesItems( item )
 			bgInts:setFillColor( 1 )
 			bgInts.alpha = .02
 			bgInts.name = "hobbies"
-			bgInts.label = "Tus hobbies"
+			bgInts.label = language.MpYourHobbies
 			bgInts.type = "create"
 			scrPerfile:insert(bgInts)
 			bgInts:addEventListener( 'tap', showOptionsLabels )
@@ -1967,7 +1964,7 @@ function createTouristGuideItems( item )
     end
 	availability = item.diponibilidad]]
 	--alojamiento
-	infoOpcion[num] = "Alojamiento: "
+	infoOpcion[num] = language.MpAccommodation
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "accommodation"
@@ -1977,7 +1974,7 @@ function createTouristGuideItems( item )
     end
 	accommodation = item.alojamiento
 	--vehiculo
-	infoOpcion[num] = "Vehiculo: "
+	infoOpcion[num] = language.MpVehicle
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "vehicle"
@@ -1987,7 +1984,7 @@ function createTouristGuideItems( item )
     end
 	vehicle = item.vehiculo
 	--comida
-	infoOpcion[num] = "Comida: "
+	infoOpcion[num] = language.MpFood
 	iconOpcion[num] = ''
 	typeOpcion[num] = "toggleButton"
 	nameOption[num] = "food"
@@ -2072,7 +2069,7 @@ function createGeneralItems( item )
 	local nameOption = {}
 	local num = #infoOpcion + 1
 	--nombre
-	infoOpcion[num] = "Nombre: "
+	infoOpcion[num] = language.MpName
 	iconOpcion[num] = 'iconName'
 	typeOpcion[num] = "textField"
 	nameOption[num] = "name"
@@ -2081,7 +2078,7 @@ function createGeneralItems( item )
 		item.nombre = ""
 	end
 	--apellidos
-	infoOpcion[num] = "Apellidos: "
+	infoOpcion[num] = language.MpLastName
 	iconOpcion[num] = 'iconName'
 	typeOpcion[num] = "textField"
 	nameOption[num] = "lastName"
@@ -2090,18 +2087,18 @@ function createGeneralItems( item )
 		item.apellidos = ""
 	end
 	--genero
-	infoOpcion[num] = "Genero"
+	infoOpcion[num] = language.MpGender
 	iconOpcion[num] = 'icoFilterM'
 	typeOpcion[num] = "comboBox"
 	nameOption[num] = "gender"
 	num = #infoOpcion + 1
 	if not item.genero then
-		item.genero = "Seleccionar"
+		item.genero = language.MpSelect
 	end
 	gender = item.genero
 	
 	--pais de origen
-	infoOpcion[num] = "Pais de origen: "
+	infoOpcion[num] = language.MpCountryOrigin
 	iconOpcion[num] = 'icoFilterCity'
 	typeOpcion[num] = "textField"
 	nameOption[num] = "originCountry"
@@ -2110,7 +2107,7 @@ function createGeneralItems( item )
 		item.paisOrigen = ""
 	end
 	--residencia
-	infoOpcion[num] = "Residencia: "
+	infoOpcion[num] = language.MpResidence
 	iconOpcion[num] = 'icoFilterCity'
 	typeOpcion[num] = "textField"
 	nameOption[num] = "residence"
@@ -2119,16 +2116,16 @@ function createGeneralItems( item )
 		item.residencia = ""
 	end
 	--tiempo de residencia
-	infoOpcion[num] = "Tiempo de \nresidencia: "
+	infoOpcion[num] = language.MpTimeLiving
 	iconOpcion[num] = 'icoFilterCity'
 	typeOpcion[num] = "comboBox"
 	nameOption[num] = "residenceTime"
 	num = #infoOpcion + 1
 	if not item.tiempoResidencia then
-		item.tiempoResidencia = "Seleccionar"
+		item.tiempoResidencia = language.MpSelect
 	end
 	--email contacto
-	infoOpcion[num] = "Email: "
+	infoOpcion[num] = language.MpEmail
 	iconOpcion[num] = 'iconEmailContacto'
 	typeOpcion[num] = "label"
 	if not item.userEmail then
@@ -2226,9 +2223,9 @@ function MyProfile( item )
 	
     local edad = ""
 	if not item.edad then 
-        edad = "Seleccione una fecha de nacimiento" 
+        edad = language.MpDateOfBirth
     else 
-        edad = item.edad .. " Años" 
+        edad = item.edad .. language.MpYears
     end
     lblAge= display.newText({
         text = edad, 
@@ -2329,7 +2326,7 @@ function createProfileAvatar()
 		scrPerfile:insert(btnSaveProfile)
 		btnSaveProfile:addEventListener( 'tap', saveProfile )
 		local lblSaveProfile = display.newText({
-			text = "Guardar Cambios", 
+			text = language.MpSaveChanges, 
 			x = midW, y = posY,
 			font = fontFamilyBold,   
 			fontSize = 30, align = "center"
@@ -2430,7 +2427,7 @@ function scene:create( event )
 	
 	grpLoadMyProfile = display.newGroup()
 	screen:insert(grpLoadMyProfile)
-	grpLoadMyProfile.y = 650 + h
+	--grpLoadMyProfile.y = 650 + h
 	tools:setLoading(true,grpLoadMyProfile)
 	if not itemProfile then
 		RestManager.getUsersById("show")
