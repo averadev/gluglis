@@ -554,7 +554,6 @@ function listenerSlider( event )
 		
 		isCircle = false
 		--rango valido para hacer funcionar los slider
-		print(event.yStart)
 		if event.yStart > 400 and event.yStart < 470 then
 			newPoscCircle = nil
 			direction = 0
@@ -590,8 +589,6 @@ function listenerSlider( event )
 		end
 	elseif event.phase == "moved" then
 	
-		print(midW - 10)
-	
 		if isCircle then
 			local x = (event.x - sliderX)
 			local xM = (event.target.x * 1.5)
@@ -601,7 +598,6 @@ function listenerSlider( event )
 				direction = -1
 			end
 			--mueve los botones de izquierda o derecha
-			--print(event.x)
 			if event.x <= 221 then
 				newPoscCircle.x = 222
 			elseif event.x >= 591 then
@@ -752,7 +748,7 @@ function scene:create( event )
     -- Opciones
     local posY = 200 + h
     local opt = {
-        {icon = 'brujula', label= 'Ciudad:', wField = 380, x = 660, nameField = "location", type="textField"}, 
+        {icon = 'brujula', label= language.FCity, wField = 380, x = 660, nameField = "location", type="textField"}, 
 		--{icon = 'down', label= '¿Cuando viajas?', wField = 450, x = 727, nameField = "iniDate", type = "datePicker"}, 
 		--{icon = 'down', label= '¿Cuando Regresas?', wField = 450, x = 727, nameField = "endDate", type="datePicker"}, 
 	}
@@ -818,9 +814,9 @@ function scene:create( event )
 	posY = posY - 1
     -- Campos
     xFields = {
-		{label = "HOMBRE", x = 0, y = 0, w = midW, type = "checkBox", isGen = "H"},
-		{label = "MUJER", x = midW, y = 0, w = midW, type = "checkBox", isGen = "M"},
-		{label = "Entre:", label2 = "Años", x = midW + 20, y = 102 , w = midW - 10, type = "slider", isGen = "M"},
+		{label = language.FMan, x = 0, y = 0, w = midW, type = "checkBox", isGen = "H"},
+		{label = language.FWoman, x = midW, y = 0, w = midW, type = "checkBox", isGen = "M"},
+		{label = language.FAge, label2 = language.FYears, x = midW + 20, y = 102 , w = midW - 10, type = "slider", isGen = "M"},
 		--{label = "Requiero Alojamiento:", x = 720, y = 204, w = 140, nameField = "alojamiento:", type = "toggleButton"} 
 	}
     for i=1, #xFields do
@@ -955,7 +951,7 @@ function scene:create( event )
 	end
 	
     local lblSearch = display.newText({
-        text = "BUSCAR", 
+        text = language.FSearch, 
         x = midW, y = posY,
         font = fontFamilyBold,   
         fontSize = 32, align = "center"

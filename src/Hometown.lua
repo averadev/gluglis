@@ -168,11 +168,10 @@ function OptionLocationHt( item )
 end
 
 function saveCityHt( event )
-	print(event.target.id )
 	if ( event.target.id ~= 0 ) then
 		RestManager.saveLocationProfile( event.target.city, event.target.id )
 	else
-		local message = "Seleccione una ciudad validad.";
+		local message = language.HTValidCity;
 		NewAlert(true, message)
 		timeMarker = timer.performWithDelay( 1000, function()
 			NewAlert(false, message)
@@ -272,7 +271,7 @@ function scene:create( event )
 	txtLocationHt:addEventListener( "userInput", onTxtFocusHomeTown )
 	txtLocationHt:setReturnKey( "default" )
 	txtLocationHt.size = 40
-	txtLocationHt.placeholder = "¿Donde vives?"
+	txtLocationHt.placeholder = language.HTYouLive
 	txtLocationHt:setTextColor( 45/255, 10/255, 65/255  )
 	txtLocationHt.font = native.newFont( fontFamilyRegular )
 	grpHometown:insert( txtLocationHt )
@@ -304,7 +303,7 @@ function scene:create( event )
 	btnSearch:addEventListener( 'tap', saveCityHt )
 	
 	local lblSearch = display.newText({
-        text = "Ok! Start Glugling!", 
+        text = language.HTStartGlugling, 
         x = midW, y = lastY,
         font = fontFamilyBold,   
         fontSize = 32, align = "center"

@@ -27,6 +27,12 @@ settings =
         },
 	},
 	
+	splashScreen = 
+    {
+        enable = true,
+        image = "Default-568h@2x.png"
+    },
+	
 	orientation =
 	{
 		-- Supported values for orientation:

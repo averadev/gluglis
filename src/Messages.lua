@@ -45,7 +45,7 @@ end
 ---------------------------------------------------------
 function notListMessages()
 	tools:setLoading( false,screen )
-	tools:NoMessages( true, scrMs, "No cuenta con mensajes en este momento" )
+	tools:NoMessages( true, scrMs, language.MSGSYouHaveNoMessages )
 end
 
 -------------------------------------
@@ -120,7 +120,7 @@ function createNotBubble(poscC, numChat)
 			
 			local txtNoBubble = display.newText( {
 				x = midW - 60, y = 0,
-				text = numChat, font = native.systemFont, fontSize = 26,
+				text = numChat, font = fontFamilyRegular, fontSize = 26,
 			})
 			txtNoBubble:setFillColor( 0 )
 			ListChats[poscC]:insert(txtNoBubble)
@@ -168,14 +168,13 @@ function buildListMsg(posc, item )
             text = item[i].name,     
             x = 100, y = - 20,
             width = 600,
-            font = native.systemFontBold,   
+            font = fontFamilyBold,   
             fontSize = 35, align = "left"
         })
         lblName:setFillColor( 0 )
         ListChats[poscC]:insert(lblName)
         -- Subject
 		local subject = item[i].subject
-		--print(#item[i].subject)
 		if ( #item[i].subject > 75 ) then
 			subject = subject:sub( 1,75 ) .. "..."
 		end
@@ -198,10 +197,9 @@ function buildListMsg(posc, item )
 			
 			local txtNoBubble = display.newText( {
 				x = midW - 60, y = 0,
-				text = item[i].NoRead, font = native.systemFont, fontSize = 26,
+				text = item[i].NoRead, font = fontFamilyRegular, fontSize = 26,
 			})
 			txtNoBubble:setFillColor( 0 )
-			--txtNoBubble:toFront()
 			ListChats[poscC]:insert(txtNoBubble)
 		end
     end
@@ -245,9 +243,9 @@ function scene:create( event )
 		scrMs:insert(iconReadOnly)
 
 		local lblReadOnly = display.newText( {
-			text = "CONSULTA AQUI LA LISTA DE TODAS LAS PERSONAS QUE QUIEREN CONTACTAR CONTIGO.",     
+			text = language.MSGSCheckHereList,     
 			x = midW, y = midH - 150, width = 600,
-			font = "Lato-Regular", fontSize = 26, align = "center"
+			font = fontFamilyRegular, fontSize = 26, align = "center"
 		})
 		lblReadOnly:setFillColor( 85/255, 85/255, 85/255 )
 		scrMs:insert(lblReadOnly)
@@ -259,9 +257,10 @@ function scene:create( event )
         scrMs:insert(rctFree)
         
         local lblSign = display.newText( {
-			text = "¡Registrate ahora!",     
+			text = language.MSGSSignUpNow,     
 			x = midW, y = midH, width = 600,
-			fontSize = 36, align = "center"
+			fontSize = 36, align = "center",
+			font = fontFamilyRegular,
 		})
 		lblSign:setFillColor( 1 )
 		scrMs:insert(lblSign)

@@ -9,6 +9,7 @@
 ---------------------------------------------------------------------------------
 --require('src.Menu')
 require('src.resources.Globals')
+local widget = require( "widget" )
 local composer = require( "composer" )
 local facebook = require("plugin.facebook.v4")
 local Sprites = require('src.resources.Sprites')
@@ -77,7 +78,7 @@ function Tools:new()
             self:insert( icoBack )
 			
 			local lblIcoBack  = display.newText({
-				text = "Regresar", 
+				text = language.TBack, 
 				x = 130, y = 45,
 				font = fontFamilyLight,   
 				fontSize = 24, align = "left"
@@ -139,28 +140,6 @@ function Tools:new()
 		end
 			
     end
-	
-	--[[function self:bubble()
-		for i = 1, 10, 1 do
-			if self[i] then
-				if self[i].name == 'Messages2' then
-					
-					if unreadChats > 0 then
-						self[i].alpha = 1
-					else
-						self[i].alpha = 0
-					end
-				end
-				if self[i].name == 'lblMessage' then
-					if unreadChats > 0 then
-						self[i].text = unreadChats
-					else
-						self[i].text = ""
-					end
-				end
-			end
-		end
-	end]]
 	
 	--------------------------
     -- Creamos loading
@@ -589,15 +568,9 @@ function Tools:new()
 		bgCompCity:addEventListener( 'tap', noAction )
 		
 		if name == "residence" then
-			--bgCompCity.y = 750
-			--bgCompCity.x = 500
 			bgCompCity.anchorY = 1
 		end
-		--[[elseif name == "welcome" then
-			bgCompCity.y = 580
-			bgCompCity.x = 280
-			bgCompCity.height = 600
-		end]]
+		
 		
 		--pinta la lista de las ciudades
 		if item ~= 0 then
@@ -606,15 +579,6 @@ function Tools:new()
 			if name == "residence" then
 				posY = itemOption.posY - 103
 			end
-			--[[local posY = 325
-			local posX = 453
-			if name == "residence" then
-				posY = 688
-				posX = 500
-			elseif name == "welcome" then
-				posY = 688
-				posX = 500
-			end]]
 			local heightItem = 100
 			local fontsize = 20
 			if name == "welcome" then
@@ -659,15 +623,6 @@ function Tools:new()
 end
 
 function bubble()
-	--[[local currentScene = composer.getSceneName( "current" )
-	if currentScene ~= "src.Messages" then
-		grpChats.alpha = 0
-	elseif currentScene ~= "src.Message" then
-		grpChats.alpha = 0
-	else
-		grpChats.alpha = 1
-	end]]
-	
 	local currentScene = composer.getSceneName( "current" )
 	if currentScene == "src.Messages" or currentScene == "src.Message" then
 		grpChats.alpha = 0
@@ -692,12 +647,9 @@ function keuEve()
 	local cipher = openssl.get_cipher("aes-256-cbc")
 	
 	local encryptedData = cipher:encrypt ( "text", "key" )
-	print(encryptedData)
 	
 	local mime = require ( "mime" )
 	local encryptedData = mime.b64 ( cipher:encrypt ( "text", "key" ) )
-	print(encryptedData)
-
 	return true
 end
 

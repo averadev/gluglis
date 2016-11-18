@@ -3,13 +3,13 @@ local RestManager = {}
 
 	local mime = require("mime")
 	local json = require("json")
+	require('src.resources.Globals')
 	local crypto = require("crypto")
 	local openssl = require("plugin.openssl")
 	local cipher = openssl.get_cipher("aes-256-cbc")
-	local Globals = require('src.resources.Globals')
+	--local Globals = require('src.resources.Globals')
 	local DBManager = require('src.resources.DBManager')
   
-	
 	local settings = DBManager.getSettings()
 	local site = settings.url
 
@@ -49,6 +49,7 @@ local RestManager = {}
 		url = url.."/userLogin/"..urlencode(userLogin)
 		url = url.."/email/"..urlencode(email)
 		url = url.."/pass/"..urlencode(password)
+		url = url.."/language/"..urlencode(settings.language)
 		if name ~= "" then
 			url = url.."/name/"..urlencode(name)
 		end
@@ -117,10 +118,10 @@ local RestManager = {}
 		url = url.."/email/"..urlencode(email)
 		url = url.."/pass/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
-	
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				gotoHomeUN( "Error intentelo mas tarde", "login", false )
+				gotoHomeUN( language.RMTryLater, "login", false )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -135,7 +136,7 @@ local RestManager = {}
 						end
 					end
 				else
-					gotoHomeUN( "Error intentelo mas tarde", "login", false )
+					gotoHomeUN( language.RMTryLater, "login", false )
 				end
             end
             return true
@@ -165,10 +166,11 @@ local RestManager = {}
 		url = url.."/email/"..urlencode(email)
 		url = url.."/password/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
-		
+		url = url.."/language/"..urlencode(settings.language)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
-				gotoHomeUN( "Error intentelo mas tarde", "login", false )
+				gotoHomeUN( language.RMTryLater, "login", false )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -184,7 +186,7 @@ local RestManager = {}
 						end
 					end
 				else
-					gotoHomeUN( "Error intentelo mas tarde", "login", false )
+					gotoHomeUN( language.RMTryLater, "login", false )
 				end
             end
             return true
@@ -209,11 +211,12 @@ local RestManager = {}
         url = url.."api/getListMessageChat/format/json"
         url = url.."/idApp/"..settings.idApp
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		url = url.."/language/"..urlencode(settings.language)
 		--url = url.."/timeZone/" .. urlencode("-5")
 		print(url)
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
@@ -226,10 +229,10 @@ local RestManager = {}
 							notListMessages()
 						end
 					else
-						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+						noConnectionMessages(language.RMErrorServer)
 					end
 				else
-					noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					noConnectionMessages(language.RMErrorServer)
 				end
             end
             return true
@@ -239,7 +242,7 @@ local RestManager = {}
 			network.request( url, "GET", callback )
 		else
 			--notifica si no existe conexion a internet
-			noConnectionMessages('No se detecto conexion a internet')
+			noConnectionMessages(language.RMNoInternetConnection)
 		end
     end
 	
@@ -259,9 +262,10 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 		url = url.."/channelId/".. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
@@ -274,10 +278,10 @@ local RestManager = {}
 							notChatsMessages()
 						end
 					else
-						noConnectionMessage('Error con el servidor. Intentelo mas tarde')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor. Intentelo mas tarde')
+					noConnectionMessage(language.RMErrorServer)
 				end
             end
             return true
@@ -287,7 +291,7 @@ local RestManager = {}
 			network.request( url, "GET", callback )
 		else
 			--notifica si no existe conexion a internet
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMNoInternetConnection)
 		end
     end
 	
@@ -298,10 +302,8 @@ local RestManager = {}
 	-- @param poscM posicion en la que esta colocado el chat
     ------------------------------------------------------------
 	RestManager.sendChat = function(channelId, message, poscM)
-	
 		settings = DBManager.getSettings()
 		site = settings.url
-	
         -- Set url
         local url = site
         url = url.."api/saveChat/format/json"
@@ -309,7 +311,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
-		print(url)
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -321,13 +323,13 @@ local RestManager = {}
 							--cambia la fecha en la que se envio el mensaje
 							changeDateOfMSG(data.items[1],poscM)
 						else
-							noConnectionMessage('Error con el servidor')
+							noConnectionMessage(language.RMErrorServer)
 						end
 					else
-						noConnectionMessage('Error con el servidor')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					noConnectionMessage(language.RMErrorServer)
 				end
             end
             return true
@@ -336,7 +338,7 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMNoInternetConnection)
 		end
     end
 	
@@ -349,10 +351,11 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
+		url = url.."/language/"..urlencode(settings.language)
 		print(url)
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
@@ -361,10 +364,10 @@ local RestManager = {}
 						local lastRead = data.lastRead
 						showNewMessages( items, lastRead )
 					else
-						noConnectionMessage('Error con el servidor')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					noConnectionMessage(language.RMErrorServer)
 				end
             end
             return true
@@ -373,10 +376,9 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMNoInternetConnection)
 		end
 	end
-	
 	
 	--------------------------------------------------------------------
     -- Bloquea o desbloquea el chat selecionado
@@ -392,10 +394,10 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/status/" .. status
-	
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
@@ -403,10 +405,10 @@ local RestManager = {}
 						--bloquea o desbloquea el chats
 						changeStatusBlock(data.status)
 					else
-						noConnectionMessage('Error con el servidor')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					noConnectionMessage(language.RMNoInternetConnection)
 				end
             end
             return true
@@ -415,7 +417,7 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMErrorServer)
 		end
     end
 	
@@ -432,10 +434,10 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/channelId/" .. channelId
 		url = url.."/idMessage/" .. idMessage
-	
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
@@ -443,10 +445,10 @@ local RestManager = {}
 						--elimina las burbujas de mensajes no leidos
 						deleteNotBubble()
 					else
-						noConnectionMessage('Error con el servidor')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					noConnectionMessage(language.RMErrorServer)
 				end
             end
             return true
@@ -455,7 +457,7 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMNoInternetConnection)
 		end
     end
 	
@@ -470,33 +472,32 @@ local RestManager = {}
         url = url.."api/getImagePerfilMessage/format/json"
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/recipientId/" .. recipientId
+		url = url.."/language/"..urlencode(settings.language)
 		--url = url.."/channelId/" .. channelId
 		--url = url.."/idMessage/" .. idMessage
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor")
+				noConnectionMessages(language.RMErrorServer)
             else
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
-						
-						print(#data.items)
 						if #data.items > 0 then
 							--cargamos los elementos del mensaje
 							loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = data.items})
 						else
 							--notificamos que no existen chats
 							--notListMessages()
-							noConnectionMessage('Error con el servidor')
+							noConnectionMessage(language.RMErrorServer)
 						end
 						
 						
 						
 					else
-						noConnectionMessage('Error con el servidor')
+						noConnectionMessage(language.RMErrorServer)
 					end
 				else
-					noConnectionMessage('Error con el servidor')
+					noConnectionMessage(language.RMErrorServer)
 				end
             end
             return true
@@ -505,7 +506,7 @@ local RestManager = {}
 		if networkConnection then
 			network.request( url, "GET", callback )
 		else
-			noConnectionMessage('No se detecto conexion a internet')
+			noConnectionMessage(language.RMNoInternetConnection)
 		end
 		--settings = DBManager.getSettings()
 		--site = settings.url
@@ -522,6 +523,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -544,7 +546,7 @@ local RestManager = {}
 		local site = settings.url
         local url = site.."api/getUserAvatar/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	 
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -572,9 +574,10 @@ local RestManager = {}
 		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				HomeError( "Error con el servidor" )
+				HomeError( language.RMErrorServer )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -584,13 +587,13 @@ local RestManager = {}
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then
-							HomeError( "Error con el servidor" )
+							HomeError( language.RMErrorServer )
 						else
 							HomeError(data.message)
 						end
 					end
 				else
-					HomeError( "Error con el servidor" )
+					HomeError( language.RMErrorServer )
 				end
             end
             return true
@@ -618,9 +621,10 @@ local RestManager = {}
 		url = url.."/endAge/" 	.. settFilter.endAge
 		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				HomeError( "Error con el servidor" )
+				HomeError( language.RMErrorServer )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -630,13 +634,13 @@ local RestManager = {}
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then
-							HomeError( "Error con el servidor" )
+							HomeError( language.RMErrorServer )
 						else
 							HomeError(data.message)
 						end
 					end
 				else
-					HomeError( "Error con el servidor" )
+					HomeError( language.RMErrorServer )
 				end
             end
             return true
@@ -655,9 +659,10 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/city/" 	.. 0
 		url = url.."/version/v2"
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
-				HomeError( "Error con el servidor" )
+				HomeError( language.RMErrorServer )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -667,13 +672,13 @@ local RestManager = {}
 						loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
 					else
 						if data.error then
-							HomeError( "Error con el servidor" )
+							HomeError( language.RMErrorServer )
 						else
 							HomeError(data.message)
 						end
 					end
 				else
-					HomeError( "Error con el servidor" )
+					HomeError( language.RMErrorServer )
 				end
             end
             return true
@@ -690,7 +695,7 @@ local RestManager = {}
 		site = settings.url
         local url = site.."api/clearUser/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				resultCleanUser( false, data.message)
@@ -700,10 +705,10 @@ local RestManager = {}
 					if data.success then
 						resultCleanUser( true, data.message )
 					else
-						resultCleanUser( false, "Error al cerrar sesión")
+						resultCleanUser( false, language.RMErrorLogOut )
 					end
 				else
-					resultCleanUser( false, "Error al cerrar sesión")
+					resultCleanUser( false, language.RMErrorLogOut )
 				end
             end
             return true
@@ -739,8 +744,8 @@ local RestManager = {}
 		
         local function callback(event)
             if ( event.isError ) then
-				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
-				print('Error con el servidor. Intentelo mas tarde')
+				--noConnectionMessages( language.RMErrorServer )
+				print( language.RMErrorServer )
             else
                 local data = json.decode(event.response)
 				if data then
@@ -750,12 +755,12 @@ local RestManager = {}
 						bubble()
 						--showBubbleWelcome()
 					else
-						print('Error con el servidor. Intentelo mas tarde')
-						--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+						print( language.RMErrorServer )
+						--noConnectionMessages( language.RMErrorServer )
 					end
 				else
-					print('Error con el servidor. Intentelo mas tarde')
-					--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					print( language.RMErrorServer )
+					--noConnectionMessages( language.RMErrorServer )
 				end
             end
             return true
@@ -765,8 +770,8 @@ local RestManager = {}
 			network.request( url, "GET", callback )
 		else
 			--notifica si no existe conexion a internet
-			--noConnectionMessages('No se detecto conexion a internet')
-			print('No se detecto conexion a internet')
+			--noConnectionMessages( language.RMNoInternetConnection )
+			print( language.RMNoInternetConnection )
 		end
     end
 	
@@ -782,7 +787,7 @@ local RestManager = {}
         local url = site.."api/startConversation/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/idUser/" .. idUser
-		print(url)
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				
@@ -858,7 +863,7 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
-		
+		--url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)
@@ -868,10 +873,10 @@ local RestManager = {}
 					if data.success then
 						resultSaveProfile( true, data.message)
 					else
-						resultSaveProfile( false, "error al guardar los datos del perfil")
+						resultSaveProfile( false, language.RMErrorSavingProfile)
 					end
 				else
-					resultSaveProfile( false, "error al guardar los datos del perfil")
+					resultSaveProfile( false, language.RMErrorSavingProfile)
 				end
             end
             return true
@@ -898,22 +903,22 @@ local RestManager = {}
 				print( "Network Errorr." )
 				print( "Status:", event.status )
 				print( "Response:", event.response )
-				native.showAlert( "Corona", "Network Errorr.", { "OK" } )
+				native.showAlert( "Gluglis", "Network Errorr.", { "OK" } )
 			else
 				if ( event.phase == "began" ) then
 					print( "Upload started" )
-					--native.showAlert( "Corona", "Upload started", { "OK" } )
+					--native.showAlert( "Gluglis", "Upload started", { "OK" } )
 				elseif ( event.phase == "progress" ) then
 					print( "Uploading... bytes transferred ", event.bytesTransferred )
-					--native.showAlert( "Corona", "Network Errorr.", { "OK", "Network Errorr." } )
+					--native.showAlert( "Gluglis", "Network Errorr.", { "OK", "Network Errorr." } )
 				elseif ( event.phase == "ended" ) then
-					native.showAlert( "Corona", "Upload ended", { "OK" } )
-					--native.showAlert( "Corona", "Status. " .. event.status, { "OK" } )
-					--native.showAlert( "Corona", "Response. " .. event.response , { "OK" } )
+					native.showAlert( "Gluglis", "Upload ended", { "OK" } )
+					--native.showAlert( "Gluglis", "Status. " .. event.status, { "OK" } )
+					--native.showAlert( "Gluglis", "Response. " .. event.response , { "OK" } )
 					print( "Upload ended..." )
 					print( "Status:", event.status )
 					print( "Response:", event.response )
-					--native.showAlert( "Corona", event.status, { "OK" } )
+					--native.showAlert( "Gluglis", event.status, { "OK" } )
 					--print()
 					
 					if event.status == 201 then
@@ -1028,6 +1033,7 @@ local RestManager = {}
 			url = url.."/residence/" .. urlencode(residence)
 			url = url.."/idResidence/" .. urlencode(idResidence)
 		end
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				returnLocationProfile( false, event.error)
@@ -1037,10 +1043,10 @@ local RestManager = {}
 					if data.success then
 						returnLocationProfile( true, data.message)
 					else
-						returnLocationProfile( false, "error al guardar los datos del perfil")
+						returnLocationProfile( false, language.RMErrorSavingProfile )
 					end
 				else
-					returnLocationProfile( false, "error al guardar los datos del perfil")
+					returnLocationProfile( false, language.RMErrorSavingProfile )
 				end
             end
             return true
@@ -1057,6 +1063,7 @@ local RestManager = {}
 		site = settings.url
         local url = site.."api/getHobbies/format/json"
 		url = url.."/idApp/" .. settings.idApp
+		url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				--noConnectionMessages("Error con el servidor. Intentelo mas tarde")
@@ -1162,20 +1169,20 @@ local RestManager = {}
 	function RandomCities()
         local url = site.."api/getRandomCities/format/json"
 		url = url.."/idApp/" .. settings.idApp
-	
+		
         local function callback(event)
             if ( event.isError ) then
-				noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+				noConnectionMessages( language.RMErrorServer )
             else
                 local data = json.decode(event.response)
 				if data then
 					if data.success then
 						getCityById( data.item.residenciaId)
 					else
-						noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+						noConnectionMessages( language.RMErrorServer )
 					end
 				else
-					noConnectionMessages("Error con el servidor. Intentelo mas tarde")
+					noConnectionMessages( language.RMErrorServer )
 				end
             end
             return true
@@ -1347,8 +1354,8 @@ local RestManager = {}
 		
 		local date1 = year .. "-" .. month .. "-" .. day .. " " .. hour .. ":" .. minute .. ":" .. segunds
 		
-		local months = {'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'}
-		date2 = day .. " de " .. months[month2] .. " del " .. year
+		local months = { language.RMJanuary, language.RMFebruary, language.RMMarch, language.RMApril, language.RMMay, language.RMJune, language.RMJuly, language.RMAugust, language.RMSeptember, language.RMOctober, language.RMNovember, language.RMDecember }
+		date2 = day .. "/" .. month2 .. "/" .. year
 		
 		local datesArray = {day = day,month = month,year = year}
 		

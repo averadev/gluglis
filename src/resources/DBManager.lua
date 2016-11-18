@@ -85,6 +85,14 @@ local dbManager = {}
 		closeConnection( )
 	end
 	
+	--actualiza el idioma de la app
+	dbManager.updatLanguage = function( language )
+		openConnection( )
+        local query = "UPDATE config SET language = '"..language.."';"
+        db:exec( query )
+		closeConnection( )
+	end
+	
 	--limpia la tabla de config y filtro
     dbManager.clearUser = function()
         openConnection( )

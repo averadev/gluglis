@@ -23,23 +23,36 @@ local grpMenu, grpLoadMenu, grpLogOut
 
 ---------------------------------- FUNCIONES ----------------------------------
 
--------------------------------------
--- Asignamos total de tarjetas
-------------------------------------
+---------------------------------------------
+-- Cambia a la pantalla de configuraciones --
+---------------------------------------------
+function gotoSettings()
+	composer.removeScene( "src.Settings" )
+	composer.gotoScene( "src.Settings", { time = 400, effect = "fade" } )
+	return true
+end
 
+---------------------------------------
+-- Cambia a la pantalla de mi perfil --
+---------------------------------------
 function gotoMyProfle()
 	composer.removeScene( "src.MyProfile" )
 	composer.gotoScene("src.MyProfile", { time = 400, effect = "fade", params = { item = itemProfile } } )
 	return true
 end
 
-
+-------------------------------------
+-- Cambia a la pantalla de filtros --
+-------------------------------------
 function gotoSearch()
 	composer.removeScene( "src.Filter" )
 	composer.gotoScene( "src.Filter", { time = 400, effect = "fade" } )
 	return true
 end
 
+-------------------------------------
+-- Cierra la sesión del usuario -----
+-------------------------------------
 function logOut()
 	tools:setLoading(true,grpLoadMenu)
 	itemProfile = nil
@@ -47,9 +60,12 @@ function logOut()
 	return true
 end
 
+-------------------------------------
+-- Limpia los datos del usuario -----
+-------------------------------------
 function resultCleanUser()
 	tools:setLoading(false,grpLoadMenu)
-	local message = "Sesión Cerrada \ncon exito"
+	local message = language.MSessionClosed
 	if not isReadOnly then
 		messageLogOut(true,message )
 	end
@@ -65,6 +81,9 @@ function resultCleanUser()
 	end, 1 )
 end
 
+---------------------------------------------
+-- Muestra mensaje cuando se cierra sesión --
+---------------------------------------------
 function messageLogOut(isOpen, message)
 	if isOpen then
 		if grpLogOut then
@@ -103,9 +122,6 @@ function messageLogOut(isOpen, message)
 		})
 		lblMessage:setFillColor( 166/255, 164/255, 156/255 )
 		grpLogOut:insert(lblMessage)
-		
-		--cerrada
-		
 	else
 		if grpLogOut then
 			grpLogOut:removeSelf()
@@ -141,7 +157,11 @@ function scene:create( event )
 	screen:insert(grpLoadMenu)
 	--grpLoadMenu.y = 650 + h
 	
-	local posY = 190 + h 
+	----------------------------------
+	-------------Buscar---------------
+	----------------------------------
+	
+	local posY = 150 + h 
 	
 	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
 	line:setStrokeColor( 227/255 )
@@ -160,7 +180,7 @@ function scene:create( event )
     grpMenu:insert( iconSearch )
 	
 	local lblSearch = display.newText({
-        text = "Buscar Gluglers", 
+        text = language.MSearchGluglers, 
         x = 500, y = posY + 65,
         width = 490,
         font = fontFamilyBold,   
@@ -170,7 +190,7 @@ function scene:create( event )
     grpMenu:insert(lblSearch)
 	
 	local lblSubSearch = display.newText({
-        text = "Conoce usuarios Gluglis \ndonde quiera que vayas.", 
+        text = language.MSearchGluglersSub, 
         x = 500, y = posY + 130,
         width = 490,
         font = fontFamilyRegular,   
@@ -186,9 +206,11 @@ function scene:create( event )
 	line.strokeWidth = 3
 	grpMenu:insert(line)
 	
-	---------------------
+	----------------------------------
+	----------- Mi perfil ------------
+	----------------------------------
 	
-	posY = posY + 75
+	posY = posY + 45
 	
 	if not isReadOnly then
 	
@@ -209,7 +231,7 @@ function scene:create( event )
 		grpMenu:insert( iconEdit )
 		
 		local lblEdit = display.newText({
-			text = "Editar Perfil", 
+			text = language.MEditProfile, 
 			x = 500, y = posY + 65,
 			width = 490,
 			font = fontFamilyBold,   
@@ -219,7 +241,7 @@ function scene:create( event )
 		grpMenu:insert(lblEdit)
 		
 		local lblSubEdit = display.newText({
-			text = "Editar tu perfil personal.", 
+			text = language.MEditProfileSub, 
 			x = 500, y = posY + 120,
 			width = 490,
 			font = fontFamilyRegular,   
@@ -237,7 +259,58 @@ function scene:create( event )
 	
 	end
 	
+	----------------------------------
+	------------ Settings ------------
+	----------------------------------
 	
+	posY = posY + 45
+	
+	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	local btnSettings = display.newRect( midW, posY, intW, 200 )
+	btnSettings.anchorY = 0
+	btnSettings:setFillColor( 1 )
+    grpMenu:insert(btnSettings)
+	btnSettings:addEventListener( 'tap', gotoSettings )
+	
+	local iconSettings = display.newImage("img/language.png")
+	iconSettings.anchorX = 0
+    iconSettings:translate(100, posY + 100)
+    grpMenu:insert( iconSettings )
+	
+	local lblSettings = display.newText({
+        text = language.MSettings, 
+        x = 500, y = posY + 65,
+        width = 490,
+        font = fontFamilyBold,   
+        fontSize = 46, align = "left"
+    })
+    lblSettings:setFillColor( 0 )
+    grpMenu:insert(lblSettings)
+	
+	local lblSubSettings = display.newText({
+        text = language.MSettingsSub, 
+        x = 500, y = posY + 130,
+        width = 490,
+        font = fontFamilyRegular,   
+        fontSize = 26, align = "left"
+    })
+    lblSubSettings:setFillColor( 0 )
+    grpMenu:insert(lblSubSettings)
+	
+	posY = posY + 200
+	
+	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+	line:setStrokeColor( 227/255 )
+	line.strokeWidth = 3
+	grpMenu:insert(line)
+	
+	----------------------------------
+	--------- Cerrar Sesión ----------
+	----------------------------------
 	
 	local line = display.newLine( 0, intH - 176 , intW, intH - 176 )
 	line:setStrokeColor( 216/255 )
@@ -250,10 +323,10 @@ function scene:create( event )
     grpMenu:insert(btnLogout)
 	btnLogout:addEventListener( 'tap', logOut )
 	
-	txtLogout = "Registrarse"
+	txtLogout = language.MSignIn
 	
 	if not isReadOnly then
-		txtLogout = "Cerrar Sesión"
+		txtLogout = language.MCloseSession
 	end
 	
 	local lblLogoutt = display.newText({

@@ -338,106 +338,95 @@ function optionSaveAvatar()
 	
 	grpOptionSave = display.newGroup()
 
-	grpTextProfile.x = intW
+	if grpTextProfile then
+		grpTextProfile.x = intW
+	end
 	
-	local bg0 = display.newRect( midW, midH + h, intW, intH )
-	bg0:setFillColor( 1 )
-	--bg0.alpha = .5
+	local bg0 = display.newRect( midW, midH + h + 135, intW, intH )
+	bg0:setFillColor( 245/255 )
 	grpOptionSave:insert( bg0 )
 	bg0:addEventListener( 'tap', hideOptionSaveAvatar )
 	
 	local posY = 250 + h 
+	local option = { "cut", "full" }
+	local optionLabel = { language.MpCropSave, language.MpSaveUntrimmed }
+	local optionIcon = { "img/cut.png", "img/full.png" }
+	--local optionSub = { language.MpTakePhotoSub, language.MpUploadPhotoSub }
 	
-	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
-	line:setStrokeColor( 227/255 )
+	for i = 1, #option, 1 do
+		local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpOptionSave:insert(line)
+		
+		local btnOption = display.newRect( midW, posY, intW, 200 )
+		btnOption.anchorY = 0
+		btnOption:setFillColor( 1)
+		grpOptionSave:insert(btnOption)
+		btnOption.name = option[i]
+		grpOptionSave:insert( btnOption )
+		btnOption:addEventListener( 'tap', saveAvatar )
+		
+		local iconOption = display.newImage(optionIcon[i])
+		iconOption.anchorX = 0
+		iconOption:translate(100, posY + 100)
+		grpOptionSave:insert( iconOption )
+		
+		local lblOption = display.newText({
+			text = optionLabel[i], 
+			x = 500, y = posY + 65 + 33,
+			width = 490,
+			font = fontFamilyBold,   
+			fontSize = 36, align = "left"
+		})
+		lblOption:setFillColor( 0 )
+		grpOptionSave:insert(lblOption)
+		
+		--[[local lblSubOption = display.newText({
+			text = optionSub[i], 
+			x = 500, y = posY + 130,
+			width = 490,
+			font = fontFamilyRegular,   
+			fontSize = 26, align = "left"
+		})
+		lblSubOption:setFillColor( 0 )
+		grpOptionSave:insert(lblSubOption)]]
+		
+		posY = posY + 200
+
+		local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
+		line:setStrokeColor( 227/255 )
+		line.strokeWidth = 3
+		grpOptionSave:insert(line)
+		
+		posY = posY + 75
+	end
+	
+	local line = display.newLine( 0, intH - 176 , intW, intH - 176 )
+	line:setStrokeColor( 216/255 )
 	line.strokeWidth = 3
 	grpOptionSave:insert(line)
 	
-	local btnCut = display.newRect( midW, posY, intW, 200 )
-	btnCut.anchorY = 0
-	btnCut:setFillColor( 1 )
-    grpOptionSave:insert(btnCut)
-	btnCut.name = "cut"
-	btnCut:addEventListener( 'tap', saveAvatar )
+	local btnCancel = display.newRect( midW, intH - 175, intW, 150 )
+	btnCancel.anchorY = 0
+	btnCancel:setFillColor( 226/255 )
+    grpOptionSave:insert(btnCancel)
+	btnCancel:addEventListener( 'tap', hideOptionSaveAvatar )
 	
-	local iconCut = display.newImage("img/buscar.png")
-	iconCut.anchorX = 0
-    iconCut:translate(100, posY + 100)
-    grpOptionSave:insert( iconCut )
-	
-	local lblCut = display.newText({
-        text = "Recortar y guardad", 
-        x = 500, y = posY + 65 + 32,
-        width = 490,
+	local lblCancel = display.newText({
+        text = language.MpCancel,
+        x = midW, y = intH - 95,
         font = fontFamilyBold,   
-        fontSize = 36, align = "left"
+        fontSize = 38, align = "left"
     })
-    lblCut:setFillColor( 0 )
-    grpOptionSave:insert(lblCut)
+    lblCancel:setFillColor( 85/255 )
+    grpOptionSave:insert(lblCancel)
 	
-	--[[local lblSubSearch = display.newText({
-        text = "Conoce usuarios Gluglis \ndonde quiera que vayas.", 
-        x = 500, y = posY + 130,
-        width = 490,
-        font = fontFamilyRegular,   
-        fontSize = 26, align = "left"
-    })
-    lblSubSearch:setFillColor( 0 )
-    grpOptionSave:insert(lblSubSearch)]]
-	
-	posY = posY + 200
-	
-	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
+	local line = display.newLine( 0, intH - 26 , intW, intH - 26 )
+	line:setStrokeColor( 216/255 )
 	line.strokeWidth = 3
 	grpOptionSave:insert(line)
 	
-	posY = posY + 75
-	
-	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
-	line:setStrokeColor( 227/255 )
-	line.strokeWidth = 3
-	grpOptionSave:insert(line)
-		
-	local btnFull = display.newRect( midW, posY, intW, 200 )
-	btnFull.anchorY = 0
-	btnFull:setFillColor( 1 )
-	grpOptionSave:insert(btnFull)
-	btnFull.name = "full"
-	btnFull:addEventListener( 'tap', saveAvatar )
-		
-	local iconFull = display.newImage("img/editar.png")
-	iconFull.anchorX = 0
-	iconFull:translate(100, posY + 100)
-	grpOptionSave:insert( iconFull )
-		
-	local lblFull = display.newText({
-		text = "Guardar sin recortar", 
-		x = 500, y = posY + 65 + 32,
-		width = 490,
-		font = fontFamilyBold,   
-		fontSize = 36, align = "left"
-	})
-	lblFull:setFillColor( 0 )
-	grpOptionSave:insert(lblFull)
-		
-	--[[local lblSubEdit = display.newText({
-		text = "Editar tu perfil personal.", 
-		x = 500, y = posY + 120,
-		width = 490,
-		font = fontFamilyRegular,   
-		fontSize = 26, align = "left"
-	})
-	lblSubEdit:setFillColor( 0 )
-	grpOptionSave:insert(lblSubEdit)]]
-		
-	posY = posY + 200
-	
-	local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
-	line:setStrokeColor( 227/255 )
-	line.strokeWidth = 3
-	grpOptionSave:insert(line)
-		
 	return true
 	
 end
@@ -619,7 +608,7 @@ function showNewAvatar( event )
 		--btnCancelSaveAvatar:addEventListener( 'tap', hideoptionAvatar )
 		
 		local lblCancelSaveAvatar = display.newText({
-			text = "Cancelar", 
+			text = language.MpCancel, 
 			x = 0, y = intH - 60,
 			width = midW,
 			font = fontFamilyBold, 
@@ -637,7 +626,7 @@ function showNewAvatar( event )
 		btnSaveAvatar:addEventListener( 'tap', optionSaveAvatar )
 		
 		local lblSaveAvatar = display.newText({
-			text = "Guardar", 
+			text = language.MpSave, 
 			x = midW, y = intH - 60,
 			width = midW,
 			font = fontFamilyBold, 
@@ -754,10 +743,10 @@ function optionPictureAvatar( event )
 	bg0:addEventListener( 'tap', hideOptionSaveAvatar )
 	
 	local posY = 250 + h 
-	local option = {"selectPhoto", "capturePhoto"}
-	local optionLabel = {"Tomar Foto", "Subir Foto"}
-	local optionIcon = {"img/photo.png", "img/up.png"}
-	local optionSub = {"No tienes fotos en este momento \ntoma una desde tu celular.", "Sube una foto desde tu celular."}
+	local option = { "selectPhoto", "capturePhoto" }
+	local optionLabel = { language.MpTakePhoto, language.MpUploadPhoto }
+	local optionIcon = { "img/photo.png", "img/up.png" }
+	local optionSub = { language.MpTakePhotoSub, language.MpUploadPhotoSub }
 	
 	for i = 1, #option, 1 do
 		local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
@@ -821,7 +810,7 @@ function optionPictureAvatar( event )
 	btnCancel:addEventListener( 'tap', hideOptionSaveAvatar )
 	
 	local lblCancel = display.newText({
-        text = "Cancelar", 
+        text = language.MpCancel,
         x = midW, y = intH - 95,
         font = fontFamilyBold,   
         fontSize = 38, align = "left"
@@ -943,7 +932,7 @@ function moveToggleButtons( event )
 	end
 end
 
-function showComboBox( event )
+function showComboBoxMP( event )
 	
 	local t = event.target
 	if grpComboBox then
@@ -959,7 +948,7 @@ function showComboBox( event )
 	bg0.alpha = .8
 	grpComboBox:insert( bg0 )
 	bg0:addEventListener( 'tap', hideComboBox )
-	local bg1 = display.newRoundedRect( midW, midH + h, 606, midH, 10 )
+	local bg1 = display.newRect( midW, midH + h, 606, midH )
 	bg1:setFillColor( 1 )
 	grpComboBox:insert( bg1 )
 	--bg1:addEventListener( 'tap', hideOptionsCombo )
@@ -985,12 +974,12 @@ function showComboBox( event )
 	end
 	local posY = 0
 	for i = 1, #setElements, 1 do
-		local container2 = display.newContainer( 600, 80 )
+		local container2 = display.newContainer( 600, 100 )
 		scrCombo:insert(container2)
 		container2.anchorY = 0
 		container2:translate( 300, posY )
 		--container2:addEventListener( 'tap', selectOptionCombo )
-		local bg0OptionCombo = display.newRoundedRect( 0, 0, 580, 80, 5 )
+		local bg0OptionCombo = display.newRect( 0, 0, 600, 100 )
 		bg0OptionCombo:setFillColor( 1 )
 		bg0OptionCombo.name = t.name
 		bg0OptionCombo.option = setElements[i].name
@@ -1003,19 +992,17 @@ function showComboBox( event )
 			text = setElements[i].name, 
 			x = 0, y = 0,
 			width = 500,
-			font = native.systemFont, 
-			fontSize = 30, align = "left"
+			font = fontFamilyRegular, 
+			fontSize = 32, align = "left"
 		})
 		lblNameOption:setFillColor( 0 )
 		container2:insert(lblNameOption)
-		posY = posY + 90
+		posY = posY + 106
 	end
 end
 
 function selectOptionCombo( event )
 	local t = event.target
-	
-	
 	if t.name == "residenceTime" then
 		lblResidenceTime.text = t.option
 	elseif t.name == "race" then
@@ -1060,7 +1047,7 @@ function createComboBox(item, name, coordY, coordX )
 	bg0CheckAcco:setFillColor( 1 )
 	bg0CheckAcco.name = name
 	scrPerfile:insert(bg0CheckAcco)
-	bg0CheckAcco:addEventListener( 'tap', showComboBox )
+	bg0CheckAcco:addEventListener( 'tap', showComboBoxMP )
 	local triangle = display.newImage("img/down.png")
 	triangle:translate(coordX + 295, coordY + 25)
 	--triangle:translate(intW - 90, posY + 55)
@@ -2436,7 +2423,6 @@ function scene:create( event )
 	end
 	
 	tools:toFront()
-	
 end	
 --------------------------------------------------------
 -- Called immediately after scene has moved onscreen:

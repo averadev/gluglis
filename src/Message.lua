@@ -67,7 +67,7 @@ end
 ------------------------------------------------------
 function notChatsMessages()
 	tools:setLoading( false, screen )
-	NoMessage = tools:NoMessages( true, scrChat, "No cuenta con mensajes en este momento" )
+	NoMessage = tools:NoMessages( true, scrChat, language.MSGYouHaveNoMessages )
 	messagesInRealTime()
 end
 
@@ -103,7 +103,7 @@ function sentMessage()
 				NoMessage = nil
 			end
 			local settings = DBManager.getSettings()
-			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = "Cargando", sender_id = settings.idApp }
+			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = language.MSGLoading, sender_id = settings.idApp }
 			displaysInList(itemTemp, true)
 			local newMessageText = trimString(txtMessage.text)
 			newMessageText = string.gsub( newMessageText, "/", '&#47;' )
@@ -117,9 +117,9 @@ function sentMessage()
 		end
 	--si lo esta muenstra un mensaje de aviso
 	elseif itemsConfig.blockMe == "closed" then
-		blockedChatMsg('desbloquea a ' .. itemsConfig.display_name .. ' par enviarle un mensaje', true, false)
+		blockedChatMsg( language.MSGUnblock1 .. itemsConfig.display_name .. language.MSGUnblock2, true, false )
 	elseif itemsConfig.blockYour == "closed" then
-		blockedChatMsg('No se puede mandar mensaje, ' .. itemsConfig.display_name .. ' lo ha bloqueado', true, false)
+		blockedChatMsg( language.MSGMessageNotSent1 .. itemsConfig.display_name .. language.MSGMessageNotSent2, true, false )
 	end
 	return true
 end
@@ -147,20 +147,21 @@ function displaysInList(itemTemp, isMe)
 	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = itemTemp.sender_id}
 	--verifica la fecha en que se mando
 	if lastDate ~= itemTemp.fechaFormat then
-		local bgDate = display.newRoundedRect( midW, posY, 300, 40, 20 )
+		local bgDate = display.newRect( midW, posY, intW, 2 )
 		bgDate.anchorY = 0
-		bgDate:setFillColor( 220/255, 186/255, 218/255 )
+		bgDate:setFillColor( 191/255, 190/255, 180/255 )
 		scrChat:insert(bgDate)
 		local lblDate = display.newText({
 			text = itemTemp.fechaFormat,     
-			x = midW, y = posY + 20,
-			font = native.systemFont,   
-			fontSize = 20, align = "center"
+			x = midW, y = posY + 30,
+			font = fontFamilyLight,   
+			fontSize = 25, align = "center"
 		})
 		lblDate:setFillColor( .1 )
 		scrChat:insert(lblDate)
 		posY = posY + 70
 		lastDate = itemTemp.fechaFormat
+		
 	end
 	
 	if isMe == true then
@@ -252,9 +253,9 @@ end
 function blockedChat( event )
 	componentActive = "blockChat"
 	if itemsConfig.blockMe == "closed" then
-		blockedChatMsg('¿desea desbloquear a ' .. itemsConfig.display_name .. '? para enviarle mensajes', true, true)
+		blockedChatMsg( language.MSGWantToUnblock1 .. itemsConfig.display_name .. language.MSGWantToUnblock2, true, true)
 	else
-		blockedChatMsg('¿desea bloquear a ' .. itemsConfig.display_name .. '? ya no podras enviarle mensajes', true, true)
+		blockedChatMsg( language.MSGWantToBlock1 .. itemsConfig.display_name .. language.MSGWantToBlock2, true, true)
 	end
 end
 
@@ -643,7 +644,7 @@ function toolMessage(item)
 	screen:insert( icoBack )
 			
 	local lblIcoBack  = display.newText({
-		text = "Regresar", 
+		text = language.MSGBack, 
 		x = 130, y = 45 + h,
 		font = fontFamilyLight,   
 		fontSize = 24, align = "left"
@@ -678,7 +679,7 @@ function toolMessage(item)
 	btnBlock:addEventListener( 'tap', blockedChat )
 	
 	local lblIcoBlock  = display.newText({
-		text = "BLOQUEAR", 
+		text = language.MSGBlock, 
 		x = 640, y = 45 + h,
 		width = intW/3,
 		font = fontFamilyBold,   
@@ -686,55 +687,6 @@ function toolMessage(item)
 	})
 	lblIcoBlock:setFillColor( 1 )
 	screen:insert(lblIcoBlock)
-				
-	--[[local iconHome = display.newImage("img/home.png")
-	iconHome:translate(midW, 40 + h)
-	screen:insert( iconHome )]]
-	
-	
-	
-    --[[local bgHBtn = display.newRect( intW - 55, 50 + h, 130, 100 )
-    bgHBtn:setFillColor( .95 )
-    screen:insert(bgHBtn)
-    -- Back button
-	local btnBack = display.newImage("img/icoBack.png")
-	btnBack:translate(50, 50 + h)
-    btnBack:addEventListener( 'tap', toBack)
-    screen:insert( btnBack )
-    -- Image
-	local path = system.pathForFile( item.image, system.TemporaryDirectory )
-	local fhd = io.open( path )
-	if fhd then
-		local avatar = display.newImage(item.image, system.TemporaryDirectory)
-		avatar:translate(150, 50 + h)
-		avatar.width = 80
-		avatar.height = 80
-		screen:insert( avatar )
-		local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
-		avatar:setMask( maskCircle80 )
-	else
-		item.image = item.image
-		local items = {}
-		items[1] = item
-		RestManager.getImagePerfilMessage(items)
-	end
-	--btn bloquear
-	local btnBlock = display.newImage("img/cancel-icon-2.png")
-    btnBlock:translate(intW - 55, 50 + h)
-    btnBlock.width = 70
-    btnBlock.height = 70
-    screen:insert( btnBlock )
-    btnBlock:addEventListener( 'tap', blockedChat )
-    -- Name
-    local lblName = display.newText({
-        text = item.name,     
-        x = midW + 130, y = 55 + h,
-        width = 600,
-        font = native.systemFontBold,   
-        fontSize = 30, align = "left"
-    })
-    lblName:setFillColor( .3 )
-    screen:insert(lblName)]]
 	
 end
 
@@ -795,7 +747,7 @@ function scene:create( event )
     grpTextField:insert(bgSend)
     --label enviar
     local lblSend = display.newText({
-        text = "ENVIAR",     
+        text = language.MSGSend,     
         x = intW - 75, y = intH - 45, width = 150,
         font = fontFamilyLight,   
         fontSize = 30, align = "center"
@@ -810,7 +762,7 @@ function scene:create( event )
 	txtMessage.size = 32
 	txtMessage.hasBackground = false
 	txtMessage:setTextColor( 1 )
-	txtMessage.placeholder = "Escribir"
+	txtMessage.placeholder = language.MSGWrite
 	--txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
 	--txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
