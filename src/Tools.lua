@@ -68,13 +68,14 @@ function Tools:new()
 			bgIcoBack:setFillColor( 68/255, 14/255, 98/255 )
 			bgIcoBack.screen = 'Home'
 			bgIcoBack.alpha = .01
+			bgIcoBack.isReturn = 1
 			--bgIcoBack:setFillColor( 1 )
 			bgIcoBack:addEventListener( 'tap', toScreen)
 			self:insert( bgIcoBack )
 		
             local icoBack = display.newImage("img/Regresar-icono.png")
             icoBack:translate(60, 45)
-			icoBack.isReturn = 1
+			
             self:insert( icoBack )
 			
 			local lblIcoBack  = display.newText({
@@ -629,7 +630,7 @@ function bubble()
 	else
 		grpChats.alpha = 1
 	end
-		
+	
 	if unreadChats > 0 then
 		iconChat.alpha = 0
 		iconChat2.alpha = 1
@@ -638,6 +639,13 @@ function bubble()
 		iconChat.alpha = 1
 		iconChat2.alpha = 0
 		lblIconChat.text = ""
+	end
+end
+
+function noBubble()
+	if grpChats then
+		grpChats:removeSelf()
+		grpChats = nil
 	end
 end
 

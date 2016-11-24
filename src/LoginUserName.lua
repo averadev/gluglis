@@ -483,7 +483,7 @@ function scene:create( event )
     grpLogIn:insert(lblPassS)
     txtPassS = native.newTextField( midR + 100, midH + 150, 400, 70 )
     txtPassS.inputType = "default"
-    txtRePass.action = "login"
+    txtPassS.action = "login"
 	txtPassS.isSecure = true
     txtPassS.hasBackground = false
     txtPassS:addEventListener( "userInput", onTxtFocus )

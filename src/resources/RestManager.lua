@@ -427,7 +427,8 @@ local RestManager = {}
 	-- @param idMessage identificador del mensaje
     ---------------------------------------------------------------
 	RestManager.changeStatusMessages = function(channelId,idMessage)
-        local settings = DBManager.getSettings()
+        settings = DBManager.getSettings()
+		site = settings.url
         -- Set url
         local url = settings.url
         url = url.."api/changeStatusMessages/format/json"
@@ -466,7 +467,7 @@ local RestManager = {}
     -- @param item informacion
     --------------------------------------------------------------------
 	RestManager.getImagePerfilMessage = function( recipientId )
-		local settings = DBManager.getSettings()
+		settings = DBManager.getSettings()
         -- Set url
         local url = settings.url
         url = url.."api/getImagePerfilMessage/format/json"
@@ -1025,8 +1026,8 @@ local RestManager = {}
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
 	RestManager.saveLocationProfile = function( residence, idResidence )
 		
-		local settings = DBManager.getSettings()
-		local site = settings.url
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/saveLocationProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		if idResidence ~= '' then
@@ -1167,6 +1168,8 @@ local RestManager = {}
     end
 	
 	function RandomCities()
+		settings = DBManager.getSettings()
+		site = settings.url
         local url = site.."api/getRandomCities/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		

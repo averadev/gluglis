@@ -73,8 +73,10 @@ function resultCleanUser()
 		--if isTrue == true then	
 		DBManager.clearUser()
 		facebook.logout()
+		composer.removeHidden()
 		messageLogOut(false, message)
 		composer.removeScene( "src.LoginSplash" )
+		noBubble()
 		composer.gotoScene( "src.LoginSplash", { time = 400, effect = "fade" } )
 		--end
 		

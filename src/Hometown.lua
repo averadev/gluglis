@@ -238,9 +238,19 @@ function scene:create( event )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAllHometown )
 	
-	tools = Tools:new()
-    tools:buildHeader()
-    screen:insert(tools)
+	--tools = Tools:new()
+   -- tools:buildHeader()
+    --screen:insert(tools)
+	
+	local bgo = display.newRect( midW, 84, display.contentWidth, 10 )
+	bgo.anchorY = 0
+	bgo:setFillColor( 103/255, 67/255, 123/255 )
+	screen:insert( bgo )
+		
+	local bgo = display.newRect( midW, 0, display.contentWidth, 90 )
+	bgo.anchorY = 0
+	bgo:setFillColor( 68/255, 14/255, 98/255 )
+	screen:insert( bgo )
 	
 	grpHometown = display.newGroup()
 	screen:insert(grpHometown)

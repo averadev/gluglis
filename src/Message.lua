@@ -531,12 +531,16 @@ function buildChat(poscD)
 			if i.isMe == true then
 				if i.isRead == '1' or i.isRead == 1 then
 					local iconCheckBlue = display.newImage("img/icoFilterCheck.png")
-					iconCheckBlue:translate(intW - 115, posY + lblM.contentHeight + 20)
+					iconCheckBlue.height = 20
+					iconCheckBlue.width = 20
+					iconCheckBlue:translate(intW - 115, posY + lblM.contentHeight + 25)
 					grpChat:insert( iconCheckBlue )
 				else
 					local num = #checkBlue + 1
 					checkBlue[num] = display.newImage("img/icoFilterCheck.png")
-					checkBlue[num]:translate(728, posY + lblM.contentHeight + 20)
+					checkBlue[num].height = 20
+					checkBlue[num].width = 20
+					checkBlue[num]:translate(intW - 115, posY + lblM.contentHeight + 25)
 					grpChat:insert( checkBlue[num] )
 					checkBlue[num].alpha = 0
 					if i.id then

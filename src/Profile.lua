@@ -202,13 +202,13 @@ function infoProfile( item )
 			end
 		end
 	end
-	if item.userEmail then
+	--[[if item.userEmail then
 		--if item.userEmail == " " then
 			infoOpcion[num] = item.userEmail 
 			iconOpcion[num] = 'iconEmailContacto'
 			num = #infoOpcion + 1
 		--end
-	end
+	end]]
 	
 	for i=1, #infoOpcion do
         local ico

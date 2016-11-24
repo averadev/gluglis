@@ -58,7 +58,6 @@ else
 end
 ---------------------Notificaciones---------------------------
 
-
 ------------------------------------------------
 -- evento cuando se recibe y abre una notificacion
 -- @param message mensaje de la notificacion
@@ -73,12 +72,15 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 			if additionalData.type == "1" then
 				local item = json.decode(additionalData.item)
 				local currScene = composer.getSceneName( "current" )
+				print("notificaciones")
+				print(currScene)
 				--si la scena actual es message pinta los nuevos mensajes 
 				if currScene == "src.Message" then
 					--displaysInList(item[1], false )
 				else
-					--system.vibrate()
-					OneSignal.EnableVibrate(true)
+					print("entro notificaciones")
+					system.vibrate()
+					--OneSignal.EnableVibrate(true)
 					local RestManager = require('src.resources.RestManager')
 					RestManager.getUnreadChats()
 				end
@@ -130,3 +132,6 @@ end
 -- llama a la funcion para obtener el token del telefono
 ------------------------------------------------
 OneSignal.IdsAvailableCallback(IdsAvailable)
+
+
+
