@@ -12,7 +12,9 @@ require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
+local smile = require('src.resources.Smile')
 local fxTap = audio.loadSound( "fx/click.wav")
+local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
@@ -38,11 +40,30 @@ local timer1
 local checkBlue = {}
 local chanelId = 0
 
-
+smile = smile.android
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
+
+function replaceSmiles(message)
+
+	local utf8 = require( "plugin.utf8" )
+	local cont =  utf8.len( message )
+	local isEmoji = false
+	for i = 1,  cont, 1 do
+		local totStri = string.len( utf8.sub( message, i,i ) )
+		if ( totStri == 4 or totStri == 3 ) then
+			isEmoji = true
+			message = utf8.gsub( message, utf8.sub( message, i,i ), "😀", 1 )
+		end
+		--print( utf8.sub( message, i,i ) .. ", " .. string.len( utf8.sub( message, i,i ) ) )
+	end
+	
+	message = string.gsub( message, "😀", "" )
+	
+	return message, isEmoji
+end
 
 ---------------------------------------------
 -- Cargamos los elementos del los mensajes
@@ -56,7 +77,24 @@ function setItemsMessages( items )
 			tmpList[poscI] = {date = item.fechaFormat, dateOnly = item.dateOnly}
 			poscI = poscI + 1
 		end
-		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = item.message, time = item.hora, isRead = item.status_message, senderId = item.sender_id } 
+		
+		local message, isEmoji = replaceSmiles(item.message)
+		
+		--[[local utf8 = require( "plugin.utf8" )
+		local cont =  utf8.len( item.message )
+		local isEmoji = false
+		for i = 1,  cont, 1 do
+			local totStri = string.len( utf8.sub( item.message, i,i ) )
+			if ( totStri == 4 or totStri == 3 ) then
+				isEmoji = true
+				item.message = utf8.gsub( item.message, utf8.sub( item.message, i,i ), " ", 1 )
+			end
+			
+			
+			--print( utf8.sub( message, i,i ) .. ", " .. string.len( utf8.sub( message, i,i ) ) )
+		end]]
+		
+		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = message, time = item.hora, isRead = item.status_message, senderId = item.sender_id } 
 	end
 	tools:setLoading( false, screen )
 	buildChat(0)
@@ -93,7 +131,19 @@ function sentMessage()
 	--verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
 		componentActive = false
-		if trimString(txtMessage.text) ~= "" then
+		
+		local message, isEmoji = replaceSmiles(txtMessage.text)
+		
+		if( isEmoji ) then
+			tools:noConnection( true, screen, "Emojis no permitidos" )
+				
+			timeMarker = timer.performWithDelay( 5000, function()
+				tools:noConnection( false, screen, "" )
+			end, 1 )
+				
+		end
+		
+		if trimString(message) ~= "" then
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
 			--displaysInList("quivole carnal", poscD, dateM[2])
@@ -103,12 +153,13 @@ function sentMessage()
 				NoMessage = nil
 			end
 			local settings = DBManager.getSettings()
-			local itemTemp = {message = txtMessage.text, posc = poscD, fechaFormat = dateM[2], hora = language.MSGLoading, sender_id = settings.idApp }
+			
+			local itemTemp = {message = message, posc = poscD, fechaFormat = dateM[2], hora = language.MSGLoading, sender_id = settings.idApp }
 			displaysInList(itemTemp, true)
-			local newMessageText = trimString(txtMessage.text)
-			newMessageText = string.gsub( newMessageText, "/", '&#47;' )
-			newMessageText = string.gsub( newMessageText, "\\", '&#92;' )
-			newMessageText = string.gsub( newMessageText, "%%", '&#37;' )
+			
+			local newMessageText = trimString(message)
+			--print("Empieza")
+			
 			RestManager.sendChat( itemsConfig.channelId, newMessageText, poscD )
 			txtMessage.text = ""
 			native.setKeyboardFocus( nil )
@@ -282,7 +333,7 @@ function blockedChatMsg(message, isShow, isBlock)
 			text = message,     
 			x = midW, y = midH + h ,
 			width = intW - 200, height = 200,
-			font = native.systemFont,   
+			font = fontFamilyRegular,   
 			fontSize = 30, align = "center"
 		})
 		lblBlocked:setFillColor( 0 )
@@ -291,7 +342,7 @@ function blockedChatMsg(message, isShow, isBlock)
 		local lblAccept = display.newText({
 			text = "Aceptar",     
 			x = midW, y = midH + h + 80 ,
-			font = native.systemFontBold,   
+			font = fontFamilyBold,   
 			fontSize = 42, align = "center"
 		})
 		lblAccept:setFillColor( 129/255, 61/255, 153/255 )
@@ -303,7 +354,7 @@ function blockedChatMsg(message, isShow, isBlock)
 			local lblCancel = display.newText({
 				text = "Cancelar",     
 				x = midW - 125, y = midH + h + 80 ,
-				font = native.systemFontBold,   
+				font = fontFamilyBold,   
 				fontSize = 42, align = "center"
 			})
 			lblCancel:setFillColor( 129/255, 61/255, 153/255 )
@@ -379,6 +430,84 @@ function onTxtFocus( event )
     end
 end
 
+function string:split( inSplitPattern, outResults )
+
+   if not outResults then
+      outResults = {}
+   end
+   local theStart = 1
+   local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+   while theSplitStart do
+      table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+      theStart = theSplitEnd + 1
+      theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+   end
+   table.insert( outResults, string.sub( self, theStart ) )
+   return outResults
+end
+
+ function replaceSmiles3(message)
+ 
+	
+	for i = 1, #smile, 1 do
+		message = string.gsub( message, smile[i].label, smile[i].replace )
+	end
+	
+	--print(message)
+	
+	--print(1111111)
+	 
+	local myTable = message:split("{U.1F6600}")
+	for i = 1,#myTable do
+	   print( myTable[i] )
+	end
+
+
+	local function replaceS(w)
+		--print(w)
+		return "   "
+	end
+
+	
+	
+	for i = 1, #smile, 1 do
+		--print( string.find( "ola k viene, ola k va", "%wola" ) )  
+		
+		
+		
+		--message = string.gsub( message, smile[i].label,   function(w) return replaceS(w) end )
+	end
+	
+	
+	
+	--sheet = graphics.newImageSheet(Sprites.smile.source, Sprites.smile.frames)
+	--smileActive = display.newSprite(sheet, Sprites.smile.sequences)
+	
+	--[[smileActive.x = 650
+	smileActive.y = midH / 2 
+	--grpLoading:insert(loading)
+	smileActive:setSequence("grinning")
+	smileActive:play()
+]]
+	for i = 1, #smile, 1 do
+		--print(string.gsub( message, smile[i].label,   function(w) return replaceS(w) end  ))
+		--string.gsub( message, smile[i].label,   function(w) return replaceS(w) end  )
+		--message = string.gsub( message, smile[i].label,   function(w) return replaceS(w) end )
+		--message = string.gsub( message, smile[i].label, smile[i].replace )
+	end
+	
+	--print("Empieza")
+	--print(message)
+	--local message = string.gsub( message, "😀", "" )
+	--print(message2)
+	--print("Termina")
+	
+	
+	
+	
+	return lblM
+end
+
 ----------------------------------------------------
 -- Contruye el los mensajes del chats
 -- @param poscD posicion del mensaje en la tabla
@@ -441,26 +570,34 @@ function buildChat(poscD)
             bgM:setFillColor( 68/255, 14/255, 98/255 )
             grpChat:insert(bgM)
 			
+			--local rcpMsg = replaceSmiles(i.message)
+			
+			--print(rcpMsg)
+			
+			--local lblM = replaceSmiles(i.message)
+			
 			local lblM = display.newText({
-                text = i.message,     
-                x = 120, y = posY + 10,
-                font = fontFamilyRegular,   
-                fontSize = 30, align = "left"
-            })
-            lblM.anchorX = 0
-            lblM.anchorY = 0
-            lblM:setFillColor( 1 )
+				text = i.message,     
+				x = 120, y = posY + 10,
+				font = fontFamilySmile,   
+				fontSize = 30, align = "left"
+			})
+			lblM.anchorX = 0
+			lblM.anchorY = 0
+			lblM:setFillColor( 1 )
 			--lblM:setFillColor( .1 )
-            grpChat:insert(lblM)
+			grpChat:insert(lblM)
+			
+			--print(lblM.text)
 			
 			if lblM.contentWidth > 450 then
                 lblM:removeSelf()
                 
-                lblM = display.newText({
+               lblM = display.newText({
                     text = i.message, 
                     width = 450,
                     x = 120, y = posY + 10,
-                    font = fontFamilyRegular,   
+                    font = fontFamilySmile,   
                     fontSize = 30, align = "left"
                 })
                 lblM.anchorX = 0
@@ -612,7 +749,7 @@ function messagesInRealTime()
 	if not timer1 then
 		timer1 = timer.performWithDelay( 300, function()
 			local result = timer.pause( timer1 )
-			RestManager.getMessagesByChannel(chanelId)
+			--RestManager.getMessagesByChannel(chanelId)
 		end, -1  )
 	end
 end
@@ -763,6 +900,7 @@ function scene:create( event )
     txtMessage.inputType = "default"
     txtMessage:addEventListener( "userInput", onTxtFocus )
 	txtMessage:setReturnKey( "default" )
+	txtMessage.font = native.newFont( fontFamilySmile, 18 )
 	txtMessage.size = 32
 	txtMessage.hasBackground = false
 	txtMessage:setTextColor( 1 )

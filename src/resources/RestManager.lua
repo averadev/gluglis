@@ -263,6 +263,7 @@ local RestManager = {}
 		url = url.."/channelId/".. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -301,7 +302,7 @@ local RestManager = {}
 	-- @param message mensaje a enviar
 	-- @param poscM posicion en la que esta colocado el chat
     ------------------------------------------------------------
-	RestManager.sendChat = function(channelId, message, poscM)
+	--[[RestManager.sendChat = function(channelId, message, poscM)
 		settings = DBManager.getSettings()
 		site = settings.url
         -- Set url
@@ -312,6 +313,8 @@ local RestManager = {}
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
+		print(url)
+		print("Enviando mensaje")
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages("Error con el servidor")
@@ -340,7 +343,78 @@ local RestManager = {}
 		else
 			noConnectionMessage(language.RMNoInternetConnection)
 		end
+    end]]
+	
+	------------------------------------------------------------
+    -- Envia los mensajes del chat
+    -- @param channelId identificador del canal de los mensajes
+	-- @param message mensaje a enviar
+	-- @param poscM posicion en la que esta colocado el chat
+    ------------------------------------------------------------
+	RestManager.sendChat = function(channelId, message, poscM)
+		settings = DBManager.getSettings()
+		site = settings.url
+        -- Set url
+        local url = site
+		url = url.."api/saveChat2"
+		--url = url.."api/saveChat/format/json"
+        --[[url = url.."/idApp/" .. settings.idApp
+		url = url.."/channelId/" .. channelId
+		url = url.."/message/" .. urlencode(message)
+		url = url.."/timeZone/" .. urlencode(timeZone)
+		url = url.."/language/"..urlencode(settings.language)]]
+		print(settings.idApp)
+		print("Enviando mensaje")
+		
+		local function networkListener( event )
+			if ( event.isError ) then
+				noConnectionMessages(language.RMErrorServer)
+			else
+				local data = json.decode(event.response)
+				if data then
+					if data.success then
+						print(data.success)
+						print(data.messa)
+						if #data.items > 0 then
+							--cambia la fecha en la que se envio el mensaje
+							changeDateOfMSG(data.items[1],poscM)
+						else
+							noConnectionMessage(language.RMErrorServer)
+						end
+					else
+						noConnectionMessage(language.RMErrorServer)
+					end
+				else
+					noConnectionMessage(language.RMErrorServer)
+				end
+			end
+		end
+
+		local headers = {}
+
+		headers["Content-Type"] = "application/x-www-form-urlencoded"
+		headers["Accept-Language"] = "en-US"
+
+		local body = ""
+		body = body.."idApp=" .. settings.idApp
+		body = body.."&channelId=" .. channelId
+		body = body.."&message=" .. message
+		body = body.."&timeZone=" .. timeZone
+		body = body.."&language=".. settings.language
+		
+		local params = {}
+		params.headers = headers
+		params.body = body
+		
+        -- Do request
+		if networkConnection then
+			network.request( url, "POST", networkListener, params )
+		else
+			noConnectionMessage(language.RMNoInternetConnection)
+		end
+		
     end
+	
 	
 	RestManager.getMessagesByChannel = function(channelId)
 	

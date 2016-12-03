@@ -25,6 +25,10 @@ settings =
             publisherId = "com.coronalabs",
             supportedPlatforms = { android=true, iphone=true, osx=true, win32=true },
         },
+		["plugin.utf8"] =
+        {
+            publisherId = "com.coronalabs"
+        },
 	},
 	
 	splashScreen = 
@@ -98,7 +102,8 @@ settings =
             UIAppFonts = {
                 "Oxygen-Regular.ttf",
                 "Oxygen-Light.ttf",
-                "Oxygen-Bold.ttf"
+                "Oxygen-Bold.ttf",
+				"wp-font-emots.ttf"
             },
 			UIBackgroundModes = {"remote-notification"},
 			UIApplicationExitsOnSuspend = false,

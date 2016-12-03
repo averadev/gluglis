@@ -38,6 +38,8 @@ else
 	fontFamilyBold = "Oxygen-Bold.ttf"
 	fontFamilyLight = "Oxygen-Light.ttf"
 	fontFamilyRegular = "Oxygen-Regular.ttf"
+	--fontFamilySmile = "wp-font-emots.ttf"
+	fontFamilySmile = "Oxygen-Regular.ttf"
 end
 
 --indica el lenguaje a tomar

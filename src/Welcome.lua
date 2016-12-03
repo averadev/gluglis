@@ -350,6 +350,8 @@ function scene:create( event )
 	txtLocationW.id = 0
 	txtLocationW.font = native.newFont( fontFamilyRegular )
 	grpWelcome:insert( txtLocationW )
+	txtLocationW.text = "Ýá¢Ý©ä"
+	
 	
 	local imgClean = display.newImage( "img/1476237545_Cancel-01.png" )
 	imgClean:translate( intW - 160, lastY - 55 )
@@ -430,7 +432,8 @@ function scene:create( event )
 		end, -1)
 	end
 	
-	
+	local RowIcon=display.newText(grpWelcome, "Ýá¢Ý©ä", 0, -15, native.systemFontBold,27 )
+                    RowIcon:setTextColor( 65, 227, 255)
 	
     --RestManager.getUserAvatar()
 end	

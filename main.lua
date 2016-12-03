@@ -113,11 +113,7 @@ end
 ------------------------------------------------
 local OneSignal = require("plugin.OneSignal")
 
---system.cancelNotification()
-
 OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "836420576135", DidReceiveRemoteNotification)
-
-
 
 ------------------------------------------------
 -- obtiene el token por telefono
@@ -132,6 +128,24 @@ end
 -- llama a la funcion para obtener el token del telefono
 ------------------------------------------------
 OneSignal.IdsAvailableCallback(IdsAvailable)
+
+--print( string.byte( "abc" ) ) 
+--print( string.byte( "😁", 1 ) ) 
+--print( string.char( 12 ) )
+--print( string.char( 237 ) )
+
+local utf8 = require( "plugin.utf8" )
+
+local testStr = utf8.escape( "U+1F601" )
+
+--print( testStr )                --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+--print( utf8.upper( testStr ) )  --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+--print( utf8.title( testStr ) )  --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+function utf8reverse(str)
+  return str:gsub("([\194-\244][\128-\191]+)", string.reverse):reverse()
+end
+
+print(utf8reverse("????"))
 
 
 

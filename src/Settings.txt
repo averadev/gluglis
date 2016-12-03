@@ -31,3 +31,5 @@ sxm.thetowersatmulletbay.com:3391
 usuario: thetowers\admin
 contraseña: @CNGNV@2016
 
+el usuario es desarrollo@geekbucket.com.mx
+pass: g33k_bucket

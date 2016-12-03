@@ -28,8 +28,17 @@ Sprites.person = {
   source = "img/sprPerson.png",
   frames = {width=110, height=128, numFrames=2},
   sequences = {
-      { name = "stop", loopCount = 1, start = 1, count=1},
+      { name = "stop", loopCount = 1, start = 1},
       { name = "play", time=500, start = 1, count=2}
+  }
+}
+
+Sprites.smile = {
+  source = "img/smiles2.png",
+  frames = {width=38, height=38, numFrames=5},
+  sequences = {
+      { name = ":grinning:", start = 1},
+      { name = ":grin:", start = 2}
   }
 }
 
