@@ -350,8 +350,6 @@ function scene:create( event )
 	txtLocationW.id = 0
 	txtLocationW.font = native.newFont( fontFamilyRegular )
 	grpWelcome:insert( txtLocationW )
-	txtLocationW.text = "Ýá¢Ý©ä"
-	
 	
 	local imgClean = display.newImage( "img/1476237545_Cancel-01.png" )
 	imgClean:translate( intW - 160, lastY - 55 )

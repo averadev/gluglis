@@ -209,13 +209,13 @@ Language.en = {
 	LSTitle3 = "MEET YOUR NEXT GUIDE ",
 	LSTitle4 = "TALK TO THEM",
 	LSSubTitle2 = "Where? What type of people would you like to connect with?",
-	LSSubTitle3 = "Navega entre las personas que cumplen con el perfil \nque Tu estas búscando y conoce más acerca de ellos.",
+	LSSubTitle3 = "Navega entre las personas que cumplen con el perfil \nque Tu estas búscando y conoce más acerca de ellos.", --- buscar anterior traduccion
 	LSSubTitle4 = "Navigate among the people meeting the profile you´re looking for and learn more about them.",
 	LSBtnFace = "CONNECT WITH FACEBOOK",
 	LSBtnNormal = "LOG IN: USER OR E-MAIL",
 	LSBtnFree = "KNOW MORE ABOUT THE APP",
-	LSTerms1 = "Al iniciar sesión usted está aceptando los",
-	LSTerms2 = "términos y condiciones.",
+	LSTerms1 = "By logging in you are accepting the",
+	LSTerms2 = "terms and conditions",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	--------------------------------------
 	--LoginUserName
@@ -224,10 +224,10 @@ Language.en = {
 	LUNPass = "Password:",
 	LUNRePass = "Re-passwords:",
 	LUNRegistrar = "Sign up:",
-	LUNTerms1 = "Al iniciar sesión usted está aceptando los",
-	LUNTerms2 = "términos y condiciones.",
+	LUNTerms1 = "By logging in you are accepting the",
+	LUNTerms2 = "terms and conditions",
 	LUNBtnSignIn = "Log in",
-	LUNBtnRegister = "Nuevo Usuario",--
+	LUNBtnRegister = "New user",--
 	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	LUNEmptyFields = "Empty fields",
 	LUNDifferentPass = "Different passwords",
@@ -236,18 +236,18 @@ Language.en = {
 	WCEnterCity = "Enter city",
 	WCSearch = "Search",
 	WCMoreFilters = "More filters",
-	WCSelectCity= "Seleccione una ciudad valida",
+	WCSelectCity= "Chose a valid city",
 	--------------------------------------
 	--Hometown
 	HTYouLive = "Where do you live?",
 	HTStartGlugling = "Ok! Start Glugling!",
-	HTValidCity = "Select a valid city",
+	HTValidCity = "Chose a valid city",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Busqueda \nsin resultados",
+	HNoResultHome = "Unsuccessful \nsearch",
 	HNoUserFound = "No user was found",
 	HYears = "Years",
-	HUnregisteredResidence = "Residencia no registrada",
+	HUnregisteredResidence = "Unregistered home",
 	HSeeProfile = "SEE PROFILE",
 	--------------------------------------
 	--Profile
@@ -260,13 +260,12 @@ Language.en = {
 	PUnknown = "Unknown",
 	PIAmFrom = "I am from ",
 	PSince = "Since ",
-	PSince = "Desde hace ",
 	POffersAccommodation = "Offers accommodation",
 	PYes = "Yes",
 	PNo = "No",
 	PCar = "Car",
 	PFood = "Food",
-	PAny = "Any",
+	PAny = "none",
 	PLanguages = "Languages",
 	PHobbies = "Hobbies",
 	PLevelOfEducation = "Level of education",
@@ -298,7 +297,7 @@ Language.en = {
 	MpAccommodation = "Accommodation: ",
 	MpVehicle = "Vehicle: ",
 	MpFood = "Food: ",
-	MpAny = "Any",
+	MpAny = "none",
 	MpYes = "Yea",
 	MpNo = "No",
 	MpLanguages = "Languages: ",
@@ -350,7 +349,7 @@ Language.en = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Guardar Cambios", -- traduccion
+	SSaveSettings= "Save changes", -- traduccion
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "CHECK HERE THE LIST OF ALL THE PEOPLE WHO WANT TO CONTACT YOU",
@@ -412,8 +411,8 @@ Language.it = {
 	LSBtnFace = "CONNETTITI CON FACEBOOK",
 	LSBtnNormal = "INGRESSO CON: UTENTE O EMAIL",
 	LSBtnFree = "CONOSCI MEGLIO LE APPLICAZIONI",
-	LSTerms1 = "Quando si accede l'utente", -- sin traduccion
-	LSTerms2 = "accetta i termini e le condizioni.", -- sin traduccion
+	LSTerms1 = "All’iniziare la sessione,  accetti i",
+	LSTerms2 = "termini e le condizioni",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	--------------------------------------
 	--LoginUserName
@@ -422,8 +421,8 @@ Language.it = {
 	LUNPass = "Password:",
 	LUNRePass = "Conferma-Password:",
 	LUNRegistrar = "Registrarmi:",
-	LUNTerms1 = "Quando si accede l'utente", -- sin traduccion
-	LUNTerms2 = "accetta i termini e le condizioni.", -- sin traduccion
+	LUNTerms1 = "All’iniziare la sessione,  accetti i",
+	LUNTerms2 = "termini e le condizioni",
 	LUNBtnSignIn = "Accedere",
 	LUNBtnRegister = "Nuovo Utente",
 	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
@@ -434,18 +433,18 @@ Language.it = {
 	WCEnterCity = "Scrivi il nome di una città",
 	WCSearch = "Cercare",
 	WCMoreFilters = "più filtri",
-	WCSelectCity= "Selezionare una città valida", -- sin traduccion
+	WCSelectCity= "Scegliere una città valida",
 	--------------------------------------
 	--Hometown
-	HTYouLive = "Dove vivi?", -- sin traduccion
-	HTStartGlugling = "Ok! Start Glugling!", -- sin traduccion
-	HTValidCity = "Selezionare una città valida", -- sin traduccion
+	HTYouLive = "Dove abiti?",
+	HTStartGlugling = "Ok! Incommincia a Glugliare!",
+	HTValidCity = "Scegliere una città valida",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Ricerca \nsenza risultati", -- sin traduccion
+	HNoResultHome = "Ricerca \nsenza risultati",
 	HNoUserFound = "Non abbiamo trovato utenti",
 	HYears = "Anni",
-	HUnregisteredResidence = "Residenza non registrati", -- sin traduccion
+	HUnregisteredResidence = "Residenza non registrata",
 	HSeeProfile = "VEDERE PROFILO",
 	--------------------------------------
 	--Profile
@@ -455,15 +454,15 @@ Language.it = {
 	PYears = " Anni",
 	PCityNotAvailable = "Città non disponibile",
 	PILiveIn = "Abiti a ",
-	PUnknown = "Sconosciuto", -- sin traduccion
-	PIAmFrom = "è ", -- sin traduccion
+	PUnknown = "Sconosciuto",
+	PIAmFrom = "è di",
 	PSince = "Da quando ",
 	POffersAccommodation = "Offre alloggio",
-	PYes = "Se",-- sin traduccion
-	PNo = "Non",-- sin traduccion
+	PYes = "Se",
+	PNo = "Non",
 	PCar = "Hai una macchina",
 	PFood = "pasti",
-	PAny = "Nessuno", -- sin traduccion
+	PAny = "Nessuno",
 	PLanguages = "Lingue",
 	PHobbies = "Hobbies",
 	PLevelOfEducation = "Livello di studio",
@@ -475,7 +474,7 @@ Language.it = {
 	PHas = "Ha ",
 	PSports = "Sport",
 	PSportYouPlay = "Sport che svolgi",
-	PYouPlay = "Pratica ", -- sin traduccion
+	PYouPlay = "Pratica ",
 	PYouSmoke = "Fumi",
 	PYouDrinkAlcohol = "Bevi",
 	PYouPsychotropicDrugs = "Psicotropici",	
@@ -491,7 +490,7 @@ Language.it = {
 	MpResidence = "Residenza: ",
 	MpTimeLiving = "Tempo di \nsoggiorno: ",
 	MpEmail = "E-mail: ",
-	MpSelect = "selezionare", -- sin traduccion
+	MpSelect = "Scegliere",
 	MpAccommodation = "Alloggio: ",
 	MpVehicle = "Veicolo: ",
 	MpFood = "Pasti: ",
@@ -517,14 +516,14 @@ Language.it = {
 	MpEditHobbies = "Modificare passatempi",
 	MpYourHobbies = "Tuoi hobbies",
 	MpOk = "Accettare",
-	MpTakePhoto = "Scatta foto", -- sin traduccion
-	MpUploadPhoto = "Aggiungere foto", -- sin traduccion
-	MpTakePhotoSub = "Non si dispone di foto in questo momento \nprendere uno dal tuo cellulare", -- sin traduccion
-	MpUploadPhotoSub = "Carica una foto dal tuo telefono", -- sin traduccion
+	MpTakePhoto = "Fare una Foto",
+	MpUploadPhoto = "Aggiungere una Foto",
+	MpTakePhotoSub = "Non hai nessuna foto, \nfai una col tuo telefonino ",
+	MpUploadPhotoSub = "col tuo telefonino",
 	MpCancel = "Cancellare",
 	MpSave = "Salva",
-	MpCropSave = "Ritaglia e salva", -- sin traduccion
-	MpSaveUntrimmed = "Salva untrimmed", -- sin traduccion
+	MpCropSave = "Tagliare e conservare",
+	MpSaveUntrimmed = "Conservare senza tagliare",
 	--------------------------------------
 	--Filter
 	FCity = "Città:",
@@ -536,9 +535,9 @@ Language.it = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "Cercare Gluglers",
-	MSearchGluglersSub = "Gli utenti Gluglis \nsanno ovunque tu vada",-- sin traduccion
-	MEditProfile = "Modifica Profilo",-- sin traduccion
-	MEditProfileSub = "Modifica il tuo profilo personale",-- sin traduccion
+	MSearchGluglersSub = "Conosci utenti Gluglis \novunque tu vada",
+	MEditProfile = "Editare Profilo",
+	MEditProfileSub = "Editare il tuo profilo personale",
 	MCloseSession = "Chiudere Sessione",
 	MSignIn = "Registrarti",
 	MSessionClosed = "Sessione chiusa \ncon successo",
@@ -547,7 +546,7 @@ Language.it = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Guardar Cambios", -- traduccion
+	SSaveSettings= "Salva cambiamenti", -- traduccion
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "CONSULTA QUI LA LISTA DI TUTTE LE PERSONE CHE CHIEDONO DI CONTATTARTI",
@@ -555,16 +554,16 @@ Language.it = {
 	MSGSYouHaveNoMessages = "Nessun messaggio in questo momento",
 	--------------------------------------
 	--Message
-	MSGSend = "INVIARE",-- sin traduccion
+	MSGSend = "spedire",
 	MSGWrite = "Scrivere",
 	MSGBlock = "Bloccare",
-	MSGBack = "Ritorno",-- sin traduccion
+	MSGBack = "Tornare indietro",
 	MSGYouHaveNoMessages = "Nessun messaggio in questo momento",
 	MSGUnblock1 = "sblocca ",
 	MSGUnblock2 = " per inviare un messaggio",
 	MSGMessageNotSent1 = "Non si può mandare un messaggio, ",
 	MSGMessageNotSent2 = " lo hai bloccato",
-	MSGLoading = "Caricamento",-- sin traduccion
+	MSGLoading = "Caricando",
 	MSGWantToUnblock1 = "Desideri sbloccarlo ",
 	MSGWantToUnblock2 = " per inviargli un messaggio?",
 	MSGWantToBlock1 = "Desideri bloccare  ",
@@ -575,9 +574,9 @@ Language.it = {
 	--------------------------------------
 	--RestManager
 	RMTryLater = "Errore riprova più tardi",
-	RMErrorServer = "Errore con il server, riprovare più tardi",-- sin traduccion
+	RMErrorServer = "Errore del servitore. ",
 	RMNoInternetConnection = "Non si trova connessione a internet",
-	RMErrorLogOut = "Protocollo errori",-- sin traduccion
+	RMErrorLogOut = "Errore alla chiusura della sessione",
 	RMErrorSavingProfile = "Errore nel salvare i dati del profilo",
 	RMJanuary = "Gennaio",
 	RMFebruary = "Febbraio",
@@ -610,8 +609,8 @@ Language.de = {
 	LSBtnFace = "MIT FACEBOOK ANMELDEN",
 	LSBtnNormal = "ANMELDUNG MIT FACEBOOK ODER EMAIL",
 	LSBtnFree = "MEHR ÜBER DIE APP ERFAHREN",
-	LSTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LSTerms2 = "términos y condiciones.",-- sin traduccion
+	LSTerms1 = "Mit dem Einloggen akzeptieren",
+	LSTerms2 = "Sie die allgemeinen Bedingungen",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
 	--------------------------------------
 	--LoginUserName
@@ -620,9 +619,9 @@ Language.de = {
 	LUNPass = "Kennwort:",
 	LUNRePass = "Kennwort bestätigen:",
 	LUNRegistrar = "Anmelden:",
-	LUNTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LUNTerms2 = "términos y condiciones.",-- sin traduccion
-	LUNBtnSignIn = "Acceder",-- sin traduccion
+	LUNTerms1 = "Mit dem Einloggen akzeptieren",
+	LUNTerms2 = "Sie die allgemeinen Bedingungen",
+	LUNBtnSignIn = "Zugang",
 	LUNBtnRegister = "Neuer Benutzer",
 	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
 	LUNEmptyFields = "Leere Felder",
@@ -632,19 +631,19 @@ Language.de = {
 	WCEnterCity = "Stadt angeben",
 	WCSearch = "SUCHEN",
 	WCMoreFilters = "Weitere Filter",
-	WCSelectCity= "Seleccione una ciudad válida",-- sin traduccion
+	WCSelectCity= "Wählen Sie eine gültige Stadt aus",
 	--------------------------------------
 	--Hometown
-	HTYouLive = "¿Donde vives?",-- sin traduccion
-	HTStartGlugling = "Ok! Start Glugling!",-- sin traduccion
-	HTValidCity = "Seleccione una ciudad válida",-- sin traduccion
+	HTYouLive = "Wo wohnst Du?",
+	HTStartGlugling = "Ok. Beginnen Sie Guglis zu nutzen",
+	HTValidCity = "Scegliere una città valida",
 	--HT = "Search",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Búsqueda \nsin resultados",-- sin traduccion
+	HNoResultHome = "Suche nicht \nerfolgreich",
 	HNoUserFound = "Kein Benutzer gefunden",
 	HYears = "Jahre",
-	HUnregisteredResidence = "Residencia no registrada",-- sin traduccion
+	HUnregisteredResidence = "Wohnsitz nicht registriert",
 	HSeeProfile = "PROFIL ANSEHEN",
 	--------------------------------------
 	--Profile
@@ -654,15 +653,15 @@ Language.de = {
 	PYears = " Jahre",
 	PCityNotAvailable = "Stadt nicht verfügbar",
 	PILiveIn = "Lebt in ",
-	PUnknown = "Desconocido",-- sin traduccion
-	PIAmFrom = "Es de ",-- sin traduccion
+	PUnknown = "unbekannt",
+	PIAmFrom = "Von ",
 	PSince = "Seit ",
 	POffersAccommodation = "Bietet Unterkunft an",
-	PYes = "Si",-- sin traduccion
-	PNo = "No",-- sin traduccion
+	PYes = "Ja",
+	PNo = "Nein",
 	PCar = "Eigenes Auto",
 	PFood = "Essen",
-	PAny = "Ninguno",-- sin traduccion
+	PAny = "keine",
 	PLanguages = "Sprachen",
 	PHobbies = "Hobbies",
 	PLevelOfEducation = "Schulabschluss",
@@ -690,15 +689,15 @@ Language.de = {
 	MpResidence = "Wohnort: ",
 	MpTimeLiving = "Wohnt dort seit: ",
 	MpEmail = "E-mail: ",
-	MpSelect = "Seleccionar",-- sin traduccion
+	MpSelect = "auswählen",
 	MpAccommodation = "Unterkunft: ",
 	MpVehicle = "Fahrzeug: ",
 	MpFood = "Essen: ",
-	MpAny = "Ninguno",-- sin traduccion
-	MpYes = "Si",-- sin traduccion
-	MpNo = "No",-- sin traduccion
+	MpAny = "keine",
+	MpYes = "Ja",
+	MpNo = "Nein",
 	MpLanguages = "Sprachen: ",
-	MpHobbies = "Hobbies: ",
+	MpHobbies = "Hobbys: ",
 	MpLevelOfEducation = "Schulabschluss: ",
 	MpProfessionalTraining = "Berufsausbildung: ",
 	MpWorkingArea = "Tätigkeit: ",
@@ -713,17 +712,17 @@ Language.de = {
 	MpOtherLanguages = "Ihre Sprachen",
 	MpNoSport = "Treibt keinen Sport",
 	MpSportThatYouPlay = "Sportarten die Sie treiben",
-	MpEditHobbies = "Hobbies bearbeiten",
-	MpYourHobbies = "Ihre Hobbies",
+	MpEditHobbies = "Hobbys bearbeiten",
+	MpYourHobbies = "Ihre Hobbys",
 	MpOk = "Akzeptieren",
-	MpTakePhoto = "Tomar Foto",-- sin traduccion
-	MpUploadPhoto = "Subir Foto",-- sin traduccion
-	MpTakePhotoSub = "No tienes fotos en este momento \ntoma una desde tu celular",-- sin traduccion
-	MpUploadPhotoSub = "Sube una foto desde tu celular",-- sin traduccion
+	MpTakePhoto = "Foto machen",
+	MpUploadPhoto = "Foto hochladen",
+	MpTakePhotoSub = "Zur Zeit hast Du kein Foto; \nFoto mit Handy machen",
+	MpUploadPhotoSub = "Auf dem Handy",
 	MpCancel = "Abbrechen",
 	MpSave = "Speichern",
-	MpCropSave = "Recortar y guardar",-- sin traduccion
-	MpSaveUntrimmed = "Guardar sin recortar",-- sin traduccion
+	MpCropSave = "ausschneiden und speichern",
+	MpSaveUntrimmed = "speichern ohne ausschneiden",
 	--------------------------------------
 	--Filter
 	FCity = "Stadt:",
@@ -735,9 +734,9 @@ Language.de = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "SUCHEN Gluglers",
-	MSearchGluglersSub = "Conoce usuarios Gluglis \ndonde quiera que vayas",-- sin traduccion
-	MEditProfile = "Editar Perfil",-- sin traduccion
-	MEditProfileSub = "Editar tu perfil personal",-- sin traduccion
+	MSearchGluglersSub = "Lerne Gluglis User kennen \nwo immer Sie sind" ,-- sin traduccion
+	MEditProfile = "Profil bearbeiten",-- sin traduccion
+	MEditProfileSub = "Persönliches Profil bearbeiten",-- sin traduccion
 	MCloseSession = "Sitzung beenden",
 	MSignIn = "Anmelden",
 	MSessionClosed = "Sitzung erfolgreich \nbeendet",
@@ -746,7 +745,7 @@ Language.de = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Guardar Cambios", -- traduccion
+	SSaveSettings= "Änderungen speichern", -- traduccion
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "LISTE DER PERSONEN ABRUFEN, DIE SIE KONTAKTIEREN KÖNNEN",
@@ -754,10 +753,10 @@ Language.de = {
 	MSGSYouHaveNoMessages = "Sie haben keine neuen Nachrichten",
 	--------------------------------------
 	--Message
-	MSGSend = "ENVIAR",-- sin traduccion
-	MSGWrite = "Escribir",-- sin traduccion
-	MSGBlock = "BLOQUEAR",-- sin traduccion
-	MSGBack = "Regresar",-- sin traduccion
+	MSGSend = "SENDEN",
+	MSGWrite = "SCHREIBEN",
+	MSGBlock = "BLOCKIEREN ",
+	MSGBack = "Zurück",
 	MSGYouHaveNoMessages = "Sie haben keine neuen Nachrichten",
 	MSGUnblock1 = "desbloquea a ",
 	MSGUnblock2 = " para enviarle un mensaje",
@@ -774,9 +773,9 @@ Language.de = {
 	--------------------------------------
 	--RestManager
 	RMTryLater = "Fehler, bitte versuchen Sie es später",
-	RMErrorServer = "Error con el servidor, intentelo mas tarde",-- sin traduccion
+	RMErrorServer = "Server Fehler",
 	RMNoInternetConnection = "Sie haben keine Internetverbindung ",
-	RMErrorLogOut = "Error al cerrar sesión",-- sin traduccion
+	RMErrorLogOut = "Fehler beim Logout",
 	RMErrorSavingProfile = "Irrtum beim Speichern der Profildaten",
 	RMJanuary = "Januar",
 	RMFebruary = "Februar",
@@ -809,21 +808,21 @@ Language.zh  = {
 	LSBtnFace = "与Facebook登录",
 	LSBtnNormal = "登录：用户名或电子邮件",
 	LSBtnFree = "更多这个APP的情况下",
-	LSTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LSTerms2 = "términos y condiciones.",-- sin traduccion
+	LSTerms1 = "通过登录，",
+	LSTerms2 = "您正在接受相关条款条件。",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
 	--------------------------------------
 	--LoginUserName
 	LUNUser = "用户:",
-	LUNEmail = "E-mail:",-- sin traduccion
+	LUNEmail = "邮箱:",
 	LUNPass = "密码:",
 	LUNRePass = "重新密码:",
 	LUNRegistrar = "注册:",
-	LUNTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LUNTerms2 = "términos y condiciones.",-- sin traduccion
-	LUNBtnSignIn = "电子邮件访问",-- sin traduccion
+	LUNTerms1 = "通过登录，",
+	LUNTerms2 = "您正在接受相关条款条件。",
+	LUNBtnSignIn = "访问",
 	LUNBtnRegister = "新用户",
-	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
+	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	LUNEmptyFields = "空字段",
 	LUNDifferentPass = "不同的密码",
 	--------------------------------------
@@ -831,19 +830,19 @@ Language.zh  = {
 	WCEnterCity = "输入城市",
 	WCSearch = "搜索",
 	WCMoreFilters = "更多的过滤器",
-	WCSelectCity= "Seleccione una ciudad válida",-- sin traduccion
+	WCSelectCity= "选择一个有效城市",
 	--------------------------------------
 	--Hometown
-	HTYouLive = "¿Donde vives?",-- sin traduccion
-	HTStartGlugling = "Ok! Start Glugling!",-- sin traduccion
-	HTValidCity = "Seleccione una ciudad válida",-- sin traduccion
+	HTYouLive = "居住地",
+	HTStartGlugling = "好的！开始Glugling！",
+	HTValidCity = "选择一个有效城市",
 	--HT = "Search",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Búsqueda \nsin resultados",-- sin traduccion
+	HNoResultHome = "无搜寻结果",
 	HNoUserFound = "没有成员",
 	HYears = "岁",
-	HUnregisteredResidence = "Residencia no registrada",-- sin traduccion
+	HUnregisteredResidence = "页面不存在",
 	HSeeProfile = "查看个人资料",
 	--------------------------------------
 	--Profile
@@ -853,15 +852,15 @@ Language.zh  = {
 	PYears = " 岁",
 	PCityNotAvailable = "市不可用",
 	PILiveIn = "他住在 ",
-	PUnknown = "Desconocido",-- sin traduccion
-	PIAmFrom = "Es de ",-- sin traduccion
+	PUnknown = "未知",
+	PIAmFrom = "来自 ",
 	PSince = "自 ",
 	POffersAccommodation = "住宿",
-	PYes = "Si",-- sin traduccion
-	PNo = "No",-- sin traduccion
+	PYes = "是",
+	PNo = "否",
 	PCar = "有自己的车",
 	PFood = "食品",
-	PAny = "Ninguno",-- sin traduccion
+	PAny = "没有",
 	PLanguages = "语言",
 	PHobbies = "嗜好",
 	PLevelOfEducation = "学习等级",
@@ -871,9 +870,9 @@ Language.zh  = {
 	PEmployee = "对于其他人",
 	PPets = "宠物？",
 	PHas = "有 ",
-	PSports = "Deportes",-- sin traduccion
+	PSports = "运动",
 	PSportYouPlay = "实践运动",
-	PYouPlay = "Practica ",-- sin traduccion
+	PYouPlay = "实践 ",
 	PYouSmoke = "你抽烟吗",
 	PYouDrinkAlcohol = "你喝酒吗",
 	PYouPsychotropicDrugs = "毒品",	
@@ -888,16 +887,16 @@ Language.zh  = {
 	MpCountryOrigin = "原产国: ",
 	MpResidence = "住所: ",
 	MpTimeLiving = "住所时间: ",
-	MpEmail = "Email: ",-- sin traduccion
-	MpSelect = "Seleccionar",-- sin traduccion
+	MpEmail = "邮箱: ",
+	MpSelect = "选择",
 	MpAccommodation = "住宿: ",
 	MpVehicle = "车辆: ",
 	MpFood = "食品: ",
-	MpAny = "Ninguno",-- sin traduccion
-	MpYes = "Si",-- sin traduccion
-	MpNo = "No",-- sin traduccion
+	MpAny = "没有",
+	MpYes = "是",
+	MpNo = "否",
 	MpLanguages = "语言: ",
-	MpHobbies = "Hobbies: ",-- sin traduccion
+	MpHobbies = "爱好: ",
 	MpLevelOfEducation = "学习等级: ",
 	MpProfessionalTraining = "专业培训: ",
 	MpWorkingArea = "工作: ",
@@ -915,28 +914,28 @@ Language.zh  = {
 	MpEditHobbies = "编辑爱好",
 	MpYourHobbies = "你的爱好",
 	MpOk = "接受",
-	MpTakePhoto = "Tomar Foto",-- sin traduccion
-	MpUploadPhoto = "Subir Foto",-- sin traduccion
-	MpTakePhotoSub = "No tienes fotos en este momento \ntoma una desde tu celular",-- sin traduccion
-	MpUploadPhotoSub = "Sube una foto desde tu celular",-- sin traduccion
+	MpTakePhoto = "拍照",
+	MpUploadPhoto = "上传相片",
+	MpTakePhotoSub = "目前你没有相片，请从手机里选择一张",
+	MpUploadPhotoSub = "从你手机里",
 	MpCancel = "取消",
-	MpSave = "Guardar",-- sin traduccion
-	MpCropSave = "Recortar y guardar",-- sin traduccion
-	MpSaveUntrimmed = "Guardar sin recortar",-- sin traduccion
+	MpSave = "保存",
+	MpCropSave = "剪切并保存",
+	MpSaveUntrimmed = "保存不剪切",
 	--------------------------------------
 	--Filter
 	FCity = "城市:",
 	FMan = "男",
 	FWoman = "女",
-	FAge = "Entre:",
-	FYears = "岁",-- sin traduccion
+	FAge = "在…之间:",
+	FYears = "年份",
 	FSearch = "搜索",
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "搜索 Gluglers",
-	MSearchGluglersSub = "Conoce usuarios Gluglis \ndonde quiera que vayas",-- sin traduccion
-	MEditProfile = "Editar Perfil",-- sin traduccion
-	MEditProfileSub = "Editar tu perfil personal",-- sin traduccion
+	MSearchGluglersSub = "认识你将去到的地方的Gluglis用户",-- sin traduccion
+	MEditProfile = "修改资料",-- sin traduccion
+	MEditProfileSub = "修改个人资料",-- sin traduccion
 	MCloseSession = "关闭会话",
 	MSignIn = "注册",
 	MSessionClosed = "Sesión Cerrada \ncon exito",-- sin traduccion
@@ -945,7 +944,7 @@ Language.zh  = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Guardar Cambios", -- traduccion
+	SSaveSettings= "保存更改", -- traduccion
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "这里看看要与你联系所有的人名单。",
@@ -953,29 +952,29 @@ Language.zh  = {
 	MSGSYouHaveNoMessages = "没有讯息",
 	--------------------------------------
 	--Message
-	MSGSend = "ENVIAR",-- sin traduccion
-	MSGWrite = "Escribir",-- sin traduccion
-	MSGBlock = "BLOQUEAR",-- sin traduccion
-	MSGBack = "Regresar",-- sin traduccion
+	MSGSend = "发送",
+	MSGWrite = "编辑",
+	MSGBlock = "屏蔽",
+	MSGBack = "返回",
 	MSGYouHaveNoMessages = "没有讯息",
 	MSGUnblock1 = "解锁",
 	MSGUnblock2 = "发送消息",
 	MSGMessageNotSent1 = "您无法发送消息封锁 ",
 	MSGMessageNotSent2 = "",
-	MSGLoading = "Cargando",-- sin traduccion
+	MSGLoading = "加载",
 	MSGWantToUnblock1 = "你会解锁",
 	MSGWantToUnblock2 = "发送消息",
 	MSGWantToBlock1 = "",
 	MSGWantToBlock2 = "你会阻止？ 你不可以再发送消息",
 	--------------------------------------
 	--Tool
-	TBack = "Regresar",-- sin traduccion
+	TBack = "返回",
 	--------------------------------------
 	--RestManager
 	RMTryLater = "错误稍后再试",
-	RMErrorServer = "Error con el servidor, intentelo mas tarde",
+	RMErrorServer = "服务器错误",
 	RMNoInternetConnection = "未检测到网络连接",
-	RMErrorLogOut = "Error al cerrar sesión",
+	RMErrorLogOut = "关闭错误窗口",
 	RMErrorSavingProfile = "无法保存配置文件数据",
 	RMJanuary = "一月",
 	RMFebruary = "二月",
@@ -1008,8 +1007,8 @@ Language.he = {
 	LSBtnFace = "גישה דרך פייסבוק",
 	LSBtnNormal = "התחבר דרך: משתמש או דואר אלקטרוני",
 	LSBtnFree = "קבל מיידע נוסף על האפלקציה",
-	LSTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LSTerms2 = "términos y condiciones.",-- sin traduccion
+	LSTerms1 = ",התחבר אל בלחיצה לתנאים מסכים אתה",
+	LSTerms2 = "וכשקראת שלנו שלנו מדיניותה את",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
 	--------------------------------------
 	--LoginUserName
@@ -1018,9 +1017,9 @@ Language.he = {
 	LUNPass = "סיסמא:",
 	LUNRePass = "שיחזור סיסמא:",
 	LUNRegistrar = "... רשום אותי:",
-	LUNTerms1 = "Al iniciar sesión usted está aceptando los",-- sin traduccion
-	LUNTerms2 = "términos y condiciones.",-- sin traduccion
-	LUNBtnSignIn = "Acceder",-- sin traduccion
+	LUNTerms1 = "התחבר אל בלחיצה לתנאים מסכים אתה",
+	LUNTerms2 = "וכשקראת שלנו שלנו מדיניותה את",
+	LUNBtnSignIn = "להיכנס",
 	LUNBtnRegister = "משתמש חדש",
 	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
 	LUNEmptyFields = "שדות ריקים",
@@ -1030,19 +1029,19 @@ Language.he = {
 	WCEnterCity = "הזן עיר",
 	WCSearch = "חיפוש",
 	WCMoreFilters = "וספים סינונים",
-	WCSelectCity= "Seleccione una ciudad válida",-- sin traduccion
+	WCSelectCity= "קיימת עיר בחר",
 	--------------------------------------
 	--Hometown
-	HTYouLive = "¿Donde vives?",-- sin traduccion
-	HTStartGlugling = "Ok! Start Glugling!",-- sin traduccion
-	HTValidCity = "Seleccione una ciudad válida",-- sin traduccion
+	HTYouLive = "?גר אתה איפה",
+	HTStartGlugling = "!בסדר!לגלוג תתחיל",
+	HTValidCity = "קיימת עיר בחר",
 	--HT = "Search",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Búsqueda \nsin resultados",-- sin traduccion
+	HNoResultHome = "תוצאות בלי חיפוש",
 	HNoUserFound = "לא נמצא משתמש",
 	HYears = "שנים",
-	HUnregisteredResidence = "Residencia no registrada",-- sin traduccion
+	HUnregisteredResidence = "קיימים לא מגורים",
 	HSeeProfile = "צפה בפרופיל",
 	--------------------------------------
 	--Profile
@@ -1052,17 +1051,17 @@ Language.he = {
 	PYears = " שנים",
 	PCityNotAvailable = "עיר לא זמינה",
 	PILiveIn = "גר ב  ",
-	PUnknown = "Desconocido",-- sin traduccion
-	PIAmFrom = "Es de ",-- sin traduccion
+	PUnknown = "מוכר לא",
+	PIAmFrom = "מ ",
 	PSince = "ממתי ",
 	POffersAccommodation = "אפשרות לינה",
-	PYes = "Si",-- sin traduccion
-	PNo = "No",-- sin traduccion
+	PYes = "כן",
+	PNo = "לא",
 	PCar = "בעל רכב מתאים",
 	PFood = "אוכל",
-	PAny = "Ninguno",-- sin traduccion
+	PAny = "אחר אף",
 	PLanguages = "שפות",
-	PHobbies = "Hobbies",-- sin traduccion
+	PHobbies = "תחביבים",
 	PLevelOfEducation = "רמת לימוד",
 	PProfessionalTraining = "הכשרה מקצועית",
 	PWorkingArea = "תחום עבודה",
@@ -1070,9 +1069,9 @@ Language.he = {
 	PEmployee = "דרך חשבון זר",
 	PPets = "חיית מחמד",
 	PHas = "יש לו ",
-	PSports = "Deportes",-- sin traduccion
+	PSports = "ספורט",
 	PSportYouPlay = "עושה פעילות גופנית",
-	PYouPlay = "Practica ",-- sin traduccion
+	PYouPlay = "תרגל ",
 	PYouSmoke = "מעשן",
 	PYouDrinkAlcohol = "שותה",
 	PYouPsychotropicDrugs = "תרופות פסיכיאטריות",	
@@ -1087,16 +1086,16 @@ Language.he = {
 	MpCountryOrigin = "ארץ מוצא: ",
 	MpResidence = "מגורים: ",
 	MpTimeLiving = "זמן מגורים: ",
-	MpEmail = "Email: ",-- sin traduccion
-	MpSelect = "Seleccionar",-- sin traduccion
+	MpEmail = "ל“דוא: ",
+	MpSelect = "לבחור",
 	MpAccommodation = "לינה: ",
 	MpVehicle = "רכב: ",
 	MpFood = "אוכל: ",
-	MpAny = "Ninguno",-- sin traduccion
-	MpYes = "Si",-- sin traduccion
-	MpNo = "No",-- sin traduccion
+	MpAny = "אחר אף",
+	MpYes = "כן",
+	MpNo = "לא",
 	MpLanguages = "שפות: ",
-	MpHobbies = "Hobbies: ",
+	MpHobbies = "תחביבים: ",
 	MpLevelOfEducation = "רמת לימוד: ",
 	MpProfessionalTraining = "הכשרה מקצועית: ",
 	MpWorkingArea = "תחום עבודה: ",
@@ -1114,14 +1113,14 @@ Language.he = {
 	MpEditHobbies = "עריכת תחביבים",
 	MpYourHobbies = "התחביבים שלך",
 	MpOk = "אשר",
-	MpTakePhoto = "Tomar Foto",-- sin traduccion
-	MpUploadPhoto = "Subir Foto",-- sin traduccion
-	MpTakePhotoSub = "No tienes fotos en este momento \ntoma una desde tu celular",-- sin traduccion
-	MpUploadPhotoSub = "Sube una foto desde tu celular",-- sin traduccion
+	MpTakePhoto = "לצלם",
+	MpUploadPhoto = "תמונה להעלות",
+	MpTakePhotoSub = ",תמונות לך אין כרגע \n שלך הנייד עם תצלם",
+	MpUploadPhotoSub = "שלך מהנייד",
 	MpCancel = "בטל",
-	MpSave = "Guardar",-- sin traduccion
-	MpCropSave = "Recortar y guardar",-- sin traduccion
-	MpSaveUntrimmed = "Guardar sin recortar",-- sin traduccion
+	MpSave = "לשמור",
+	MpCropSave = "ושמור גזור",
+	MpSaveUntrimmed = "לגזור בלי שמור",
 	--------------------------------------
 	--Filter
 	FCity = "עיר:",
@@ -1133,9 +1132,9 @@ Language.he = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "חיפוש Gluglers",
-	MSearchGluglersSub = "Conoce usuarios Gluglis \ndonde quiera que vayas",-- sin traduccion
-	MEditProfile = "Editar Perfil",-- sin traduccion
-	MEditProfileSub = "Editar tu perfil personal",-- sin traduccion
+	MSearchGluglersSub = "תכיר גלוגליס משתמשים הולך שאתה לאן",
+	MEditProfile = "פרופיל עריכת",
+	MEditProfileSub = "אישי פרופיל עריכת",
 	MCloseSession = "היתנתק מהחשבון",
 	MSignIn = "הירשם",
 	MSessionClosed = "חשבון נסגר בהצלחה",
@@ -1144,7 +1143,7 @@ Language.he = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Guardar Cambios", -- traduccion
+	SSaveSettings= "שמירת שינויים", -- traduccion
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "בדוק כאן את רשימת האנשים שרוצים ליצור איתך קשר",
@@ -1152,29 +1151,29 @@ Language.he = {
 	MSGSYouHaveNoMessages = "אין הודעות ברגעים אלה",
 	--------------------------------------
 	--Message
-	MSGSend = "ENVIAR",-- sin traduccion
-	MSGWrite = "Escribir",-- sin traduccion
-	MSGBlock = "BLOQUEAR",-- sin traduccion
-	MSGBack = "Regresar",-- sin traduccion
+	MSGSend = "לשלוח",
+	MSGWrite = "לכתוב",
+	MSGBlock = "חיסום",
+	MSGBack = "לחזור",
 	MSGYouHaveNoMessages = "אין הודעות ברגעים אלה",
 	MSGUnblock1 = "על מנת שתוכל לשלוח הודעה ",
 	MSGUnblock2 = " בטל חסימה....",
 	MSGMessageNotSent1 = "נחסמת....., ",
 	MSGMessageNotSent2 = " לא ניתן לשלוח הודעות",
-	MSGLoading = "Cargando",-- sin traduccion
+	MSGLoading = "טעינה",
 	MSGWantToUnblock1 = "על מנת לשלוח לו ",
 	MSGWantToUnblock2 = "... על מנת לשלוח לו הודעות?",
 	MSGWantToBlock1 = "לא תוכל יותר לשלוח לו הודעות  ",
 	MSGWantToBlock2 = "ברצונך לחסום את..... ?",
 	--------------------------------------
 	--Tool
-	TBack = "Regresar",
+	TBack = "לחזור",
 	--------------------------------------
 	--RestManager
 	RMTryLater = "שגיאה נסה שנית מאוחר יותר",
-	RMErrorServer = "Error con el servidor, intentelo mas tarde",-- sin traduccion
+	RMErrorServer = "רשת שגיאת",
 	RMNoInternetConnection = "לא נמצא חיבור לאינטרנט",
-	RMErrorLogOut = "Error al cerrar sesión",
+	RMErrorLogOut = "ותהתנתק בזמן שגיאה",
 	RMErrorSavingProfile = "טעות בשמירת הנתונים של הפרופיל",
 	RMJanuary = " ינואר",
 	RMFebruary = "פברואר,",
