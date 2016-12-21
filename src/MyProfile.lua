@@ -11,6 +11,7 @@
 require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
+require( 'src.components.DatePicker' )
 local composer = require( "composer" )
 RestManager = require('src.resources.RestManager')
 
@@ -20,6 +21,7 @@ local scene = composer.newScene()
 local scrPerfile, scrElements, scrCombo
 local grpOptionsLabel, grpOptionsCombo, grpComboBox, grpOptionAvatar, grpOptionSave, grpAvatar
 local grpTextProfile = nil
+local datePicker = DatePicker:new()
 
 -- Variables
 local posY = 350
@@ -206,6 +208,13 @@ function closeAll( event )
 	return true
 end
 
+
+function showDatePicker()
+	
+	datePicker:buildPicker()
+	
+end
+
 ------------------------------------------------------------------------------
 -- Pinta la imagen del usuario en caso de no encontrarse al crear la scena
 -- @param item nombre de la imagen
@@ -268,6 +277,9 @@ function setImagePerfil( imageA )
 	
 end
 
+------------------------------------------------------------
+-- elimina la imagen actual cuando se actualiza una nueva
+------------------------------------------------------------
 function deleteAvatarMyProfile()
 	
 	if avatar then
@@ -279,6 +291,9 @@ function deleteAvatarMyProfile()
 	
 end
 
+------------------------------------------------------------
+-- actualiza la foto de perfil
+------------------------------------------------------------
 function saveAvatar( event )
 
 	tools:setLoading(true,grpLoadMyProfile)
@@ -329,11 +344,20 @@ function saveAvatar( event )
 	return true
 end
 
+------------------------------------------------------------
+-- Muestra opciones de como se guardara la imagen
+------------------------------------------------------------
 function optionSaveAvatar()
+
+	componentActive = "PictureAvatar"
 	
 	if grpOptionSave then
 		grpOptionSave:removeSelf()
 		grpOptionSave = nil
+	end
+	
+	if grpOptionAvatar then
+		grpOptionAvatar.alpha = 0
 	end
 	
 	grpOptionSave = display.newGroup()
@@ -382,16 +406,6 @@ function optionSaveAvatar()
 		lblOption:setFillColor( 0 )
 		grpOptionSave:insert(lblOption)
 		
-		--[[local lblSubOption = display.newText({
-			text = optionSub[i], 
-			x = 500, y = posY + 130,
-			width = 490,
-			font = fontFamilyRegular,   
-			fontSize = 26, align = "left"
-		})
-		lblSubOption:setFillColor( 0 )
-		grpOptionSave:insert(lblSubOption)]]
-		
 		posY = posY + 200
 
 		local line = display.newLine( 0, posY + 1 , intW, posY + 1 )
@@ -431,15 +445,23 @@ function optionSaveAvatar()
 	
 end
 
+------------------------------------------------------------
+-- esconde la opcion de como se guarda la imagen
+------------------------------------------------------------
 function hideOptionSaveAvatar()
+	componentActive = false
 	if grpOptionSave then
 		grpOptionSave:removeSelf()
 		grpOptionSave = nil
 	end
 	grpTextProfile.x = 0
 	grpAvatar.x = 0
+	return true
 end
 
+------------------------------------------------------------
+-- permite mover el cuadro para recortar imagen
+------------------------------------------------------------
 function moveMasckAvatar( event )
 	
 	if ( event.phase == "began" ) then
@@ -470,6 +492,9 @@ function moveMasckAvatar( event )
 	
 end
 
+------------------------------------------------------------
+-- Muestra la imagen de perfil ampliada
+------------------------------------------------------------
 function showAvatar( event )
 
 	bgOptionAvatar()
@@ -507,9 +532,12 @@ function showAvatar( event )
 
 end
 
+------------------------------------------------------------
+-- fondo donde se muestra la imagen de perfil
+------------------------------------------------------------
 function bgOptionAvatar()
 	
-	componentActive = true
+	componentActive = "OptionAvatar"
 	if grpOptionAvatar then
 		grpOptionAvatar:removeSelf()
 		grpOptionAvatar = nil
@@ -525,7 +553,13 @@ function bgOptionAvatar()
 	
 end
 
+------------------------------------------------------------------
+-- Muestra la nueva imagen de perfil cuando se ha actualizado
+------------------------------------------------------------------
 function showNewAvatar( event )
+
+	hideOptionSaveAvatar()
+
 	bgOptionAvatar()
 	
 	local nameImage
@@ -638,20 +672,25 @@ function showNewAvatar( event )
 		
 	end
 	
-	
 end
 
-function mysplitPoint(s)
+--[[function mysplitPoint(s)
     
 	return t
-end
+end]]
 
+------------------------------------------------------------
+-- Activa la camara del telefono
+------------------------------------------------------------
 function takePicture()
 	--showNewAvatar()
 	local function onComplete( event )
-		
-		showNewAvatar( "newPhoto" )
-		
+		local json = require("json")
+		if ( event.completed ) then
+			showNewAvatar( "newPhoto" )
+		else
+			
+		end
 	end
 	
 	local namePhoto
@@ -677,10 +716,17 @@ function takePicture()
 
 end
 
+------------------------------------------------------------
+-- Muestra las fotos de la libreria
+------------------------------------------------------------
 function libraryPicture()
 	--showNewAvatar()
 	local function onComplete( event )
-		showNewAvatar( "newPhoto" )
+		if ( event.completed ) then
+			showNewAvatar( "newPhoto" )
+		else
+			
+		end
 	end
 	
 	local namePhoto
@@ -693,9 +739,7 @@ function libraryPicture()
 	if media.hasSource( media.PhotoLibrary ) then
 		media.selectPhoto({
 			mediaSource = media.SavedPhotosAlbum,
-			listener = onComplete, 
-			--origin = button.contentBounds, 
-			--permittedArrowDirections = { "right" },
+			listener = onComplete,
 			destination = { baseDir=system.TemporaryDirectory, filename = "tempFotos/" .. namePhoto } 
 		})
 		
@@ -725,7 +769,7 @@ end
 ------------------------------------------------------------------------------
 function optionPictureAvatar( event )
 
-	componentActive = true
+	componentActive = "PictureAvatar"
 	
 	if grpOptionSave then
 		grpOptionSave:removeSelf()
@@ -2081,6 +2125,8 @@ function createGeneralItems( item )
 	num = #infoOpcion + 1
 	if not item.genero then
 		item.genero = language.MpSelect
+	elseif item.genero == "" then
+		item.genero = language.MpSelect
 	end
 	gender = item.genero
 	
@@ -2109,6 +2155,8 @@ function createGeneralItems( item )
 	nameOption[num] = "residenceTime"
 	num = #infoOpcion + 1
 	if not item.tiempoResidencia then
+		item.tiempoResidencia = language.MpSelect
+	elseif item.tiempoResidencia == "" then
 		item.tiempoResidencia = language.MpSelect
 	end
 	--email contacto
@@ -2181,9 +2229,6 @@ end
 -------------
 -- 
 -------------
-function birthdate( event )
-	print('hola')
-end
 
 ------------------------------------
 -- Pinta la info del usuario
@@ -2214,7 +2259,13 @@ function MyProfile( item )
     else 
         edad = item.edad .. language.MpYears
     end
-    lblAge= display.newText({
+	
+	local bglblAge = display.newRect( 550, 180, 400, 70 )
+	bglblAge:setFillColor( .52 )
+	scrPerfile:insert(bglblAge)
+	bglblAge:addEventListener( 'tap', showDatePicker )
+	
+    lblAge = display.newText({
         text = edad, 
         x = 550, y = 180,
         width = 400,
@@ -2223,7 +2274,6 @@ function MyProfile( item )
     })
     lblAge:setFillColor( 0 )
     scrPerfile:insert(lblAge)
-	--lblAge:addElements( 'tap', birthdate )
 	-- BG Component
 	
 	--creamos los componentes generales
@@ -2441,7 +2491,10 @@ function scene:hide( event )
 			grpTextProfile:removeSelf()
 			grpTextProfile = nil
 		end
-		
+		if grpOptionSave then
+			grpOptionSave:removeSelf()
+			grpOptionSave = nil
+		end
 	end
 	
 end

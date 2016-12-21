@@ -126,7 +126,6 @@ function infoProfile( item )
 	
 	posY = posY + 55
 	
-	--residencia
 	local Residence = ""
 	if not item.residencia then 
 		Residence = language.PCityNotAvailable
@@ -151,10 +150,10 @@ function infoProfile( item )
 	
 	--------Generales-----------
 	
-	local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
-	line:setStrokeColor( 227/255 )
-	line.strokeWidth = 3
-	scrPerfile:insert(line)
+	local line0 = display.newLine( 0, posY - 1 , intW, posY - 1 )
+	line0:setStrokeColor( 227/255 )
+	line0.strokeWidth = 3
+	scrPerfile:insert(line0)
 	
 	local bgA0 = display.newRect( midW, posY, intW, 300 )
 	bgA0.anchorY = 0
@@ -195,7 +194,7 @@ function infoProfile( item )
 	if item.residencia then
 		local residentTxt = trimString(item.residencia)
 		if #residentTxt > 0 then
-			if item.tiempoResidencia then
+			if item.tiempoResidencia and item.tiempoResidencia ~= "" then
 				infoOpcion[num] = language.PSince .. item.tiempoResidencia 
 				iconOpcion[num] = 'icoFilterCity'
 				num = #infoOpcion + 1
@@ -243,7 +242,12 @@ function infoProfile( item )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
-	posY = posY + 50
+	if bgA0.height == 0 then
+		line.alpha = 0
+		line0.alpha = 0
+	else
+		posY = posY + 50
+	end
 	
 	------- guia turistica -----------
 	
@@ -582,6 +586,9 @@ end
 ---------------------------------------------
 function scene:create( event )
 	local item = event.params.item
+	
+	print(item.id)
+	
 	screen = self.view
     --screen.y = h
 	

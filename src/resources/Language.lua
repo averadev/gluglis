@@ -338,7 +338,7 @@ Language.en = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "Search Gluglers",
-	MSearchGluglersSub = "Gluglus users know \nwherever you go",
+	MSearchGluglersSub = "Know Gluglis users \nwherever you go",
 	MEditProfile = "Edit profile",
 	MEditProfileSub = "Edit your personal profile",
 	MCloseSession = "Close session",

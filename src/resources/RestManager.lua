@@ -599,6 +599,9 @@ local RestManager = {}
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/language/"..urlencode(settings.language)
+		
+		print(url)
+		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -697,6 +700,9 @@ local RestManager = {}
 		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
+		
+		print(url)
+		
         local function callback(event)
             if ( event.isError ) then
 				HomeError( language.RMErrorServer )
@@ -889,12 +895,12 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, language, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
+	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, languages, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
 		settings = DBManager.getSettings()
 		site = settings.url
 		
 		local hobbies2 = json.encode(hobbies)
-		local language2 = json.encode(language)
+		local language2 = json.encode(languages)
 		local sport2 = json.encode(sport)
         local url = site.."api/saveProfile/format/json"
 		url = url.."/idApp/" .. settings.idApp
@@ -907,7 +913,9 @@ local RestManager = {}
 		if lastName ~= '' then
 			url = url.."/lastName/" .. urlencode(lastName)
 		end
-		url = url.."/gender/" .. urlencode(gender)
+		if gender ~= language.MpSelect then
+			url = url.."/gender/" .. urlencode(gender)
+		end
 		if originCountry ~= '' then
 			url = url.."/originCountry/" .. urlencode(originCountry)
 		end
@@ -917,7 +925,9 @@ local RestManager = {}
 		if idResidence ~= '' then
 			url = url.."/idResidence/" .. urlencode(idResidence)
 		end
-		url = url.."/residenceTime/" .. urlencode(residenceTime)
+		if residenceTime ~= language.MpSelect then
+			url = url.."/residenceTime/" .. urlencode(residenceTime)
+		end
 		--[[if emailContact ~= '' then
 			url = url.."/emailContact/" .. urlencode(emailContact)
 		end]]
@@ -938,6 +948,7 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
+		
 		--url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then

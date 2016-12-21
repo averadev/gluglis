@@ -678,6 +678,7 @@ local function onKeyEventBack( event )
 				--return true
 				end
 			else
+				print(componentActive)
 				if componentActive == "multiComboBox" then
 					hideOptionsLabels()
 				elseif componentActive == "comboBox" then
@@ -688,6 +689,10 @@ local function onKeyEventBack( event )
 					destroyDatePicker2( "" )
 				elseif componentActive == "blockChat" then
 					blockedChatMsg( "", false, false )
+				elseif componentActive == "PictureAvatar" then
+					hideOptionSaveAvatar()
+				elseif componentActive == "OptionAvatar" then
+					hideoptionAvatar()
 				elseif composer.getSceneName( "current" ) == "src.Welcome" then
 					return false
 				else

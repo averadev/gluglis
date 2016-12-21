@@ -749,7 +749,7 @@ function messagesInRealTime()
 	if not timer1 then
 		timer1 = timer.performWithDelay( 300, function()
 			local result = timer.pause( timer1 )
-			--RestManager.getMessagesByChannel(chanelId)
+			RestManager.getMessagesByChannel(chanelId)
 		end, -1  )
 	end
 end
