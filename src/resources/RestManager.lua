@@ -1017,7 +1017,7 @@ local RestManager = {}
 		 
 		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
 		-- Also define the method as "PUT".
-		local url = "http://www.gluglis.travel/gluglis_api/Upload/uploadImage"
+		local url = "http://www.gluglis.travel/gluglis_api/UploadA/uploadImage"
 		local method = "PUT"
 		 
 		-- Set some reasonable parameters for the upload process:
@@ -1332,6 +1332,8 @@ local RestManager = {}
     -- @param obj registros de la consulta con la propiedad image
     ------------------------------------- 
     function loadImage(obj)
+	
+	
 		
         -- Next Image
         if obj.idx < #obj.items then
@@ -1342,6 +1344,10 @@ local RestManager = {}
            -- local img = obj.items[obj.idx].image
 			local img2 = obj.items[obj.idx].image2
 			local img = obj.items[obj.idx].image
+			
+			print(img2)
+			print(img)
+			
             local path = system.pathForFile( img, system.TemporaryDirectory )
             local fhd = io.open( path )
             if fhd then

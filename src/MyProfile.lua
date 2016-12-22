@@ -617,7 +617,7 @@ function showNewAvatar( event )
 		bg1.y = pocsY
 		
 		
-		local maskA = graphics.newMask( "img/maskPhoto2.png" )
+		local maskA = graphics.newMask( "img/maskPhoto3.png" )
 		avatarMask = display.newImage("tempFotos/newAvatar.jpg", system.TemporaryDirectory)
 		avatarMask:translate(midW, 0 + h)
 		
@@ -628,6 +628,7 @@ function showNewAvatar( event )
 		avatarMask.width = resizeWidth
 		avatarMask.anchorY = anchorY
 		avatarMask.y = pocsY
+		avatarMask.maskScaleX, avatarMask.maskScaleY = 1.5, 1.5
 		
 		local bgSaveAvatar = display.newRect( midW, intH - 60, intW, 120 )
 		bgSaveAvatar.id = nameImage
@@ -2460,6 +2461,7 @@ function scene:create( event )
         listener = scrListen
     })
 	screen:insert(scrPerfile)
+	
 	
 	
 	grpLoadMyProfile = display.newGroup()

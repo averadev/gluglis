@@ -344,11 +344,11 @@ Language.en = {
 	MCloseSession = "Close session",
 	MSignIn  = "Sign in",
 	MSessionClosed = "Your session was \nsuccessfully closed",
-	MSettings = "Configuracion", -- traduccion
-	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
+	MSettings = "Configuration", -- traduccion
+	MSettingsSub = "Chopse your preferred language", -- traduccion
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje", -- traduccion
+	SChangeLanguage = "Change language ", -- traduccion
 	SSaveSettings= "Save changes", -- traduccion
 	--------------------------------------
 	--Messages
