@@ -19,7 +19,7 @@ local platform = system.getInfo( "platformName" )
 if platform == "Android" then
 	widget.setTheme( "widget_theme_android_holo_dark" )
 elseif platform == "iPhone OS" then
-	widget.setTheme( "widget_theme_ios7" )
+	--widget.setTheme( "widget_theme_ios7" )
 end
 
 --print(platform)
@@ -144,10 +144,8 @@ function buildPicker(dateb, textGrp)
 	if platform == "iPhone OS" then
 		createDatePickerIos(dateb)
 	else
-		createDatePickerAndroid(dateb)
+		createDatePickerIos(dateb)
 	end
-	
-	
 		
 	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })		
@@ -191,18 +189,19 @@ function createDatePickerIos(dateb)
 	
 	
 	local dates2 = {}
-	dates2[1] = 0
-	dates2[2] = 0
-	for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
-		dates2[1] = Da
-		dates2[2] = Mi
-		dates2[3] = Ye
-		--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
+	if dateb ~= "0000-00-00" then
+		for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
+			dates2[1] = Da
+			dates2[2] = Mi
+			dates2[3] = Ye
+			--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
+		end
+		dates2[3] = tonumber( dates[3].year - dates2[3] + 1 )
+	else
+		dates2[1] = 1
+		dates2[2] = 1
+		dates2[3] = 1
 	end
-	
-	print(2016 - dates2[3])
-	
-	--edad = dates[3].day .. "/" .. dates[3].month .. "/" .. dates[3].year
 
 	-- Set up the picker wheel columns
 	local columnData = {
@@ -224,8 +223,7 @@ function createDatePickerIos(dateb)
 			align = "center",
 			labelPadding = 10,
 			width = 200,
-			startIndex = tonumber( dates[3].year - dates2[3] + 1 ),
-			--startIndex = 1,
+			startIndex = tonumber( dates2[3] ),
 			labels = years
 		}
 	}
@@ -257,7 +255,7 @@ function createDatePickerIos(dateb)
 	
 	pickerWheel = widget.newPickerWheel({
 		y = 250,
-		x = midW,
+		x = 230,
 		columns = columnData,
         sheet = pickerWheelSheet,
         overlayFrame = 1,
@@ -326,16 +324,19 @@ function createDatePickerAndroid(dateb)
 	
 	
 	local dates2 = {}
-	dates2[1] = 0
-	dates2[2] = 0
-	for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
-		dates2[1] = Da
-		dates2[2] = Mi
-		dates2[3] = Ye
-		--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
+	if dateb ~= "0000-00-00" then
+		for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
+			dates2[1] = Da
+			dates2[2] = Mi
+			dates2[3] = Ye
+			--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
+		end
+		dates2[3] = tonumber( dates[3].year - dates2[3] + 1 )
+	else
+		dates2[1] = 1
+		dates2[2] = 1
+		dates2[3] = 1
 	end
-	
-	print(2016 - dates2[3])
 	
 	--edad = dates[3].day .. "/" .. dates[3].month .. "/" .. dates[3].year
 
@@ -359,7 +360,7 @@ function createDatePickerAndroid(dateb)
 			align = "center",
 			labelPadding = 10,
 			width = intW/3,
-			startIndex = tonumber( dates[3].year - dates2[3] + 1 ),
+			startIndex = tonumber( dates2[3] ),
 			--startIndex = 1,
 			labels = years
 		}

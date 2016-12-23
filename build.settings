@@ -121,6 +121,8 @@ settings =
                 },
             },
 			CoronaWindowMovesWhenKeyboardAppears = true,
+			NSCameraUsageDescription = "This app would like to access the camera to change the profile photo.",
+            NSPhotoLibraryUsageDescription = "This app would like to access the photo library to change the profile photo.",
 		}
 	},
 	
