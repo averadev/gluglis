@@ -14,7 +14,17 @@ local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
-widget.setTheme( "widget_theme_android_holo_light" )
+local platform = system.getInfo( "platformName" )
+
+if platform == "Android" then
+	widget.setTheme( "widget_theme_android_holo_dark" )
+elseif platform == "iPhone OS" then
+	widget.setTheme( "widget_theme_ios7" )
+end
+
+--print(platform)
+
+--widget.setTheme( "widget_theme_ios7" )
 
 local grpComboBox
 	
