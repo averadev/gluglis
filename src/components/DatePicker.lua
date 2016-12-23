@@ -194,23 +194,23 @@ function createDatePicker(dateb)
 		{
 			align = "center",
 			width = intW/3,
-			startIndex = 1,
+			startIndex = tonumber( dates2[1] ),
 			labels = days
 		},
 		{
 			align = "center",
 			width = intW/3,
 			labelPadding = 10,
-			startIndex = 1,
-			--startIndex = tonumber( dates2[2] ),
+			--startIndex = 1,
+			startIndex = tonumber( dates2[2] ),
 			labels = months
 		},
 		{
 			align = "center",
 			labelPadding = 10,
 			width = intW/3,
-			--startIndex = tonumber( dates[3].year - dates2[3] + 1 ),
-			startIndex = 1,
+			startIndex = tonumber( dates[3].year - dates2[3] + 1 ),
+			--startIndex = 1,
 			labels = years
 		}
 	}
@@ -223,7 +223,8 @@ function createDatePicker(dateb)
 		style = "resizable",
 		width = intW,
 		rowHeight = 60,
-		fontSize = 32
+		fontSize = 32,
+		columnColor = { 0.8, 0.8, 0.8 }
 	})  
 	pickerWheel.anchorY = 0
 	grpDatePicker:insert( pickerWheel )
