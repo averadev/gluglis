@@ -345,9 +345,9 @@ function saveAvatar( event )
 	hideOptionSaveAvatar()
 	
 	if ( t.name == "cut" ) then
-		display.save( avatarMask, { filename="tempFotos/" .. nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+		display.save( avatarMask, { filename = nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
 	else
-		display.save( avatarFull, { filename="tempFotos/" .. nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
+		display.save( avatarFull, { filename = nameImage .. ".png", baseDir=system.TemporaryDirectory, captureOffscreenArea=true, backgroundColor={0,0,0,0} } )
 	end
 	
 	hideoptionAvatar()
@@ -580,14 +580,14 @@ function showNewAvatar( event )
 		nameImage = k
 	end
 	
-	local path = system.pathForFile( "tempFotos/newAvatar.JPG", system.TemporaryDirectory )
+	local path = system.pathForFile( "newAvatar.jpg", system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 		
 	if fhd then
 		fhd:close()
 	
-		avatarFull = display.newImage("tempFotos/newAvatar.JPG", system.TemporaryDirectory)
+		avatarFull = display.newImage("newAvatar.jpg", system.TemporaryDirectory)
 		avatarFull:translate(midW, 0 + h)
 		--avatarFull.alpha = .7
 		grpOptionAvatar:insert(avatarFull)
@@ -631,7 +631,7 @@ function showNewAvatar( event )
 		
 		
 		local maskA = graphics.newMask( "img/maskPhoto3.png" )
-		avatarMask = display.newImage("tempFotos/newAvatar.JPG", system.TemporaryDirectory)
+		avatarMask = display.newImage("newAvatar.jpg", system.TemporaryDirectory)
 		avatarMask:translate(midW, 0 + h)
 		
 		grpOptionAvatar:insert(avatarMask)
@@ -713,14 +713,14 @@ function takePicture()
 		--t[k] = v
 	end
 	
-	namePhoto = "newAvatar.JPG"
+	namePhoto = "newAvatar.jpg"
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
 			listener=onComplete,
 			destination = {
 				baseDir = system.TemporaryDirectory,
-				filename = "tempFotos/" .. namePhoto,
+				filename = namePhoto,
 				type = "image"
 			}
 		})
@@ -749,12 +749,12 @@ function libraryPicture()
 		--t[k] = v
 	end
 	
-	namePhoto = "newAvatar.JPG"
+	namePhoto = "newAvatar.jpg"
 	if media.hasSource( media.PhotoLibrary ) then
 		media.selectPhoto({
 			mediaSource = media.PhotoLibrary,
 			listener = onComplete,
-			destination = { baseDir=system.TemporaryDirectory, filename = "tempFotos/" .. namePhoto } 
+			destination = { baseDir=system.TemporaryDirectory, filename = namePhoto } 
 		})
 		
 	else

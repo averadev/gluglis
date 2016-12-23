@@ -5,7 +5,7 @@ local RestManager = {}
 	local json = require("json")
 	require('src.resources.Globals')
 	local crypto = require("crypto")
-	local openssl = require("plugin.openssl")
+	local openssl = require( "plugin.openssl" )
 	local cipher = openssl.get_cipher("aes-256-cbc")
 	--local Globals = require('src.resources.Globals')
 	local DBManager = require('src.resources.DBManager')
@@ -1032,7 +1032,7 @@ local RestManager = {}
 		 
 		-- Specify what file to upload and where to upload it from.
 		-- Also, set the MIME type of the file so that the server knows what to expect.
-		local filename =  "tempFotos/" .. photophoto .. ".png"
+		local filename =  photophoto .. ".png"
 		local baseDirectory = system.TemporaryDirectory
 		local contentType = "image/jpeg"  --another option is "text/plain"
 		 
@@ -1089,7 +1089,7 @@ local RestManager = {}
 		
 		-- Specify what file to upload and where to upload it from.
 		-- Also, set the MIME type of the file so that the server knows what to expect.
-		local filename =  "tempFotos/" .. photophoto .. ".jpg"
+		local filename =  photophoto .. ".jpg"
 		local baseDirectory = system.TemporaryDirectory
 		local contentType = "image/jpeg"  --another option is "text/plain"
 		 
