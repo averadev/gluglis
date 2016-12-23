@@ -580,14 +580,14 @@ function showNewAvatar( event )
 		nameImage = k
 	end
 	
-	local path = system.pathForFile( "tempFotos/newAvatar.jpg", system.TemporaryDirectory )
+	local path = system.pathForFile( "newAvatar.JPG", system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 		
 	if fhd then
 		fhd:close()
 	
-		avatarFull = display.newImage("tempFotos/newAvatar.jpg", system.TemporaryDirectory)
+		avatarFull = display.newImage("newAvatar.JPG", system.TemporaryDirectory)
 		avatarFull:translate(midW, 0 + h)
 		--avatarFull.alpha = .7
 		grpOptionAvatar:insert(avatarFull)
@@ -631,7 +631,7 @@ function showNewAvatar( event )
 		
 		
 		local maskA = graphics.newMask( "img/maskPhoto3.png" )
-		avatarMask = display.newImage("tempFotos/newAvatar.jpg", system.TemporaryDirectory)
+		avatarMask = display.newImage("newAvatar.JPG", system.TemporaryDirectory)
 		avatarMask:translate(midW, 0 + h)
 		
 		grpOptionAvatar:insert(avatarMask)
@@ -700,6 +700,7 @@ function takePicture()
 	--showNewAvatar()
 	local function onComplete( event )
 		local json = require("json")
+		print( json.encode(event) )
 		if ( event.completed ) then
 			showNewAvatar( "newPhoto" )
 		else
@@ -713,14 +714,14 @@ function takePicture()
 		--t[k] = v
 	end
 	
-	namePhoto = "newAvatar.jpg"
+	namePhoto = "newAvatar.JPG"
 	
 	if media.hasSource( media.Camera ) then
 		media.capturePhoto({ 
 			listener=onComplete,
 			destination = {
 				baseDir = system.TemporaryDirectory,
-				filename = "tempFotos/" .. namePhoto,
+				filename = namePhoto,
 				type = "image"
 			}
 		})
@@ -749,12 +750,12 @@ function libraryPicture()
 		--t[k] = v
 	end
 	
-	namePhoto = "newAvatar.jpg"
+	namePhoto = "newAvatar.JPG"
 	if media.hasSource( media.PhotoLibrary ) then
 		media.selectPhoto({
 			mediaSource = media.PhotoLibrary,
 			listener = onComplete,
-			destination = { baseDir=system.TemporaryDirectory, filename = "tempFotos/" .. namePhoto } 
+			destination = { baseDir=system.TemporaryDirectory, filename = namePhoto } 
 		})
 		
 	else
