@@ -83,7 +83,7 @@ end
 function getBirthDate(date1, date2)
 	
 	lblAge.text = date1
-	lblAge.lblDate = date2
+	lblAge.date = date2
 	
 end
 
@@ -115,7 +115,7 @@ function saveProfile()
 	--textEmailContact.text = trimString(textEmailContact.text)
 	RestManager.saveProfile(
 		textUserName.text, 
-		lblAge.lblDate,
+		lblAge.date,
 		myHobbies,
 		textName.text,
 		textLastName.text,
@@ -217,6 +217,8 @@ end
 
 
 function showDatePicker()
+	
+	
 	
 	buildPicker(lblAge.date, grpTextProfile)
 	
@@ -750,7 +752,7 @@ function libraryPicture()
 	namePhoto = "newAvatar.jpg"
 	if media.hasSource( media.PhotoLibrary ) then
 		media.selectPhoto({
-			mediaSource = media.SavedPhotosAlbum,
+			mediaSource = media.PhotoLibrary,
 			listener = onComplete,
 			destination = { baseDir=system.TemporaryDirectory, filename = "tempFotos/" .. namePhoto } 
 		})

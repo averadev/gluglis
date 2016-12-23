@@ -141,15 +141,155 @@ function buildPicker(dateb, textGrp)
 	--crea el datePicker
 	--DatePicker(event.target.name)
 	
-	createDatePicker(dateb)
+	if platform == "iPhone OS" then
+		createDatePickerIos(dateb)
+	else
+		createDatePickerAndroid(dateb)
+	end
+	
+	
 		
 	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })		
 end
 	
 	
+function createDatePickerIos(dateb)
+
+	local dates = {}
+	local currentDate
+	if name == "iniDate" then
+		currentDate = lblIniDate.date
+	elseif name == "endDate" then
+		currentDate = lblEndDate.date
+	end
+	currentDate = "0000-00-00"
+	if currentDate ~= "0000-00-00" then
+		local t = {}
+		dates[1] = 0
+		dates[2] = 0
+		for Ye, Mi, Da in string.gmatch( currentDate, "(%w+)-(%w+)-(%w+)" ) do
+			local datesArray = {day = Da,month = Mi,year = Ye}
+			dates[3] = datesArray
+		end
+	else
+		dates = RestManager.getDate()
+	end
+	-- Create two tables to hold data for days and years      
+	days = {}
+	years = {}
+
+	-- Populate the "days" table
+	for d = 1, 31 do
+		days[d] = d
+	end
+		
+	-- Populate the "years" table
+	for y = 80, 1, -1 do
+		years[y] = tonumber(dates[3].year) - y + 1
+	end
 	
-function createDatePicker(dateb)
+	
+	local dates2 = {}
+	dates2[1] = 0
+	dates2[2] = 0
+	for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
+		dates2[1] = Da
+		dates2[2] = Mi
+		dates2[3] = Ye
+		--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
+	end
+	
+	print(2016 - dates2[3])
+	
+	--edad = dates[3].day .. "/" .. dates[3].month .. "/" .. dates[3].year
+
+	-- Set up the picker wheel columns
+	local columnData = {
+		{
+			align = "center",
+			width = 200,
+			startIndex = tonumber( dates2[1] ),
+			labels = days
+		},
+		{
+			align = "center",
+			width = 200,
+			labelPadding = 10,
+			--startIndex = 1,
+			startIndex = tonumber( dates2[2] ),
+			labels = months
+		},
+		{
+			align = "center",
+			labelPadding = 10,
+			width = 200,
+			startIndex = tonumber( dates[3].year - dates2[3] + 1 ),
+			--startIndex = 1,
+			labels = years
+		}
+	}
+	
+	local options = {
+		frames = 
+		{
+			{ x=0, y=0, width=900, height=250 },
+			{ x=900, y=0, width=900, height=250 },
+			{ x=2000, y=0, width=8, height=250 }
+		},
+		sheetContentWidth = 1808,
+		sheetContentHeight = 250
+	}
+	local pickerWheelSheet = graphics.newImageSheet( "img/pickerSheet4.png", options )
+
+	-- Create the widget
+	--[[pickerWheel = widget.newPickerWheel({
+		x = display.contentCenterX,
+		top =   25,
+		columns = columnData,
+		--style = "resizable",
+		width = intW,
+		--rowHeight = 60,
+		fontSize = 28,
+		columnColor = { 0.8, 0.8, 0.8 }
+	})  
+	pickerWheel.anchorY = 0]]
+	
+	pickerWheel = widget.newPickerWheel({
+		y = 250,
+		x = midW,
+		columns = columnData,
+        sheet = pickerWheelSheet,
+        overlayFrame = 1,
+        overlayFrameWidth = 900,
+        overlayFrameHeight = 222,
+        backgroundFrame = 2,
+        backgroundFrameWidth = 900,
+        backgroundFrameHeight = 222,
+        separatorFrame = 20,
+        separatorFrameWidth = 8,
+        separatorFrameHeight = 222,
+        columnColor = { 0, 0, 0, 0 },
+        fontColor = { 0.4, 0.4, 0.4, 0.5 },
+        fontColorSelected = { 129/255, 61/255, 153/255},
+		fontSize = 35,
+    })
+	
+	grpDatePicker:insert( pickerWheel )
+
+	-- Get the table of current values for all columns
+	-- This can be performed on a button tap, timer execution, or other event
+
+	-- Get the value for each column in the wheel, by column index
+	--[[local currentStyle = values[1].value
+	local currentColor = values[2].value
+	local currentSize = values[3].value
+
+	print( currentStyle, currentColor, currentSize )]]
+	
+end
+	
+function createDatePickerAndroid(dateb)
 
 	local dates = {}
 	local currentDate
@@ -233,8 +373,10 @@ function createDatePicker(dateb)
 		style = "resizable",
 		width = intW,
 		rowHeight = 60,
-		fontSize = 32,
-		columnColor = { 0.8, 0.8, 0.8 }
+		fontSize = 35,
+		--columnColor = { 0.8, 0.8, 0.8 },
+		fontColor = { 0.4, 0.4, 0.4, 0.5 },
+        fontColorSelected = { 129/255, 61/255, 153/255},
 	})  
 	pickerWheel.anchorY = 0
 	grpDatePicker:insert( pickerWheel )
