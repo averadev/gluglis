@@ -175,7 +175,7 @@ function infoProfile( item )
 				infoOpcion[num] = infoOpcion[num] .." " .. item.apellidos 
 			end
 			if infoOpcion[num] == " " then infoOpcion[num] = language.PUnknown end
-			iconOpcion[num] = 'iconName'
+			iconOpcion[num] = 'GG_Generico'
 			num = #infoOpcion + 1
 		end
 	end
@@ -185,7 +185,7 @@ function infoProfile( item )
 		local CountryTxt = trimString(item.paisOrigen)
 		if #CountryTxt > 0 then
 			infoOpcion[num] = language.PIAmFrom .. item.paisOrigen 
-			iconOpcion[num] = 'icoFilterCity'
+			iconOpcion[num] = 'GG_Generico'
 			num = #infoOpcion + 1
 		end
 	end
@@ -196,7 +196,7 @@ function infoProfile( item )
 		if #residentTxt > 0 then
 			if item.tiempoResidencia and item.tiempoResidencia ~= "" then
 				infoOpcion[num] = language.PSince .. item.tiempoResidencia 
-				iconOpcion[num] = 'icoFilterCity'
+				iconOpcion[num] = 'GG_Generico'
 				num = #infoOpcion + 1
 			end
 		end
@@ -278,30 +278,30 @@ function infoProfile( item )
 	labelOpcion[num] = language.POffersAccommodation
 	if item.alojamiento and item.alojamiento == 'Sí' then
 		infoOpcion[num] = language.PYes
-		iconOpcion[num] = "si"
+		iconOpcion[num] = "GG_Generico"
     else 
 		infoOpcion[num] = language.PNo
-		iconOpcion[num] = "no"
+		iconOpcion[num] = "GG_Generico"
     end
 	num = num + 1
 	-- transporte
 	labelOpcion[num] = language.PCar
     if item.vehiculo and item.vehiculo == 'Sí' then
     	infoOpcion[num] = language.PYes
-		iconOpcion[num] = "si"
+		iconOpcion[num] = "GG_Generico"
     else 
 		infoOpcion[num] = language.PNo
-		iconOpcion[num] = "no"
+		iconOpcion[num] = "GG_Generico"
     end
 	num = num + 1
 	--comida
 	labelOpcion[num] = language.PFood
 	if item.comida and item.comida == 'Sí' then
     	infoOpcion[num] = language.PYes
-		iconOpcion[num] = "si"
+		iconOpcion[num] = "GG_Generico"
     else 
 		infoOpcion[num] = language.PNo
-		iconOpcion[num] = "no"
+		iconOpcion[num] = "GG_Generico"
     end
 	
 	for i=1, #infoOpcion do
@@ -374,11 +374,11 @@ function infoProfile( item )
             else
                 infoOpcion[num] = infoOpcion[num] ..', '.. item.idiomas[i]
             end
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'GG_Generico'
         end
     else
         infoOpcion[num] = language.PAny
-		iconOpcion[num] = 'no'
+		iconOpcion[num] = 'GG_Generico'
     end
 	labelOpcion[num] = language.PLanguages
 	num = #infoOpcion + 1
@@ -400,10 +400,10 @@ function infoProfile( item )
             hob = hob ..'...'
         end
 		infoOpcion[num] = hob
-		iconOpcion[num] = 'bullet'
+		iconOpcion[num] = 'GG_Generico'
     else
         infoOpcion[num] = language.PAny
-		iconOpcion[num] = 'bullet'
+		iconOpcion[num] = 'GG_Generico'
     end
 	labelOpcion[num] = language.PHobbies
 	num = #infoOpcion + 1
@@ -412,14 +412,14 @@ function infoProfile( item )
 	if item.nivelEstudio then
 		labelOpcion[num] = language.PLevelOfEducation
 		infoOpcion[num] = item.nivelEstudio
-		iconOpcion[num] = 'bullet'
+		iconOpcion[num] = 'GG_Generico'
 		num = #infoOpcion + 1
 	end
 	--formacion profesional
 	if item.formacionProfesional then
 		labelOpcion[num] = language.PProfessionalTraining
 		infoOpcion[num] = item.formacionProfesional
-		iconOpcion[num] = 'bullet'
+		iconOpcion[num] = 'GG_Generico'
 		num = #infoOpcion + 1
 	end
 	--area laboral
@@ -427,7 +427,7 @@ function infoProfile( item )
 	if item.areaLaboral then
 		labelOpcion[num] = language.PWorkingArea
 		infoOpcion[num] = item.areaLaboral 
-		iconOpcion[num] = 'bullet'
+		iconOpcion[num] = 'GG_Generico'
 		num = #infoOpcion + 1
 	end
 	
@@ -442,10 +442,10 @@ function infoProfile( item )
                 infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
             end
         end
-		iconOpcion[num] = 'si'
+		iconOpcion[num] = 'GG_Generico'
     else
         infoOpcion[num] = language.PEmployee
-		iconOpcion[num] = 'no'
+		iconOpcion[num] = 'GG_Generico'
 		
     end
 	num = #infoOpcion + 1
@@ -457,10 +457,10 @@ function infoProfile( item )
 			if item.tipoMascota then
 				infoOpcion[num] = language.PHas  .. item.tipoMascota
 			end
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'GG_Generico'
 		else
 			infoOpcion[num] = "No" 
-			iconOpcion[num] = 'no'
+			iconOpcion[num] = 'GG_Generico'
 		end
 		
 		num = #infoOpcion + 1
@@ -481,10 +481,10 @@ function infoProfile( item )
 					end
 				end
 			end
-			iconOpcion[num] = 'bullet'
+			iconOpcion[num] = 'GG_Generico'
 		else
 			infoOpcion[num] = language.PAny 
-			iconOpcion[num] = 'bullet'
+			iconOpcion[num] = 'GG_Generico'
 		end
 		num = #infoOpcion + 1
 	end
@@ -493,10 +493,10 @@ function infoProfile( item )
 		labelOpcion[num] = language.PYouSmoke 
 		--infoOpcion[num] = item.fumas
 		if item.fumas == "No" then
-			iconOpcion[num] = 'no'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo 
 		else
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PYes 
 		end
 		num = #infoOpcion + 1
@@ -506,10 +506,10 @@ function infoProfile( item )
 		labelOpcion[num] = language.PYouDrinkAlcohol
 		--infoOpcion[num] = item.bebes
 		if item.bebes == "No" then
-			iconOpcion[num] = 'no'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo 
 		else
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PYes
 		end
 		num = #infoOpcion + 1
@@ -519,10 +519,10 @@ function infoProfile( item )
 		labelOpcion[num] = language.PYouPsychotropicDrugs
 		--infoOpcion[num] = item.psicotropicos
 		if item.psicotropicos == "No" then
-			iconOpcion[num] = 'no'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo
 		else
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PYes
 		end
 		num = #infoOpcion + 1
