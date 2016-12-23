@@ -21,7 +21,6 @@ local scene = composer.newScene()
 local scrPerfile, scrElements, scrCombo
 local grpOptionsLabel, grpOptionsCombo, grpComboBox, grpOptionAvatar, grpOptionSave, grpAvatar
 local grpTextProfile = nil
-local datePicker = DatePicker:new()
 
 -- Variables
 local posY = 350
@@ -81,6 +80,13 @@ function setList(hobbie, language, sport, residenceTime, race, workArea, gender 
 	genders = gender
 end
 
+function getBirthDate(date1, date2)
+	
+	lblAge.text = date1
+	lblAge.lblDate = date2
+	
+end
+
 --------------------------------
 -- Guarda los datos del perfil
 --------------------------------
@@ -109,6 +115,7 @@ function saveProfile()
 	--textEmailContact.text = trimString(textEmailContact.text)
 	RestManager.saveProfile(
 		textUserName.text, 
+		lblAge.lblDate,
 		myHobbies,
 		textName.text,
 		textLastName.text,
@@ -211,7 +218,7 @@ end
 
 function showDatePicker()
 	
-	datePicker:buildPicker()
+	buildPicker(lblAge.date, grpTextProfile)
 	
 end
 
@@ -303,6 +310,10 @@ function saveAvatar( event )
 		nameImage = k
 		--t[k] = v
 	end
+	
+	local DBManager = require('src.resources.DBManager')
+	settings = DBManager.getSettings()
+	nameImage = settings.idApp
 	
 	deleteAvatarMyProfile()
 		local img = nameImage .. "png"
@@ -2255,14 +2266,28 @@ function MyProfile( item )
 	grpTextProfile:insert(textUserName)
 	
     local edad = ""
-	if not item.edad then 
+	if not item.nacimiento then 
         edad = language.MpDateOfBirth
+		lblDate = "0000-00-00"
     else 
-        edad = item.edad .. language.MpYears
+        edad = item.nacimiento
+		lblDate = item.nacimiento
+		
+		local dates = {}
+		dates[1] = 0
+		dates[2] = 0
+		for Ye, Mi, Da in string.gmatch( edad, "(%w+)-(%w+)-(%w+)" ) do
+			local datesArray = {day = Da,month = Mi,year = Ye}
+			dates[3] = datesArray
+		end
+		
+		edad = dates[3].day .. "/" .. dates[3].month .. "/" .. dates[3].year
+		
     end
 	
 	local bglblAge = display.newRect( 550, 180, 400, 70 )
-	bglblAge:setFillColor( .52 )
+	bglblAge:setFillColor( 1 )
+	bglblAge.alpha = .02
 	scrPerfile:insert(bglblAge)
 	bglblAge:addEventListener( 'tap', showDatePicker )
 	
@@ -2274,6 +2299,7 @@ function MyProfile( item )
         fontSize = 34, align = "left"
     })
     lblAge:setFillColor( 0 )
+	lblAge.date = lblDate
     scrPerfile:insert(lblAge)
 	-- BG Component
 	
@@ -2461,8 +2487,6 @@ function scene:create( event )
         listener = scrListen
     })
 	screen:insert(scrPerfile)
-	
-	
 	
 	grpLoadMyProfile = display.newGroup()
 	screen:insert(grpLoadMyProfile)

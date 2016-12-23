@@ -895,7 +895,7 @@ local RestManager = {}
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
     --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
-	RestManager.saveProfile = function(UserName, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, languages, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
+	RestManager.saveProfile = function(UserName, birthdate, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, languages, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
 		settings = DBManager.getSettings()
 		site = settings.url
 		
@@ -906,6 +906,9 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		if UserName ~= 'UserName' then
 			url = url.."/UserName/" .. urlencode(UserName)
+		end
+		if birthdate ~= '0000-00-00' then
+			url = url.."/birthdate/" .. urlencode(birthdate)
 		end
 		if name ~= '' then
 			url = url.."/name/" .. urlencode(name)
@@ -998,7 +1001,7 @@ local RestManager = {}
 					print( "Uploading... bytes transferred ", event.bytesTransferred )
 					--native.showAlert( "Gluglis", "Network Errorr.", { "OK", "Network Errorr." } )
 				elseif ( event.phase == "ended" ) then
-					native.showAlert( "Gluglis", "Upload ended", { "OK" } )
+					--native.showAlert( "Gluglis", "Upload ended", { "OK" } )
 					--native.showAlert( "Gluglis", "Status. " .. event.status, { "OK" } )
 					--native.showAlert( "Gluglis", "Response. " .. event.response , { "OK" } )
 					print( "Upload ended..." )
@@ -1009,7 +1012,7 @@ local RestManager = {}
 					
 					if event.status == 201 then
 						
-						changeImageAvatar(photophoto)
+						changeImageAvatar(json.decode(event.response))
 					end
 				end
 			end
@@ -1017,7 +1020,7 @@ local RestManager = {}
 		 
 		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
 		-- Also define the method as "PUT".
-		local url = "http://www.gluglis.travel/gluglis_api/UploadA/uploadImage"
+		local url = "http://www.gluglis.travel/gluglis_api/UploadImage/uploadImage"
 		local method = "PUT"
 		 
 		-- Set some reasonable parameters for the upload process:
@@ -1033,13 +1036,14 @@ local RestManager = {}
 		local baseDirectory = system.TemporaryDirectory
 		local contentType = "image/jpeg"  --another option is "text/plain"
 		 
-		
 		local headers = {}
 
 		headers["Content-Type"] = "application/x-www-form-urlencoded"
 		headers["Accept-Language"] = "en-US"
 		headers.filename = filename
 		params.headers = headers
+		
+		print(photophoto)
 		 
 		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 		
@@ -1396,10 +1400,9 @@ local RestManager = {}
     function changeImageAvatar(photophoto)
 	
 		
-		local img = photophoto ..".png"
+		--local img = photophoto ..".png"
         -- Next Image
 		-- Determinamos si la imagen existe para eliminarla
-		
            
 		local function imageListener2( event )
 			if ( event.isError ) then
@@ -1409,18 +1412,19 @@ local RestManager = {}
 					event.target:removeSelf()
 					event.target = nil
 					--loadImage(obj)
-					setImagePerfil(photophoto ..".png")
+					setImagePerfil(photophoto)
 				else
-				
 					setImagePerfil("avatar.png")
 					--loadImage(obj)
 				end
 			end
 		end
 		-- Descargamos de la nube
-		local url = "http://gluglis.travel/gluglis_api/assets/img/avatar/" .. photophoto ..".png"
+		local url = "http://gluglis.travel/gluglis_api/assets/img/avatar/" .. photophoto
 		
-		display.loadRemoteImage( url ,"GET", imageListener2, img, system.TemporaryDirectory ) 
+		print(url)
+		
+		display.loadRemoteImage( url ,"GET", imageListener2, photophoto, system.TemporaryDirectory ) 
 		-- Dirigimos al metodo pertinente
 		--goToMethod(obj)
     end

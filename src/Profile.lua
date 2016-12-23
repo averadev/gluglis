@@ -400,10 +400,10 @@ function infoProfile( item )
             hob = hob ..'...'
         end
 		infoOpcion[num] = hob
-		iconOpcion[num] = 'si'
+		iconOpcion[num] = 'bullet'
     else
         infoOpcion[num] = language.PAny
-		iconOpcion[num] = 'no'
+		iconOpcion[num] = 'bullet'
     end
 	labelOpcion[num] = language.PHobbies
 	num = #infoOpcion + 1
@@ -412,14 +412,14 @@ function infoProfile( item )
 	if item.nivelEstudio then
 		labelOpcion[num] = language.PLevelOfEducation
 		infoOpcion[num] = item.nivelEstudio
-		iconOpcion[num] = 'si'
+		iconOpcion[num] = 'bullet'
 		num = #infoOpcion + 1
 	end
 	--formacion profesional
 	if item.formacionProfesional then
 		labelOpcion[num] = language.PProfessionalTraining
 		infoOpcion[num] = item.formacionProfesional
-		iconOpcion[num] = 'si'
+		iconOpcion[num] = 'bullet'
 		num = #infoOpcion + 1
 	end
 	--area laboral
@@ -427,7 +427,7 @@ function infoProfile( item )
 	if item.areaLaboral then
 		labelOpcion[num] = language.PWorkingArea
 		infoOpcion[num] = item.areaLaboral 
-		iconOpcion[num] = 'si'
+		iconOpcion[num] = 'bullet'
 		num = #infoOpcion + 1
 	end
 	
@@ -481,10 +481,10 @@ function infoProfile( item )
 					end
 				end
 			end
-			iconOpcion[num] = 'si'
+			iconOpcion[num] = 'bullet'
 		else
 			infoOpcion[num] = language.PAny 
-			iconOpcion[num] = 'no'
+			iconOpcion[num] = 'bullet'
 		end
 		num = #infoOpcion + 1
 	end

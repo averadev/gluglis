@@ -273,7 +273,7 @@ Language.en = {
 	PWorkingArea = "Working area",
 	PFreelance = "Freelance",
 	PEmployee = "Employee",
-	PPets = "pets",
+	PPets = "Pets",
 	PHas = "Has ",
 	PSports = "Sports",
 	PSportYouPlay = "Sports you play",
@@ -345,7 +345,7 @@ Language.en = {
 	MSignIn  = "Sign in",
 	MSessionClosed = "Your session was \nsuccessfully closed",
 	MSettings = "Configuration", -- traduccion
-	MSettingsSub = "Chopse your preferred language", -- traduccion
+	MSettingsSub = "Choose your preferred language", -- traduccion
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Change language ", -- traduccion
