@@ -534,9 +534,18 @@ function Tools:new()
 				grpScrCity = nil
 			end
 			if event.target.name == "residence" then
-				getCityProfile(event.target.city, event.target.id)
+				--getCityProfile(event.target.city, event.target.id)
+				
+				local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
+				RestManager.getCityEn(event.target.city, "residence", grpScrCity, itemOption )
+				
 			elseif event.target.name == "location" then
-				getCityFilter(event.target.city, event.target.id)
+			
+				local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
+	
+				RestManager.getCityEn(event.target.city, "location", grpScrCity, itemOption )
+			
+				--getCityFilter(event.target.city, event.target.id)
 			elseif event.target.name == "welcome" then
 				getCityWelcome(event.target.city, event.target.id)
 			end

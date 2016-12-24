@@ -124,10 +124,31 @@ function selectCityWc( event )
 	end
 	event.target:setFillColor( 1 )
 	
-	txtLocationW.text = event.target.city
-	txtLocationW.city = event.target.city
-	txtLocationW.id = event.target.id
+	tools:setLoading(true,grpWelcome)
+	
+	local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
+	
+	RestManager.getCityEn(event.target.city, "welcome", grpWelcome, itemOption )
+	
 	return true
+end
+
+function setItemCityWc( item )
+
+	print("entro")
+	
+	if( #item > 0 ) then
+		txtLocationW.text = item[1].description
+		txtLocationW.city = item[1].description
+		txtLocationW.id = item[1].place_id
+	end
+	
+	tools:setLoading(false,grpWelcome)
+	
+	--txtLocationW.text = event.target.city
+	--txtLocationW.city = event.target.city
+	--txtLocationW.id = event.target.id
+	
 end
 
 -------------------------------------

@@ -111,10 +111,17 @@ end
 -------------------------------------------
 -- asigna la ciudad selecionada
 -------------------------------------------
-function getCityFilter(city, id)
-	txtLocation.text = city
-	txtLocation.city = city
-	txtLocation.id = id
+function getCityFilter(item)
+
+	if( #item > 0 ) then
+		txtLocation.text = item[1].description
+		txtLocation.city = item[1].description
+		txtLocation.id = item[1].place_id
+	end
+
+	--txtLocation.text = city
+	--txtLocation.city = city
+	--txtLocation.id = id
 end
 
 -------------------------------------

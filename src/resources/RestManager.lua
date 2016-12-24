@@ -1183,9 +1183,10 @@ local RestManager = {}
 		settings = DBManager.getSettings()
 		site = settings.url
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
-		url = url .. city
+		url = url .. urlencode(city)
 		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -1202,6 +1203,42 @@ local RestManager = {}
 						
 					elseif data.status == "ZERO_RESULTS" then
 						showCities(0, name, parent)
+					end
+				else
+				end
+            end
+            return true
+        end
+        -- Do request
+		network.request( url, "GET", callback )
+    end
+	
+	RestManager.getCityEn = function(city,name,parent, itemOption)
+		settings = DBManager.getSettings()
+		site = settings.url
+        local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
+		url = url .. urlencode(city)
+		url = url.."&language=en"
+		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
+		
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if data.status == "OK" then
+						if( name == "hometown" ) then
+							setItemCityHt(data.predictions)
+						elseif( name == "welcome" ) then
+							setItemCityWc(data.predictions)
+						elseif( name == "location" ) then
+							getCityFilter(data.predictions)
+						elseif( name == "residence" ) then
+							getCityProfile(data.predictions)
+						end
+						
+					elseif data.status == "ZERO_RESULTS" then
+						--showCities(0, name, parent)
 					end
 				else
 				end

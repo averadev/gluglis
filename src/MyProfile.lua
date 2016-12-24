@@ -908,10 +908,15 @@ end
 -----------------------------------
 -- Obtiene la ciudad selecionada
 -----------------------------------
-function getCityProfile(city, id)
-	textUserResidence.text = city
-	textUserResidence.city = city
-	textUserResidence.id = id
+function getCityProfile(item)
+	--textUserResidence.text = city
+	--textUserResidence.city = city
+	--textUserResidence.id = id
+	if( #item > 0 ) then
+		textUserResidence.text = item[1].description
+		textUserResidence.city = item[1].description
+		textUserResidence.id = item[1].place_id
+	end
 end
 
 -------------------------------------------------------------------
