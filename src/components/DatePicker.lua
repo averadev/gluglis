@@ -31,7 +31,7 @@ local grpComboBox
 local grpDatePicker = display.newGroup()
 local grpT
 local days = {}
-local months = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }
+local months = { language.RMJanuary, language.RMFebruary, language.RMMarch, language.RMApril, language.RMMay, language.RMJune, language.RMJuly, language.RMAugust, language.RMSeptember, language.RMOctober, language.RMNovember, language.RMDecember }
 local years = {}
 local pickerWheel
 	

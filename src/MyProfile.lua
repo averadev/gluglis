@@ -595,11 +595,13 @@ function showNewAvatar( event )
 		avatarFull:addEventListener('touch', moveMasckAvatar)
 		avatarFull:addEventListener( 'tap', noAction )
 		
-		local heightBgAvatar = intH - 120
+		local heightBgAvatar = intH - 150 - h
 		local resizeWidth = 0
 		local resizeHeight = 0
 		local anchorY = .5
 		local pocsY = midH
+		print(avatarFull.height)
+		print(heightBgAvatar)
 		if ( avatarFull.height > heightBgAvatar ) then
 			resizeWidth = ( heightBgAvatar * avatarFull.width ) / avatarFull.height
 			resizeHeight = heightBgAvatar
@@ -610,11 +612,20 @@ function showNewAvatar( event )
 			resizeHeight = ( intW * avatarFull.height ) / avatarFull.width
 			resizeWidth = intW
 		else
+			if avatarFull.height > avatarFull.width then
+				print("entro")
+			elseif avatarFull.width > avatarFull.height then
+				print("no entro")
+			else
+			
+			end
 			resizeHeight = avatarFull.height
 			resizeWidth = avatarFull.width
+			print(avatarFull.height)
+			print(avatarFull.width)
 		end
 		
-		avatarFull.height = heightBgAvatar
+		avatarFull.height = resizeHeight
 		avatarFull.width = resizeWidth
 		avatarFull.anchorY = anchorY
 		avatarFull.y = pocsY
@@ -628,7 +639,6 @@ function showNewAvatar( event )
 		bg1.width = resizeWidth
 		bg1.anchorY = anchorY
 		bg1.y = pocsY
-		
 		
 		local maskA = graphics.newMask( "img/maskPhoto3.png" )
 		avatarMask = display.newImage("newAvatar.jpg", system.TemporaryDirectory)
@@ -2361,7 +2371,9 @@ function createProfileAvatar()
 		imgChangePhoto:translate(midW - 68, 249)
 		imgChangePhoto.alpha = .8
 		grpAvatar:insert(imgChangePhoto)
-		imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+		--imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+		imgChangePhoto:addEventListener( 'tap', showNewAvatar )
+		
 		imgChangePhoto.height = 94
 		imgChangePhoto.width = 94
 		
