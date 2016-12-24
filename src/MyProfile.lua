@@ -635,7 +635,7 @@ function showNewAvatar( event )
 		bg1:setFillColor( 1 )
 		bg1.alpha = .5
 		grpOptionAvatar:insert( bg1 )
-		bg1.height = heightBgAvatar
+		bg1.height = resizeHeight
 		bg1.width = resizeWidth
 		bg1.anchorY = anchorY
 		bg1.y = pocsY
@@ -647,7 +647,7 @@ function showNewAvatar( event )
 		grpOptionAvatar:insert(avatarMask)
 		avatarMask.posY = avatarMask.y
 		avatarMask:setMask( maskA )
-		avatarMask.height = heightBgAvatar
+		avatarMask.height = resizeHeight
 		avatarMask.width = resizeWidth
 		avatarMask.anchorY = anchorY
 		avatarMask.y = pocsY
@@ -2376,8 +2376,8 @@ function createProfileAvatar()
 		imgChangePhoto:translate(midW - 68, 249)
 		imgChangePhoto.alpha = .8
 		grpAvatar:insert(imgChangePhoto)
-		--imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
-		imgChangePhoto:addEventListener( 'tap', showNewAvatar )
+		imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+		--imgChangePhoto:addEventListener( 'tap', showNewAvatar )
 		
 		imgChangePhoto.height = 94
 		imgChangePhoto.width = 94
