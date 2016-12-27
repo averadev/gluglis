@@ -44,6 +44,7 @@ if setting.language == "es" then language = language.es
 elseif setting.language == "en" then language = language.en
 elseif setting.language == "it" then language = language.it
 elseif setting.language == "de" then language = language.de 
+elseif setting.language == "fr" then language = language.fr 
 elseif setting.language == "zh" then language = language.zh
 elseif setting.language == "he" then language = language.he 
 else language = language.en end

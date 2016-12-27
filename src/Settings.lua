@@ -214,7 +214,8 @@ function scene:create( event )
 	langOpt = {
         { value = "es", name = "Español" },
 		{ value = "en", name = "English" },
-		{ value = "it", name = "Italiano" },
+		{ value = "it", name = "Italian" },
+		{ value = "fr", name = "French" },
 		{ value = "de", name = "Deutsch" },
 		{ value = "zh", name = "中国" }, 
 		{ value = "he", name = "עברי" },

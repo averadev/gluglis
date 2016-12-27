@@ -343,13 +343,13 @@ Language.en = {
 	MEditProfileSub = "Edit your personal profile",
 	MCloseSession = "Close session",
 	MSignIn  = "Sign in",
-	MSessionClosed = "Your session was \nsuccessfully closed",
-	MSettings = "Configuration", -- traduccion
-	MSettingsSub = "Choose your preferred language", -- traduccion
+	MSessionClosed = "Session successfully closed",
+	MSettings = "Configuration",
+	MSettingsSub = "Choose your preferred language",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Change language ", -- traduccion
-	SSaveSettings= "Save changes", -- traduccion
+	SChangeLanguage = "Change language",
+	SSaveSettings= "Save changes",
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "CHECK HERE THE LIST OF ALL THE PEOPLE WHO WANT TO CONTACT YOU",
@@ -789,6 +789,205 @@ Language.de = {
 	RMOctober = "Oktober",
 	RMNovember = "November",
 	RMDecember = "Dezember",
+	--RM = "ENVIAR",
+	
+}
+
+----------------------------------------
+--------------- Frances ----------------
+----------------------------------------
+Language.fr = {
+	--LoginSplash
+	LSTitle = "VOUS ÊTES SUR LE POINT DE VOUS LANCER \nDANS LE PLUS BEAU VOYAGE DE VOTRE VIE...",
+	LSTitle2 = "CONNAISSEZ VOS HÔTES...",
+	LSTitle3 = "CONNAISSEZ VOTRE PROCHAIN GUIDE  ",
+	LSTitle4 = "DISCUTEZ AVEC EUX",
+	LSSubTitle2 = "Où ? Avec qui\quel genre de personne \nsouhaitez-vous entrer en contact ?",
+	LSSubTitle3 = "Naviguez parmi les personnes correspondant au profil \nrecherché et connaissez-les davantage.",
+	LSSubTitle4 = "Entamez une conversation privée avec les utilisateurs \nde votre choix et faites leur connaissance afin de définir \nqui vous accompagnera lors de votre prochain voyage.",
+	LSBtnFace = "CONNECTEZ-VOUS PAR FACEBOOK",
+	LSBtnNormal = "ACCÉDEZ PAR: NOM D’USAGER OU E-MAIL",
+	LSBtnFree = "EN SAVOIR PLUS SUR L’APPLICATION",
+	LSTerms1 = "Al iniciar sesión usted está aceptando los",  -- traducir
+	LSTerms2 = "términos y condiciones.",  -- traducir
+	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+	--------------------------------------
+	--LoginUserName
+	LUNUser = "Usager:",
+	LUNEmail = "E-mail:",
+	LUNPass = "Mot de passe:",
+	LUNRePass = "Confirmer le \nmot de passe:",
+	LUNRegistrar = "S’enregistrer:",
+	LUNTerms1 = "Al iniciar sesión usted está aceptando los",  -- traducir
+	LUNTerms2 = "términos y condiciones.",  -- traducir
+	LUNBtnSignIn = "Acceder",  -- traducir
+	LUNBtnRegister = "Nouvel usager",
+	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+	LUNEmptyFields = "Champs non renseignés",
+	LUNDifferentPass = "Mots de passe différents",
+	--------------------------------------
+	--Welcome
+	WCEnterCity = "Entrez le nom d'une ville",
+	WCSearch = "Rechercher",  -- traducir
+	WCMoreFilters = "Plus de filtres",
+	WCSelectCity= "Seleccione una ciudad válida",  -- traducir
+	--------------------------------------
+	--Hometown
+	HTYouLive = "¿Donde vives?",  -- traducir
+	HTStartGlugling = "Ok! Start Glugling!",  -- traducir
+	HTValidCity = "Seleccione una ciudad válida",  -- traducir
+	--HT = "Search",
+	--------------------------------------
+	--Home
+	HNoResultHome = "Búsqueda \nsin resultados",  -- traducir
+	HNoUserFound = "Aucun utilisateur ne correspond",
+	HYears = "Años",  -- traducir
+	HUnregisteredResidence = "Residencia no registrada",  -- traducir
+	HSeeProfile = "VOIR PROFIL",
+	--------------------------------------
+	--Profile
+	PLikeToStart = "VOULEZ-VOUS PARLER AVEC ",
+	PSignUpNow = "Enregistrez-vous dès maintenant !",
+	pConversationWith = "ENTAMER LA CONVERSATION",
+	PYears = " Años", -- traducir
+	PCityNotAvailable = "Ville non disponible",
+	PILiveIn = "Vous vivez à  ",
+	PUnknown = "Desconocido",  -- traducir
+	PIAmFrom = "Es de ",  -- traducir
+	PSince = "Depuis ",
+	POffersAccommodation = "Propose un logement",
+	PYes = "Si",  -- traducir
+	PNo = "No",  -- traducir
+	PCar = "véhicule personnel",
+	PFood = "Habitudes alimentaires",
+	PAny = "Ninguno",  -- traducir
+	PLanguages = "Langues",
+	PHobbies = "Vos loisirs",
+	PLevelOfEducation = "Niveau d’études",
+	PProfessionalTraining = "Formation professionnelle",
+	PWorkingArea = "Domaine professionnel",
+	PFreelance = "Indépendant(e)",
+	PEmployee = "Salarié(e)",
+	PPets = "Animal de compagnie",
+	PHas = "Possède ",
+	PSports = "Activité sportive",
+	PSportYouPlay = "Pratiquez-vous une \nactivité sportive",
+	PYouPlay = "Sport(s) pratiqué(s) ",
+	PYouSmoke = "Fumez-vous",
+	PYouDrinkAlcohol = "Buvez-vous",
+	PYouPsychotropicDrugs = "Consommez-vous \ndes psychotropes",	
+	--------------------------------------
+	--MyProfile
+	MpSaveChanges = "Enregistrer les modifications ",
+	MpYears = " Años",  -- traducir
+	MpDateOfBirth = "Sélectionnez une date de naissance",
+	MpName = "Prénom: ",
+	MpLastName = "Nom de famille: ",
+	MpGender = "Sexe ",
+	MpCountryOrigin = "Pays d'origine: ",
+	MpResidence = "Résidence: ",
+	MpTimeLiving = "Temps de \nrésidence: ",
+	MpEmail = "E-mail: ",
+	MpSelect = "Seleccionar",  -- traducir
+	MpAccommodation = "Logement: ",
+	MpVehicle = "Véhicule: ",
+	MpFood = "Habitudes alimentaires: ",
+	MpAny = "Ninguno",  -- traducir
+	MpYes = "Si",  -- traducir
+	MpNo = "No",  -- traducir
+	MpLanguages = "Langues: ",
+	MpHobbies = "Loisirs: ",
+	MpLevelOfEducation = "Niveau d’études: ",
+	MpProfessionalTraining = "Formation professionnelle: ",
+	MpWorkingArea = "Domaine professionnel: ",
+	MpFreelance = "Indépendant(e): ",
+	MpEmployee = "Salarié(e): ",
+	MpPets = "Animal de compagnie: ",
+	MpSportYouPlay = "Pratiquez-vous une \nactivité sportive: ",
+	MpYouSmok = "Fumez-vous: ",
+	MpYouDrinkAlcohol = "Buvez-vous: ",
+	MpYouPsychotropicDrugs = "Consommez-vous \ndes psychotropes: ",
+	MpNoLanguage = "Aucune langue n’a été sélectionnée",
+	MpOtherLanguages = "Langues parlées",
+	MpNoSport = "Aucune activité sportive",
+	MpSportThatYouPlay = "Sport(s) pratiqué(s)",
+	MpEditHobbies = "Modifier les loisirs",
+	MpYourHobbies = "Vos loisirs",
+	MpOk = "Accepter",
+	MpTakePhoto = "Tomar Foto",  -- traducir
+	MpUploadPhoto = "Subir Foto",  -- traducir
+	MpTakePhotoSub = "No tienes fotos en este momento \ntoma una desde tu celular",  -- traducir
+	MpUploadPhotoSub = "Sube una foto desde tu celular",  -- traducir
+	MpCancel = "Annuler",
+	MpSave = "Sauver",
+	MpCropSave = "Recortar y guardar",  -- traducir
+	MpSaveUntrimmed = "Guardar sin recortar",  -- traducir
+	--------------------------------------
+	--Filter
+	FCity = "Ville:",
+	FMan = "HOMME",
+	FWoman = "FEMME",
+	FAge = "Classe d’âge:",
+	FYears = "Años",  -- traducir
+	FSearch = "RECHERCHER",  -- traducir
+	--------------------------------------
+	--Menu
+	MSearchGluglers = "Buscar Gluglers",  -- traducir
+	MSearchGluglersSub = "Conoce usuarios Gluglis \ndonde quiera que vayas",  -- traducir
+	MEditProfile = "Editar Perfil",  -- traducir
+	MEditProfileSub = "Editar tu perfil personal",  -- traducir
+	MCloseSession = "Fermer la session",
+	MSignIn = "S’inscrire",
+	MSessionClosed = "Votre session a été fermée avec succès",
+	MSettings = "Configuracion",  -- traducir
+	MSettingsSub = "Escoge el lenguaje de tu preferencia",  -- traducir
+	--------------------------------------
+	-- Settings
+	SChangeLanguage = "Cambiar lenguaje",  -- traducir
+	SSaveSettings= "Enregistrer les modifications",
+	--------------------------------------
+	--Messages
+	MSGSCheckHereList = "CONSULTEZ ICI LA LISTE DE TOUTES LES PERSONNES QUI SOUHAITENT VOUS CONTACTER",
+	MSGSSignUpNow = "Enregistrez-vous dès maintenant !",
+	MSGSYouHaveNoMessages = "Vous n'avez aucun message pour le moment",
+	--------------------------------------
+	--Message
+	MSGSend = "ENVIAR",  -- traducir
+	MSGWrite = "Escribir",  -- traducir
+	MSGBlock = "Bloquer",
+	MSGBack = "Regresar",  -- traducir
+	MSGYouHaveNoMessages = "Vous n'avez aucun message pour le moment",
+	MSGUnblock1 = "Débloquez ",
+	MSGUnblock2 = " pour lui envoyer un message",
+	MSGMessageNotSent1 = "Le message ne peut être envoyé, ",
+	MSGMessageNotSent2 = " l’a bloqué",
+	MSGLoading = "Cargando",  -- traducir
+	MSGWantToUnblock1 = "Souhaitez-vous débloquer ",
+	MSGWantToUnblock2 = "pour lui envoyer des messages ?",
+	MSGWantToBlock1 = "Souhaitez-vous bloquer  ",
+	MSGWantToBlock2 = "? Vous ne pourrez plus lui envoyer de messages",
+	--------------------------------------
+	--Tool
+	TBack = "Regresar", -- traducir
+	--------------------------------------
+	--RestManager
+	RMTryLater = "Erreur. Veuillez essayer plus tard",
+	RMErrorServer = "Error con el servidor, intentelo mas tarde", -- traducir
+	RMNoInternetConnection = "Aucune connexion à internet n’a pu être détectée",
+	RMErrorLogOut = "Error al cerrar sesión", -- traducir
+	RMErrorSavingProfile = "Une erreur est survenue au moment d’enregistrer les données du profil",
+	RMJanuary = "Janvier",
+	RMFebruary = "Février",
+	RMMarch = "Mars",
+	RMApril = "Avril",
+	RMMay = "Mai",
+	RMJune = "Juin",
+	RMJuly = "Juillet",
+	RMAugust = "Août",
+	RMSeptember = "Septembre",
+	RMOctober = "Octobre",
+	RMNovember = "Novembre",
+	RMDecember = "Décembre",
 	--RM = "ENVIAR",
 	
 }
