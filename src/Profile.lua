@@ -434,12 +434,19 @@ function infoProfile( item )
 	--cuenta propia
 	--item.cuentaPropia = json.encode(item.cuentaPropia)
 	labelOpcion[num] = language.PFreelance
+	print(item.cuentaPropia)
 	if item.cuentaPropia then
         for i=1, #item.cuentaPropia do
             if i == 1 then
-                infoOpcion[num] = item.cuentaPropia[i]
+                --infoOpcion[num] = item.cuentaPropia[i]
+				if item.cuentaPropia[i] == "Por cuenta propia" then
+					infoOpcion[num] = language.PFreelance
+				else
+					infoOpcion[num] = language.PEmployee
+				end
+				
             else
-                infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
+                --infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
             end
         end
 		iconOpcion[num] = 'GG_Generico'
@@ -466,8 +473,33 @@ function infoProfile( item )
 		num = #infoOpcion + 1
 	end
 	
+	
+	if item.deportes then
+		local hob = ""
+        local max = 4
+        if #item.deportes < max then 
+            max = #item.deportes 
+        end
+        for i=1, max do
+            if i == 1 then
+                hob = item.deportes[i]
+            else
+                hob = hob ..', '..item.deportes[i]
+            end
+        end
+        if #item.deportes > max then 
+            hob = hob ..'...'
+        end
+		infoOpcion[num] = hob
+		iconOpcion[num] = 'GG_Generico'
+    else
+        infoOpcion[num] = language.PAny
+		iconOpcion[num] = 'GG_Generico'
+    end
+	labelOpcion[num] = language.PSports 
+	num = #infoOpcion + 1
 	--deporte
-	if item.deporte then
+	--[[if item.deporte then
 		labelOpcion[num] = language.PSports 
 		if item.deporte == "Sí" then
 			infoOpcion[num] = language.PSportYouPlay 
@@ -487,7 +519,7 @@ function infoProfile( item )
 			iconOpcion[num] = 'GG_Generico'
 		end
 		num = #infoOpcion + 1
-	end
+	end]]
 	--fumas
 	if item.fumas then
 		labelOpcion[num] = language.PYouSmoke 
@@ -661,8 +693,6 @@ function scene:create( event )
 	scrPerfile:insert(line)
 	
 	posY = infoProfile( item )
-	
-	--posY = 500
 	
 	if isReadOnly then
 		posY = posY + 120

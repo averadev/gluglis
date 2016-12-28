@@ -167,7 +167,6 @@ local RestManager = {}
 		url = url.."/password/"..urlencode(password)
 		url = url.."/playerId/"..urlencode(playerId)
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				gotoHomeUN( language.RMTryLater, "login", false )
@@ -213,7 +212,6 @@ local RestManager = {}
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
 		--url = url.."/timeZone/" .. urlencode("-5")
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -263,7 +261,6 @@ local RestManager = {}
 		url = url.."/channelId/".. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -363,8 +360,6 @@ local RestManager = {}
 		url = url.."/message/" .. urlencode(message)
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)]]
-		print(settings.idApp)
-		print("Enviando mensaje")
 		
 		local function networkListener( event )
 			if ( event.isError ) then
@@ -426,7 +421,6 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -600,8 +594,6 @@ local RestManager = {}
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/language/"..urlencode(settings.language)
 		
-		print(url)
-		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -653,6 +645,9 @@ local RestManager = {}
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
+		
+		print(url)
+		
         local function callback(event)
             if ( event.isError ) then
 				HomeError( language.RMErrorServer )
@@ -1184,9 +1179,8 @@ local RestManager = {}
 		site = settings.url
         local url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
 		url = url .. urlencode(city)
-		--url = url.."&language=en"
+		url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
-		
         local function callback(event)
             if ( event.isError ) then
             else
@@ -1386,9 +1380,6 @@ local RestManager = {}
 			local img2 = obj.items[obj.idx].image2
 			local img = obj.items[obj.idx].image
 			
-			print(img2)
-			print(img)
-			
             local path = system.pathForFile( img, system.TemporaryDirectory )
             local fhd = io.open( path )
             if fhd then
@@ -1435,9 +1426,6 @@ local RestManager = {}
     -- @param obj registros de la consulta con la propiedad image
     ------------------------------------- 
     function changeImageAvatar(photophoto)
-	
-		
-		--local img = photophoto ..".png"
         -- Next Image
 		-- Determinamos si la imagen existe para eliminarla
            
@@ -1458,8 +1446,6 @@ local RestManager = {}
 		end
 		-- Descargamos de la nube
 		local url = "http://gluglis.travel/gluglis_api/assets/img/avatar/" .. photophoto
-		
-		print(url)
 		
 		display.loadRemoteImage( url ,"GET", imageListener2, photophoto, system.TemporaryDirectory ) 
 		-- Dirigimos al metodo pertinente

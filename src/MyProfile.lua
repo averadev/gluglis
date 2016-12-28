@@ -1020,7 +1020,7 @@ function showComboBoxMP( event )
 	bg0:setFillColor( 0 )
 	bg0.alpha = .8
 	grpComboBox:insert( bg0 )
-	bg0:addEventListener( 'tap', hideComboBox )
+	bg0:addEventListener( 'tap', hideComboBoxProfile )
 	local bg1 = display.newRect( midW, midH + h, 606, midH )
 	bg1:setFillColor( 1 )
 	grpComboBox:insert( bg1 )
@@ -1085,15 +1085,18 @@ function selectOptionCombo( event )
 	elseif t.name == "gender" then
 		lblGender.text = t.option
 	end
-	hideComboBox( "" )
+	hideComboBoxProfile( "" )
 	return true
 end
 
-function hideComboBox( event )
+function hideComboBoxProfile( event )
 	componentActive = false
 	if grpComboBox then
 		grpComboBox:removeSelf()
 		grpComboBox = nil
+	end
+	if grpTextProfile then
+		
 	end
 	grpTextProfile.x = 0
 	return true
