@@ -340,7 +340,7 @@ function blockedChatMsg(message, isShow, isBlock)
 		grpBlocked:insert(lblBlocked)
 		
 		local lblAccept = display.newText({
-			text = "Aceptar",     
+			text = language.MpOk,     
 			x = midW, y = midH + h + 80 ,
 			font = fontFamilyBold,   
 			fontSize = 42, align = "center"
@@ -352,7 +352,7 @@ function blockedChatMsg(message, isShow, isBlock)
 			lblAccept.x = midW + 125
 			lblAccept:addEventListener( 'tap', blocked )
 			local lblCancel = display.newText({
-				text = "Cancelar",     
+				text = language.MpCancel,     
 				x = midW - 125, y = midH + h + 80 ,
 				font = fontFamilyBold,   
 				fontSize = 42, align = "center"
@@ -891,7 +891,7 @@ function scene:create( event )
         text = language.MSGSend,     
         x = intW - 75, y = intH - 45, width = 150,
         font = fontFamilyLight,   
-        fontSize = 30, align = "center"
+        fontSize = 28, align = "center"
     })
     lblSend:setFillColor( 1 )
     grpTextField:insert(lblSend)

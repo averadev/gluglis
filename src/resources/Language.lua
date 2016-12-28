@@ -546,7 +546,7 @@ Language.it = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Salva cambiamenti", -- traduccion
+	SSaveSettings= "Salva cambiamenti",
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "CONSULTA QUI LA LISTA DI TUTTE LE PERSONE CHE CHIEDONO DI CONTATTARTI",
@@ -734,9 +734,9 @@ Language.de = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "SUCHEN Gluglers",
-	MSearchGluglersSub = "Lerne Gluglis User kennen \nwo immer Sie sind" ,-- sin traduccion
-	MEditProfile = "Profil bearbeiten",-- sin traduccion
-	MEditProfileSub = "Persönliches Profil bearbeiten",-- sin traduccion
+	MSearchGluglersSub = "Lerne Gluglis User kennen \nwo immer Sie sind" ,
+	MEditProfile = "Profil bearbeiten",
+	MEditProfileSub = "Persönliches Profil bearbeiten",
 	MCloseSession = "Sitzung beenden",
 	MSignIn = "Anmelden",
 	MSessionClosed = "Sitzung erfolgreich \nbeendet",
@@ -745,7 +745,7 @@ Language.de = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "Änderungen speichern", -- traduccion
+	SSaveSettings= "Änderungen speichern",
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "LISTE DER PERSONEN ABRUFEN, DIE SIE KONTAKTIEREN KÖNNEN",
@@ -758,18 +758,18 @@ Language.de = {
 	MSGBlock = "BLOCKIEREN ",
 	MSGBack = "Zurück",
 	MSGYouHaveNoMessages = "Sie haben keine neuen Nachrichten",
-	MSGUnblock1 = "desbloquea a ",
-	MSGUnblock2 = " para enviarle un mensaje",
-	MSGMessageNotSent1 = "No se puede mandar mensaje, ",
-	MSGMessageNotSent2 = " lo ha bloqueado",
-	MSGLoading = "Cargando",
-	MSGWantToUnblock1 = "¿desea desbloquear a ",
-	MSGWantToUnblock2 = "? para enviarle mensajes",
-	MSGWantToBlock1 = "¿desea bloquear a  ",
-	MSGWantToBlock2 = "? ya no podras enviarle mensajes",
+	MSGUnblock1 = "", -- desbloquea a
+	MSGUnblock2 = " freigeben und Nachricht senden",
+	MSGMessageNotSent1 = "Nachricht kann nicht gesendet werden, ",
+	MSGMessageNotSent2 = " hat Sie blockiert",
+	MSGLoading = "Laden",
+	MSGWantToUnblock1 = "Möchten Sie ",
+	MSGWantToUnblock2 = "freigeben  und Nachricht senden",
+	MSGWantToBlock1 = "Möchten Sie  ",
+	MSGWantToBlock2 = "blockieren? Sie können dann keine Nachricht mehr an ihn/sie senden",
 	--------------------------------------
 	--Tool
-	TBack = "Regresar",
+	TBack = "Zurück",
 	--------------------------------------
 	--RestManager
 	RMTryLater = "Fehler, bitte versuchen Sie es später",
@@ -808,8 +808,8 @@ Language.fr = {
 	LSBtnFace = "CONNECTEZ-VOUS PAR FACEBOOK",
 	LSBtnNormal = "ACCÉDEZ PAR: NOM D’USAGER OU E-MAIL",
 	LSBtnFree = "EN SAVOIR PLUS SUR L’APPLICATION",
-	LSTerms1 = "Al iniciar sesión usted está aceptando los",  -- traducir
-	LSTerms2 = "términos y condiciones.",  -- traducir
+	LSTerms1 = "Lorsque vous vous connectez,",
+	LSTerms2 = "vous acceptez les termes et conditions.",
 	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	--------------------------------------
 	--LoginUserName
@@ -818,9 +818,9 @@ Language.fr = {
 	LUNPass = "Mot de passe:",
 	LUNRePass = "Confirmer le \nmot de passe:",
 	LUNRegistrar = "S’enregistrer:",
-	LUNTerms1 = "Al iniciar sesión usted está aceptando los",  -- traducir
-	LUNTerms2 = "términos y condiciones.",  -- traducir
-	LUNBtnSignIn = "Acceder",  -- traducir
+	LUNTerms1 = "Lorsque vous vous connectez,",
+	LUNTerms2 = "vous acceptez les termes et conditions.",
+	LUNBtnSignIn = "Connectez-vous",
 	LUNBtnRegister = "Nouvel usager",
 	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
 	LUNEmptyFields = "Champs non renseignés",
@@ -828,39 +828,39 @@ Language.fr = {
 	--------------------------------------
 	--Welcome
 	WCEnterCity = "Entrez le nom d'une ville",
-	WCSearch = "Rechercher",  -- traducir
+	WCSearch = "Rechercher",
 	WCMoreFilters = "Plus de filtres",
-	WCSelectCity= "Seleccione una ciudad válida",  -- traducir
+	WCSelectCity= "Sélectionnez une ville valide",
 	--------------------------------------
 	--Hometown
-	HTYouLive = "¿Donde vives?",  -- traducir
-	HTStartGlugling = "Ok! Start Glugling!",  -- traducir
-	HTValidCity = "Seleccione una ciudad válida",  -- traducir
+	HTYouLive = "Où vous habitez?",
+	HTStartGlugling = "Ok! Commencez Glugling!",
+	HTValidCity = "Sélectionnez une ville valide",
 	--HT = "Search",
 	--------------------------------------
 	--Home
-	HNoResultHome = "Búsqueda \nsin resultados",  -- traducir
+	HNoResultHome = "Recherche \nsans résultat",
 	HNoUserFound = "Aucun utilisateur ne correspond",
-	HYears = "Años",  -- traducir
-	HUnregisteredResidence = "Residencia no registrada",  -- traducir
+	HYears = "Ans",
+	HUnregisteredResidence = "Résidence non enregistrée",
 	HSeeProfile = "VOIR PROFIL",
 	--------------------------------------
 	--Profile
 	PLikeToStart = "VOULEZ-VOUS PARLER AVEC ",
 	PSignUpNow = "Enregistrez-vous dès maintenant !",
 	pConversationWith = "ENTAMER LA CONVERSATION",
-	PYears = " Años", -- traducir
+	PYears = " Ans",
 	PCityNotAvailable = "Ville non disponible",
 	PILiveIn = "Vous vivez à  ",
-	PUnknown = "Desconocido",  -- traducir
-	PIAmFrom = "Es de ",  -- traducir
+	PUnknown = "Inconnu",
+	PIAmFrom = "Il est ",
 	PSince = "Depuis ",
 	POffersAccommodation = "Propose un logement",
-	PYes = "Si",  -- traducir
-	PNo = "No",  -- traducir
+	PYes = "Oui",
+	PNo = "Non",
 	PCar = "véhicule personnel",
 	PFood = "Habitudes alimentaires",
-	PAny = "Ninguno",  -- traducir
+	PAny = "Aucun",
 	PLanguages = "Langues",
 	PHobbies = "Vos loisirs",
 	PLevelOfEducation = "Niveau d’études",
@@ -879,7 +879,7 @@ Language.fr = {
 	--------------------------------------
 	--MyProfile
 	MpSaveChanges = "Enregistrer les modifications ",
-	MpYears = " Años",  -- traducir
+	MpYears = " Ans",
 	MpDateOfBirth = "Sélectionnez une date de naissance",
 	MpName = "Prénom: ",
 	MpLastName = "Nom de famille: ",
@@ -888,13 +888,13 @@ Language.fr = {
 	MpResidence = "Résidence: ",
 	MpTimeLiving = "Temps de \nrésidence: ",
 	MpEmail = "E-mail: ",
-	MpSelect = "Seleccionar",  -- traducir
+	MpSelect = "Sélectionner",
 	MpAccommodation = "Logement: ",
 	MpVehicle = "Véhicule: ",
 	MpFood = "Habitudes alimentaires: ",
-	MpAny = "Ninguno",  -- traducir
-	MpYes = "Si",  -- traducir
-	MpNo = "No",  -- traducir
+	MpAny = "Aucun",
+	MpYes = "Oui",
+	MpNo = "Non",
 	MpLanguages = "Langues: ",
 	MpHobbies = "Loisirs: ",
 	MpLevelOfEducation = "Niveau d’études: ",
@@ -914,36 +914,36 @@ Language.fr = {
 	MpEditHobbies = "Modifier les loisirs",
 	MpYourHobbies = "Vos loisirs",
 	MpOk = "Accepter",
-	MpTakePhoto = "Tomar Foto",  -- traducir
-	MpUploadPhoto = "Subir Foto",  -- traducir
-	MpTakePhotoSub = "No tienes fotos en este momento \ntoma una desde tu celular",  -- traducir
-	MpUploadPhotoSub = "Sube una foto desde tu celular",  -- traducir
+	MpTakePhoto = "Prendre photo",
+	MpUploadPhoto = "Ajouter une photo",
+	MpTakePhotoSub = "Vous ne disposez pas de photos à ce moment, \nprennez une photo",
+	MpUploadPhotoSub = "Télécharger une photo de votre téléphone",
 	MpCancel = "Annuler",
 	MpSave = "Sauver",
-	MpCropSave = "Recortar y guardar",  -- traducir
-	MpSaveUntrimmed = "Guardar sin recortar",  -- traducir
+	MpCropSave = "Couper et enregistrer",
+	MpSaveUntrimmed = "Enregistrer sans couperr",
 	--------------------------------------
 	--Filter
 	FCity = "Ville:",
 	FMan = "HOMME",
 	FWoman = "FEMME",
-	FAge = "Classe d’âge:",
-	FYears = "Años",  -- traducir
-	FSearch = "RECHERCHER",  -- traducir
+	FAge = "Classe \nd'âge:",
+	FYears = "Ans",
+	FSearch = "RECHERCHER",
 	--------------------------------------
 	--Menu
-	MSearchGluglers = "Buscar Gluglers",  -- traducir
-	MSearchGluglersSub = "Conoce usuarios Gluglis \ndonde quiera que vayas",  -- traducir
-	MEditProfile = "Editar Perfil",  -- traducir
-	MEditProfileSub = "Editar tu perfil personal",  -- traducir
+	MSearchGluglers = "Recherche Gluglers",
+	MSearchGluglersSub = "Rencontrez utilisateurs Gluglis \npartout où vous allez",
+	MEditProfile = "Modifier le profil",
+	MEditProfileSub = "Modifier votre profil personnel",
 	MCloseSession = "Fermer la session",
 	MSignIn = "S’inscrire",
 	MSessionClosed = "Votre session a été fermée avec succès",
-	MSettings = "Configuracion",  -- traducir
-	MSettingsSub = "Escoge el lenguaje de tu preferencia",  -- traducir
+	MSettings = "Configuratión",
+	MSettingsSub = "Choisissez la langue de votre choix",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje",  -- traducir
+	SChangeLanguage = "Changer la langue",
 	SSaveSettings= "Enregistrer les modifications",
 	--------------------------------------
 	--Messages
@@ -952,29 +952,29 @@ Language.fr = {
 	MSGSYouHaveNoMessages = "Vous n'avez aucun message pour le moment",
 	--------------------------------------
 	--Message
-	MSGSend = "ENVIAR",  -- traducir
-	MSGWrite = "Escribir",  -- traducir
+	MSGSend = "ENVOYER",
+	MSGWrite = "Écrire",
 	MSGBlock = "Bloquer",
-	MSGBack = "Regresar",  -- traducir
+	MSGBack = "Retour",
 	MSGYouHaveNoMessages = "Vous n'avez aucun message pour le moment",
 	MSGUnblock1 = "Débloquez ",
 	MSGUnblock2 = " pour lui envoyer un message",
 	MSGMessageNotSent1 = "Le message ne peut être envoyé, ",
 	MSGMessageNotSent2 = " l’a bloqué",
-	MSGLoading = "Cargando",  -- traducir
+	MSGLoading = "Chargement",
 	MSGWantToUnblock1 = "Souhaitez-vous débloquer ",
 	MSGWantToUnblock2 = "pour lui envoyer des messages ?",
 	MSGWantToBlock1 = "Souhaitez-vous bloquer  ",
 	MSGWantToBlock2 = "? Vous ne pourrez plus lui envoyer de messages",
 	--------------------------------------
 	--Tool
-	TBack = "Regresar", -- traducir
+	TBack = "Retour",
 	--------------------------------------
 	--RestManager
 	RMTryLater = "Erreur. Veuillez essayer plus tard",
-	RMErrorServer = "Error con el servidor, intentelo mas tarde", -- traducir
+	RMErrorServer = "Erreur avec le serveur, réessayer plus tard",
 	RMNoInternetConnection = "Aucune connexion à internet n’a pu être détectée",
-	RMErrorLogOut = "Error al cerrar sesión", -- traducir
+	RMErrorLogOut = "Erreur en déconnectant",
 	RMErrorSavingProfile = "Une erreur est survenue au moment d’enregistrer les données du profil",
 	RMJanuary = "Janvier",
 	RMFebruary = "Février",
@@ -1132,18 +1132,18 @@ Language.zh  = {
 	--------------------------------------
 	--Menu
 	MSearchGluglers = "搜索 Gluglers",
-	MSearchGluglersSub = "认识你将去到的地方的Gluglis用户",-- sin traduccion
-	MEditProfile = "修改资料",-- sin traduccion
-	MEditProfileSub = "修改个人资料",-- sin traduccion
+	MSearchGluglersSub = "认识你将去到的地方的Gluglis用户",
+	MEditProfile = "修改资料",
+	MEditProfileSub = "修改个人资料",
 	MCloseSession = "关闭会话",
 	MSignIn = "注册",
-	MSessionClosed = "Sesión Cerrada \ncon exito",-- sin traduccion
+	MSessionClosed = "Sesión Cerrada \ncon exito", -- traduccion
 	MSettings = "Configuracion", -- traduccion
 	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "保存更改", -- traduccion
+	SSaveSettings= "保存更改",
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "这里看看要与你联系所有的人名单。",
@@ -1342,7 +1342,7 @@ Language.he = {
 	--------------------------------------
 	-- Settings
 	SChangeLanguage = "Cambiar lenguaje", -- traduccion
-	SSaveSettings= "שמירת שינויים", -- traduccion
+	SSaveSettings= "שמירת שינויים",
 	--------------------------------------
 	--Messages
 	MSGSCheckHereList = "בדוק כאן את רשימת האנשים שרוצים ליצור איתך קשר",
