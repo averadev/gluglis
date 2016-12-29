@@ -38,20 +38,14 @@ local isUser = DBManager.setupSquema()
 local setting = DBManager.getSettings()
 --Globals.language = Globals.language.setting.language
 language = require('src.resources.Language')
-
---[[if setting.language == "es" then language = language.es
+--selecciona el lenguaje del dispositivo
+if setting.language == "es" then language = language.es
 elseif setting.language == "en" then language = language.en
 elseif setting.language == "it" then language = language.it
 elseif setting.language == "de" then language = language.de 
 elseif setting.language == "fr" then language = language.fr 
 elseif setting.language == "zh" then language = language.zh
 elseif setting.language == "he" then language = language.he 
-else language = language.en end]]
-
---selecciona el lenguaje del dispositivo
-if setting.language == "es" then language = language.es
-elseif setting.language == "en" then language = language.en
-elseif setting.language == "fr" then language = language.fr
 else language = language.en end
 
 if isUser then

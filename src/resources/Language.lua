@@ -413,7 +413,7 @@ Language.it = {
 	LSBtnFree = "CONOSCI MEGLIO LE APPLICAZIONI",
 	LSTerms1 = "All’iniziare la sessione,  accetti i",
 	LSTerms2 = "termini e le condizioni",
-	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+	LSTermsTitle = "CONTRATTO DI LICENZA PER L'UTENTE",
 	--------------------------------------
 	--LoginUserName
 	LUNUser = "Utente:",
@@ -425,7 +425,7 @@ Language.it = {
 	LUNTerms2 = "termini e le condizioni",
 	LUNBtnSignIn = "Accedere",
 	LUNBtnRegister = "Nuovo Utente",
-	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+	LUNTermsTitle = "CONTRATTO DI LICENZA PER L'UTENTE",
 	LUNEmptyFields = "Spazi vuoti",
 	LUNDifferentPass = "Password diverse",
 	--------------------------------------
@@ -541,11 +541,11 @@ Language.it = {
 	MCloseSession = "Chiudere Sessione",
 	MSignIn = "Registrarti",
 	MSessionClosed = "Sessione chiusa \ncon successo",
-	MSettings = "Configuracion", -- traduccion
-	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
+	MSettings = "Configurazione",
+	MSettingsSub = "Scegliere la lingua di vostra scelta",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje", -- traduccion
+	SChangeLanguage = "Cambia lingua",
 	SSaveSettings= "Salva cambiamenti",
 	--------------------------------------
 	--Messages
@@ -611,7 +611,7 @@ Language.de = {
 	LSBtnFree = "MEHR ÜBER DIE APP ERFAHREN",
 	LSTerms1 = "Mit dem Einloggen akzeptieren",
 	LSTerms2 = "Sie die allgemeinen Bedingungen",
-	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
+	LSTermsTitle = "ENDBENUTZER-LIZENZVEREINBARUNG",
 	--------------------------------------
 	--LoginUserName
 	LUNUser = "Benutzer:",
@@ -623,7 +623,7 @@ Language.de = {
 	LUNTerms2 = "Sie die allgemeinen Bedingungen",
 	LUNBtnSignIn = "Zugang",
 	LUNBtnRegister = "Neuer Benutzer",
-	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
+	LUNTermsTitle = "ENDBENUTZER-LIZENZVEREINBARUNG",
 	LUNEmptyFields = "Leere Felder",
 	LUNDifferentPass = "Falsches Kennwort",
 	--------------------------------------
@@ -740,11 +740,11 @@ Language.de = {
 	MCloseSession = "Sitzung beenden",
 	MSignIn = "Anmelden",
 	MSessionClosed = "Sitzung erfolgreich \nbeendet",
-	MSettings = "Configuracion", -- traduccion
-	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
+	MSettings = "Konfiguration",
+	MSettingsSub = "Wählen Sie die Sprache Ihrer Wahl",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje", -- traduccion
+	SChangeLanguage = "Sprache ändern",
 	SSaveSettings= "Änderungen speichern",
 	--------------------------------------
 	--Messages
@@ -1009,7 +1009,7 @@ Language.zh  = {
 	LSBtnFree = "更多这个APP的情况下",
 	LSTerms1 = "通过登录，",
 	LSTerms2 = "您正在接受相关条款条件。",
-	LSTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",-- sin traduccion
+	LSTermsTitle = "终止用户许可协议",-- sin traduccion
 	--------------------------------------
 	--LoginUserName
 	LUNUser = "用户:",
@@ -1021,7 +1021,7 @@ Language.zh  = {
 	LUNTerms2 = "您正在接受相关条款条件。",
 	LUNBtnSignIn = "访问",
 	LUNBtnRegister = "新用户",
-	LUNTermsTitle = "LICENSED APPLICATION END USER LICENSE AGREEMENT",
+	LUNTermsTitle = "终止用户许可协议",
 	LUNEmptyFields = "空字段",
 	LUNDifferentPass = "不同的密码",
 	--------------------------------------
@@ -1137,12 +1137,12 @@ Language.zh  = {
 	MEditProfileSub = "修改个人资料",
 	MCloseSession = "关闭会话",
 	MSignIn = "注册",
-	MSessionClosed = "Sesión Cerrada \ncon exito", -- traduccion
-	MSettings = "Configuracion", -- traduccion
-	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
+	MSessionClosed = "闭门会议成功",
+	MSettings = "组态",
+	MSettingsSub = "选择您所选择的语言",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje", -- traduccion
+	SChangeLanguage = "改变语言",
 	SSaveSettings= "保存更改",
 	--------------------------------------
 	--Messages
@@ -1337,11 +1337,11 @@ Language.he = {
 	MCloseSession = "היתנתק מהחשבון",
 	MSignIn = "הירשם",
 	MSessionClosed = "חשבון נסגר בהצלחה",
-	MSettings = "Configuracion", -- traduccion
-	MSettingsSub = "Escoge el lenguaje de tu preferencia", -- traduccion
+	MSettings = "תצורה",
+	MSettingsSub = "בחר את השפה על פי בחירתך",
 	--------------------------------------
 	-- Settings
-	SChangeLanguage = "Cambiar lenguaje", -- traduccion
+	SChangeLanguage = "שינוי שפה",
 	SSaveSettings= "שמירת שינויים",
 	--------------------------------------
 	--Messages
