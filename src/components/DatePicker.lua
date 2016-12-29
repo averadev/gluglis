@@ -14,11 +14,11 @@ local Sprites = require('src.resources.Sprites')
 local DBManager = require('src.resources.DBManager')
 local RestManager = require('src.resources.RestManager')
 
-local platform = system.getInfo( "platformName" )
+local platform = system.getInfo( "platform" )
 
-if platform == "Android" then
-	widget.setTheme( "widget_theme_android_holo_dark" )
-elseif platform == "iPhone OS" then
+if platform == "android" then
+	widget.setTheme( "widget_theme_android_holo_light" )
+elseif platform == "ios" then
 	--widget.setTheme( "widget_theme_ios7" )
 end
 
@@ -141,11 +141,29 @@ function buildPicker(dateb, textGrp)
 	--crea el datePicker
 	--DatePicker(event.target.name)
 	
-	if platform == "iPhone OS" then
-		createDatePickerIos(dateb)
+	
+	local environment = system.getInfo( "environment" )
+	
+	if environment == "simulator" then
+		createDatePickerAndroid(dateb)
 	else
-		createDatePickerIos(dateb)
+		--descomentar en android
+		local platform = system.getInfo( "platform" )
+		if platform == "android" then
+			createDatePickerAndroid(dateb)
+		else
+			createDatePickerIos(dateb)
+		end
+		--descomenta5r eb ios
+		--[[local platform = system.getInfo( "platformName" )
+		if platform == "Android" then
+			createDatePickerAndroid(dateb)
+		else
+			createDatePickerIos(dateb)
+		end]]
 	end
+
+	
 		
 	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })		
@@ -375,7 +393,7 @@ function createDatePickerAndroid(dateb)
 		width = intW,
 		rowHeight = 60,
 		fontSize = 35,
-		--columnColor = { 0.8, 0.8, 0.8 },
+		--columnColor = { 0, 0, 0, 1 },
 		fontColor = { 0.4, 0.4, 0.4, 0.5 },
         fontColorSelected = { 129/255, 61/255, 153/255},
 	})  

@@ -135,7 +135,7 @@ end
 
 function setItemCityWc( item )
 
-	print("entro")
+	print(item[1].place_id)
 	
 	if( #item > 0 ) then
 		txtLocationW.text = item[1].description

@@ -44,11 +44,11 @@ function saveSettings( event )
 	language = require('src.resources.Language')
 	if setting.language == "es" then language = language.es
 	elseif setting.language == "en" then language = language.en
-	elseif setting.language == "it" then language = language.it
-	elseif setting.language == "de" then language = language.de 
+	--elseif setting.language == "it" then language = language.it
+	--elseif setting.language == "de" then language = language.de 
 	elseif setting.language == "fr" then language = language.fr 
-	elseif setting.language == "zh" then language = language.zh
-	elseif setting.language == "he" then language = language.he 
+	--elseif setting.language == "zh" then language = language.zh
+	--elseif setting.language == "he" then language = language.he 
 	else language = language.en end
 	composer.removeScene( "src.Home" )
 	composer.gotoScene( "src.Home", { time = 400, effect = "fade"})
@@ -215,11 +215,11 @@ function scene:create( event )
 	langOpt = {
         { value = "es", name = "Español" },
 		{ value = "en", name = "English" },
-		{ value = "it", name = "Italian" },
+		--{ value = "it", name = "Italian" },
 		{ value = "fr", name = "French" },
-		{ value = "de", name = "Deutsch" },
-		{ value = "zh", name = "中国" }, 
-		{ value = "he", name = "עברי" },
+		--{ value = "de", name = "Deutsch" },
+		--{ value = "zh", name = "中国" }, 
+		--{ value = "he", name = "עברי" },
 	}
     
 	createSetting()

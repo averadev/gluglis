@@ -7,10 +7,6 @@ settings =
 {
 	plugins =
 	{
-		["plugin.facebook.v4"] =
-		{
-			publisherId = "com.coronalabs",
-		},
 		["plugin.OneSignal"] =
 		{
 			publisherId = "com.onesignal",
@@ -28,6 +24,11 @@ settings =
 		["plugin.utf8"] =
         {
             publisherId = "com.coronalabs"
+        },
+		["plugin.facebook.v4"] =
+        {
+            publisherId = "com.coronalabs",
+            supportedPlatforms = { android=true, iphone=true, osx=true, win32=true },
         },
 	},
 	
@@ -74,6 +75,9 @@ settings =
                 "fbauth",
                 "fbauth2",
                 "fb-messenger-api20140430",
+				"fbapi", -- no
+                "fb-messenger-api",--no
+                "fbshareextension"--no
             },
 			UIStatusBarHidden = false,
 			UIPrerenderedIcon = true, -- set to false for "shine" overlay
@@ -107,6 +111,7 @@ settings =
             },
 			UIBackgroundModes = {"remote-notification"},
 			UIApplicationExitsOnSuspend = false,
+			MinimumOSVersion = "7.0",
             FacebookAppID = "573103709510531",  --replace XXXXXXXXXX with your Facebook App ID
             CFBundleURLTypes = {
                 {

@@ -593,7 +593,7 @@ local RestManager = {}
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/language/"..urlencode(settings.language)
-		
+		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
