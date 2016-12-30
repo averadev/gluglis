@@ -528,7 +528,7 @@ Language.it = {
 	--Filter
 	FCity = "Città:",
 	FMan = "Uomo",
-	FWoman = "donna",
+	FWoman = "Donna",
 	FAge = "Età Frà:",
 	FYears = "Anni",
 	FSearch = "Cercare",
