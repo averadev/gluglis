@@ -51,6 +51,8 @@ function saveSettings( event )
 	elseif setting.language == "he" then language = language.he 
 	else language = language.en end
 	composer.removeScene( "src.Home" )
+	composer.removeScene( "src.MyProfile" )
+	itemProfile = nil
 	composer.gotoScene( "src.Home", { time = 400, effect = "fade"})
 	return true
 end

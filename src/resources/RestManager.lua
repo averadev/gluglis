@@ -646,8 +646,6 @@ local RestManager = {}
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
 		
-		print(url)
-		
         local function callback(event)
             if ( event.isError ) then
 				HomeError( language.RMErrorServer )
@@ -695,8 +693,6 @@ local RestManager = {}
 		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
-		
-		print(url)
 		
         local function callback(event)
             if ( event.isError ) then
@@ -1037,8 +1033,6 @@ local RestManager = {}
 		headers["Accept-Language"] = "en-US"
 		headers.filename = filename
 		params.headers = headers
-		
-		print(photophoto)
 		 
 		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
 		
