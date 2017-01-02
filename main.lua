@@ -7,6 +7,7 @@
 ---------------------------
 --------- aundio ----------
 ---------------------------
+
 -- Set the audio mix mode to allow sounds from the app to mix with other sounds from the device
 if audio.supportsSessionProperty == true then
     print("supportsSessionProperty is true")
@@ -64,6 +65,7 @@ end
 -- @param isActive indica si la app esta abierta
 ------------------------------------------------
 function DidReceiveRemoteNotification(message, additionalData, isActive)
+	print("LLego una notificacion")
 	--determina si la aplicacion esta activa
     if isActive then
 		if (additionalData) then
@@ -71,13 +73,10 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 			if additionalData.type == "1" then
 				local item = json.decode(additionalData.item)
 				local currScene = composer.getSceneName( "current" )
-				print("notificaciones")
-				print(currScene)
 				--si la scena actual es message pinta los nuevos mensajes 
 				if currScene == "src.Message" then
 					--displaysInList(item[1], false )
 				else
-					print("entro notificaciones")
 					system.vibrate()
 					--OneSignal.EnableVibrate(true)
 					local RestManager = require('src.resources.RestManager')
@@ -99,6 +98,9 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				local RestManager = require('src.resources.RestManager')
 				local item = json.decode(additionalData.item)
 				local tmpListMain = {}
+				--native.setProperty( "applicationIconBadgeNumber", item[1].totalNoRead )
+				--print(item[1].totalNoRead)
+				--print("hola mundo")
 				tmpListMain[1] = {id = item[1].id, image = item[1].image, image2 = item[1].image2, name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe, recipientId = item[1].id  }
 				composer.removeScene( "src.Message" )
 				composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpListMain[1] } } )
@@ -120,7 +122,6 @@ OneSignal.Init("b7f8ee34-cf02-4671-8826-75d45b3aaa07", "836420576135", DidReceiv
 function IdsAvailable(playerID, pushToken)
 	--OneSignal.ClearAllNotifications()
 	playerId = playerID
-	
 end
 
 ------------------------------------------------
@@ -128,23 +129,5 @@ end
 ------------------------------------------------
 OneSignal.IdsAvailableCallback(IdsAvailable)
 
---print( string.byte( "abc" ) ) 
---print( string.byte( "😁", 1 ) ) 
---print( string.char( 12 ) )
---print( string.char( 237 ) )
-
-local utf8 = require( "plugin.utf8" )
-
-local testStr = utf8.escape( "U+1F601" )
-
---print( testStr )                --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
---print( utf8.upper( testStr ) )  --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
---print( utf8.title( testStr ) )  --> ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-function utf8reverse(str)
-  return str:gsub("([\194-\244][\128-\191]+)", string.reverse):reverse()
-end
-
-print(utf8reverse("????"))
-
-
-
+--------------
+---------------

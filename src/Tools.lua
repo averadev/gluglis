@@ -644,10 +644,12 @@ function bubble()
 		iconChat.alpha = 0
 		iconChat2.alpha = 1
 		lblIconChat.text = unreadChats
+		native.setProperty( "applicationIconBadgeNumber", unreadChats )
 	else
 		iconChat.alpha = 1
 		iconChat2.alpha = 0
 		lblIconChat.text = ""
+		native.setProperty( "applicationIconBadgeNumber", 0 )
 	end
 end
 
@@ -655,6 +657,7 @@ function noBubble()
 	if grpChats then
 		grpChats:removeSelf()
 		grpChats = nil
+		native.setProperty( "applicationIconBadgeNumber", 0 )
 	end
 end
 
