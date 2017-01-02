@@ -633,7 +633,10 @@ function Tools:new()
 end
 
 function bubble()
+	print("hola")
+	print("bubble")
 	local currentScene = composer.getSceneName( "current" )
+	print(currentScene)
 	if currentScene == "src.Messages" or currentScene == "src.Message" then
 		grpChats.alpha = 0
 	else
@@ -654,10 +657,10 @@ function bubble()
 end
 
 function noBubble()
+	print("no bubble")
 	if grpChats then
 		grpChats:removeSelf()
 		grpChats = nil
-		native.setProperty( "applicationIconBadgeNumber", 0 )
 	end
 end
 

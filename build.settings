@@ -30,6 +30,10 @@ settings =
             publisherId = "com.coronalabs",
             supportedPlatforms = { android=true, iphone=true, osx=true, win32=true },
         },
+		 ["plugin.notifications"] =
+        {
+            publisherId = "com.coronalabs",
+        },
 	},
 	
 	splashScreen = 
@@ -141,6 +145,7 @@ settings =
 			"android.permission.INTERNET",
 			"android.permission.CAMERA",
             "android.permission.WRITE_EXTERNAL_STORAGE",
+			"android.permission.RECEIVE_BOOT_COMPLETED",
 		},
 		facebookAppId = "573103709510531",
 		coronaWindowMovesWhenKeyboardAppears = true,

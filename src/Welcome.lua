@@ -458,7 +458,9 @@ function scene:create( event )
 end	
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
-	showBubbleWelcome()
+	if ( event.phase == "will" ) then
+		showBubbleWelcome()
+	end
 end
 
 -- Hide scene
