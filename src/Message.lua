@@ -11,6 +11,7 @@
 require('src.Tools')
 require('src.resources.Globals')
 local widget = require( "widget" )
+local utf8 = require( "plugin.utf8" )
 local composer = require( "composer" )
 local smile = require('src.resources.Smile')
 local fxTap = audio.loadSound( "fx/click.wav")
@@ -39,6 +40,7 @@ local contTemp = -1
 local timer1
 local checkBlue = {}
 local chanelId = 0
+local imgUser = ""
 
 smile = smile.android
 
@@ -47,8 +49,6 @@ smile = smile.android
 ---------------------------------------------------------------------------------
 
 function replaceSmiles(message)
-
-	local utf8 = require( "plugin.utf8" )
 	local cont =  utf8.len( message )
 	local isEmoji = false
 	for i = 1,  cont, 1 do
@@ -61,7 +61,6 @@ function replaceSmiles(message)
 	end
 	
 	message = string.gsub( message, "😀", "" )
-	
 	return message, isEmoji
 end
 
@@ -80,21 +79,7 @@ function setItemsMessages( items )
 		
 		local message, isEmoji = replaceSmiles(item.message)
 		
-		--[[local utf8 = require( "plugin.utf8" )
-		local cont =  utf8.len( item.message )
-		local isEmoji = false
-		for i = 1,  cont, 1 do
-			local totStri = string.len( utf8.sub( item.message, i,i ) )
-			if ( totStri == 4 or totStri == 3 ) then
-				isEmoji = true
-				item.message = utf8.gsub( item.message, utf8.sub( item.message, i,i ), " ", 1 )
-			end
-			
-			
-			--print( utf8.sub( message, i,i ) .. ", " .. string.len( utf8.sub( message, i,i ) ) )
-		end]]
-		
-		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = message, time = item.hora, isRead = item.status_message, senderId = item.sender_id } 
+		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = message, time = item.hora, isRead = item.status_message, senderId = item.sender_id, image = item.image } 
 	end
 	tools:setLoading( false, screen )
 	buildChat(0)
@@ -155,7 +140,7 @@ function sentMessage()
 			local settings = DBManager.getSettings()
 			
 			local itemTemp = {message = message, posc = poscD, fechaFormat = dateM[2], hora = language.MSGLoading, sender_id = settings.idApp }
-			displaysInList(itemTemp, true)
+			displaysInList(itemTemp, true, imgUser)
 			
 			local newMessageText = trimString(message)
 			--print("Empieza")
@@ -178,7 +163,7 @@ end
 function showNewMessages( items, last )
 	for i = 1, #items, 1 do
 		if #items > 0 then
-			displaysInList(items[i], false )
+			displaysInList(items[i], false, items[i].image )
 		end
 	end
 	if last ~= '0' then
@@ -192,10 +177,12 @@ end
 -- @param itemTemp informacion del mensaje
 -- @param isMe indica si el mensaje es nuestro
 --------------------------------------------------
-function displaysInList(itemTemp, isMe)
+function displaysInList(itemTemp, isMe, image)
+	print(itemTemp.message)
+	local message, isEmoji = replaceSmiles(itemTemp.message)
 	tmpList = nil
 	tmpList = {}
-	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = itemTemp.message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = itemTemp.sender_id}
+	tmpList[1] = {id = itemTemp.id, isMe = isMe, message = message , time = itemTemp.hora, isRead = itemTemp.status_message, senderId = itemTemp.sender_id, image = image}
 	--verifica la fecha en que se mando
 	if lastDate ~= itemTemp.fechaFormat then
 		local bgDate = display.newRect( midW, posY, intW, 2 )
@@ -538,7 +525,9 @@ function buildChat(poscD)
 		--muestra los mensajes
         else
 			
-			local image = i.senderId .. ".png"
+			print(i.image)
+			
+			local image = i.image
 		local avatar = nil
 			local path = system.pathForFile( image, system.TemporaryDirectory )
 			local fhd = io.open( path )
@@ -712,17 +701,11 @@ function buildChat(poscD)
                     posY = posY - 20
                 end
             end
-			
-			--posY = posY + 200
-		
 		end
-		
 		if i.isRead == '0' and i.isMe == false then
 			lastStatus = i.id
 		end
-	
 	end
-	
 	local point = display.newRect( 1, posY + 30, 1, 1 )
 	grpChat:insert(point)
 	if scrChat.height <= posY + 30 then
@@ -734,14 +717,14 @@ function buildChat(poscD)
 	else
 		messagesInRealTime()
 	end
-
 end
 
 -----------------------------------
 -- Muestra la imagen del usuario
 -----------------------------------
-function setImagePerfilMessage()
+function setImagePerfilMessage(items)
 	--obtiene los mensajes del canal
+	imgUser = items[1].image
 	RestManager.getChatMessages(itemsConfig.channelId)
 end
 
@@ -829,6 +812,9 @@ function toolMessage(item)
 	lblIcoBlock:setFillColor( 1 )
 	screen:insert(lblIcoBlock)
 	
+	local settings = DBManager.getSettings()
+	imgUser = settings.idApp .. ".png"
+	
 end
 
 ---------------------------------------------------------------------------------
@@ -915,10 +901,10 @@ function scene:create( event )
 	
 	--verifica si existe los avatares de loss usuarios
 	local settings = DBManager.getSettings()
-	local contI = 0
+	local contI = 1
 	local imgExist = { settings.idApp .. ".png", item.recipientId .. ".png" }
 	
-	for i = 1, #imgExist, 1 do
+	--[[for i = 1, #imgExist, 1 do
 		local path = system.pathForFile( imgExist[i], system.TemporaryDirectory )
 		local fhd = io.open( path )
 		if not fhd then
@@ -926,15 +912,15 @@ function scene:create( event )
 		else
 			fhd:close()
 		end
-	end
-	
-	if ( contI > 0 ) then
+	end]]
+	RestManager.getImagePerfilMessage( item.recipientId )
+	--[[if ( contI > 0 ) then
 		--descarga las imagenes en caso de no existir
 		RestManager.getImagePerfilMessage( item.recipientId )
 	else
 		--obtiene los mensajes del canal
 		RestManager.getChatMessages(item.channelId)
-	end
+	end]]
 	
 	grpTextField:toFront()
 

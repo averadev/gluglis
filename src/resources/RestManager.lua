@@ -211,6 +211,7 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
+		print(url)
 		--url = url.."/timeZone/" .. urlencode("-5")
         local function callback(event)
             if ( event.isError ) then
@@ -421,6 +422,7 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
+		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -542,6 +544,7 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/recipientId/" .. recipientId
 		url = url.."/language/"..urlencode(settings.language)
+		print(url)
 		--url = url.."/channelId/" .. channelId
 		--url = url.."/idMessage/" .. idMessage
         local function callback(event)
@@ -1348,7 +1351,7 @@ local RestManager = {}
 		elseif  obj.name == "MessagesAvatars" then
 			setItemsListMessages(obj.items)
 		elseif  obj.name == "MessageAvatars" then
-			setImagePerfilMessage(obj.items[1])
+			setImagePerfilMessage(obj.items)
         elseif  obj.name == "ProfileAvatars" then
 			setImagePerfil(obj.items[1].image)
 		elseif  obj.name == "ProfileAvatars" then

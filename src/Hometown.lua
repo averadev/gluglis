@@ -109,24 +109,22 @@ function selectCityHt( event )
 	
 	RestManager.getCityEn(txtLocationHt.text, "hometown", grpHometown, itemOption )
 	
+	txtLocationHt.text = event.target.city
+	
 	--btnSearch.city = event.target.city
 	--btnSearch.id = event.target.id
 	return true
 end
 
 function setItemCityHt( item )
-	
 	if( #item > 0 ) then
 		btnSearch.city = item[1].description
 		btnSearch.id = item[1].place_id
 	end
-	
 	--tools:setLoading(false,grpWelcome)
-	
 	--txtLocationW.text = event.target.city
 	--txtLocationW.city = event.target.city
 	--txtLocationW.id = event.target.id
-	
 end
 
 function OptionLocationHt( item )
@@ -161,7 +159,6 @@ function OptionLocationHt( item )
 	
 	local heightItem = 120
 	for i = 1, #item do
-	
 		bgCity[i] = display.newRect( midW, lastY, intW, heightItem )
 		bgCity[i].anchorY = 0
 		bgCity[i].city = item[i].description
@@ -181,8 +178,7 @@ function OptionLocationHt( item )
 		lblCityH[i]:setFillColor( 68/255, 14/255, 98/255 )
 		bgCompCity:insert(lblCityH[i])
 		
-		lastY = lastY + heightItem + 5
-				
+		lastY = lastY + heightItem + 5	
 	end
 	
 end
