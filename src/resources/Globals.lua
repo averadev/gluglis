@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 -- Mediciones de pantalla
@@ -38,7 +38,6 @@ else
 	fontFamilyBold = "Oxygen-Bold.ttf"
 	fontFamilyLight = "Oxygen-Light.ttf"
 	fontFamilyRegular = "Oxygen-Regular.ttf"
-	--fontFamilySmile = "wp-font-emots.ttf"
 	fontFamilySmile = "Oxygen-Regular.ttf"
 end
 

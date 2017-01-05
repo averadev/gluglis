@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -26,9 +26,6 @@ local posY = 350
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
-function method()
-    
-end
 
 --------------------------------
 -- cierra todo los componentes
@@ -48,14 +45,14 @@ function startConversation( event )
 	return true
 end
 
--------------------------------------------------------
+----------------------------------------------------------
 -- crea la informacion e inicia la conversacion(chats)
 -- @param item informacion del perfil
--------------------------------------------------------
+----------------------------------------------------------
 function showNewConversation(item)
 	tools:setLoading(false,screen)
 	local tmpList = {id = 0, image = item.image, image2 = item.image2, name = item.display_name, subject = "", channelId = item.channel_id,
-			blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier, recipientId = item.id}
+		blockMe = item.blockMe, blockYour = item.blockYour, NoRead = 0, identifier = item.identifier, recipientId = item.id}
 	composer.removeScene( "src.Message" )
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpList } } )
 end
@@ -77,13 +74,12 @@ function setImagePerfil( item )
 	avatar.maskScaleX = 1.35
 end
 
-----------------------------------------
+-----------------------------------------
 --- Pinta los datos de otros usuarios
-----------------------------------------
+-- @param item informacion del perfil
+-----------------------------------------
 function infoProfile( item )
-
 	posY = 80
-
 	-- informacion personal
     local lblName = display.newText({
         text = item.userName, 
@@ -96,7 +92,7 @@ function infoProfile( item )
     scrPerfile:insert(lblName)
 	
 	posY = posY + 50
-	
+	-- Edad
 	local edad = ""
 	if not item.edad then edad = "" else edad = item.edad .. language.PYears end
     local lblAge= display.newText({
@@ -110,8 +106,7 @@ function infoProfile( item )
     scrPerfile:insert(lblAge)
 	
 	posY = posY + 45
-	
-	--genero
+	-- Genero
 	if item.genero then
 		local lblGender= display.newText({
 			text = item.genero, 
@@ -126,6 +121,7 @@ function infoProfile( item )
 	
 	posY = posY + 55
 	
+	-- Residencia
 	local Residence = ""
 	if not item.residencia then 
 		Residence = language.PCityNotAvailable
@@ -160,10 +156,10 @@ function infoProfile( item )
 	bgA0:setFillColor( 1 )
     scrPerfile:insert(bgA0)
 	
+	-- Elimina los espacios en blanco al final y al inicio
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
-	
 	
 	local num = #infoOpcion + 1
 	--nombre y apellido
@@ -201,13 +197,6 @@ function infoProfile( item )
 			end
 		end
 	end
-	--[[if item.userEmail then
-		--if item.userEmail == " " then
-			infoOpcion[num] = item.userEmail 
-			iconOpcion[num] = 'iconEmailContacto'
-			num = #infoOpcion + 1
-		--end
-	end]]
 	
 	for i=1, #infoOpcion do
         local ico
@@ -264,15 +253,6 @@ function infoProfile( item )
 	local iconOpcion = {}
 	local labelOpcion = {}
 	local infoOpcion = {}
-	--disponibilidad
-	--[[labelOpcion[1] = "Puedo ser tu Guia"
-    if item.diponibilidad and item.diponibilidad == 'Siempre' then
-        infoOpcion[1] = 'Si'
-		iconOpcion[1] = "si"
-    else 
-		infoOpcion[1] = 'No'
-		iconOpcion[1] = "no"
-    end]]
 	--alojamiento
 	local num = #infoOpcion + 1
 	labelOpcion[num] = language.POffersAccommodation
@@ -383,6 +363,7 @@ function infoProfile( item )
 	labelOpcion[num] = language.PLanguages
 	num = #infoOpcion + 1
 	
+	--hobbies
 	if item.hobbies then
 		local hob = ""
         local max = 4
@@ -432,30 +413,24 @@ function infoProfile( item )
 	end
 	
 	--cuenta propia
-	--item.cuentaPropia = json.encode(item.cuentaPropia)
 	labelOpcion[num] = language.PFreelance
-	print(item.cuentaPropia)
 	if item.cuentaPropia then
         for i=1, #item.cuentaPropia do
             if i == 1 then
-                --infoOpcion[num] = item.cuentaPropia[i]
 				if item.cuentaPropia[i] == "Por cuenta propia" then
 					infoOpcion[num] = language.PFreelance
 				else
 					infoOpcion[num] = language.PEmployee
 				end
-				
-            else
-                --infoOpcion[num] = infoOpcion[num] ..', '.. item.cuentaPropia[i]
             end
         end
 		iconOpcion[num] = 'GG_Generico'
     else
         infoOpcion[num] = language.PEmployee
 		iconOpcion[num] = 'GG_Generico'
-		
     end
 	num = #infoOpcion + 1
+	
 	--mascota
 	if item.mascota then
 		labelOpcion[num] = language.PPets 
@@ -469,11 +444,10 @@ function infoProfile( item )
 			infoOpcion[num] = "No" 
 			iconOpcion[num] = 'GG_Generico'
 		end
-		
 		num = #infoOpcion + 1
 	end
 	
-	
+	--deportes
 	if item.deportes then
 		local hob = ""
         local max = 4
@@ -498,45 +472,22 @@ function infoProfile( item )
     end
 	labelOpcion[num] = language.PSports 
 	num = #infoOpcion + 1
-	--deporte
-	--[[if item.deporte then
-		labelOpcion[num] = language.PSports 
-		if item.deporte == "Sí" then
-			infoOpcion[num] = language.PSportYouPlay 
-			if item.tipoDeporte then
-				infoOpcion[num] = language.PYouPlay 
-				for i=1, #item.tipoDeporte do
-					if i == 1 then
-						infoOpcion[num] = infoOpcion[num] .. item.tipoDeporte[i]
-					else
-						infoOpcion[num] = infoOpcion[num] ..', '.. item.tipoDeporte[i]
-					end
-				end
-			end
-			iconOpcion[num] = 'GG_Generico'
-		else
-			infoOpcion[num] = language.PAny 
-			iconOpcion[num] = 'GG_Generico'
-		end
-		num = #infoOpcion + 1
-	end]]
+	
 	--fumas
 	if item.fumas then
+		iconOpcion[num] = 'GG_Generico'
 		labelOpcion[num] = language.PYouSmoke 
-		--infoOpcion[num] = item.fumas
 		if item.fumas == "No" then
-			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo 
 		else
-			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PYes 
 		end
 		num = #infoOpcion + 1
 	end
+	
 	--bebes
 	if item.bebes then
 		labelOpcion[num] = language.PYouDrinkAlcohol
-		--infoOpcion[num] = item.bebes
 		if item.bebes == "No" then
 			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo 
@@ -546,10 +497,10 @@ function infoProfile( item )
 		end
 		num = #infoOpcion + 1
 	end
+	
 	--psicotroficos
 	if item.psicotropicos then
 		labelOpcion[num] = language.PYouPsychotropicDrugs
-		--infoOpcion[num] = item.psicotropicos
 		if item.psicotropicos == "No" then
 			iconOpcion[num] = 'GG_Generico'
 			infoOpcion[num] = language.PNo
@@ -560,6 +511,7 @@ function infoProfile( item )
 		num = #infoOpcion + 1
 	end
 	
+	--pinta las opciones
 	for i=1, #infoOpcion do
         local ico
         if iconOpcion[i] ~= '' then
@@ -587,7 +539,6 @@ function infoProfile( item )
         })
         lbl1:setFillColor( 0 )
         scrPerfile:insert(lbl1)
-		
 		posY = posY + 100
 		
 		local line = display.newLine( 0, posY, intW, posY )
@@ -595,18 +546,14 @@ function infoProfile( item )
 		line.strokeWidth = 2
 		scrPerfile:insert(line)
     end
-	
 	bgA0.height = #infoOpcion * 100
-	
 	local line = display.newLine( 0, posY - 1 , intW, posY + 1 )
 	line:setStrokeColor( 227/255 )
 	line.strokeWidth = 3
 	scrPerfile:insert(line)
 	
 	posY = posY + 50
-	
 	return posY
-
 end
 
 ---------------------------------------------------------------------------------
@@ -619,10 +566,7 @@ end
 function scene:create( event )
 	local item = event.params.item
 	
-	print(item.id)
-	
 	screen = self.view
-    --screen.y = h
 	
     local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
 	o:setFillColor( 245/255 )
@@ -653,12 +597,6 @@ function scene:create( event )
     scrPerfile:insert(bgA0)
 	
 	posY = posY + 150
-    
-    -- Avatar
-    --[[local bgA1 = display.newRoundedRect( 65, posY, 255, 255, 125 )
-	bgA1.anchorX = 0
-    bgA1:setFillColor( 0/255, 174/255, 239/255 )
-    scrPerfile:insert(bgA1)]]
 	
 	bgA1 = display.newImage( "img/circle-256.png" )
 	bgA1.anchorX = 0
@@ -679,6 +617,7 @@ function scene:create( event )
 		avatar:setMask( mask )
 		avatar.maskScaleY = 1.35
 		avatar.maskScaleX = 1.35
+	-- si no la descarga
 	else
 		local items = {}
 		items[1] = item

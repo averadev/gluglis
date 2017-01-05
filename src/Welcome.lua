@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -23,14 +23,10 @@ local txtLocationW
 local grpCityWc
 local lblCityW = {}
 
--- Variables
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
-function method()
-    
-end
 
 ---------------------------------------------
 -- deshabilita los eventos tap no deseados
@@ -133,10 +129,11 @@ function selectCityWc( event )
 	return true
 end
 
+---------------------------------------------
+-- Asigna la ciudad seleccionada
+-- @params item informacion de la ciudad
+---------------------------------------------
 function setItemCityWc( item )
-
-	print(item[1].place_id)
-	
 	if( #item > 0 ) then
 		txtLocationW.text = item[1].description
 		txtLocationW.city = item[1].description
@@ -144,15 +141,11 @@ function setItemCityWc( item )
 	end
 	
 	tools:setLoading(false,grpWelcome)
-	
-	--txtLocationW.text = event.target.city
-	--txtLocationW.city = event.target.city
-	--txtLocationW.id = event.target.id
-	
 end
 
 -------------------------------------
 -- Muestra las opciones de ciudades 
+-- @params item informacion de la ciudad
 -------------------------------------
 function OptionLocationWc( item )
 
@@ -162,7 +155,6 @@ function OptionLocationWc( item )
 	
 	grpCityWc = display.newGroup()
 	screen:insert(grpCityWc)
-	--grpCityWc.y = h
 	
 	local lastY = 355
 	local heiScroll = (btnSearch.y - txtLocationW.y) - 100
@@ -186,7 +178,6 @@ function OptionLocationWc( item )
 	
 	local heightItem = 120
 	for i = 1, #item do
-	
 		bgCity[i] = display.newRect( midW, lastY, intW, heightItem )
 		bgCity[i].anchorY = 0
 		bgCity[i].city = item[i].description
@@ -206,14 +197,14 @@ function OptionLocationWc( item )
 		lblCityW[i]:setFillColor( 68/255, 14/255, 98/255 )
 		bgCompCity:insert(lblCityW[i])
 		
-		lastY = lastY + heightItem + 5
-				
+		lastY = lastY + heightItem + 5	
 	end
-	
 end
 
 -------------------------------------------
 -- asigna la ciudad selecionada
+-- @params item city nombre de la ciudad
+-- @params id place_id de la ciudad
 -------------------------------------------
 function getCityWelcome(city, id)
 	txtLocationW.text = city
@@ -227,11 +218,14 @@ end
 -------------------------------------
 function randomCitiesWelcome( event )
 	RestManager.getRandomCities(  )
-	--local numCity = math.random(1, 100)
-	--txtLocationW.text = majorCities[numCity]
 	tools:setLoading(true,grpWelcome)
 end
 
+-------------------------------------------
+-- asigna la ciudad random
+-- @params item city nombre de la ciudad
+-- @params cityId place_id de la ciudad
+-------------------------------------------
 function printRandomCities( city, cityId)
 	if( city ~= false ) then
 		txtLocationW.text = city
@@ -240,8 +234,6 @@ function printRandomCities( city, cityId)
 	end
 	tools:setLoading(false,grpWelcome)
 end
-
-
 
 -------------------------------------
 -- Manda a la pantalla d home con la ciudad selecionada
@@ -277,6 +269,9 @@ function validateCity( event )
 	RestManager.getValidateCity(txtLocationW.text )
 end
 
+-------------------------------------
+-- valida que la ciudad exista
+-------------------------------------
 function returnValidateCity(result)
 
 	if (result) then
@@ -290,8 +285,12 @@ function returnValidateCity(result)
 	end
 end
 
+-------------------------------------
+-- Manda a la pantalla de home
+-- @params isTrue indica si se manda a la pantalla de home
+-- @params message texto
+-------------------------------------
 function returnLocationProfile( isTrue, message )
-	
 	if (isTrue) then
 		goToHome()
 	else
@@ -300,7 +299,6 @@ function returnLocationProfile( isTrue, message )
 			NewAlert(false, message)
 		end, 1 )
 	end
-	
 end
 
 --------------------------------
@@ -312,10 +310,12 @@ function closeAllWelcome( event )
 	return true
 end
 
+-----------------------------------------------
+-- Llama a la borbuja de mensajes no leidos
+-----------------------------------------------
 function showBubbleWelcome(total)
 	bubble()
 end
-
 
 ---------------------------------------------------------------------------------
 -- DEFAULT METHODS
@@ -338,7 +338,6 @@ function scene:create( event )
 	
 	grpWelcome = display.newGroup()
 	screen:insert(grpWelcome)
-	--grpWelcome.y = h
 	
 	local lastY = 250 + h
 	
@@ -410,12 +409,7 @@ function scene:create( event )
 	
 	lastY = intH - 60
 	
-	--[[local btnFilter0 = display.newRoundedRect( midW, lastY + 2, intW, 106, 0 )
-	btnFilter0:setFillColor( 225/255 )
-	grpWelcome:insert(btnFilter0)]]
-	
 	local btnFilter = display.newRect( midW, lastY, intW, 120 )
-	--btnFilter.anchorY = 0
 	btnFilter:setFillColor( 1 )
 	grpWelcome:insert(btnFilter)
 	btnFilter:addEventListener( 'tap', goFilter )
@@ -452,10 +446,9 @@ function scene:create( event )
 	end
 	
 	local RowIcon=display.newText(grpWelcome, "Ýá¢Ý©ä", 0, -15, native.systemFontBold,27 )
-                    RowIcon:setTextColor( 65, 227, 255)
-	
-    --RestManager.getUserAvatar()
-end	
+	RowIcon:setTextColor( 65, 227, 255)
+end
+
 -- Called immediately after scene has moved onscreen:
 function scene:show( event )
 	if ( event.phase == "will" ) then

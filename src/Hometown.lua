@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -29,23 +29,21 @@ local btnSearch = nil
 ---------------------------------------------------------------------------------
 -- FUNCIONES
 ---------------------------------------------------------------------------------
-function method()
-    
-end
 
+---------------------------------------------------------------------
+-- evento que se activa cuando se hace focus en el campo de ciudad
+---------------------------------------------------------------------
 function onTxtFocusHomeTown( event )
-	
 	if ( event.phase == "began" ) then
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		native.setKeyboardFocus(nil)
+	-- realiza la busqueda de ciudades cuando se cambia el valor actual
     elseif ( event.phase == "editing" ) then
-		--hace la busqueda de la ciudad
 		local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
 		btnSearch.city = ""
 		btnSearch.id = 0
 		RestManager.getCity(txtLocationHt.text, "hometown", grpHometown, itemOption )
     end
-	
 end
 
 -------------------------------------
@@ -65,7 +63,7 @@ function cleanTxtLocationH( event )
 end
 
 -------------------------------------
--- lSelecciona la ciudad 
+-- Selecciona la ciudad 
 -------------------------------------
 function selectCityHt( event )
 
@@ -110,32 +108,30 @@ function selectCityHt( event )
 	RestManager.getCityEn(txtLocationHt.text, "hometown", grpHometown, itemOption )
 	
 	txtLocationHt.text = event.target.city
-	
-	--btnSearch.city = event.target.city
-	--btnSearch.id = event.target.id
 	return true
 end
 
+--------------------------------------------
+-- Asigna el valor de la ciudades elegida
+--------------------------------------------
 function setItemCityHt( item )
 	if( #item > 0 ) then
 		btnSearch.city = item[1].description
 		btnSearch.id = item[1].place_id
 	end
-	--tools:setLoading(false,grpWelcome)
-	--txtLocationW.text = event.target.city
-	--txtLocationW.city = event.target.city
-	--txtLocationW.id = event.target.id
 end
 
+-------------------------------------------------------------------
+-- Muestra las ciudades disponibles de acuerdo al texto escrito
+-- @param item las opciones devueltas por el api de google place
+-------------------------------------------------------------------
 function OptionLocationHt( item )
-
 	if grpCityHt then
 		grpCityHt:removeSelf()
 	end
 	
 	grpCityHt = display.newGroup()
 	screen:insert(grpCityHt)
-	--grpCityHt.y = h
 	
 	local lastY = 355
 	local heiScroll = (btnSearch.y - txtLocationHt.y) - 100
@@ -180,9 +176,11 @@ function OptionLocationHt( item )
 		
 		lastY = lastY + heightItem + 5	
 	end
-	
 end
 
+----------------------------------------------
+-- Guarda la ciudad elegida en la bd local
+----------------------------------------------
 function saveCityHt( event )
 	if ( event.target.id ~= 0 ) then
 		RestManager.saveLocationProfile( event.target.city, event.target.id )
@@ -195,8 +193,12 @@ function saveCityHt( event )
 	end
 end
 
+---------------------------------------------------------------
+-- mensaje de alerta
+-- @param isTrue si es true manda a la pantalla de hometown
+-- @param message texto que mostrara la alerta
+----------------------------------------------------------------
 function returnLocationProfile( isTrue, message )
-	
 	if (isTrue) then
 		goToHomeHt()
 	else
@@ -205,11 +207,12 @@ function returnLocationProfile( isTrue, message )
 			NewAlert(false, message)
 		end, 1 )
 	end
-	
 end
 
+----------------------------------
+-- Manda a la pantalla de home
+----------------------------------
 function goToHomeHt( event )
-	--closeAllWelcome( 0 )
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
@@ -217,9 +220,6 @@ function goToHomeHt( event )
 	if textLocation == "" then
 		textLocation = 0
 	end
-	--DBManager.updateCity(textLocation, btnSearch.id)
-	--RestManager.saveCityU
-	
 	composer.gotoScene( "src.Home", { time = 400, effect = "fade" } )
 end
 
@@ -236,7 +236,6 @@ end
 -------------------------------
 function closeAllHometown( event )
 	native.setKeyboardFocus(nil)
-	--deleteGrpScrCity()
 	return true
 end
 
@@ -254,10 +253,6 @@ function scene:create( event )
     screen:insert(o)
 	o:addEventListener( 'tap', closeAllHometown )
 	
-	--tools = Tools:new()
-   -- tools:buildHeader()
-    --screen:insert(tools)
-	
 	local bgo = display.newRect( midW, 84, display.contentWidth, 10 )
 	bgo.anchorY = 0
 	bgo:setFillColor( 103/255, 67/255, 123/255 )
@@ -270,7 +265,6 @@ function scene:create( event )
 	
 	grpHometown = display.newGroup()
 	screen:insert(grpHometown)
-	--grpHometown.y = h
 	
 	local lastY = 250 + h
 	
@@ -290,6 +284,7 @@ function scene:create( event )
 	bgText:setFillColor( 1 )
 	grpHometown:insert(bgText)
 	
+	-- text location
 	txtLocationHt = native.newTextField( midW - 75, lastY, 540, 110 )
 	txtLocationHt.anchorY = 1
 	txtLocationHt.inputType = "default"
@@ -338,12 +333,13 @@ function scene:create( event )
     grpHometown:insert(lblSearch)
 	
 end	
--- Called immediately after scene has moved onscreen:
+
+-- Muestra la scena
 function scene:show( event )
 	
 end
 
--- Hide scene
+-- esconde scene
 function scene:hide( event )
 	native.setKeyboardFocus(nil)
 	if txtLocationHt then
@@ -351,7 +347,7 @@ function scene:hide( event )
 	end
 end
 
--- Destroy scene
+-- Destruye scene
 function scene:destroy( event )
 	if txtLocationHt then
 		txtLocationHt:removeSelf()

@@ -1,13 +1,12 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
 -- Encabezao general
 ---------------------------------------------------------------------------------
---require('src.Menu')
 require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
@@ -39,7 +38,6 @@ function Tools:new()
 			bgShadow.anchorX = 0
 			bgShadow.anchorY = 0
 			bgShadow:setFillColor( 0 )
-			--bgShadow:addEventListener( 'tap', showMenu)
         end
 		
 		local bgToolbar0 = display.newRect( midW, 84, display.contentWidth, 10 )
@@ -60,22 +58,18 @@ function Tools:new()
 			iconMenu.screen = 'Menu'
             iconMenu:addEventListener( 'tap', toScreen)
             self:insert( iconMenu )
-			
         else
-			
 			bgIcoBack = display.newRect( (intW/3)/2, 0, intW/3, 90 )
 			bgIcoBack.anchorY = 0
 			bgIcoBack:setFillColor( 68/255, 14/255, 98/255 )
 			bgIcoBack.screen = 'Home'
 			bgIcoBack.alpha = .01
 			bgIcoBack.isReturn = 1
-			--bgIcoBack:setFillColor( 1 )
 			bgIcoBack:addEventListener( 'tap', toScreen)
 			self:insert( bgIcoBack )
 		
             local icoBack = display.newImage("img/Regresar-icono.png")
             icoBack:translate(60, 45)
-			
             self:insert( icoBack )
 			
 			local lblIcoBack  = display.newText({
@@ -117,7 +111,6 @@ function Tools:new()
 			iconChat2.screen = 'Messages'
 			iconChat2:addEventListener( 'tap', toScreen)
 			grpChats:insert( iconChat2 )
-			--iconChat2.alpha = 0
 			
 			lblIconChat  = display.newText({
 				text = "", 
@@ -139,12 +132,13 @@ function Tools:new()
 				grpChats.alpha = 1
 			end
 		end
-			
     end
 	
-	--------------------------
+	------------------------------------------------------------------------------
     -- Creamos loading
-	--------------------------
+	-- @params isLoading indica si el loading se muestra u oculta
+	-- @params parent grupo donde se insertara el componente
+	------------------------------------------------------------------------------
     function self:setLoading(isLoading, parent)
         if isLoading then
             if grpLoading then
@@ -154,7 +148,6 @@ function Tools:new()
             grpLoading = display.newGroup()
             parent:insert(grpLoading)
             
-           -- local bg = display.newRect( (display.contentWidth / 2), (parent.height / 2), display.contentWidth, parent.height )
 			local bg = display.newRect( midW, midH, intW, intH )
             bg:setFillColor( .95 )
             bg.alpha = .3
@@ -199,9 +192,11 @@ function Tools:new()
         end
     end
 	
-	-------------------------------
+	-----------------------------------------------------------------------
     -- Creamos loading person
-	-------------------------------
+	-- @params isLoading indica si el loading se muestra u oculta
+	-- @params parent grupo donde se insertara el componente
+	-----------------------------------------------------------------------
 	function self:setLoadingPerson(isLoading, parent)
         if isLoading then
             if grpLoadingPerson then
@@ -253,9 +248,12 @@ function Tools:new()
         end
     end
 	
-	-----------------------------------------------------
+	------------------------------------------------------
 	-- creacion de mensaje de problema con la conexion
-	-----------------------------------------------------
+	-- @params isConnection indica si el mensaje se muestra u oculta
+	-- @params parent grupo donde se insertara el componente
+	-- @params message Texto informativo
+	------------------------------------------------------
 	function self:noConnection(isConnection, parent, message)
 		if isConnection then
             if grpConnection then
@@ -288,9 +286,11 @@ function Tools:new()
 	
 	---------------------------------------------------------------------
 	-- creacion de mensaje cuando no se encuentren mensajes o canales
+	-- @params isMesage indica si el mensaje se muestra u oculta
+	-- @params parent grupo donde se insertara el componente
+	-- @params message Texto informativo
 	---------------------------------------------------------------------
 	function self:NoMessages(isMesage, parent, message)
-	
 		if isMesage then
             if grpNoMessages then
                 grpNoMessages:removeSelf()
@@ -307,26 +307,21 @@ function Tools:new()
 			})
 			titleNoMessages:setFillColor( 0 )
 			grpNoMessages:insert( titleNoMessages )
-            
         else
             if grpNoMessages then
                 grpNoMessages:removeSelf()
                 grpNoMessages = nil
             end
         end
-		
 		return grpNoMessages
 	end
 	
 	-----------------------
-    -- Cambia pantalla
+    -- Cambia las scenas
+	-- @params event.target.screen scena
 	-----------------------
     function toScreen(event)
 		tools:setLoading(false,"")
-        -- Hide Menu
-        if bgShadow.alpha > 0 then
-            --showMenu()
-        end
         -- Animate    
         local t = event.target
         audio.play(fxTap)
@@ -341,13 +336,9 @@ function Tools:new()
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade", params = { item = itemProfile } } )
 			elseif t.screen == "LoginSplash" then
 				RestManager.clearUser()
-				--RestManager
-				--DBManager.clearUser()
-				--facebook.logout()
 			else
 				composer.gotoScene("src."..t.screen, { time = 400, effect = "fade" } )
 			end
-            
         end
         return true
     end
@@ -360,52 +351,10 @@ function Tools:new()
 		return true
 	end
 	
-	--[[function resultCleanUser(isTrue, message)
-		if not isReadOnly then
-			NewAlert(true,message )
-		end
-		timeMarker = timer.performWithDelay( 1000, function()
-			if isTrue == true then
-				
-				DBManager.clearUser()
-				facebook.logout()
-				deleteLoadingMenu()
-				composer.gotoScene("src.LoginSplash", { time = 400, effect = "fade" } )
-			end
-			NewAlert(false, message)
-		end, 1 )
-	end]]
-	
-	----------------------------------
-    -- Cerramos o mostramos shadow
-	----------------------------------
-    function showMenu(event)
-		local currentScene = composer.getSceneName( "current" )
-        if bgShadow.alpha == 0 then
-			componentActive = "menu"
-            self:toFront()
-			if currentScene == "src.Welcome" then
-				moveTextFieldWelcome(1152)
-			elseif currentScene == "src.Home" then
-				showOptionHome()
-			end
-            --bgShadow:addEventListener( 'tap', showMenu)
-            transition.to( bgShadow, { alpha = .3, time = 400, transition = easing.outExpo })
-            transition.to( scrMenu, { x = 0, time = 400, transition = easing.outExpo } )
-        else
-			componentActive = false
-			if currentScene == "src.Welcome" then
-				moveTextFieldWelcome(midW - 55)
-			end
-            --bgShadow:removeEventListener( 'tap', showMenu)
-            transition.to( bgShadow, { alpha = 0, time = 400, transition = easing.outExpo })
-            transition.to( scrMenu, { x = -500, time = 400, transition = easing.outExpo })
-        end
-        return true;
-    end
-	
 	-------------------------
-	--creamos una alerta
+	-- Creamos una alerta
+	-- @params isTrue indica si el mensaje se muestra u oculta
+	-- @params text Texto informativo
 	-------------------------
 	function NewAlert(isTrue, text)
 		if isTrue then
@@ -449,9 +398,11 @@ function Tools:new()
 	
 	------------------------------------------
 	-- alerta que se despliega desde abajo
+	-- @params isTrue indica si el mensaje se muestra u oculta
+	-- @params typeS Indica si es un mensaje exitoso o no
+	-- @params meessage Texto informativo
 	------------------------------------------
 	function alertLogin(isTrue, meessage, typeS)
-	
 		if isTrue then
 			if grpAlertLogin then
 				grpAlertLogin:removeSelf()
@@ -486,9 +437,7 @@ function Tools:new()
 			iconMessageSignIn.y = intH - 60
 			grpAlertLogin:insert(iconMessageSignIn)
 		
-			transition.to( grpAlertLogin, { y = 0, time = 600, transition = easing.outExpo, onComplete=function()
-				end
-			})
+			transition.to( grpAlertLogin, { y = 0, time = 600, transition = easing.outExpo, onComplete=function() end })
 		else
 			if grpAlertLogin then
 				transition.to( grpAlertLogin, { y = 200, time = 300, transition = easing.inQuint, onComplete=function()
@@ -499,7 +448,6 @@ function Tools:new()
 				end})
 			end
 		end
-	
 	end
 	
 	-------------------------------------------
@@ -534,8 +482,6 @@ function Tools:new()
 				grpScrCity = nil
 			end
 			if event.target.name == "residence" then
-				--getCityProfile(event.target.city, event.target.id)
-				
 				local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
 				RestManager.getCityEn(event.target.city, "residence", grpScrCity, itemOption )
 				
@@ -544,8 +490,6 @@ function Tools:new()
 				local itemOption = {posY = (intH/2 + h) - 100, posX = 335, height = 500, width = 538}
 	
 				RestManager.getCityEn(event.target.city, "location", grpScrCity, itemOption )
-			
-				--getCityFilter(event.target.city, event.target.id)
 			elseif event.target.name == "welcome" then
 				getCityWelcome(event.target.city, event.target.id)
 			end
@@ -553,11 +497,14 @@ function Tools:new()
 		return true
 	end
 	
-	---------------------------------------------------
+	-----------------------------------------------------------------
 	-- Muestra una lista de las ciudades por el nombre
 	-- @param item nombre de la ciudad y su pais
-	---------------------------------------------------
-	function showCities(item, name, parent, itemOption)
+	-- @param name del elemento
+	-- @param parent indica donde se insertara las opciones
+	-- @param itemOption coordenadas y tamaño de las opciones
+	-----------------------------------------------------------------
+	function showCities( item, name, parent, itemOption )
 		componentActive = "cities"
 		--elimina los componentes para crear otros
 		if grpScrCity then
@@ -568,10 +515,7 @@ function Tools:new()
 		grpScrCity = display.newGroup()
 		parent:insert( grpScrCity )
 		
-		local
-
-		--bgCompCity = display.newRect( 453, 324, 410, 340 )
-		bgCompCity = display.newRect( itemOption.posX, itemOption.posY, itemOption.width, itemOption.height )
+		local bgCompCity = display.newRect( itemOption.posX, itemOption.posY, itemOption.width, itemOption.height )
 		bgCompCity.anchorY = 0
 		bgCompCity:setFillColor( .88 )
 		grpScrCity:insert(bgCompCity)
@@ -580,7 +524,6 @@ function Tools:new()
 		if name == "residence" then
 			bgCompCity.anchorY = 1
 		end
-		
 		
 		--pinta la lista de las ciudades
 		if item ~= 0 then
@@ -614,29 +557,24 @@ function Tools:new()
 				})
 				lbl0:setFillColor( 0 )
 				grpScrCity:insert(lbl0)
-			
 				if name == "residence" then
 					posY = posY - (heightItem + 3)
 				else
 					posY = posY + (heightItem + 3)
 				end
-				
 			end
 			bgCompCity.height = (heightItem + 3) * #item + 2
-			
-		else
-	
 		end
 	end
 	
     return self
 end
 
+-----------------------------------------------------------------
+-- burbuja que muestra los mensaje no leidos por canal 
+-----------------------------------------------------------------
 function bubble()
-	print("hola")
-	print("bubble")
 	local currentScene = composer.getSceneName( "current" )
-	print(currentScene)
 	if currentScene == "src.Messages" or currentScene == "src.Message" then
 		grpChats.alpha = 0
 	else
@@ -656,8 +594,10 @@ function bubble()
 	end
 end
 
+-----------------------------------------------------------------
+-- Elimina la burbuja si no existe mensajes no leidos
+-----------------------------------------------------------------
 function noBubble()
-	print("no bubble")
 	if grpChats then
 		grpChats:removeSelf()
 		grpChats = nil
@@ -665,19 +605,18 @@ function noBubble()
 end
 
 function keuEve()
-
 	local openssl = require("plugin.openssl")
 	local cipher = openssl.get_cipher("aes-256-cbc")
-	
 	local encryptedData = cipher:encrypt ( "text", "key" )
-	
 	local mime = require ( "mime" )
 	local encryptedData = mime.b64 ( cipher:encrypt ( "text", "key" ) )
 	return true
 end
 
 
--- Return button Android Devices
+-----------------------------------------------------------------
+-- Evento del boton atras de android
+-----------------------------------------------------------------
 local function onKeyEventBack( event )
 	local phase = event.phase
 	local keyName = event.keyName
@@ -720,6 +659,9 @@ local function onKeyEventBack( event )
 	return false
 end
 
+-----------------------------------------------------------------
+-- Activa el boton atras de android
+-----------------------------------------------------------------
 if btnBackFunction == false then
 	btnBackFunction = true
 	Runtime:addEventListener( "key", onKeyEventBack )

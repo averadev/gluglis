@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -25,9 +25,8 @@ local scene = composer.newScene()
 local grpChat, grpTextField, grpBlocked
 
 -- Variables
+
 local posY 
-local scrChatY
-local scrChatH
 local txtMessage
 local poscList = 0
 local lastDate = ""
@@ -48,6 +47,10 @@ smile = smile.android
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
+---------------------------------------------
+-- Identifica y quita los emojis
+-- @param message texto para examinar
+---------------------------------------------
 function replaceSmiles(message)
 	local cont =  utf8.len( message )
 	local isEmoji = false
@@ -57,9 +60,7 @@ function replaceSmiles(message)
 			isEmoji = true
 			message = utf8.gsub( message, utf8.sub( message, i,i ), "😀", 1 )
 		end
-		--print( utf8.sub( message, i,i ) .. ", " .. string.len( utf8.sub( message, i,i ) ) )
 	end
-	
 	message = string.gsub( message, "😀", "" )
 	return message, isEmoji
 end
@@ -76,9 +77,7 @@ function setItemsMessages( items )
 			tmpList[poscI] = {date = item.fechaFormat, dateOnly = item.dateOnly}
 			poscI = poscI + 1
 		end
-		
 		local message, isEmoji = replaceSmiles(item.message)
-		
 		tmpList[poscI] = {id = item.id, isMe = item.isMe, message = message, time = item.hora, isRead = item.status_message, senderId = item.sender_id, image = item.image } 
 	end
 	tools:setLoading( false, screen )
@@ -109,29 +108,28 @@ end
 -----------------------
 function sentMessage()
 
+	-- Quita los espacios vacion del pricipio y final
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
 	componentActive = "blockChat"
-	--verifica que ninguno este bloqueado
+	-- Verifica que ninguno este bloqueado
 	if itemsConfig.blockMe == "open" and itemsConfig.blockYour == "open" then
 		componentActive = false
 		
+		--Quita los emojis
 		local message, isEmoji = replaceSmiles(txtMessage.text)
-		
+		-- Si solo existen emojis impide el envio del mensaje
 		if( isEmoji ) then
 			tools:noConnection( true, screen, "Emojis no permitidos" )
-				
 			timeMarker = timer.performWithDelay( 5000, function()
 				tools:noConnection( false, screen, "" )
 			end, 1 )
-				
 		end
-		
+		--verifica que el texto no esta vacio
 		if trimString(message) ~= "" then
 			local dateM = RestManager.getDate()
 			local poscD = #lblDateTemp + 1
-			--displaysInList("quivole carnal", poscD, dateM[2])
 			if NoMessage then
 				tools:NoMessages( false, scrChat, "" )
 				NoMessage:removeSelf()
@@ -141,10 +139,7 @@ function sentMessage()
 			
 			local itemTemp = {message = message, posc = poscD, fechaFormat = dateM[2], hora = language.MSGLoading, sender_id = settings.idApp }
 			displaysInList(itemTemp, true, imgUser)
-			
 			local newMessageText = trimString(message)
-			--print("Empieza")
-			
 			RestManager.sendChat( itemsConfig.channelId, newMessageText, poscD )
 			txtMessage.text = ""
 			native.setKeyboardFocus( nil )
@@ -160,12 +155,18 @@ function sentMessage()
 	return true
 end
 
+--------------------------------------------------------------
+-- Muestra los mensajes cuando se obtienen en tiempo real
+-- @param items chats recibidos
+-- @param last id del ultimo lenguaje leido
+---------------------------------------------------------------
 function showNewMessages( items, last )
 	for i = 1, #items, 1 do
 		if #items > 0 then
 			displaysInList(items[i], false, items[i].image )
 		end
 	end
+	-- actualiza los lenguajes no leidos
 	if last ~= '0' then
 		checkMessages(last)
 	end
@@ -176,9 +177,9 @@ end
 -- Prepara los datos para pintarlo en el scroll
 -- @param itemTemp informacion del mensaje
 -- @param isMe indica si el mensaje es nuestro
+-- @param image nombre de la imagen de avatar
 --------------------------------------------------
 function displaysInList(itemTemp, isMe, image)
-	print(itemTemp.message)
 	local message, isEmoji = replaceSmiles(itemTemp.message)
 	tmpList = nil
 	tmpList = {}
@@ -259,23 +260,17 @@ function toBack()
     composer.gotoScene( "src.Home", { time = 400, effect = "slideRight" } )
 end
 
-----------------------------------
+---------------------------------------------------------------
 -- esconde el teclado cuando se le da click a un area vacia
-----------------------------------
+---------------------------------------------------------------
 function hideKeyboard( event )
 	native.setKeyboardFocus( nil )
 	return true
 end
 
---[[function hideKeyboardSlider( event )
-	if ( event.phase == "ended" ) then
-		print('hola')
-		print(event.yStart)
-		print(event.y)
-    end
-	return true
-end]]
-
+-----------------------------------------------------------
+-- Quita el teclado cuando clickea afuera de el (scroll)
+------------------------------------------------------------
 function scrollListener( event )
 	if ( event.phase == "ended" ) then
 		if event.y - event.yStart == 0 then
@@ -410,89 +405,9 @@ function onTxtFocus( event )
     elseif ( event.phase == "ended") then
 		native.setKeyboardFocus( nil )
 	elseif (event.phase == "submitted" ) then
-		-- Envia el mensaje 
-		--sentMessage()
 		native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
     end
-end
-
-function string:split( inSplitPattern, outResults )
-
-   if not outResults then
-      outResults = {}
-   end
-   local theStart = 1
-   local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
-   while theSplitStart do
-      table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
-      theStart = theSplitEnd + 1
-      theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
-   end
-   table.insert( outResults, string.sub( self, theStart ) )
-   return outResults
-end
-
- function replaceSmiles3(message)
- 
-	
-	for i = 1, #smile, 1 do
-		message = string.gsub( message, smile[i].label, smile[i].replace )
-	end
-	
-	--print(message)
-	
-	--print(1111111)
-	 
-	local myTable = message:split("{U.1F6600}")
-	for i = 1,#myTable do
-	   print( myTable[i] )
-	end
-
-
-	local function replaceS(w)
-		--print(w)
-		return "   "
-	end
-
-	
-	
-	for i = 1, #smile, 1 do
-		--print( string.find( "ola k viene, ola k va", "%wola" ) )  
-		
-		
-		
-		--message = string.gsub( message, smile[i].label,   function(w) return replaceS(w) end )
-	end
-	
-	
-	
-	--sheet = graphics.newImageSheet(Sprites.smile.source, Sprites.smile.frames)
-	--smileActive = display.newSprite(sheet, Sprites.smile.sequences)
-	
-	--[[smileActive.x = 650
-	smileActive.y = midH / 2 
-	--grpLoading:insert(loading)
-	smileActive:setSequence("grinning")
-	smileActive:play()
-]]
-	for i = 1, #smile, 1 do
-		--print(string.gsub( message, smile[i].label,   function(w) return replaceS(w) end  ))
-		--string.gsub( message, smile[i].label,   function(w) return replaceS(w) end  )
-		--message = string.gsub( message, smile[i].label,   function(w) return replaceS(w) end )
-		--message = string.gsub( message, smile[i].label, smile[i].replace )
-	end
-	
-	--print("Empieza")
-	--print(message)
-	--local message = string.gsub( message, "😀", "" )
-	--print(message2)
-	--print("Termina")
-	
-	
-	
-	
-	return lblM
 end
 
 ----------------------------------------------------
@@ -525,10 +440,9 @@ function buildChat(poscD)
 		--muestra los mensajes
         else
 			
-			print(i.image)
-			
+			-- imagen de avatar del usuario
 			local image = i.image
-		local avatar = nil
+			local avatar = nil
 			local path = system.pathForFile( image, system.TemporaryDirectory )
 			local fhd = io.open( path )
 			if fhd then
@@ -542,8 +456,6 @@ function buildChat(poscD)
 				grpChat:insert( avatar )
 				local maskCircle80 = graphics.newMask( "img/maskCircle80.png" )
 				avatar:setMask( maskCircle80 )
-			else
-				
 			end
 			
 			local bgM0 = display.newRoundedRect( 100, posY, 502, 85, 5 )
@@ -559,12 +471,7 @@ function buildChat(poscD)
             bgM:setFillColor( 68/255, 14/255, 98/255 )
             grpChat:insert(bgM)
 			
-			--local rcpMsg = replaceSmiles(i.message)
-			
-			--print(rcpMsg)
-			
-			--local lblM = replaceSmiles(i.message)
-			
+			--mensaje
 			local lblM = display.newText({
 				text = i.message,     
 				x = 120, y = posY + 10,
@@ -574,34 +481,28 @@ function buildChat(poscD)
 			lblM.anchorX = 0
 			lblM.anchorY = 0
 			lblM:setFillColor( 1 )
-			--lblM:setFillColor( .1 )
 			grpChat:insert(lblM)
 			
-			--print(lblM.text)
-			
+			--ajusta el tama�o y forma del mensaje
 			if lblM.contentWidth > 450 then
                 lblM:removeSelf()
-                
-               lblM = display.newText({
+				lblM = display.newText({
                     text = i.message, 
                     width = 450,
                     x = 120, y = posY + 10,
                     font = fontFamilySmile,   
                     fontSize = 30, align = "left"
-                })
+				})
                 lblM.anchorX = 0
                 lblM.anchorY = 0
                 lblM:setFillColor( 1 )
                 grpChat:insert(lblM)
                 
                 if i.isMe then
-                    --lblM.x = 270
 					lblM.anchorX = 1
                     lblM.x = intW - 120
 					lblM:setFillColor( 68/255, 14/255, 98/255 )
                 end
-                --bgM.height = lblM.contentHeight + 46
-                --bgM0.height = lblM.contentHeight + 48
 				bgM.height = lblM.contentHeight + 46
                 bgM0.height = lblM.contentHeight + 48
             else
@@ -619,7 +520,7 @@ function buildChat(poscD)
                 end
             end
 			
-			--muestra un cargando mientra se confirma el mensaje v9
+			--muestra un cargando mientra se confirma el mensaje 
 			local lblTime = nil
 			if poscD ~= 0 then
 				lblDateTemp[poscD] = display.newText({
@@ -654,6 +555,7 @@ function buildChat(poscD)
 				end
 			end
 			
+			--muestra la palomita azul
 			if i.isMe == true then
 				if i.isRead == '1' or i.isRead == 1 then
 					local iconCheckBlue = display.newImage("img/icoFilterCheck.png")
@@ -720,14 +622,17 @@ function buildChat(poscD)
 end
 
 -----------------------------------
--- Muestra la imagen del usuario
+-- carga la imagen de usuario
 -----------------------------------
 function setImagePerfilMessage(items)
-	--obtiene los mensajes del canal
 	imgUser = items[1].image
+	--obtiene los mensajes del canal
 	RestManager.getChatMessages(itemsConfig.channelId)
 end
 
+------------------------------------------------------
+-- Inicia las peticiones de mensajes en tiempo real
+-------------------------------------------------------
 function messagesInRealTime()
 	if not timer1 then
 		timer1 = timer.performWithDelay( 300, function()
@@ -737,11 +642,11 @@ function messagesInRealTime()
 	end
 end
 
+------------------------------------------------------
+-- Crea la pantalla de mensajes
+-- @params item informacion del canal
+-------------------------------------------------------
 function toolMessage(item)
-	
-	--[[local bgH = display.newRect( midW, 50 + h, display.contentWidth, 100 )
-    bgH:setFillColor( 1 )
-    screen:insert(bgH)]]
 	
 	local bgH0 = display.newRect( midW, 84 + h, display.contentWidth, 10 )
 	bgH0.anchorY = 0
@@ -780,8 +685,6 @@ function toolMessage(item)
 	local bgName = display.newRect( midW, h, intW/3, 90 )
 	bgName.anchorY = 0
 	bgName:setFillColor( 45/255, 10/255, 65/255 )
-	--bgIcoHome.screen = 'Welcome'
-	--bgIcoHome:addEventListener( 'tap', toScreen)
 	screen:insert( bgName )
 	
 	local lblName  = display.newText({
@@ -795,7 +698,6 @@ function toolMessage(item)
 	screen:insert(lblName)
 	
 	--block
-	--local bgIcoBlock = display.newRect( intW - (intW/3)/2, h, intW/3, 90 )
 	local btnBlock = display.newRect( 640, h, intW/3, 90 )
 	btnBlock.anchorY = 0
 	btnBlock:setFillColor( 0/255, 174/255, 239/255 )
@@ -839,10 +741,6 @@ function scene:create( event )
 	o:setFillColor( 245/255 )
     screen:insert(o)
 	
-	--o:addEventListener( 'tap', hideKeyboard )
-	--o:addEventListener( 'touch', hideKeyboardSlider )
-	--bg component
-	
 	toolMessage(item)
 	
 	--scrollView
@@ -853,7 +751,6 @@ function scene:create( event )
         height = intH - 185 - h,
         scrollWidth = 600,
         scrollHeight = 800,
-		--backgroundColor = { 0.8, 0.8, 0.8 },
         hideBackground = true,
 		listener = scrollListener
     }
@@ -863,7 +760,6 @@ function scene:create( event )
 	
 	tools:setLoading(true,screen)
 	
-	--scrChat:addEventListener( 'tap', hideKeyboard )
 	--bg enviar
     local bgSendField = display.newRect( midW, intH - 45, intW, 90 )
     bgSendField:setFillColor( 68/255, 14/255, 98/255 )
@@ -891,12 +787,8 @@ function scene:create( event )
 	txtMessage.hasBackground = false
 	txtMessage:setTextColor( 1 )
 	txtMessage.placeholder = language.MSGWrite
-	--txtMessage:resizeHeightToFitFont()
 	grpTextField:insert( txtMessage )
-	--txtMessage.text = "§♫→↨☺☻♥♦♣♠•◘○↨$▼"
 	posY = 30
-	scrChatY = scrChat.y
-	scrChatH = scrChat.height
 	itemsConfig = {blockYour = item.blockYour, blockMe = item.blockMe, channelId = item.channelId, display_name = item.name } 
 	
 	--verifica si existe los avatares de loss usuarios
@@ -904,26 +796,10 @@ function scene:create( event )
 	local contI = 1
 	local imgExist = { settings.idApp .. ".png", item.recipientId .. ".png" }
 	
-	--[[for i = 1, #imgExist, 1 do
-		local path = system.pathForFile( imgExist[i], system.TemporaryDirectory )
-		local fhd = io.open( path )
-		if not fhd then
-			contI = contI + 1
-		else
-			fhd:close()
-		end
-	end]]
+	--obtiene las imagenes de los usuarios
 	RestManager.getImagePerfilMessage( item.recipientId )
-	--[[if ( contI > 0 ) then
-		--descarga las imagenes en caso de no existir
-		RestManager.getImagePerfilMessage( item.recipientId )
-	else
-		--obtiene los mensajes del canal
-		RestManager.getChatMessages(item.channelId)
-	end]]
 	
 	grpTextField:toFront()
-
 end
 	
 -- Called immediately after scene has moved onscreen:
@@ -936,9 +812,11 @@ end
 -- Hide scene
 function scene:hide( event )
 	native.setKeyboardFocus( nil )
+	--cancela la carga de mensajes en tiempo real
 	if timer1 then
 		timer.cancel( timer1 ) 
 	end
+	--elimina el textField
 	if grpTextField then
 		grpTextField:removeSelf()
 		grpTextField = nil

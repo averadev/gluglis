@@ -21,6 +21,7 @@ local RestManager = require('src.resources.RestManager')
 local screen, grpScreens
 local scene = composer.newScene()
 
+
 -- Variables
 local subFig = ""
 local bgSplash2
@@ -32,7 +33,6 @@ local sshots = {}
 local labelTitle, labelSubTitle, grpTerms
 
 local setting = DBManager.getSettings()
---print(language.headerMap)
 
 ---------------------------------------------------------------------------------
 -- FUNCIONES
@@ -55,9 +55,11 @@ function toLoginFree( event )
     composer.gotoScene( "src.Home", { time = 400, effect = "crossFade" })
 end
 
-----------------------------------------------------------
+-----------------------------------------------------------------------------
 --llama a la pantalla de home(si el logueo fue exitoso)
-----------------------------------------------------------
+-- @params SignUp Indica si es la primera vezs que un usuario se logue
+-- si es correcto manda a la pantalla "Hometown" para elegir tu ubicacion
+-----------------------------------------------------------------------------
 function gotoHome(SignUp)
 	isReadOnly = false
 	if( SignUp ) then
@@ -141,14 +143,14 @@ function tapTerms()
 end
 
 ----------------------------------------------------------------
---evento que se dispara cuando se inicia el loqueo por face
+-- evento que se dispara cuando se inicia el loqueo por face
 ----------------------------------------------------------------
 function facebookListener( event )
-	--pide los datos del usuario
+	-- pide los datos del usuario
     if ( "session" == event.type ) then
 		local params = { fields = "id,name,first_name,last_name,gender,locale,email,birthday,location" }
         facebook.request( "me", "GET", params )
-	--resibe los datos pedidos y verifica el loqueo
+	-- recibe los datos pedidos y verifica el loqueo
     elseif ( "request" == event.type ) then
         local response = event.response
 		if ( not event.isError ) then
@@ -176,7 +178,6 @@ function facebookListener( event )
                 RestManager.createUser(userLogin, response.email, '', response.name, response.gender, birthday, location, response.id, playerId)
             end
         else
-			-- printTable( event.response, "Post Failed Response", 3 )
 		end
     end
 end
@@ -188,6 +189,7 @@ function loginFB(event)
 	--se inicia el login y pide los perrmisos
     facebook.login( facebookListener, {"public_profile","email","user_birthday","user_location"} )
 end
+
 ----------------------------------------------
 -- Le da movimiento a las pantallas del cel
 ----------------------------------------------
@@ -248,6 +250,7 @@ function touchScreen(event)
         end
     end
 end
+
 ----------------------------------------
 -- Mueve el encabezado y los circulos
 ----------------------------------------

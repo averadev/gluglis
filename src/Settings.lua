@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -37,8 +37,10 @@ function noAction( event )
 	return true
 end
 
+---------------------------------------------
+-- Cambia el lenguaje
+---------------------------------------------
 function saveSettings( event )
-	--print( lblLanguage.value )
 	DBManager.updatLanguage(lblLanguage.value)
 	local setting = DBManager.getSettings()
 	language = require('src.resources.Language')
@@ -57,6 +59,9 @@ function saveSettings( event )
 	return true
 end
 
+---------------------------------------------
+-- Selecciona la opcion del lenguaje
+---------------------------------------------
 function selectOptionComboS( event )
 	local t = event.target
 	
@@ -68,14 +73,13 @@ function selectOptionComboS( event )
 	
 	return true
 end
-
+---------------------------------------------
+-- Muestra el combobox
+---------------------------------------------
 function showComboBoxS( event )
 	t = event.target
 	showComboBox(t.name, t.option, t )
 end
-
-
-
 
 -------------------------------------------------
 -- Creacion de los togle buttons
@@ -86,14 +90,7 @@ function createComboBoxS(item, name, coordY, coordX )
 	local setting = DBManager.getSettings()
 	coordY = coordY - 25
 	-- BG Component
-	--intW - 65, coordY, 400 , 90
-	--[[local bg0CheckAcco = display.newRect( intW - 65, coordY, 400, 90 )
-	bg0CheckAcco.anchorY = 0
-	bg0CheckAcco.anchorX = 1
-	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
-	scrPerfile:insert(bg0CheckAcco)]]
 	local bg0CheckAcco = display.newRect( intW - 65, coordY + 25, 400, 90 )
-	--bg0CheckAcco.anchorY = 0
 	bg0CheckAcco.anchorX = 1
 	bg0CheckAcco:setFillColor( 1 )
 	bg0CheckAcco.name = name
@@ -119,7 +116,7 @@ function createComboBoxS(item, name, coordY, coordX )
 		lblLanguage = display.newText({
 			text = nameL,
 			x = coordX + 65, y = coordY + 25,
-			width = 360, --height = 30,
+			width = 360,
 			font = fontFamilyBold,   
 			fontSize = 26, align = "right"
 		})
@@ -143,7 +140,6 @@ function createSetting()
     local opt = {
         {label= language.SChangeLanguage, wField = 380, x = 660, nameField = "language", type="comboBox"},  
 	}
-		
 	--group Filter
 	local line = display.newLine( 0, posY - 53 , intW, posY - 53 )
 	line:setStrokeColor( 227/255 )
@@ -151,7 +147,6 @@ function createSetting()
 	grpSettings:insert(line)
 	
 	for i=1, #opt do
-		
 		local bgField = display.newRect( midW, posY, intW, 100 )
 		bgField:setFillColor( 1 )
 		grpSettings:insert(bgField)
@@ -174,7 +169,6 @@ function createSetting()
 		if ( opt[i].type == "comboBox" ) then
 			createComboBoxS("", opt[i].nameField, posY - 2, 380)
 		end
-    
 		posY = posY + 102
     end 
 	
@@ -198,8 +192,6 @@ function scene:create( event )
 	grpTextField = display.newGroup()
 	--bg screen
     local o = display.newRoundedRect( midW, midH + h, intW+8, intH, 0 )
-	--o:addEventListener( 'touch', listenerSlider )
-	--o:addEventListener( 'tap', closeAll )
 	o:setFillColor( 245/255 )
     screen:insert(o)
 	
@@ -211,7 +203,6 @@ function scene:create( event )
 	--group Filter
 	grpSettings = display.newGroup()
 	screen:insert(grpSettings)
-	--grpFilter.y = h
 	
 	-- Opciones
 	langOpt = {
@@ -240,9 +231,6 @@ function scene:create( event )
     })
     lblSaveSettings:setFillColor( 1 )
 	grpSettings:insert(lblSaveSettings)
-	
-   
-   
 	
 end	
 -- Called immediately after scene has moved onscreen:

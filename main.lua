@@ -1,12 +1,12 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
----------------------------
---------- aundio ----------
----------------------------
+-----------------------------------------
+--------------- aundio ------------------
+-----------------------------------------
 
 -- Set the audio mix mode to allow sounds from the app to mix with other sounds from the device
 if audio.supportsSessionProperty == true then
@@ -27,6 +27,7 @@ if audio.supportsSessionProperty == true then
 	end
 end
 
+--Includes
 display.setStatusBar( display.TranslucentStatusBar )
 local json = require("json")
 require('src.resources.Globals')
@@ -34,12 +35,14 @@ local composer = require( "composer" )
 local DBManager = require('src.resources.DBManager')
 display.setDefault( "background", 0 )
 
+--obtiene el usuario y/o crea la base de datos local
 local isUser = DBManager.setupSquema()
 
+--obtiene la configuracion de usuario
 local setting = DBManager.getSettings()
---Globals.language = Globals.language.setting.language
+--obtiene los lenguajes disponibles
 language = require('src.resources.Language')
---selecciona el lenguaje del dispositivo
+--asigna el lenguaje 
 if setting.language == "es" then language = language.es
 elseif setting.language == "en" then language = language.en
 elseif setting.language == "it" then language = language.it
@@ -49,6 +52,7 @@ elseif setting.language == "zh" then language = language.zh
 elseif setting.language == "he" then language = language.he 
 else language = language.en end
 
+--verifica que exista un usuario logueado
 if isUser then
 	composer.removeScene( "src.Welcome" )
 	composer.gotoScene( "src.Welcome", { time = 400, effect = "fade"})
@@ -75,10 +79,8 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				local currScene = composer.getSceneName( "current" )
 				--si la scena actual es message pinta los nuevos mensajes 
 				if currScene == "src.Message" then
-					--displaysInList(item[1], false )
 				else
 					system.vibrate()
-					--OneSignal.EnableVibrate(true)
 					local RestManager = require('src.resources.RestManager')
 					RestManager.getUnreadChats()
 				end
@@ -98,9 +100,6 @@ function DidReceiveRemoteNotification(message, additionalData, isActive)
 				local RestManager = require('src.resources.RestManager')
 				local item = json.decode(additionalData.item)
 				local tmpListMain = {}
-				--native.setProperty( "applicationIconBadgeNumber", item[1].totalNoRead )
-				--print(item[1].totalNoRead)
-				--print("hola mundo")
 				tmpListMain[1] = {id = item[1].id, image = item[1].image, image2 = item[1].image2, name = item[1].display_name, subject = item[1].message, channelId = item[1].channel_id, blockYour = item[1].blockYour, blockMe = item[1].blockMe, recipientId = item[1].id  }
 				composer.removeScene( "src.Message" )
 				composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = tmpListMain[1] } } )
@@ -128,6 +127,3 @@ end
 -- llama a la funcion para obtener el token del telefono
 ------------------------------------------------
 OneSignal.IdsAvailableCallback(IdsAvailable)
-
---------------
----------------

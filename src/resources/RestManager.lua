@@ -1,15 +1,23 @@
+---------------------------------------------------------------------------------
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
+---------------------------------------------------------------------------------
+
 --Include sqlite
 local RestManager = {}
 
+	---------------------------------------------------------------------------------
+	-- OBJETOS Y VARIABLES
+	---------------------------------------------------------------------------------
+	-- Includes
 	local mime = require("mime")
 	local json = require("json")
 	require('src.resources.Globals')
 	local crypto = require("crypto")
 	local openssl = require( "plugin.openssl" )
 	local cipher = openssl.get_cipher("aes-256-cbc")
-	--local Globals = require('src.resources.Globals')
 	local DBManager = require('src.resources.DBManager')
-  
 	local settings = DBManager.getSettings()
 	local site = settings.url
 
@@ -28,9 +36,10 @@ local RestManager = {}
     end
 	
 	---------------------------------- Pantalla Login ----------------------------------
-	---------------------------------------------
+	-----------------------------------------------
     -- da de alta un nuevo usuario por facebook
-    ---------------------------------------------
+	--@params informacion del nuevo usuario
+    -----------------------------------------------
 	RestManager.createUser = function(userLogin, email, password, name, gender, birthday, location, facebookId, playerId)
 	
 		settings = DBManager.getSettings()
@@ -42,7 +51,6 @@ local RestManager = {}
 		password = string.gsub( password, "%%", '&#37;' )
 		
         -- Set url
-		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -58,9 +66,6 @@ local RestManager = {}
 		end
 		if birthday ~= "" then
 			url = url.."/birthday/"..urlencode(birthday)
-		end
-		if location ~= "" then
-			--url = url.."/location/"..urlencode(location)
 		end
 		if facebookId ~= "" then
 			url = url.."/facebookId/"..urlencode(facebookId)
@@ -89,6 +94,10 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	-----------------------------------------------
+    -- Encrypta la contraseña por openssl
+	-- @params pass contraseña a encriptar
+    -----------------------------------------------
 	function encryptedPass(pass)
 		local encryptedData = cipher:encrypt ( pass, "key" )
 		local mime = require ( "mime" )
@@ -99,6 +108,7 @@ local RestManager = {}
 	---------------------------------- Pantalla Login ----------------------------------
 	-------------------------------------
     -- da de alta un nuevo usuario
+	-- @params usuario, email, contraseña y token de notificaciones
     -------------------------------------
 	RestManager.createUserNormal = function(userLogin, email, password, playerId)
 	
@@ -110,7 +120,6 @@ local RestManager = {}
 		password = string.gsub( password, "\\", '&#92;' )
 		password = string.gsub( password, "%%", '&#37;' )
         -- Set url
-		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/createUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -147,6 +156,7 @@ local RestManager = {}
 	
 	--------------------------
 	-- valida el logueo
+	-- @params email, contraseña y token de notificaciones
 	-------------------------
 	RestManager.validateUser = function( email, password, playerId )
 	
@@ -159,7 +169,6 @@ local RestManager = {}
 		password = string.gsub( password, "\\", '&#92;' )
 		password = string.gsub( password, "%%", '&#37;' )
 		-- Set url
-		--password = crypto.digest(crypto.md5, password)
         local url = site
         url = url.."api/validateUser/format/json"
         url = url.."/idApp/"..settings.idApp
@@ -197,9 +206,9 @@ local RestManager = {}
 	
 	---------------------------------- Pantalla Messages ----------------------------------
 	
-    -------------------------------------
+    ---------------------------------------
     -- Obtiene la lista de los mensajes
-    -------------------------------------
+    ---------------------------------------
 	RestManager.getListMessageChat = function()
 	
 		settings = DBManager.getSettings()
@@ -211,8 +220,6 @@ local RestManager = {}
         url = url.."/idApp/"..settings.idApp
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
-		--url = url.."/timeZone/" .. urlencode("-5")
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -300,67 +307,12 @@ local RestManager = {}
 	-- @param message mensaje a enviar
 	-- @param poscM posicion en la que esta colocado el chat
     ------------------------------------------------------------
-	--[[RestManager.sendChat = function(channelId, message, poscM)
-		settings = DBManager.getSettings()
-		site = settings.url
-        -- Set url
-        local url = site
-        url = url.."api/saveChat/format/json"
-        url = url.."/idApp/" .. settings.idApp
-		url = url.."/channelId/" .. channelId
-		url = url.."/message/" .. urlencode(message)
-		url = url.."/timeZone/" .. urlencode(timeZone)
-		url = url.."/language/"..urlencode(settings.language)
-		print(url)
-		print("Enviando mensaje")
-        local function callback(event)
-            if ( event.isError ) then
-				noConnectionMessages("Error con el servidor")
-            else
-                local data = json.decode(event.response)
-				if data then
-					if data.success then
-						if #data.items > 0 then
-							--cambia la fecha en la que se envio el mensaje
-							changeDateOfMSG(data.items[1],poscM)
-						else
-							noConnectionMessage(language.RMErrorServer)
-						end
-					else
-						noConnectionMessage(language.RMErrorServer)
-					end
-				else
-					noConnectionMessage(language.RMErrorServer)
-				end
-            end
-            return true
-        end
-        -- Do request
-		if networkConnection then
-			network.request( url, "GET", callback )
-		else
-			noConnectionMessage(language.RMNoInternetConnection)
-		end
-    end]]
-	
-	------------------------------------------------------------
-    -- Envia los mensajes del chat
-    -- @param channelId identificador del canal de los mensajes
-	-- @param message mensaje a enviar
-	-- @param poscM posicion en la que esta colocado el chat
-    ------------------------------------------------------------
 	RestManager.sendChat = function(channelId, message, poscM)
 		settings = DBManager.getSettings()
 		site = settings.url
         -- Set url
         local url = site
 		url = url.."api/saveChat2"
-		--url = url.."api/saveChat/format/json"
-        --[[url = url.."/idApp/" .. settings.idApp
-		url = url.."/channelId/" .. channelId
-		url = url.."/message/" .. urlencode(message)
-		url = url.."/timeZone/" .. urlencode(timeZone)
-		url = url.."/language/"..urlencode(settings.language)]]
 		
 		local function networkListener( event )
 			if ( event.isError ) then
@@ -369,8 +321,6 @@ local RestManager = {}
 				local data = json.decode(event.response)
 				if data then
 					if data.success then
-						print(data.success)
-						print(data.messa)
 						if #data.items > 0 then
 							--cambia la fecha en la que se envio el mensaje
 							changeDateOfMSG(data.items[1],poscM)
@@ -411,7 +361,9 @@ local RestManager = {}
 		
     end
 	
-	
+	---------------------------------------
+    -- Obtiene los mensajes no leidos
+    ---------------------------------------
 	RestManager.getMessagesByChannel = function(channelId)
 	
 		settings = DBManager.getSettings()
@@ -422,7 +374,6 @@ local RestManager = {}
 		url = url.."/channelId/" .. channelId
 		url = url.."/timeZone/" .. urlencode(timeZone)
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -544,9 +495,6 @@ local RestManager = {}
         url = url.."/idApp/" .. settings.idApp
 		url = url.."/recipientId/" .. recipientId
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
-		--url = url.."/channelId/" .. channelId
-		--url = url.."/idMessage/" .. idMessage
         local function callback(event)
             if ( event.isError ) then
 				noConnectionMessages(language.RMErrorServer)
@@ -559,12 +507,8 @@ local RestManager = {}
 							loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = data.items})
 						else
 							--notificamos que no existen chats
-							--notListMessages()
 							noConnectionMessage(language.RMErrorServer)
 						end
-						
-						
-						
 					else
 						noConnectionMessage(language.RMErrorServer)
 					end
@@ -580,23 +524,20 @@ local RestManager = {}
 		else
 			noConnectionMessage(language.RMNoInternetConnection)
 		end
-		--settings = DBManager.getSettings()
-		--site = settings.url
-        --loadImage({idx = 0, name = "MessageAvatars", path = "assets/img/avatar/", items = item})
     end
 
     ---------------------------------- Pantalla HOME ----------------------------------
 	
-	-------------------------------------
+	---------------------------------------------------------------------
     -- Obtiene los datos del usuario por id
-    -------------------------------------
+	-- @params after indica que pasara cuando se consulten los datos
+    ---------------------------------------------------------------------
     RestManager.getUsersById = function(after)
 		settings = DBManager.getSettings()
 		local site = settings.url
         local url = site.."api/getUsersById/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/language/"..urlencode(settings.language)
-		print(url)
         local function callback(event)
             if ( event.isError ) then
             else
@@ -635,16 +576,16 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
-    ---------------------------------------
+    -----------------------------------------
     -- Obtiene los usuarios por ubicacion
-    ---------------------------------------
+	-- @params limit paginador
+    -----------------------------------------
     RestManager.getUsersByCity = function(limit)
 		settings = DBManager.getSettings()
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByCity/format/json"
 		url = url.."/idApp/" .. settings.idApp
 		url = url.."/version/v2"
-		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
@@ -684,16 +625,12 @@ local RestManager = {}
 		local settFilter = DBManager.getSettingFilter()
         local url = site.."api/getUsersByFilter/format/json"
 		url = url.."/idApp/" 	.. settings.idApp
-		--url = url.."/city/" 	.. urlencode(settFilter.city)
 		url = url.."/version/v2"
 		url = url.."/city/" 	.. urlencode(settFilter.cityId)
-		--url = url.."/iniDate/" 	.. urlencode(settFilter.iniDate)
-		--url = url.."/endDate/" 	.. urlencode(settFilter.endDate)
 		url = url.."/genH/" 	.. settFilter.genH
 		url = url.."/genM/" 	.. settFilter.genM
 		url = url.."/iniAge/" 	.. settFilter.iniAge
 		url = url.."/endAge/" 	.. settFilter.endAge
-		--url = url.."/accommodation/" .. urlencode(settFilter.accommodation)
 		url = url.."/limit/" .. urlencode(limit)
 		url = url.."/language/"..urlencode(settings.language)
 		
@@ -726,6 +663,7 @@ local RestManager = {}
 	
 	 ---------------------------------------
     -- Obtiene los usuarios falsos
+	-- @params limit paginador
     ---------------------------------------
     RestManager.getUsersDemo = function(limit)
 		settings = DBManager.getSettings()
@@ -828,13 +766,10 @@ local RestManager = {}
 						unreadChats = data.items
 						require('src.Tools')
 						bubble()
-						--showBubbleWelcome()
 					else
-						print( language.RMErrorServer )
 						--noConnectionMessages( language.RMErrorServer )
 					end
 				else
-					print( language.RMErrorServer )
 					--noConnectionMessages( language.RMErrorServer )
 				end
             end
@@ -846,7 +781,6 @@ local RestManager = {}
 		else
 			--notifica si no existe conexion a internet
 			--noConnectionMessages( language.RMNoInternetConnection )
-			print( language.RMNoInternetConnection )
 		end
     end
 	
@@ -871,7 +805,6 @@ local RestManager = {}
 				if data then
 					showNewConversation(data.item)
 				end
-				--loadImage({idx = 0, name = "HomeAvatars", path = "assets/img/avatar/", items = data.items})
             end
             return true
         end
@@ -888,7 +821,6 @@ local RestManager = {}
     -- Actualiza los datos del usuario
 	--@param idUser usuario con que se iniciara el chat
     -------------------------------------
-    --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
 	RestManager.saveProfile = function(UserName, birthdate, hobbies, name, lastName, gender, originCountry, residence, residenceTime, accommodation, vehicle, food, languages, race, workArea, ownAccount, pet, sport, smoke, drink, psychrotrophic, idResidence )
 		settings = DBManager.getSettings()
 		site = settings.url
@@ -925,10 +857,6 @@ local RestManager = {}
 		if residenceTime ~= language.MpSelect then
 			url = url.."/residenceTime/" .. urlencode(residenceTime)
 		end
-		--[[if emailContact ~= '' then
-			url = url.."/emailContact/" .. urlencode(emailContact)
-		end]]
-		--url = url.."/availability/" .. urlencode(availability)
 		url = url.."/accommodation/" .. urlencode(accommodation)
 		url = url.."/vehicle/" .. urlencode(vehicle)
 		url = url.."/food/" .. urlencode(food)
@@ -945,8 +873,6 @@ local RestManager = {}
 		url = url.."/hobbies/" .. urlencode(hobbies2)
 		url = url.."/language/" .. urlencode(language2)
 		url = url.."/sport/" .. urlencode(sport2)
-		
-		--url = url.."/language/"..urlencode(settings.language)
         local function callback(event)
             if ( event.isError ) then
 				resultSaveProfile( false, event.error)
@@ -974,7 +900,6 @@ local RestManager = {}
 	
 	function uploadImage(photophoto)
 	
-		--changeImageAvatar(photophoto)
 		
 		-- Callback function to handle the upload events that are generated.
 		-- There will be several events: one to indicate the start and end of the
@@ -990,22 +915,13 @@ local RestManager = {}
 			else
 				if ( event.phase == "began" ) then
 					print( "Upload started" )
-					--native.showAlert( "Gluglis", "Upload started", { "OK" } )
 				elseif ( event.phase == "progress" ) then
 					print( "Uploading... bytes transferred ", event.bytesTransferred )
-					--native.showAlert( "Gluglis", "Network Errorr.", { "OK", "Network Errorr." } )
 				elseif ( event.phase == "ended" ) then
-					--native.showAlert( "Gluglis", "Upload ended", { "OK" } )
-					--native.showAlert( "Gluglis", "Status. " .. event.status, { "OK" } )
-					--native.showAlert( "Gluglis", "Response. " .. event.response , { "OK" } )
 					print( "Upload ended..." )
 					print( "Status:", event.status )
 					print( "Response:", event.response )
-					--native.showAlert( "Gluglis", event.status, { "OK" } )
-					--print()
-					
 					if event.status == 201 then
-						
 						changeImageAvatar(json.decode(event.response))
 					end
 				end
@@ -1041,70 +957,11 @@ local RestManager = {}
 		
 	end
 	
-	function uploadImage2(photophoto)
-	
-		local function uploadListener2( event )
-		   if ( event.isError ) then
-			  print( "Network Error." )
-		 
-			  -- This is likely a time out or server being down. In other words,
-			  -- It was unable to communicate with the web server. Now if the
-			  -- connection to the web server worked, but the request is bad, this
-			  -- will be false and you need to look at event.status and event.response
-			  -- to see why the web server failed to do what you want.
-		   else
-			  if ( event.phase == "began" ) then
-				 print( "Upload started" )
-			  elseif ( event.phase == "progress" ) then
-				 print( "Uploading... bytes transferred ", event.bytesTransferred )
-			  elseif ( event.phase == "ended" ) then
-				 print( "Upload ended..." )
-				 print( "Status:", event.status )
-				 print( "Response:", event.response )
-			  end
-		   end
-		end	
-	
-		-- Sepcify the URL of the PHP script to upload to. Do this on your own server.
-		-- Also define the method as "PUT".
-		--local url = "http://192.168.1.77:8080/gluglis_api2/upload/uploadImage"
-		local url = site.."upload/uploadImage"
-		local method = "PUT"
-		 
-		-- Set some reasonable parameters for the upload process:
-		local params = {
-		   timeout = 60,
-		   progress = true,
-		   bodyType = "binary"
-		}
-		
-		
-		-- Specify what file to upload and where to upload it from.
-		-- Also, set the MIME type of the file so that the server knows what to expect.
-		local filename =  photophoto .. ".jpg"
-		local baseDirectory = system.TemporaryDirectory
-		local contentType = "image/jpeg"  --another option is "text/plain"
-		 
-		-- There is no standard way of using HTTP PUT to tell the remote host what
-		-- to name the file. We'll make up our own header here so that our PHP script
-		-- expects to look for that and provides the name of the file. Your PHP script
-		-- needs to be "hardened" because this is a security risk. For example, someone
-		-- could pass in a path name that might try to write arbitrary files to your
-		-- server and overwrite critical system files with malicious code.
-		-- Don't assume "This won't happen to me!" because it very well could.
-		local headers = {}
-		headers.filename = filename
-		params.headers = headers
-		 
-		network.upload( url , method, uploadListener, params, filename, baseDirectory, contentType )
-	
-	end
-	
-	------------------------------------
-    -- Actualiza los datos del usuario
-	--@param idUser usuario con que se iniciara el chat
-    -------------------------------------
-    --RestManager.saveProfile = function(name, residence, accommodation, vehicle, available, hobbies, language)
+	---------------------------------------------------------
+    -- Guarda la residencia actual de usuario
+	-- @param residence Nombre de la ciudad
+	-- @param idResidence place_id de la ciudad
+    ----------------------------------------------------------
 	RestManager.saveLocationProfile = function( residence, idResidence )
 		
 		settings = DBManager.getSettings()
@@ -1138,7 +995,7 @@ local RestManager = {}
     end
 	
 	-------------------------------------
-    -- Obtiene la lista de hobbies
+    -- Obtiene la lista de hobbies, lenguajes
     -------------------------------------
     RestManager.getHobbies = function()
 		settings = DBManager.getSettings()
@@ -1168,9 +1025,13 @@ local RestManager = {}
     end
 	
 	---------------------------------- Pantalla FILTER ----------------------------------
-    -------------------------------------
+    ---------------------------------------------------------------------
     -- Obtiene los usuarios por ubicacion
-    -------------------------------------
+	-- @params city nombre de la ciudad
+	-- @params name nombre de la pantalla
+	-- @params parent donde se inserta los datos
+	-- @params itemOption coordenadas y tamaño de los componentes
+    ---------------------------------------------------------------------
     RestManager.getCity = function(city,name,parent, itemOption)
 		settings = DBManager.getSettings()
 		site = settings.url
@@ -1204,6 +1065,13 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	---------------------------------------------------------------------
+	-- Obtiene la identificacion del lugar en ingles
+	-- @params city nombre de la ciudad
+	-- @params name nombre de la pantalla
+	-- @params parent donde se inserta los datos
+	-- @params itemOption coordenadas y tamaño de los componentes
+	---------------------------------------------------------------------
 	RestManager.getCityEn = function(city,name,parent, itemOption)
 		settings = DBManager.getSettings()
 		site = settings.url
@@ -1229,7 +1097,6 @@ local RestManager = {}
 						end
 						
 					elseif data.status == "ZERO_RESULTS" then
-						--showCities(0, name, parent)
 					end
 				else
 				end
@@ -1284,6 +1151,9 @@ local RestManager = {}
         RandomCities()
     end
 	
+	------------------------------------------
+    -- Obtiene las ciudades aleatoriamente
+    ------------------------------------------
 	function RandomCities()
 		settings = DBManager.getSettings()
 		site = settings.url
@@ -1311,12 +1181,14 @@ local RestManager = {}
 		network.request( url, "GET", callback )
     end
 	
+	----------------------------------------------
+    -- Obtiene las ciudades por identificador
+    ----------------------------------------------
 	function getCityById(cityId)
 		settings = DBManager.getSettings()
 		site = settings.url
 		local url = "https://maps.googleapis.com/maps/api/place/details/json?placeid="
 		url = url .. cityId
-		--url = url.."&language=en"
 		url = url.."&types=(cities)&key=AIzaSyA01vZmL-1IdxCCJevyBdZSEYJ04Wu2EWE"
         local function callback(event)
             if ( event.isError ) then
@@ -1364,16 +1236,11 @@ local RestManager = {}
     -- @param obj registros de la consulta con la propiedad image
     ------------------------------------- 
     function loadImage(obj)
-	
-	
-		
         -- Next Image
         if obj.idx < #obj.items then
-			
             -- actualizamos index
             obj.idx = obj.idx + 1
             -- Determinamos si la imagen existe
-           -- local img = obj.items[obj.idx].image
 			local img2 = obj.items[obj.idx].image2
 			local img = obj.items[obj.idx].image
 			
@@ -1433,11 +1300,9 @@ local RestManager = {}
 				if event.target then
 					event.target:removeSelf()
 					event.target = nil
-					--loadImage(obj)
 					setImagePerfil(photophoto)
 				else
 					setImagePerfil("avatar.png")
-					--loadImage(obj)
 				end
 			end
 		end
@@ -1446,7 +1311,6 @@ local RestManager = {}
 		
 		display.loadRemoteImage( url ,"GET", imageListener2, photophoto, system.TemporaryDirectory ) 
 		-- Dirigimos al metodo pertinente
-		--goToMethod(obj)
     end
 	
 	-------------------------------------

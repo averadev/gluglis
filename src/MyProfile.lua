@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -14,6 +14,7 @@ local widget = require( "widget" )
 require( 'src.components.DatePicker' )
 local composer = require( "composer" )
 RestManager = require('src.resources.RestManager')
+local DBManager = require('src.resources.DBManager')
 
 -- Grupos y Contenedores
 local screen
@@ -53,12 +54,12 @@ local maskHeight
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
-------------------------------------
+---------------------------------------------------------------------------------
 -- carga los datos del usuario
-------------------------------------
+-- @params item elementos del perfil
+-- @params after indica la accion a realizar despues de carga la informacion
+---------------------------------------------------------------------------------
 function getUserPerfil( item, after )
-	--[[itemProfile = {id = item.id, userName = item.userName, image = item.image, edad = item.edad, genero = item.genero, alojamiento = item.alojamiento, 
-	vehiculo = item.vehiculo, residencia = item.residencia, diponibilidad = item.diponibilidad, idiomas = item.idiomas, hobbies = item.hobbies, isMe = true}]]
 	itemProfile = item
 	if after == "show" then
 		createProfileAvatar()
@@ -69,6 +70,7 @@ end
 
 --------------------------------
 -- Guarda la lista de hobbies
+-- @params hobbie, lenguaje, deporte, tiempo de residencia, carrera, tiempo trabajando, genero
 --------------------------------
 function setList(hobbie, language, sport, residenceTime, race, workArea, gender )
 	hobbies = hobbie
@@ -80,11 +82,14 @@ function setList(hobbie, language, sport, residenceTime, race, workArea, gender 
 	genders = gender
 end
 
+------------------------------------------
+-- Obtiene la fecha dada del datePicker
+-- @params date1 Fecha en formato
+-- @params date2  Fecha en formato
+------------------------------------------
 function getBirthDate(date1, date2)
-	
 	lblAge.text = date1
 	lblAge.date = date2
-	
 end
 
 --------------------------------
@@ -92,12 +97,15 @@ end
 --------------------------------
 function saveProfile()
 	
+	-- Quita los espacios en blanco del principio y final
 	local function trimString( s )
 		return string.match( s,"^()%s*$") and "" or string.match(s,"^%s*(.*%S)" )
 	end
 
+	--deshabilitar el evento de saveProfile
 	btnSaveProfile:removeEventListener( 'tap', saveProfile )
 	tools:setLoading(true,screen)
+	--carga las listas en tablas
 	for i=1, #myHobbies, 1 do
 		myHobbies[i] = string.gsub( myHobbies[i], "/", '...' )
 	end
@@ -107,12 +115,13 @@ function saveProfile()
 	for i=1, #mySports, 1 do
 		mySports[i] = string.gsub( mySports[i], "/", '...' )
 	end
+	--llamado del metodo trim
 	textUserName.text = trimString(textUserName.text)
 	textName.text = trimString(textName.text)
 	textLastName.text = trimString(textLastName.text)
 	textOriginCountry.text = trimString(textOriginCountry.text)
 	textUserResidence.text = trimString(textUserResidence.text)
-	--textEmailContact.text = trimString(textEmailContact.text)
+	--save data
 	RestManager.saveProfile(
 		textUserName.text, 
 		lblAge.date,
@@ -122,9 +131,7 @@ function saveProfile()
 		lblGender.text,
 		textOriginCountry.text,
 		textUserResidence.text,
-		lblResidenceTime.text, 
-		--textEmailContact.text,
-		--availability,
+		lblResidenceTime.text,
 		accommodation,
 		vehicle,
 		food,
@@ -142,18 +149,9 @@ function saveProfile()
 end
 
 -------------------------------------------------------------
--- Muestra una alerta con los resulado de guardar un perfil 
+-- carga los datos del perfil
 -------------------------------------------------------------
 function resultSaveProfile( isTrue, message)
-	--[[grpTextProfile.x = intW
-	NewAlert(true, message)
-	timeMarker = timer.performWithDelay( 1000, function()
-		NewAlert(false, message)
-		grpTextProfile.x = 0
-		tools:setLoading(false,scrPerfile)
-		btnSaveProfile:addEventListener( 'tap', saveProfile )
-	end, 1 )
-	]]
 	RestManager.getUsersById("save")
 end
 
@@ -215,18 +213,16 @@ function closeAll( event )
 	return true
 end
 
-
+------------------------------------------------------
+-- Muestra el datePicker para fecha de cumpleaños
+------------------------------------------------------
 function showDatePicker()
-	
-	
-	
 	buildPicker(lblAge.date, grpTextProfile)
-	
 end
 
 ------------------------------------------------------------------------------
 -- Pinta la imagen del usuario en caso de no encontrarse al crear la scena
--- @param item nombre de la imagen
+-- @param imageA nombre de la imagen
 ------------------------------------------------------------------------------
 function setImagePerfil( imageA )
 
@@ -237,17 +233,6 @@ function setImagePerfil( imageA )
 	
 	grpAvatar = display.newGroup()
 	scrPerfile:insert(grpAvatar)
-
-	--[[maskA = graphics.newMask( "img/image-mask-mask3.png" )
-	avatar = display.newImage(imageA, system.TemporaryDirectory)
-	avatar:translate( 69.5, posY)
-	avatar.anchorX = 0
-	avatar.height = 250
-	avatar.width = 250
-	scrPerfile:insert(avatar)
-	avatar:setMask( maskA )
-	avatar.maskScaleY = 1.35
-	avatar.maskScaleX = 1.35]]
 	
 	posY = 150
 	
@@ -273,7 +258,6 @@ function setImagePerfil( imageA )
 	local bgChangePhoto = display.newImage( 'img/circle-94.png' )
 	bgChangePhoto:translate( midW - 115, posY + 100)
 	bgChangePhoto.anchorX = 0
-	--bgChangePhoto.alpha = .8
 	bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
 	grpAvatar:insert(bgChangePhoto)
 		
@@ -290,14 +274,12 @@ end
 -- elimina la imagen actual cuando se actualiza una nueva
 ------------------------------------------------------------
 function deleteAvatarMyProfile()
-	
 	if avatar then
 		avatar:setMask( nil )
 		maskA = nil
 		avatar:removeSelf()
 		avatar = nil
 	end
-	
 end
 
 ------------------------------------------------------------
@@ -306,39 +288,32 @@ end
 function saveAvatar( event )
 
 	tools:setLoading(true,grpLoadMyProfile)
-
-	local nameImage
-	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
-		nameImage = k
-		--t[k] = v
-	end
 	
-	local DBManager = require('src.resources.DBManager')
 	settings = DBManager.getSettings()
 	nameImage = settings.idApp
 	
 	deleteAvatarMyProfile()
+	--elimina la foto de perfil actual del resources
+	local img = nameImage .. "png"
+	local path = system.pathForFile( img, system.TemporaryDirectory )
+	local fhd = io.open( path )
+	if fhd then
+		fhd:close()
+			
+		local lfs = require "lfs"
+		local doc_path = system.pathForFile( "", system.TemporaryDirectory )
+		local destDir = system.TemporaryDirectory  -- where the file is stored
 		local img = nameImage .. "png"
-		local path = system.pathForFile( img, system.TemporaryDirectory )
-		local fhd = io.open( path )
-		if fhd then
-			fhd:close()
 			
-			local lfs = require "lfs"
-			local doc_path = system.pathForFile( "", system.TemporaryDirectory )
-			local destDir = system.TemporaryDirectory  -- where the file is stored
-			local img = nameImage .. "png"
-			
-			for file in lfs.dir(doc_path) do
-				-- file is the current file or directory name
-				local file_attr = lfs.attributes( system.pathForFile( file, destDir  ) )
-				-- Elimina despues de 2 semanas
-				if file == img then
-					
-				   os.remove( system.pathForFile( file, destDir  ) ) 
-				end
+		for file in lfs.dir(doc_path) do
+			-- file is the current file or directory name
+			local file_attr = lfs.attributes( system.pathForFile( file, destDir  ) )
+			-- Elimina despues de 2 semanas
+			if file == img then		
+				os.remove( system.pathForFile( file, destDir  ) ) 
 			end
 		end
+	end
 	
 	local t = event.target
 	
@@ -388,7 +363,6 @@ function optionSaveAvatar()
 	local option = { "cut", "full" }
 	local optionLabel = { language.MpCropSave, language.MpSaveUntrimmed }
 	local optionIcon = { "img/cut.png", "img/full.png" }
-	--local optionSub = { language.MpTakePhotoSub, language.MpUploadPhotoSub }
 	
 	for i = 1, #option, 1 do
 		local line = display.newLine( 0, posY - 1 , intW, posY - 1 )
@@ -583,25 +557,22 @@ function showNewAvatar( event )
 	local path = system.pathForFile( "newAvatar.jpg", system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
-		
 	if fhd then
 		fhd:close()
 	
 		avatarFull = display.newImage("newAvatar.jpg", system.TemporaryDirectory)
 		avatarFull:translate(midW, 0 + h)
-		--avatarFull.alpha = .7
 		grpOptionAvatar:insert(avatarFull)
 		
 		avatarFull:addEventListener('touch', moveMasckAvatar)
 		avatarFull:addEventListener( 'tap', noAction )
 		
+		--rediseña el tamaño de la imagen
 		local heightBgAvatar = intH - 150 - h
 		local resizeWidth = 0
 		local resizeHeight = 0
 		local anchorY = .5
 		local pocsY = midH
-		print(avatarFull.height)
-		print(heightBgAvatar)
 		if ( avatarFull.height > heightBgAvatar ) then
 			resizeWidth = ( heightBgAvatar * avatarFull.width ) / avatarFull.height
 			resizeHeight = heightBgAvatar
@@ -613,23 +584,17 @@ function showNewAvatar( event )
 			resizeWidth = intW
 		else
 			if avatarFull.height > avatarFull.width then
-				print("entro")
 			elseif avatarFull.width > avatarFull.height then
-				print("no entro")
 			else
-			
 			end
 			resizeHeight = avatarFull.height
 			resizeWidth = avatarFull.width
-			print(avatarFull.height)
-			print(avatarFull.width)
 		end
 		
 		avatarFull.height = resizeHeight
 		avatarFull.width = resizeWidth
 		avatarFull.anchorY = anchorY
 		avatarFull.y = pocsY
-		--avatarFull:addEventListener( 'touch', moveMasckAvatar )
 			
 		local bg1 = display.newRect( midW, midH + h, intW, intH )
 		bg1:setFillColor( 1 )
@@ -640,10 +605,10 @@ function showNewAvatar( event )
 		bg1.anchorY = anchorY
 		bg1.y = pocsY
 		
+		--mascara
 		local maskA = graphics.newMask( "img/maskPhoto3.png" )
 		avatarMask = display.newImage("newAvatar.jpg", system.TemporaryDirectory)
 		avatarMask:translate(midW, 0 + h)
-		
 		grpOptionAvatar:insert(avatarMask)
 		avatarMask.posY = avatarMask.y
 		avatarMask:setMask( maskA )
@@ -653,6 +618,7 @@ function showNewAvatar( event )
 		avatarMask.y = pocsY
 		avatarMask.maskScaleX, avatarMask.maskScaleY = 1.5, 1.5
 		
+		--btn save
 		local bgSaveAvatar = display.newRect( midW, intH - 60, intW, 120 )
 		bgSaveAvatar.id = nameImage
 		bgSaveAvatar:setFillColor( .73 )
@@ -663,7 +629,6 @@ function showNewAvatar( event )
 		btnCancelSaveAvatar.id = nameImage
 		btnCancelSaveAvatar:setFillColor( 0/255, 174/255, 239/255 )
 		grpOptionAvatar:insert(btnCancelSaveAvatar)
-		--btnCancelSaveAvatar:addEventListener( 'tap', hideoptionAvatar )
 		
 		local lblCancelSaveAvatar = display.newText({
 			text = language.MpCancel, 
@@ -698,31 +663,16 @@ function showNewAvatar( event )
 	
 end
 
---[[function mysplitPoint(s)
-    
-	return t
-end]]
-
 ------------------------------------------------------------
 -- Activa la camara del telefono
 ------------------------------------------------------------
 function takePicture()
-	--showNewAvatar()
 	local function onComplete( event )
 		local json = require("json")
 		if ( event.completed ) then
 			showNewAvatar( "newPhoto" )
-		else
-			
 		end
 	end
-	
-	local namePhoto
-	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
-		namePhoto = k
-		--t[k] = v
-	end
-	
 	namePhoto = "newAvatar.jpg"
 	
 	if media.hasSource( media.Camera ) then
@@ -744,19 +694,12 @@ end
 -- Muestra las fotos de la libreria
 ------------------------------------------------------------
 function libraryPicture()
-	--showNewAvatar()
 	local function onComplete( event )
 		if ( event.completed ) then
 			showNewAvatar( "newPhoto" )
 		else
 			
 		end
-	end
-	
-	local namePhoto
-	for k, v in string.gmatch(avatar.name, "(%w+).(%w+)") do
-		namePhoto = k
-		--t[k] = v
 	end
 	
 	namePhoto = "newAvatar.jpg"
@@ -773,11 +716,9 @@ function libraryPicture()
 end
 
 ------------------------------------------------------------------------------
--- seleciona la opcion de ver o editar perfil
--- @param item nombre de la imagen
+-- Indica si se quiere tomar una foto o subir del album
 ------------------------------------------------------------------------------
 function selectOptionAvatar( event )
-	
 	local t = event.target
 	if( t.name == "selectPhoto" ) then
 		takePicture()
@@ -829,7 +770,6 @@ function optionPictureAvatar( event )
 		btnOption.name = option[i]
 		grpOptionSave:insert( btnOption )
 		btnOption:addEventListener( 'tap', selectOptionAvatar )
-		--btnCamera.name = "cut"
 		
 		local iconOption = display.newImage(optionIcon[i])
 		iconOption.anchorX = 0
@@ -895,6 +835,9 @@ function optionPictureAvatar( event )
 	
 end
 
+-------------------------------------
+-- Esconde la opcion de subir foto
+-------------------------------------
 function hideoptionAvatar( event )
 	componentActive = false
 	if grpOptionAvatar then
@@ -909,9 +852,6 @@ end
 -- Obtiene la ciudad selecionada
 -----------------------------------
 function getCityProfile(item)
-	--textUserResidence.text = city
-	--textUserResidence.city = city
-	--textUserResidence.id = id
 	if( #item > 0 ) then
 		textUserResidence.text = item[1].description
 		textUserResidence.city = item[1].description
@@ -930,13 +870,11 @@ function userInputProfile( event )
 		
 		end
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
-		--native.setKeyboardFocus(nil)
 		if t.name == "residence" then
 			textName.x = intW - 65
 			textLastName.x = intW - 65
 			textOriginCountry.x = intW - 65
 		end
-		--native.setKeyboardFocus( nil )
     elseif ( event.phase == "editing" ) then
 		if t.name == "residence" then
 			textName.x = intH
@@ -956,8 +894,8 @@ function userInputProfile( event )
 end
 
 ----------------------------
---mueve el toggleButton
----------------------------
+-- Mueve el toggleButton
+----------------------------
 function moveToggleButtons( event )
 	local t = event.target
 	if t.onOff == "Sí" then
@@ -969,7 +907,6 @@ function moveToggleButtons( event )
         t:setFillColor( 0/255, 174/255, 239/255 )
 		transition.to( toggleButtons[t.num], { x = t.pocsX - 4, time = 200})
 	end
-	--gender, availability, accommodation, vehicle, food, ownAccount, pet, smoke, drink, psychrotrophic
 	if t.name == "gender" then
 		if t.onOff == "Sí" then
 			gender = "Hombre"
@@ -1005,6 +942,9 @@ function moveToggleButtons( event )
 	end
 end
 
+-------------------------------------
+-- Muestra los cambo box de perfil
+-------------------------------------
 function showComboBoxMP( event )
 	
 	local t = event.target
@@ -1015,7 +955,7 @@ function showComboBoxMP( event )
 	grpTextProfile.x = intW
 	grpComboBox = display.newGroup()
 	componentActive = "comboBox"
-		--combobox
+	--combobox
 	local bg0 = display.newRect( midW, midH + h, intW, intH )
 	bg0:setFillColor( 0 )
 	bg0.alpha = .8
@@ -1024,7 +964,6 @@ function showComboBoxMP( event )
 	local bg1 = display.newRect( midW, midH + h, 606, midH )
 	bg1:setFillColor( 1 )
 	grpComboBox:insert( bg1 )
-	--bg1:addEventListener( 'tap', hideOptionsCombo )
 	--scrollview
 	scrCombo = widget.newScrollView({
 		y = midH + h,
@@ -1036,6 +975,7 @@ function showComboBoxMP( event )
 	})
 	grpComboBox:insert(scrCombo)
 	local setElements = {}
+	--identifica que elemento Cargará
 	if t.name == "gender" then
 		setElements = genders
 	elseif t.name == "residenceTime" then
@@ -1046,18 +986,17 @@ function showComboBoxMP( event )
 		setElements = workAreas
 	end
 	local posY = 0
+	--pinta los elementos del cambo
 	for i = 1, #setElements, 1 do
 		local container2 = display.newContainer( 600, 100 )
 		scrCombo:insert(container2)
 		container2.anchorY = 0
 		container2:translate( 300, posY )
-		--container2:addEventListener( 'tap', selectOptionCombo )
 		local bg0OptionCombo = display.newRect( 0, 0, 600, 100 )
 		bg0OptionCombo:setFillColor( 1 )
 		bg0OptionCombo.name = t.name
 		bg0OptionCombo.option = setElements[i].name
 		container2:insert( bg0OptionCombo )
-		--bg0OptionCombo:addEventListener( 'tap', noAction )
 		bg0OptionCombo:addEventListener( 'tap', selectOptionCombo )
 		
 		--label nombre
@@ -1074,6 +1013,10 @@ function showComboBoxMP( event )
 	end
 end
 
+---------------------------------------------------------------------------
+-- Asiagna la opcion seleccionada a los label
+-- @params event.target.name identifica a que label pertenece la opcion
+---------------------------------------------------------------------------
 function selectOptionCombo( event )
 	local t = event.target
 	if t.name == "residenceTime" then
@@ -1089,6 +1032,9 @@ function selectOptionCombo( event )
 	return true
 end
 
+-------------------------------------
+-- Esconde el combobox
+-------------------------------------
 function hideComboBoxProfile( event )
 	componentActive = false
 	if grpComboBox then
@@ -1102,23 +1048,17 @@ function hideComboBoxProfile( event )
 	return true
 end
 
--------------------------------------------------
--- Creacion de los togle buttons
+----------------------------------------------------------------------------------
+-- Creacion de los comboBox
 -- @param item valor inicia de los elementos
--- @param posY2 coordenada y del elemento
--------------------------------------------------
+-- @param name nombre del elemento 
+-- @param coordY, coordX coordenadas en y y x de la posición del elemento
+----------------------------------------------------------------------------------
 function createComboBox(item, name, coordY, coordX )
 
 	coordY = coordY - 25
 	-- BG Component
-	--intW - 65, coordY, 400 , 90
-	--[[local bg0CheckAcco = display.newRect( intW - 65, coordY, 400, 90 )
-	bg0CheckAcco.anchorY = 0
-	bg0CheckAcco.anchorX = 1
-	bg0CheckAcco:setFillColor( 129/255, 61/255, 153/255 )
-	scrPerfile:insert(bg0CheckAcco)]]
 	local bg0CheckAcco = display.newRect( intW - 65, coordY + 25, 400, 90 )
-	--bg0CheckAcco.anchorY = 0
 	bg0CheckAcco.anchorX = 1
 	bg0CheckAcco:setFillColor( 1 )
 	bg0CheckAcco.name = name
@@ -1126,7 +1066,6 @@ function createComboBox(item, name, coordY, coordX )
 	bg0CheckAcco:addEventListener( 'tap', showComboBoxMP )
 	local triangle = display.newImage("img/down.png")
 	triangle:translate(coordX + 295, coordY + 25)
-	--triangle:translate(intW - 90, posY + 55)
 	triangle.height = 48
 	triangle.width = 48
 	scrPerfile:insert(triangle)
@@ -1134,7 +1073,7 @@ function createComboBox(item, name, coordY, coordX )
 		lblGender = display.newText({
 			text = item.genero, 
 			x = coordX + 75, y = coordY + 25,
-			width = 375, --height = 30,
+			width = 375,
 			font = fontFamilyBold,   
 			fontSize = 26, align = "right"
 		})
@@ -1144,7 +1083,7 @@ function createComboBox(item, name, coordY, coordX )
 		lblResidenceTime = display.newText({
 			text = item.tiempoResidencia, 
 			x = coordX + 75, y = coordY + 25,
-			width = 375, --height = 30,
+			width = 375,
 			font = fontFamilyBold,   
 			fontSize = 26, align = "right"
 		})
@@ -1154,7 +1093,7 @@ function createComboBox(item, name, coordY, coordX )
 		lblRace = display.newText({
 			text = item.nivelEstudio, 
 			x = coordX + 75, y = coordY + 25,
-			width = 375, --height = 30,
+			width = 375,
 			font = fontFamilyBold,   
 			fontSize = 26, align = "right"
 		})
@@ -1164,7 +1103,7 @@ function createComboBox(item, name, coordY, coordX )
 		lblWorkArea = display.newText({
 			text = item.areaLaboral, 
 			x = coordX + 75, y = coordY + 25,
-			width = 375, --height = 30,
+			width = 375,
 			font = fontFamilyBold,   
 			fontSize = 26, align = "right"
 		})
@@ -1177,19 +1116,14 @@ end
 -------------------------------------------------
 -- Creacion de los togle buttons
 -- @param item valor inicia de los elementos
--- @param posY2 coordenada y del elemento
+-- @param name nombre del elemento 
+-- @param coordY, coordX coordenadas en y y x de la posición del elemento
 -------------------------------------------------
 function createToggleButtons(item, name, coordY, coordX )
 	local num = #toggleButtons + 1
 	coordY = coordY - 25
 	-- BG Component
-	--[[toggleBg[num] = display.newRoundedRect( coordX, coordY + 25, 140, 70, 35 )
-	--toggleBg[num].anchorY = 0
-	toggleBg[num].anchorX = 1
-	toggleBg[num]:setFillColor( 0/255, 174/255, 239/255 )
-	scrPerfile:insert(toggleBg[num])]]
 	local bg0CheckAcco = display.newRoundedRect( coordX, coordY + 25, 140, 70, 35 )
-	--toggleBg[num].anchorY = 0
 	bg0CheckAcco.anchorX = 1
 	bg0CheckAcco.name = name
 	bg0CheckAcco:setFillColor( 0/255, 174/255, 239/255 )
@@ -1197,48 +1131,23 @@ function createToggleButtons(item, name, coordY, coordX )
 	scrPerfile:insert(bg0CheckAcco)
 	bg0CheckAcco.pocsX = coordX
 	bg0CheckAcco.num = num
-		
-	--label si/no
-	--[[local lblYes = display.newText({
-		text = "Si", 
-		x = coordX + 50, y = coordY + 25,
-		width = 100,
-		font = native.systemFont, 
-		fontSize = 35, align = "center"
-	})
-	lblYes:setFillColor( 1 )
-	scrPerfile:insert(lblYes)
-	local lblNo = display.newText({
-		text = " ", 
-		x = coordX + 150, y = coordY + 25,
-		width = 100,
-		font = native.systemFont, 
-		fontSize = 35, align = "center"
-	})
-	lblNo:setFillColor( 1 )
-	scrPerfile:insert(lblNo)
-	if name == "gender" then
-		lblYes.text = "Hombre"
-		lblYes.size = 24
-		lblNo.text = "Mujer"
-		lblNo.size = 24
-	end]]
+	
 	local posXTB = coordX - 75
 	local onOff = "No"
-	--alojamiento
+	--genero
 	if name == "gender" then
 		if item.genero ~= nil and item.genero == 'Hombre' then
 			onOff = "Sí"
 			posXTB = coordX - 4
 		end
 	end
+	--alojamiento
 	if name == "accommodation" then
 		if item.alojamiento ~= nil and item.alojamiento == 'Sí' then
 			onOff = "Sí"
 			posXTB = coordX - 4
 		end
 	end
-	--availability, accommodation, vehicle, food
 	-- transporte
 	if name == "vehicle" then
 		if item.vehiculo ~= nil and item.vehiculo == 'Sí' then	
@@ -1296,7 +1205,7 @@ function createToggleButtons(item, name, coordY, coordX )
 		end
 	end
 	bg0CheckAcco.onOff = onOff
-		--button
+	--button
 	toggleButtons[num] = display.newRoundedRect( posXTB, coordY + 25, 60, 60, 30 )
 	toggleButtons[num].anchorX = 1
 	toggleButtons[num]:setFillColor( 1 )
@@ -1304,8 +1213,6 @@ function createToggleButtons(item, name, coordY, coordX )
 	if onOff == "No" then
         bg0CheckAcco:setFillColor( .7 )
     end
-	
-
 end
 
 -------------------------------------------------
@@ -1576,6 +1483,9 @@ function showOptionsLabels( event )
 	return true
 end
 
+----------------------------------------
+-- Destruye las opciones de las etiquetas
+----------------------------------------
 function hideOptionsLabels()
 	componentActive = false
 	if grpOptionsLabel then
@@ -1589,9 +1499,11 @@ end
 
 ------------------------------------
 -- Creamos los textField
+-- @param item valor inicia de los elementos
+-- @param name nombre del elemento 
+-- @param coordY, coordX coordenadas en y y x de la posición del elemento
 ------------------------------------
 function createTextField( item, name, coordY )
-	--textUserName, textName, textLastName, textOriginCountry, textUserResidence, textEmailContact
 	local bgTextField = display.newRect( intW - 65, coordY + 30, 400, 2 )
 	bgTextField.anchorX = 1
 	bgTextField:setFillColor( 240/255 )
@@ -1603,52 +1515,39 @@ function createTextField( item, name, coordY )
 		textName.text = item.nombre
 		textName.hasBackground = false
 		textName.size = 35
-		--textName:resizeHeightToFitFont()
 		textName:addEventListener( "userInput", userInputProfile )
 		textName.name = "name"
 		textName.align = "right"
 		grpTextProfile:insert(textName)
 	elseif name == "lastName" then
 		--textField apellido
-		--[[local bgTextField = display.newRect( 485, coordY + 18, 400, 2 )
-		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)]]
 		textLastName = native.newTextField( intW - 65, coordY, 400 , 90 )
 		textLastName.anchorX = 1
 		textLastName.text = item.apellidos
 		textLastName.hasBackground = false
 		textLastName.size = 35
 		textLastName.align = "right"
-		--textLastName:resizeHeightToFitFont()
 		textLastName:addEventListener( "userInput", userInputProfile )
 		textLastName.name = "lastName"
 		grpTextProfile:insert(textLastName)
 	elseif name == "originCountry" then
 		--textField pais de origen
-		--[[local bgTextField = display.newRect( 500, coordY + 18, 350, 2 )
-		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)]]
 		textOriginCountry = native.newTextField( intW - 65, coordY, 400 , 90 )
 		textOriginCountry.anchorX = 1
 		textOriginCountry.text = item.paisOrigen
 		textOriginCountry.hasBackground = false
 		textOriginCountry.size = 35
-		--textOriginCountry:resizeHeightToFitFont()
 		textOriginCountry:addEventListener( "userInput", userInputProfile )
 		textOriginCountry.name = "originCountry"
 		textOriginCountry.align = "right"
 		grpTextProfile:insert(textOriginCountry)
 	elseif name == "residence" then
-		--[[local bgTextField = display.newRect( 500, coordY + 18, 400, 2 )
-		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)]]
 		--textField residence
 		textUserResidence = native.newTextField( intW - 65, coordY, 400 , 90 )
 		textUserResidence.anchorX = 1
 		textUserResidence.text = item.residencia
 		textUserResidence.hasBackground = false
 		textUserResidence.size = 35
-		--textUserResidence:resizeHeightToFitFont()
 		textUserResidence:addEventListener( "userInput", userInputProfile )
 		textUserResidence.name = "residence"
 		textUserResidence.align = "right"
@@ -1660,9 +1559,6 @@ function createTextField( item, name, coordY )
 		end
 		grpTextProfile:insert(textUserResidence)
 	elseif name == "emailContact" then
-		--[[local bgTextField = display.newRect( 515, coordY + 18, 350, 2 )
-		bgTextField:setFillColor( .6 )
-		scrPerfile:insert(bgTextField)]]
 		--textField pais de origen
 		textEmailContact = native.newTextField( intW - 65, coordY, 400 , 90 )
 		textEmailContact.anchorX = 1
@@ -1670,13 +1566,16 @@ function createTextField( item, name, coordY )
 		textEmailContact.hasBackground = false
 		textEmailContact.size = 35
 		textEmailContact.align = "right"
-		--textEmailContact:resizeHeightToFitFont()
 		textEmailContact:addEventListener( "userInput", userInputProfile )
 		textEmailContact.name = "emailContact"
 		grpTextProfile:insert(textEmailContact)
 	end
 end
 
+----------------------------------------------
+-- Crea los campos de opcion Preferencia
+-- @params item la informacion del usuario
+----------------------------------------------
 function createPreferencesItems( item )
 	
 	---------- Preferences -----------
@@ -1717,22 +1616,8 @@ function createPreferencesItems( item )
     else
 		myHobbies = {}
     end
-	 --[[local bgInts = display.newRect( 550, 210, 410, 80 )
-    
-	--label hobbies
-    lblInts = display.newText({
-        text = "", 
-        x = 550, y = 250,
-        width = 400,
-        font = native.systemFont, 
-        fontSize = 25, align = "left"
-    })
-    lblInts:setFillColor( 0 )
-    scrPerfile:insert(lblInts)
-	]]
-	
-	
 	num = #infoOpcion + 1
+	
 	--nivel de estudio
 	infoOpcion[num] = language.MpLevelOfEducation
 	iconOpcion[num] = 'iconSchool'
@@ -1816,20 +1701,9 @@ function createPreferencesItems( item )
 		item.psicotroficos = language.MpNo
 	end
 	psychrotrophic = item.psicotroficos
+	
 	-- Options
-	
-	--[[bgComp1.height = (#infoOpcion * 80) + 70
-	bgComp2.height = (#infoOpcion * 80) + 66]]
-	
     for i=1, #infoOpcion do
-        
-        --[[local ico
-        if iconOpcion[i] ~= '' then
-            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
-			scrPerfile:insert(ico)
-        end]]
-		
 		local lbl = display.newText({
             text = infoOpcion[i], 
             x = midW + 65, y = posY + 50,
@@ -1840,6 +1714,7 @@ function createPreferencesItems( item )
         lbl:setFillColor( 0 )
         scrPerfile:insert(lbl)
 		
+		-- MultiComboBox
 		if nameOption[i] == "language" then
 			local languageText = language.MpNoLanguage
 			if item.idiomas then
@@ -1870,7 +1745,6 @@ function createPreferencesItems( item )
 				fontSize = 26, align = "right"
 			})
 			lblLang:setFillColor( 0 )
-			--lblLang.anchorX = 1
 			scrPerfile:insert(lblLang)
 			
 			local triangle = display.newImage("img/down.png")
@@ -1909,7 +1783,6 @@ function createPreferencesItems( item )
 				fontSize = 26, align = "right"
 			})
 			lblSport:setFillColor( 0 )
-			--lblSport.anchorX = 1
 			scrPerfile:insert(lblSport)
 			
 			local triangle = display.newImage("img/down.png")
@@ -1920,15 +1793,6 @@ function createPreferencesItems( item )
 			
 		elseif nameOption[i] == "hobbies" then
 			
-			--[[if item.deportes then
-				for i=1, #item.deportes do
-					if i == 1 then
-						sportText = item.deportes[i]
-					else
-						sportText = sportText ..', '.. item.deportes[i]
-					end
-				end
-			end]]
 			local hobbiesText = language.MpEditHobbies
 			if item.hobbies then
 				for i=1, #item.hobbies do
@@ -1958,7 +1822,6 @@ function createPreferencesItems( item )
 				fontSize = 26, align = "right"
 			})
 			lblInts:setFillColor( 0 )
-			--lblInts.anchorX = 1
 			scrPerfile:insert(lblInts)
 			
 			local triangle = display.newImage("img/down.png")
@@ -1969,6 +1832,7 @@ function createPreferencesItems( item )
 		
 		end
 		
+		--componentes
 		if typeOpcion[i] == "textField" then
 			createTextField(item, nameOption[i], posY + 50)
 		elseif typeOpcion[i] == "toggleButton" then
@@ -1997,7 +1861,10 @@ function createPreferencesItems( item )
 	
 end
 
-------------------------------------
+------------------------------------------------
+-- Crea los campos de opcion Guia de turista
+-- @params item la informacion del usuario
+------------------------------------------------
 function createTouristGuideItems( item )
 	-------Generales-----------
     -- BG Component
@@ -2016,16 +1883,7 @@ function createTouristGuideItems( item )
 	local typeOpcion = {}
 	local nameOption = {}
 	local num = #infoOpcion + 1
-	--disponibilidad
-	--[[infoOpcion[num] = "Disponibilidad: "
-	iconOpcion[num] = ''
-	typeOpcion[num] = "toggleButton"
-	nameOption[num] = "availability"
-	num = #infoOpcion + 1
-	if not item.diponibilidad then
-		item.diponibilidad = "Consultarme"
-    end
-	availability = item.diponibilidad]]
+	
 	--alojamiento
 	infoOpcion[num] = language.MpAccommodation
 	iconOpcion[num] = ''
@@ -2056,21 +1914,9 @@ function createTouristGuideItems( item )
 		item.comida = "No"
     end
     food = item.comida
+	
     -- Options
-   -- posY = posY + 45
-	
-	--[[bgComp1.height = (#infoOpcion * 80) + 70
-	bgComp2.height = (#infoOpcion * 80) + 66]]
-	
     for i=1, #infoOpcion do
-        
-        --[[local ico
-        if iconOpcion[i] ~= '' then
-            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
-			scrPerfile:insert(ico)
-        end]]
-		
         local lbl = display.newText({
             text = infoOpcion[i], 
             x = midW + 65, y = posY + 50,
@@ -2108,9 +1954,10 @@ function createTouristGuideItems( item )
 	createPreferencesItems( item )
 end
 
-------------------------------------
+----------------------------------------------
 -- Pinta la info general del usuario
-------------------------------------
+-- @params item la informacion del usuario
+----------------------------------------------
 function createGeneralItems( item )
 	-------Generales-----------
     -- BG Component
@@ -2203,13 +2050,6 @@ function createGeneralItems( item )
     
     -- Options
     for i=1, #infoOpcion do
-        
-        --[[local ico
-        if iconOpcion[i] ~= '' then
-            ico = display.newImage( "img/"..iconOpcion[i]..".png" )
-            ico:translate( 115, posY - 3 )
-			scrPerfile:insert(ico)
-        end]]
 		
 		local lbl = display.newText({
             text = infoOpcion[i], 
@@ -2231,7 +2071,7 @@ function createGeneralItems( item )
 			lblLabel1 = display.newText({
 				text = nameOption[i], 
 				x = 390 + 115, y = posY + 50,
-				width = 375, --height = 30,
+				width = 375,
 				font = fontFamilyBold,   
 				fontSize = 26, align = "right"
 			})
@@ -2255,12 +2095,9 @@ function createGeneralItems( item )
 	scrPerfile:insert(line)
 	
 	posY = posY + 50
+	-- crea los elementos de guia de turista
 	createTouristGuideItems( item )
 end
-
--------------
--- 
--------------
 
 ------------------------------------
 -- Pinta la info del usuario
@@ -2276,15 +2113,15 @@ function MyProfile( item )
 	local bgTextField = display.newRect( 550, posY + 33, 400, 2 )
 	bgTextField:setFillColor( .6 )
 	scrPerfile:insert(bgTextField)
-	--textField user name
+	-- TextField user name
 	textUserName = native.newTextField( 550, posY, 400, 90 )
 	textUserName.text = item.userName
 	textUserName.hasBackground = false
 	textUserName.size = 35
-	--textUserName:resizeHeightToFitFont()
 	textUserName:addEventListener( "userInput", userInputProfile )
 	grpTextProfile:insert(textUserName)
 	
+	-- Fecha de nacimiento
     local edad = ""
 	if not item.nacimiento then 
         edad = language.MpDateOfBirth
@@ -2328,26 +2165,27 @@ function MyProfile( item )
 	
 end
 
+----------------------------------
+-- Pinta la imagen de avatar
+----------------------------------
 function createProfileAvatar()
 	tools:setLoading(false,grpLoadMyProfile)
-	
-	item = itemProfile
 	-- Avatar
+	item = itemProfile
     posY = 0
-	
+	-- bg
 	local bgA0 = display.newRect( midW, posY, intW, 300 )
 	bgA0.anchorY = 0
     bgA0:setFillColor( 1 )
     scrPerfile:insert(bgA0)
 	
+	-- Verifica si existe la imagen actual del usuario
 	local path = system.pathForFile( item.image, system.TemporaryDirectory )
 	local fhd = io.open( path )
 	--verifica si existe la imagen
 	if fhd then
 		fhd:close()
-		
 		posY = posY + 150
-		
 		grpAvatar = display.newGroup()
 		scrPerfile:insert(grpAvatar)
 		
@@ -2368,6 +2206,7 @@ function createProfileAvatar()
 		avatar.maskScaleY = 1.35
 		avatar.maskScaleX = 1.35
 		
+		-- evento para mostrar la imagen full del usuario
 		local bgShowPhoto = display.newRoundedRect( midW - 190, posY, 250, 250, 125 )
 		bgShowPhoto:setFillColor( 1 )
 		bgShowPhoto.alpha = .01
@@ -2375,28 +2214,15 @@ function createProfileAvatar()
 		grpAvatar:insert(bgShowPhoto)
 		bgShowPhoto:addEventListener( 'tap', showAvatar )
 		
+		-- Permite cambiar la imagen
 		local imgChangePhoto = display.newImage("img/gg_camara-01.png")
 		imgChangePhoto:translate(midW - 68, 249)
 		imgChangePhoto.alpha = .8
 		grpAvatar:insert(imgChangePhoto)
 		imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
-		--imgChangePhoto:addEventListener( 'tap', showNewAvatar )
 		
 		imgChangePhoto.height = 94
 		imgChangePhoto.width = 94
-		
-		--[[local bgChangePhoto = display.newImage( 'img/circle-94.png' )
-		bgChangePhoto:translate( midW - 115, posY + 100)
-		bgChangePhoto.anchorX = 0
-		--bgChangePhoto.alpha = .8
-		bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
-		grpAvatar:insert(bgChangePhoto)]]
-		
-		--[[local imgChangePhoto = display.newImage("img/camera-4-64.png")
-		imgChangePhoto:translate(midW - 68, 249)
-		imgChangePhoto.alpha = .8
-		grpAvatar:insert(imgChangePhoto)]]
-		
 	else
 		local items = {}
 		items[1] = item
@@ -2433,10 +2259,12 @@ function createProfileAvatar()
 
 end
 
----------------------------------------------------------------------------------
--- DEFAULT METHODS
+
+
 ---------------------------------------------------------------------------------
 -- ScrollView listener
+-- Esconde los textField dependiendo de la posicion de ellos en el scroll
+---------------------------------------------------------------------------------
 function scrListen( event )
 	local x, y = scrPerfile:getContentPosition()
 	if textUserName  then
@@ -2485,14 +2313,16 @@ function scrListen( event )
     return true
 end
 
+
+---------------------------------------------------------------------------------
+-- DEFAULT METHODS
+---------------------------------------------------------------------------------
+
 ---------------------------------------------
 -- Se crea la scena con los datos del perfil
 ---------------------------------------------
 function scene:create( event )
-
-	--local item = event.params.item
 	screen = self.view
-    --screen.y = h
 	
 	local o = display.newRect( midW, midH + h, intW+8, intH )
 	o:setFillColor( 245/255 )
@@ -2520,7 +2350,6 @@ function scene:create( event )
 	
 	grpLoadMyProfile = display.newGroup()
 	screen:insert(grpLoadMyProfile)
-	--grpLoadMyProfile.y = 650 + h
 	tools:setLoading(true,grpLoadMyProfile)
 	if not itemProfile then
 		RestManager.getUsersById("show")
@@ -2536,9 +2365,11 @@ end
 function scene:show( event )
 	bubble()
 end
-----------------
+
+---------------------------------------
 -- Hide scene
-----------------
+-- destruye los grupos existentes
+---------------------------------------
 function scene:hide( event )
 	native.setKeyboardFocus( nil )
 	local phase = event.phase

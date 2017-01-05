@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
--- Gluglis Rex
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -28,9 +28,10 @@ local ListChats = {}
 -- FUNCIONES
 ---------------------------------------------------------------------------------
 
------------------------------
+--------------------------------------------
 -- Carga los elementos 
-------------------------------
+-- @params items elementos de los chats
+--------------------------------------------
 function setItemsListMessages( items )
 	for i = 1, #items, 1 do
 		tmpList[i] = {id = items[i].idMessage, image = items[i].image, image2 = items[i].image2, name = items[i].display_name, subject = items[i].message, channelId = items[i].channel_id,
@@ -68,9 +69,12 @@ function tapMessage(event)
     composer.gotoScene( "src.Message", { time = 400, effect = "slideLeft", params = { item = t.item } } )
 end
 
-----------------------------------
+------------------------------------------------------------------
 -- Cambia la posicion del chat
-----------------------------------
+-- @params item informacion del chat en caso de que sea nuevo
+-- @params message ultimo mensaje enviado en el canal
+-- @params numChat numero de mensajes no leidos en el canal
+-------------------------------------------------------------------
 function movedChat( item, message, numChat )
 	local posc = 100
 	local thereChannel = false
@@ -96,9 +100,11 @@ function movedChat( item, message, numChat )
 	return true
 end 
 
-------------------------------------------------------------------
+-------------------------------------------------------------------
 -- Crea o destruye las borbujas de numeros de mensajes sin leer
-------------------------------------------------------------------
+-- @params poscC posicion de la tabla de los chats
+-- @params numChat numero de mensajes sin leer
+-------------------------------------------------------------------
 function createNotBubble(poscC, numChat)
 	local child = ListChats[poscC]
 	if numChat == 0 then
@@ -128,9 +134,11 @@ function createNotBubble(poscC, numChat)
 	end
 end
 
----------------------------------
+------------------------------------------------------
 -- Crea la lista de mensajes
----------------------------------
+-- @params posc posicion de la tabla de los chats
+-- @params item informacion del canal
+------------------------------------------------------
 function buildListMsg(posc, item )
     local posY = posc
     for i = 1, #item do

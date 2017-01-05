@@ -1,3 +1,9 @@
+---------------------------------------------------------------------------------
+-- Gluglis
+-- Alfredo Chi
+-- GeekBucket 2016
+---------------------------------------------------------------------------------
+
 local Language = {}
 
 ----------------------------------------
@@ -43,7 +49,6 @@ Language.es = {
 	HTYouLive = "¿Donde vives?",
 	HTStartGlugling = "Ok! Start Glugling!",
 	HTValidCity = "Seleccione una ciudad válida",
-	--HT = "Search",
 	--------------------------------------
 	--Home
 	HNoResultHome = "Búsqueda \nsin resultados",

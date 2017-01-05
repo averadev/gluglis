@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------- OBJETOS Y VARIABLES ----------------------------------
@@ -10,7 +10,6 @@ require('src.Tools')
 require('src.resources.Globals')
 local composer = require( "composer" )
 local RestManager = require('src.resources.RestManager')
-
 
 -- Grupos y Contenedores
 local screen
@@ -29,11 +28,9 @@ local idxA, countA
 local lblName, lblInts, lblAge
 local loadUsers = {}
 local btnViewProfile
-local lblTitle
 local limitCard = 5
 local totalCard = 0
 local isReady = true
-local counter = 0
 local isFirstI = true
 local grpHome
 local lastY = 0
@@ -51,7 +48,6 @@ end
 -- Creamos primera tanda de tarjetas
 ------------------------------------
 function getFirstCards(items)
-	--tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad2)
 	bottomCmp.alpha = 1
 	container.alpha = 1
@@ -59,7 +55,7 @@ function getFirstCards(items)
 		table.insert( loadUsers, items[i] )
 	end
 	
-    -- loadUsers = items
+	--cargamos los usuarios
 	if #loadUsers > 0 then
 		if #avaL == 0 then
 			idxA = 1
@@ -88,12 +84,10 @@ end
 
 ----------------------------------------------------------
 -- Muestra un mensaje si ocurre error al mostrar la info
--- @param message mensaje que se muestra 
+-- @param message texto de informacion que se mostrara
 ----------------------------------------------------------
 function HomeError( message )
     btnViewProfile.alpha = 0
-    
-	--tools:setLoadingPerson(false,grpLoad)
 	tools:setLoading(false,grpLoad)
 	
 	if topCmp then
@@ -105,27 +99,6 @@ function HomeError( message )
     container:insert(topCmp)
 	topCmp.x = - 384
 	topCmp.y = - 500
-	
-	--[[local bgCard0 = display.newRect( midW, 102, intW, 515 )
-    bgCard0.anchorY = 0
-    bgCard0:setFillColor( 0/255, 174/255, 239/255 )
-    topCmp:insert(bgCard0)
-	
-    local bgCard = display.newRoundedRect( midW, 52, 615, 615, 20 )
-    bgCard.anchorY = 0
-    --bgCard:setFillColor( 11/225, 163/225, 212/225 )
-	bgCard:setFillColor( 0/255, 174/255, 239/255 )
-    topCmp:insert(bgCard)
-    
-    bgAvatar = display.newRect( midW, 60, 600, 600 )
-    bgAvatar.anchorY = 0
-    bgAvatar:setFillColor( 0, 193/225, 1 )
-    topCmp:insert(bgAvatar)]]
-    
-	--[[local bgavatarDefault = display.newRect( midW, 60, 700, 700 )
-	bgavatarDefault.anchorY = 0
-	bgavatarDefault:setFillColor( 0 )
-	topCmp:insert(bgavatarDefault)]]
 		
 	local imgNoResultHome = display.newImage( "img/Vector Smart Object2-01.png" )
 	imgNoResultHome:translate( midW, 360 )
@@ -150,6 +123,7 @@ end
 ------------------------------------
 function buildCard(item)
 
+	--obtiene el tamaño de las imagenes
 	local grpImage = display.newGroup()
 	grpImage.alpha = 0
 	grpImage.y = midH
@@ -165,36 +139,13 @@ function buildCard(item)
 		img.height = 600
 	end
 	
-	if imgWidth < 600 or imgHeight < 600 then
-		--item.image = "a" .. item.image
-		--grpImage.alpha = 1
-		--display.save( grpImage, { filename=item.image , baseDir=system.TemporaryDirectory, isFullResolution=false, backgroundColor={0, 0, 0, 0} } )
-	end
 	grpImage:removeSelf()
 	grpImage = nil
 
     local idx = #avaL + 1
 	local imgS = nil
-	--[[if imgWidth < 600 or imgHeight < 600 then 
-		imgWidth = math.round( imgWidth/2 ) - 1
-		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
-	elseif imgWidth > 600 or imgHeight > 600 then
-		
-		local WidthSheet = imgWidth/2
-		local integralPart, fractionalPart = math.modf( WidthSheet )
-		if ( fractionalPart == 0 ) then
-			imgWidth = math.round( imgWidth/2 )
-		else
-			imgWidth = math.round( imgWidth/2 ) - 1
-		end
-		
-		--print( math.modf( imgWidth/2 ) )
-		
-		imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
-	else
-		imgS = graphics.newImageSheet( item.image, system.TemporaryDirectory, { width = 300, height = 600, numFrames = 2 })
-	end]]
 	
+	--ajusta el tamaño de la mascara
 	local WidthSheet = imgWidth/2
 	local integralPart, fractionalPart = math.modf( WidthSheet )
 	if ( fractionalPart == 0 ) then
@@ -203,6 +154,7 @@ function buildCard(item)
 		imgWidth = math.round( imgWidth/2 ) - 1
 	end
 	
+	--monta la mascara
 	imgS = graphics.newImageSheet(  item.image, system.TemporaryDirectory, { width = imgWidth, height = imgHeight, numFrames = 2 })
     
     avaL[idx] = display.newRect( midW, 60, 360, 720 )
@@ -234,100 +186,25 @@ function showProfiles( event )
 	return true
 end
 
-------------------------------------------------
--- Muestra detalles cuando la pantalla es chica
--- @param event datos del boton
-------------------------------------------------
-function showDetail( event )
-	if event.target.flag == 0 then
-		if (intH < 1100) then
-			topCmp.y = -900
-		else
-			topCmp.y = -830
-		end
-		grpBtnDetail.y = midH - 100 + h
-		bottomCmp.alpha = 1
-		event.target.flag = 1
-		lblTitle.text = "MENOS INFORMACIÓN"
-		--screen:removeEventListener( "touch", touchScreen )
-	else
-		bottomCmp.alpha = 0
-		topCmp.y =  -500
-		grpBtnDetail.y = 800 + h
-		event.target.flag = 0
-		lblTitle.text = "MÁS INFORMACIÓN"
-		--screen:addEventListener( "touch", touchScreen )
-	end
-end
 
 -------------------------------------
 -- Asigna informacion del usuario actual
 -- @param idx posicion del registro
 ------------------------------------
 function setInfo(idx)
-    -- Hide Icons
-    --[[for i=3, 4 do
-        detail[i].icon.alpha = 0
-        detail[i].icon2.alpha = 0
-    end]]
-    -- Set info
-    lblName.text = loadUsers[idx].userName 
+	--name
+    lblName.text = loadUsers[idx].userName
+	--# edad
     if loadUsers[idx].edad then 
         lblName.text = lblName.text .." # "..  loadUsers[idx].edad.. " " .. language.HYears
-		--lblAge.text = loadUsers[idx].edad.." años"
-	else
-		--lblAge.text = "Edad no registrada"
     end
-	 if loadUsers[idx].residencia then 
-        --lblName.text = lblName.text .." # "..  loadUsers[idx].edad.." años"
+	--residencia actual
+	if loadUsers[idx].residencia then 
 		lblInts.text = loadUsers[idx].residencia
 	else
 		lblInts.text = language.HUnregisteredResidence
     end
-	
-	-- Hobbies
-    --[[if loadUsers[idx].hobbies then
-        local max = 3
-        if #loadUsers[idx].hobbies < max then 
-            max = #loadUsers[idx].hobbies 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = loadUsers[idx].hobbies[i]
-            else
-                lblInts.text = lblInts.text..', '..loadUsers[idx].hobbies[i]
-            end
-        end
-        if #loadUsers[idx].hobbies > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = ''
-    end
-	-- Idiomas
-	if loadUsers[idx].idiomas then
-		local max = 3
-		if #loadUsers[idx].idiomas < max then 
-            max = #loadUsers[idx].idiomas 
-        end
-        for i=1, max do
-            if i == 1 then
-                lblInts.text = lblInts.text .. ' # ' .. loadUsers[idx].idiomas[i]
-            else
-                lblInts.text = lblInts.text..', '..loadUsers[idx].idiomas[i]
-            end
-        end
-		if #loadUsers[idx].idiomas > max then 
-            lblInts.text = lblInts.text..'...'
-        end
-    else
-        lblInts.text = ''
-    end]]
-	
 	btnViewProfile.item = loadUsers[idx]
-    --
-    --Cuenta con vehiculo propio
-    
 end
 
 
@@ -448,54 +325,27 @@ function touchScreen(event)
     end
 end
 
+-----------------------------------------------
+-- obtiene la lista de usuarios
+-- typeSearch tipo de filtro que se uso
+-- limitCard funciona como un paginador
+-----------------------------------------------
 function getProfile()
-	--screen:removeEventListener( "touch", touchScreen )
 	tools:setLoading(true,grpLoad2)
-	--RestManager.getUsersByFilter(limitCard)
 	if typeSearch == "welcome" then
         RestManager.getUsersByCity(limitCard)
 		limitCard = limitCard + 5
 	else
 		RestManager.getUsersByFilter(limitCard)
-		
-		limitCard = limitCard + 10
+		limitCard = limitCard + 5
 	end
-	
 	
 end
 
 -----------------------------------------------
--- Mostramos el detalle en recuadro dinamico
+-- Mostramos los detalles de los perfiles
 -----------------------------------------------
 function showInfoButton()
-
-	--[[local posY = 920 + h
-	---  FIX FULL  ---
-    local opt = {
-        {icon = 'icoFilterCity'}, 
-        {icon = 'icoFilterLanguage'}, 
-        {icon = 'icoFilterCheck', icon2= 'icoFilterUnCheck'}, 
-        {icon = 'icoFilterCheckAvailble', icon2= 'icoFilterUnCheck'}} 
-    for i=1, 4 do
-        detail[i] = {}
-        detail[i].icon = display.newImage( "img/"..opt[i].icon..".png" )
-        detail[i].icon:translate( -100, 0 )
-        bottomCmp:insert(detail[i].icon)
-        if opt[i].icon2 then
-            detail[i].icon2 = display.newImage( "img/"..opt[i].icon2..".png" )
-            detail[i].icon:translate( -100, 0 )
-            bottomCmp:insert(detail[i].icon2)
-        end
-        detail[i].lbl = display.newText({
-            text = "", 
-            x = 0, y = 0,
-            width = 0,
-            font = fontFamilyRegular
-        })
-        detail[i].alpha = 0
-        bottomCmp:insert(detail[i].lbl)
-    end]]
-    ---  ------ ---
     lastY = lastY + 30
 	--btn perfil
 	btnViewProfile = display.newRect( midW, lastY, intW, 120 )
@@ -515,11 +365,6 @@ function showInfoButton()
 	local poscY = container.height - 90 - h
 	
 	topCmp.y =  - (poscY / 2)
-	--container.y = aa + ( intH / 25.6 )
-	
-	
-	--topCmp.y = (midH - topCmp.height) / .47
-	
 end
 
 -- Limpiamos imagenes con 7 dias de descarga
@@ -537,10 +382,6 @@ function clearTempDir()
            os.remove( system.pathForFile( file, destDir  ) ) 
         end
     end
-end
-
-function buildHome()
-	
 end
 
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
@@ -566,20 +407,14 @@ function scene:create( event )
 	
 	grpHome = display.newGroup()
 	screen:insert(grpHome)
-	--grpHome.y = h
 	
 	container = display.newContainer( intW, intH )
 	container:translate( midW , lastY)
-	--container.anchorY = 1
-	--container:setFillColor( 0/255, 174/255, 239/255 )
-	--container:s
     screen:insert(container)
-	
 	container.alpha = 0
 	
     topCmp = display.newGroup()
     container:insert(topCmp)
-	--topCmp.anchorY = 0
 	topCmp.x = - midW
 	topCmp.y = - midH
 	
@@ -640,16 +475,14 @@ function scene:create( event )
 	showInfoButton()
 	grpLoad = display.newGroup()
 	screen:insert(grpLoad)
-	--grpLoad.y = 650 + h
 	tools:setLoading(true,grpLoad)
 	clearTempDir()
     
 	grpLoad2 = display.newGroup()
     grpLoad2.cards = true
 	screen:insert(grpLoad2)
-	--grpLoad2.y = 840 + h
-	--grpLoad2.x = midW - 80
 	
+	--identifica si muestra la lista de usuario o los demos
 	if not isReadOnly then
 		if typeSearch == "welcome" then
 			RestManager.getUsersByCity(0)
@@ -673,6 +506,7 @@ end
 -- @param event objeto evento
 ------------------------------------
 function scene:show( event )
+	-- borbuja de mensajes
 	bubble()
 end
 

@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
 -- Alfredo Zum
--- Gluglis 2015
+-- Gluglis 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
@@ -312,7 +312,6 @@ function scene:create( event )
     lblSubTitle:setFillColor( 69/255, 189/255, 222/255 )
     grpMain:insert(lblSubTitle)
     
-    --local midR = in
     -- Create New
 	local midR = midW
     grpNew = display.newGroup()

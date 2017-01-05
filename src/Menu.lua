@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 -- Gluglis
--- Alberto Vera Espitia
--- GeekBucket 2015
+-- Alfredo Chi
+-- GeekBucket 2016
 ---------------------------------------------------------------------------------
 
 ---------------------------------- OBJETOS Y VARIABLES ----------------------------------
@@ -18,8 +18,6 @@ local RestManager = require('src.resources.RestManager')
 local screen
 local scene = composer.newScene()
 local grpMenu, grpLoadMenu, grpLogOut
-
--- Variables
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -70,7 +68,6 @@ function resultCleanUser()
 		messageLogOut(true,message )
 	end
 	timeMarker = timer.performWithDelay( 1000, function()
-		--if isTrue == true then	
 		DBManager.clearUser()
 		facebook.logout()
 		composer.removeHidden()
@@ -78,8 +75,6 @@ function resultCleanUser()
 		composer.removeScene( "src.LoginSplash" )
 		noBubble()
 		composer.gotoScene( "src.LoginSplash", { time = 400, effect = "fade" } )
-		--end
-		
 	end, 1 )
 end
 
@@ -107,12 +102,10 @@ function messageLogOut(isOpen, message)
 		bg1:addEventListener( 'tap', noAction )
 		
 		local iconMessage = display.newImage("img/cerrada.png")
-		--iconMessage.anchorX = 0
 		iconMessage:translate(midW, intH / 3 )
 		grpLogOut:insert( iconMessage )
 		
 		local iconMessage0 = display.newImage("img/circulo-cerrada.png")
-		--iconMessage.anchorX = 0
 		iconMessage0:translate(midW, intH / 3 )
 		grpLogOut:insert( iconMessage0 )
 		
@@ -130,7 +123,6 @@ function messageLogOut(isOpen, message)
 			grpLogOut = nil
 		end
 	end
-	--if grpLogOut 
 end
 
 ---------------------------------- DEFAULT SCENE METHODS ----------------------------------
@@ -157,7 +149,6 @@ function scene:create( event )
 	
 	grpLoadMenu = display.newGroup()
 	screen:insert(grpLoadMenu)
-	--grpLoadMenu.y = 650 + h
 	
 	----------------------------------
 	-------------Buscar---------------
@@ -258,7 +249,6 @@ function scene:create( event )
 		line:setStrokeColor( 227/255 )
 		line.strokeWidth = 3
 		grpMenu:insert(line)
-	
 	end
 	
 	----------------------------------
