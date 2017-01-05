@@ -7,6 +7,7 @@
 ---------------------------------------------------------------------------------
 -- Encabezao general
 ---------------------------------------------------------------------------------
+------------------------------------- Includes -------------------------------------
 require('src.resources.Globals')
 local widget = require( "widget" )
 local composer = require( "composer" )
@@ -19,22 +20,24 @@ local platform = system.getInfo( "platform" )
 if platform == "android" then
 	widget.setTheme( "widget_theme_android_holo_light" )
 elseif platform == "ios" then
+ -- si se actualiza el corona de ios descomentar esto :)
 	--widget.setTheme( "widget_theme_ios7" )
 end
 
---print(platform)
-
---widget.setTheme( "widget_theme_ios7" )
-
+------------------------------------- Grupos y contenedores -------------------------------------
 local grpComboBox
-	
 local grpDatePicker = display.newGroup()
+
+------------------------------------- Variables -------------------------------------
 local grpT
 local days = {}
 local months = { language.RMJanuary, language.RMFebruary, language.RMMarch, language.RMApril, language.RMMay, language.RMJune, language.RMJuly, language.RMAugust, language.RMSeptember, language.RMOctober, language.RMNovember, language.RMDecember }
 local years = {}
 local pickerWheel
-	
+
+---------------------------------------------
+-- Destruye el componente de datePicker
+---------------------------------------------
 function destroyDatePicker( event )
 
 	local t = event.target
@@ -62,29 +65,31 @@ function destroyDatePicker( event )
 					break
 				end
 			end
-		
-			--hace la conversion
+			-- hace la conversion
 			if tonumber(month) < 10 then month = "0" .. month end
 			if tonumber(day) < 10 then day = "0" .. day end
 			local dateS = day .. "/" .. month .. "/" .. year
 			local dateS2 = year .. "-" .. month .. "-" .. day
-			
-			--print(dateS)
-			--print(dateS2)
-			
 			getBirthDate( dateS, dateS2 )
-			
 		end
 	end
 		
 	return true
 end
 	
+---------------------------------------------
+-- Impide la propagacion del tap
+---------------------------------------------
 function noActionDate( event )
 	return true
 end
-	
-function buildPicker(dateb, textGrp)
+
+---------------------------------------------
+-- Crea los componentes del datePicker
+-- @params dateb fecha actual
+-- @params textGrp Grupo de textField
+---------------------------------------------
+function buildPicker( dateb, textGrp )
 	
 	if textGrp then
 		grpT = textGrp
@@ -116,7 +121,6 @@ function buildPicker(dateb, textGrp)
 	--buttom
 	local btnAceptDate = display.newRect( intW, 50, 250, 80 )
 	btnAceptDate.anchorX = 1
-	--btnAceptDate.type = event.target.name
 	btnAceptDate.name = "accept"
 	grpDatePicker:insert(btnAceptDate)
 	btnAceptDate:addEventListener( 'tap', destroyDatePicker )
@@ -137,10 +141,6 @@ function buildPicker(dateb, textGrp)
 	labelAcceptDate:setFillColor( 1 )
 	labelAcceptDate.anchorX = 1
 	grpDatePicker:insert(labelAcceptDate)
-		
-	--crea el datePicker
-	--DatePicker(event.target.name)
-	
 	
 	local environment = system.getInfo( "environment" )
 	
@@ -154,7 +154,8 @@ function buildPicker(dateb, textGrp)
 		else
 			createDatePickerIos(dateb)
 		end
-		--descomenta5r eb ios
+		-------------------------
+		--descomentar en ios
 		--[[local platform = system.getInfo( "platformName" )
 		if platform == "Android" then
 			createDatePickerAndroid(dateb)
@@ -163,13 +164,14 @@ function buildPicker(dateb, textGrp)
 		end]]
 	end
 
-	
-		
 	--mueve el widget hacia arriba
 	transition.to( grpDatePicker, { y = intH - 406, time = 400, transition = easing.outExpo })		
 end
 	
-	
+-------------------------------------------------
+-- Crea el datePicker de ios y le asigna las fechas
+-- @params dateb fecha actual
+-------------------------------------------------
 function createDatePickerIos(dateb)
 
 	local dates = {}
@@ -191,28 +193,25 @@ function createDatePickerIos(dateb)
 	else
 		dates = RestManager.getDate()
 	end
-	-- Create two tables to hold data for days and years      
+	-- Crea las tablas de dia y año    
 	days = {}
 	years = {}
-
-	-- Populate the "days" table
+	-- Poblar la tabla de dia
 	for d = 1, 31 do
 		days[d] = d
 	end
-		
-	-- Populate the "years" table
+	-- Poblar la tabla de años
 	for y = 80, 1, -1 do
 		years[y] = tonumber(dates[3].year) - y + 1
 	end
 	
-	
+	-- asigna la fecha actual i existe
 	local dates2 = {}
 	if dateb ~= "0000-00-00" then
 		for Ye, Mi, Da in string.gmatch( dateb, "(%w+)-(%w+)-(%w+)" ) do
 			dates2[1] = Da
 			dates2[2] = Mi
 			dates2[3] = Ye
-			--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
 		end
 		dates2[3] = tonumber( dates[3].year - dates2[3] + 1 )
 	else
@@ -221,7 +220,7 @@ function createDatePickerIos(dateb)
 		dates2[3] = 1
 	end
 
-	-- Set up the picker wheel columns
+	-- Configure las columnas de la rueda selectora
 	local columnData = {
 		{
 			align = "center",
@@ -233,7 +232,6 @@ function createDatePickerIos(dateb)
 			align = "center",
 			width = 200,
 			labelPadding = 10,
-			--startIndex = 1,
 			startIndex = tonumber( dates2[2] ),
 			labels = months
 		},
@@ -258,19 +256,7 @@ function createDatePickerIos(dateb)
 	}
 	local pickerWheelSheet = graphics.newImageSheet( "img/pickerSheet4.png", options )
 
-	-- Create the widget
-	--[[pickerWheel = widget.newPickerWheel({
-		x = display.contentCenterX,
-		top =   25,
-		columns = columnData,
-		--style = "resizable",
-		width = intW,
-		--rowHeight = 60,
-		fontSize = 28,
-		columnColor = { 0.8, 0.8, 0.8 }
-	})  
-	pickerWheel.anchorY = 0]]
-	
+	-- pickerWheel
 	pickerWheel = widget.newPickerWheel({
 		y = 250,
 		x = 230,
@@ -293,18 +279,12 @@ function createDatePickerIos(dateb)
 	
 	grpDatePicker:insert( pickerWheel )
 
-	-- Get the table of current values for all columns
-	-- This can be performed on a button tap, timer execution, or other event
-
-	-- Get the value for each column in the wheel, by column index
-	--[[local currentStyle = values[1].value
-	local currentColor = values[2].value
-	local currentSize = values[3].value
-
-	print( currentStyle, currentColor, currentSize )]]
-	
 end
 	
+-------------------------------------------------
+-- Crea el datePicker de android y le asigna las fechas
+-- @params dateb fecha actual
+-------------------------------------------------
 function createDatePickerAndroid(dateb)
 
 	local dates = {}
@@ -326,16 +306,16 @@ function createDatePickerAndroid(dateb)
 	else
 		dates = RestManager.getDate()
 	end
-	-- Create two tables to hold data for days and years      
+	-- Crea las tablas de dia y año       
 	days = {}
 	years = {}
 
-	-- Populate the "days" table
+	-- Poblar la tabla de dia
 	for d = 1, 31 do
 		days[d] = d
 	end
 		
-	-- Populate the "years" table
+	-- Poblar la tabla de años
 	for y = 80, 1, -1 do
 		years[y] = tonumber(dates[3].year) - y + 1
 	end
@@ -347,7 +327,6 @@ function createDatePickerAndroid(dateb)
 			dates2[1] = Da
 			dates2[2] = Mi
 			dates2[3] = Ye
-			--dates2[3] = tonumber(dates2[3].year) - tonumber(Ye)
 		end
 		dates2[3] = tonumber( dates[3].year - dates2[3] + 1 )
 	else
@@ -355,10 +334,8 @@ function createDatePickerAndroid(dateb)
 		dates2[2] = 1
 		dates2[3] = 1
 	end
-	
-	--edad = dates[3].day .. "/" .. dates[3].month .. "/" .. dates[3].year
 
-	-- Set up the picker wheel columns
+	-- Configure las columnas de la rueda selectora
 	local columnData = {
 		{
 			align = "center",
@@ -370,7 +347,6 @@ function createDatePickerAndroid(dateb)
 			align = "center",
 			width = intW/3,
 			labelPadding = 10,
-			--startIndex = 1,
 			startIndex = tonumber( dates2[2] ),
 			labels = months
 		},
@@ -379,12 +355,11 @@ function createDatePickerAndroid(dateb)
 			labelPadding = 10,
 			width = intW/3,
 			startIndex = tonumber( dates2[3] ),
-			--startIndex = 1,
 			labels = years
 		}
 	}
 
-	-- Create the widget
+	-- pickerWheel
 	pickerWheel = widget.newPickerWheel({
 		x = display.contentCenterX,
 		top =   - 50,
@@ -399,15 +374,5 @@ function createDatePickerAndroid(dateb)
 	})  
 	pickerWheel.anchorY = 0
 	grpDatePicker:insert( pickerWheel )
-
-	-- Get the table of current values for all columns
-	-- This can be performed on a button tap, timer execution, or other event
-
-	-- Get the value for each column in the wheel, by column index
-	--[[local currentStyle = values[1].value
-	local currentColor = values[2].value
-	local currentSize = values[3].value
-
-	print( currentStyle, currentColor, currentSize )]]
 	
 end

@@ -255,16 +255,13 @@ function setImagePerfil( imageA )
 	grpAvatar:insert(bgShowPhoto)
 	bgShowPhoto:addEventListener( 'tap', showAvatar )
 		
-	local bgChangePhoto = display.newImage( 'img/circle-94.png' )
-	bgChangePhoto:translate( midW - 115, posY + 100)
-	bgChangePhoto.anchorX = 0
-	bgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
-	grpAvatar:insert(bgChangePhoto)
-		
-	local imgChangePhoto = display.newImage("img/camera-4-64.png")
+	local imgChangePhoto = display.newImage("img/gg_camara-01.png")
 	imgChangePhoto:translate(midW - 68, 249)
 	imgChangePhoto.alpha = .8
 	grpAvatar:insert(imgChangePhoto)
+	imgChangePhoto:addEventListener( 'tap', optionPictureAvatar )
+	imgChangePhoto.height = 94
+	imgChangePhoto.width = 94
 	
 	tools:setLoading(false,grpLoadMyProfile)
 	
