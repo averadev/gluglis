@@ -34,6 +34,8 @@ local isReady = true
 local isFirstI = true
 local grpHome
 local lastY = 0
+local iniY = 220
+local endY = 980
 
 ---------------------------------- FUNCIONES ----------------------------------
 
@@ -50,7 +52,8 @@ end
 function getFirstCards(items)
 	tools:setLoading(false,grpLoad2)
 	bottomCmp.alpha = 1
-	container.alpha = 1
+	topCmp.alpha = 1
+	--container.alpha = 1
 	for i = 1, #items, 1 do
 		table.insert( loadUsers, items[i] )
 	end
@@ -96,15 +99,19 @@ function HomeError( message )
 	end
 	
 	topCmp = display.newGroup()
-    container:insert(topCmp)
-	topCmp.x = - 384
-	topCmp.y = - 500
+	topCmp.y = intH / 4
+	
+	grpHome:insert(topCmp)
+    --container:insert(topCmp)
+	--topCmp.x = - 384
+	--topCmp.y = - 500
 		
 	local imgNoResultHome = display.newImage( "img/Vector Smart Object2-01.png" )
 	imgNoResultHome:translate( midW, 360 )
 	topCmp:insert(imgNoResultHome)
 	bottomCmp.alpha = 1
-	container.alpha = 1
+	--container.alpha = 1
+	topCmp.alpha = 1
 	
 	local lblnoResultHome = display.newText({
         text = language.HNoResultHome, 
@@ -214,7 +221,10 @@ end
 ------------------------------------
 function touchScreen(event)
     if event.phase == "began" then
-        if event.yStart > 140 and event.yStart < 820 and isReady then
+		print(event.yStart)
+		--local iniY = 220
+		--local endY = 980
+        if event.yStart > iniY and event.yStart < endY and isReady then
             isReady = false
             isCard = true
             direction = 0
@@ -362,9 +372,18 @@ function showInfoButton()
     lblViewProfile:setFillColor( 1 )
     topCmp:insert(lblViewProfile)
 	
-	local poscY = container.height - 90 - h
+	--local poscY = container.height - 90 - h
+	--local poscY = 200 - 90 - h
 	
-	topCmp.y =  - (poscY / 2)
+	--topCmp.y =  - (poscY / 2)
+	--topCmp.y = 400
+	
+	posY = ( intH - topCmp.height )
+	topCmp.y =  posY / 2
+	
+	local iniY = topCmp.y  + 53 + h
+	local endY = topCmp.y + 700 + h
+	
 end
 
 -- Limpiamos imagenes con 7 dias de descarga
@@ -408,17 +427,27 @@ function scene:create( event )
 	grpHome = display.newGroup()
 	screen:insert(grpHome)
 	
-	container = display.newContainer( intW, intH )
+	--[[container = display.newContainer( intW, intH )
 	container:translate( midW , lastY)
     screen:insert(container)
-	container.alpha = 0
+	container.alpha = 0]]
 	
-    topCmp = display.newGroup()
+    --[[topCmp = display.newGroup()
     container:insert(topCmp)
 	topCmp.x = - midW
-	topCmp.y = - midH
+	topCmp.y = - midH]]
+	
+	topCmp = display.newGroup()
+    screen:insert(topCmp)
+	topCmp.alpha = 0
+	--topCmp.x = - midW
+	--topCmp.y =  midH
+	
+	--topCmp.y = 400
 	
     -- Content profile
+	
+	print(topCmp.y)
 	
 	local bgCard0 = display.newRect( midW, 75, intW, 700 )
     bgCard0.anchorY = 0
@@ -440,6 +469,9 @@ function scene:create( event )
     tmpAvatar.alpha = .5
     tmpAvatar:translate(midW, 197)
     topCmp:insert( tmpAvatar )
+	
+	--local iniY = 220
+	--local endY = 980
     
     profiles = display.newGroup()
     topCmp:insert(profiles)
@@ -495,8 +527,12 @@ function scene:create( event )
 		RestManager.getUsersDemo(0)
 	end
     
-	posY = (topCmp.height /1.65)
-	topCmp.y = - posY
+	--posY = (topCmp.height /1.65)
+	posY = ( intH - topCmp.height )
+	topCmp.y =  posY / 2
+	
+	local iniY = topCmp.y  + 53 + h
+	local endY = topCmp.y + 700 + h
 	
 	tools:toFront()
 end	
