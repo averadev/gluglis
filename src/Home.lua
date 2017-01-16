@@ -381,9 +381,6 @@ function showInfoButton()
 	posY = ( intH - topCmp.height )
 	topCmp.y =  posY / 2
 	
-	local iniY = topCmp.y  + 53 + h
-	local endY = topCmp.y + 700 + h
-	
 end
 
 -- Limpiamos imagenes con 7 dias de descarga
@@ -527,12 +524,11 @@ function scene:create( event )
 		RestManager.getUsersDemo(0)
 	end
     
-	--posY = (topCmp.height /1.65)
 	posY = ( intH - topCmp.height )
 	topCmp.y =  posY / 2
 	
-	local iniY = topCmp.y  + 53 + h
-	local endY = topCmp.y + 700 + h
+	iniY = topCmp.y  + 50
+	endY = topCmp.y + 780
 	
 	tools:toFront()
 end	

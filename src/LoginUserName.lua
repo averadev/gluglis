@@ -294,23 +294,6 @@ function scene:create( event )
     logo:scale(.7, .7)
     logo:translate( midW, (h+140) )
     
-    -- Text Descrip
-    newH = circle1.y + (circle1.height / 2) + 40
-    local lblTitle = display.newText({
-        text = "Gluglis",     
-        x = midW, y = newH,
-        font = native.systemFont,   
-        fontSize = 35, align = "center"
-    })
-    grpMain:insert(lblTitle)
-    local lblSubTitle = display.newText({
-        text = "an app to travel free",     
-        x = midW, y = newH + 35,
-        font = native.systemFont,   
-        fontSize = 22, align = "center"
-    })
-    lblSubTitle:setFillColor( 69/255, 189/255, 222/255 )
-    grpMain:insert(lblSubTitle)
     
     -- Create New
 	local midR = midW
