@@ -995,6 +995,31 @@ local RestManager = {}
     end
 	
 	-------------------------------------
+    -- Valida seleccion de ciudad
+    -------------------------------------
+    RestManager.getLocation = function()
+		settings = DBManager.getSettings()
+		site = settings.url
+        local url = site.."api/getLocation/format/json"
+		url = url.."/idApp/" .. settings.idApp
+        local function callback(event)
+            if ( event.isError ) then
+            else
+                local data = json.decode(event.response)
+				if data then
+					if ( not(data.success) ) then
+						toHometown()
+					end
+				end
+            end
+            return true
+        end
+        -- Do request
+        print(url)
+		network.request( url, "GET", callback )
+    end
+	
+	-------------------------------------
     -- Obtiene la lista de hobbies, lenguajes
     -------------------------------------
     RestManager.getHobbies = function()

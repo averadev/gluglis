@@ -11,11 +11,13 @@ settings =
 		{
 			publisherId = "com.onesignal",
 		},
+        --[[
 		["plugin.google.play.services"] =
 		{
 			publisherId = "com.coronalabs",
 			supportedPlatforms = { android=true, ["android-kindle"]=true },
 		},
+        --]]
 		["plugin.openssl"] =
         {
             publisherId = "com.coronalabs",

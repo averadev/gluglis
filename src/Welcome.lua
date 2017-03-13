@@ -46,6 +46,14 @@ function moveTextFieldWelcome( poscX )
 	end
 end
 
+----------------------------------------------------
+-- Seleccionar ciudad
+----------------------------------------------------
+function toHometown(event)
+    composer.removeScene( "src.Hometown" )
+    composer.gotoScene( "src.Hometown", { time = 400, effect = "fade"})
+end
+
 -------------------------------------
 -- Evento focus del textField
 -- @param event datos del textField
@@ -430,6 +438,7 @@ function scene:create( event )
 	imgMoreFilter.width = 80
 	grpWelcome:insert(imgMoreFilter)
 	
+    RestManager.getLocation()
 	if isReadOnly == false then
 		--obtiene la lista de mensajes no leidos
 		RestManager.getUnreadChats()
